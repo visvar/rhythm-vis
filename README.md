@@ -43,7 +43,7 @@ Only required for development.
 
 File naming:
 
-`<exercise>_<person>_<YYYY-mm-dd>_<take>`, e.g., quarters-24-bars_FH_2022-12-14_2
+`<exercise>_<person>_<YYYY-mm-dd>_<take>`, e.g., quarters-24-bars_frank_2022-12-14_2
 
 ### Exercises
 
@@ -71,7 +71,7 @@ Concrete examples:
 
 Exercise naming:
 
-`<notes>_<note-duration-and-rhythm-basis>_<bars>_<click>_<tempo>`, e.g., a-minor-pentatonic_eights-and-triplets_4-bars_4-click_120-bpm
+`<instrument>_<notes>_<note-duration-and-rhythm-basis>_<bars>_<click>_<tempo>`, e.g., guitar_a-minor-pentatonic_eights-and-triplets_4-bars_4-click_120-bpm
 
 
 ### Recordings

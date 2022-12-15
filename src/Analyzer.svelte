@@ -5,6 +5,8 @@
   import WaveSurfer from "wavesurfer.js"
     import { afterUpdate, onMount } from 'svelte';
 
+  let width = 800
+
   let fileInput
   let files = []
   let extracted;
@@ -93,7 +95,7 @@
   afterUpdate(()=>{
     deltaPlotContainer.textContent = "";
     const plot = Plot.plot({
-      width: 500,
+      width,
       height: 100,
       x: { label: "Time between following notes (s)" },
       y: { label: "Frequency", grid: true },
@@ -114,7 +116,7 @@
 
 <main>
   <h1>Analysis</h1>
- <input
+  <input
     type="file"
     accept=".zip"
     bind:this={fileInput}
@@ -129,7 +131,7 @@
     </select>
   </label>
 
-  <div bind:this={deltaPlotContainer} width="500px" height="100px"/>
+  <div bind:this={deltaPlotContainer} width={`${width}px`} height="100px"/>
 
   <label>
     Tempo in BPM
@@ -147,6 +149,8 @@
   </label>
 
   <div id="waveform" />
+
+  <!-- <div bind:this={histoPlotContainer} width="500px" height="100px"/> -->
 </main>
 
 <style>
