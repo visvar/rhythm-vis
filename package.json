@@ -1,0 +1,30 @@
+{
+  "name": "rhythm-vis",
+  "license": "MIT",
+  "private": true,
+  "version": "1.2.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "vite build",
+    "deploy": "npx gh-pages -d dist",
+    "upd": "ncu -u"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.0.2",
+    "gh-pages": "^4.0.0",
+    "npm-check-updates": "^16.5.6",
+    "standard": "^17.0.0",
+    "svelte": "^3.55.0",
+    "vite": "^4.0.1"
+  },
+  "dependencies": {
+    "@js-temporal/polyfill": "^0.4.3",
+    "@observablehq/plot": "^0.6.1",
+    "d3": "^7.7.0",
+    "musicvis-lib": "^0.57.1"
+  }
+}
