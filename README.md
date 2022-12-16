@@ -43,7 +43,7 @@ Only required for development.
 
 File naming:
 
-`<exercise>_<person>_<YYYY-mm-dd>_<take>`, e.g., quarters-24-bars_frank_2022-12-14_2
+`<exercise>_<person>_<YYYY-mm-dd>_<take>`, e.g., quarters-24-bars_frank-heyen_2022-12-14_2
 
 ### Exercises
 
