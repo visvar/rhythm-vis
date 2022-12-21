@@ -2,7 +2,7 @@
   import { recordAudio, recordMidi } from 'musicvis-lib';
   import { Temporal } from '@js-temporal/polyfill';
   import { onMount } from 'svelte';
-  import Metronome from './lib/Metronome.js';
+  import Metronome from '../lib/Metronome.js';
 
   // Recorders
   let audioRecorder;
@@ -10,11 +10,9 @@
   // Settings
   let exercise;
   let person = localStorage.getItem('person') ?? '';
-  let bpm = +localStorage.getItem('bpm') ?? 120;
-  let accent =
-    +localStorage.getItem('accent') ?? 1
-      ? JSON.parse(localStorage.getItem('oldnames'))
-      : [];
+  let bpm = +(localStorage.getItem('bpm') ?? 120);
+  let beep = +(localStorage.getItem('beep') ?? 1);
+  let accent = +(localStorage.getItem('accent') ?? 1);
   // Data
   let audio;
   let notes;
@@ -28,7 +26,7 @@
       metroDiv.style.background === 'none' ? 'steelblue' : 'none';
   });
 
-  const exercises = [''];
+  const exercises = ['example 1', 'example 2'];
 
   onMount(async () => {
     try {
@@ -47,9 +45,11 @@
 
   const start = () => {
     console.log('start');
+    audio = null;
+    notes = null;
     midiRecorder.start();
     audioRecorder.start();
-    metro.start(bpm, accent);
+    metro.start(bpm / beep, accent);
     metronomeClicks = [];
   };
 
@@ -62,11 +62,11 @@
   };
 
   const download = () => {
+    const pers = person.split(/\s+/).join('-');
     const now = Temporal.Now.plainDateTimeISO().toJSON();
-    const name = `${exercise}_${person}_${now
-      .substring(0, 10)
-      .replace(':', '-')}`;
-    downloadTextFile(JSON.stringify(notes), `${name}.json`);
+    const date = now.substring(0, 10).replace(':', '-');
+    const name = `${exercise}_${pers}_${date}`;
+    downloadTextFile(JSON.stringify(notes), `${name}.rec.json`);
     downloadTextFile(JSON.stringify(metronomeClicks), `${name}.clicks.json`);
     downloadBlob(audio, name);
   };
@@ -105,13 +105,18 @@
 <main>
   <div>
     Exercise:
-    <input type="text" bind:value="{exercise}" />
+    <select bind:value="{exercise}">
+      {#each exercises as ex}
+        <option value="{ex}">{ex}</option>
+      {/each}
+    </select>
 
     Your Name:
     <input
       type="text"
       bind:value="{person}"
       on:input="{(e) => localStorage.setItem('person', e.target.value)}"
+      placeholder="Firstname Lastname"
     />
   </div>
 
@@ -119,21 +124,32 @@
     Metronome:
     <input
       bind:value="{bpm}"
+      on:input="{(e) => localStorage.setItem('bpm', e.target.value)}"
       type="number"
-      min="1"
-      max="500"
-      step="1"
+      min="60"
+      max="240"
+      step="10"
       style="width: 50px"
     />
-    bpm, accent on every
+    bpm, beep on every
     <input
-      bind:value="{accent}"
+      bind:value="{beep}"
+      on:input="{(e) => localStorage.setItem('beep', e.target.value)}"
       type="number"
       min="1"
       max="16"
       step="1"
       style="width: 30px"
-    />. beat
+    />. beat, accent on every
+    <input
+      bind:value="{accent}"
+      on:input="{(e) => localStorage.setItem('accent', e.target.value)}"
+      type="number"
+      min="1"
+      max="16"
+      step="1"
+      style="width: 30px"
+    />. beep
   </div>
 
   <div>
@@ -144,22 +160,9 @@
 
   <div>
     Saving:
-    <input
-      type="text"
-      placeholder="name"
-      list="oldnames"
-      title="{exercise}"
-      bind:value="{exercise}"
-    />
-    <datalist id="oldnames">
-      {#each exercises as name}
-        <option value="{name}">{name}</option>
-      {/each}
-    </datalist>
-  </div>
-
-  <div>
-    <button on:click="{download}"> download </button>
+    <button on:click="{download}" disabled="{!audio && !notes}">
+      download
+    </button>
   </div>
   <div>
     Make sure your browser supports <a
