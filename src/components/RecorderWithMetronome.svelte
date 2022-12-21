@@ -3,6 +3,7 @@
   import { Temporal } from '@js-temporal/polyfill';
   import { onMount } from 'svelte';
   import Metronome from '../lib/Metronome.js';
+  import AudioPlayer from './AudioPlayer.svelte';
 
   // Recorders
   let audioRecorder;
@@ -22,8 +23,8 @@
   let metro = new Metronome();
   metro.onClick((time) => {
     metronomeClicks.push(time);
-    metroDiv.style.background =
-      metroDiv.style.background === 'none' ? 'steelblue' : 'none';
+    // metroDiv.style.background =
+    //   metroDiv.style.background === 'none' ? 'steelblue' : 'none';
   });
 
   const exercises = ['example 1', 'example 2'];
@@ -164,12 +165,23 @@
       download
     </button>
   </div>
+
   <div>
-    Make sure your browser supports <a
-      href="https://caniuse.com/midi"
-      target="_blank"
-      rel="noreferrer">Web MIDI</a
-    >. You can test your MIDI input with
+    <AudioPlayer blob="{audio}" height="30" />
+  </div>
+
+  <h2>How to use</h2>
+  <div>
+    <b>Audio:</b> If you want to record audio, make sure the correct audio input
+    is selected in your browser. You can test this in the <i>Setup</i> tab.
+  </div>
+  <div>
+    <b>MIDI:</b>
+    If you want to record MIDI, make sure your browser supports
+    <a href="https://caniuse.com/midi" target="_blank" rel="noreferrer"
+      >Web MIDI</a
+    >. You can test whether everything works in the <i>Setup</i> tab or in more
+    detail with
     <a
       href="https://github.com/fheyen/midi-pianoroll"
       target="_blank"
@@ -177,8 +189,8 @@
     >.
   </div>
   <div>
-    Usage: Press <i>start</i> to start recording, <i>stop</i> to stop it. Give your
-    recording a name and download the audio and MIDI files.
+    Press <i>start</i> to start recording, <i>stop</i> to stop it, then download
+    the audio and MIDI files.
   </div>
 </main>
 
