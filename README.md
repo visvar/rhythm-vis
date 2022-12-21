@@ -20,14 +20,11 @@
 
 ### Python
 
-Create virtual env: `<python executable path> -m venv venv`
+Create virtual env: `python -m venv venv`
 Activate it: `.\venv\Scripts\activate`
 
 ```
-pip install \
-    basic-pitch \
-    librosa \
-    Flask flask_restful flask_jsonpify flask_cors \
+pip install basic-pitch librosa Flask flask_restful flask_jsonpify flask_cors
 ```
 
 ### Node JS
@@ -79,16 +76,17 @@ Exercise naming:
 
 [data/raw/](data/raw/)
 
-TODO:
-- allow to record metronome click, data then is audio, midi, metronome clicks
+- [x] record metronome click, data then is audio, midi, metronome clicks
+- [x] split audio at silence to allow recording multiple takes at once
+- [ ] split MIDI at silence for MIDI-only instruments
+
 
 
 ### Preprocessing
 
 [data/prep/](data/prep/)
 
-TODO:
-- align audio to MIDI, same tempo so only time-shift
+- [ ] align audio to MIDI, same tempo so only time-shift
 -
 
 
