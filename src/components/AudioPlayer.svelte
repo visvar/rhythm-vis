@@ -10,7 +10,7 @@
   onMount(() => {
     // https://wavesurfer-js.org/docs/options.html
     wavesurfer = WaveSurfer.create({
-      container: '#waveform',
+      container: '#waveform-player',
       waveColor: 'gray',
       progressColor: 'steelblue',
       height,
@@ -24,6 +24,9 @@
   };
   $: if (wavesurfer && blob) {
     updateBlob();
+  }
+  $: if (wavesurfer && !blob) {
+    wavesurfer.empty();
   }
 
   let playing = false;
@@ -47,7 +50,7 @@
       </button>
     </div>
   {/if}
-  <div id="waveform" width="{width}px"></div>
+  <div id="waveform-player" width="{width}px"></div>
 </main>
 
 <style>

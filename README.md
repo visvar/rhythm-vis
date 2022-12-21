@@ -9,6 +9,7 @@
       1. [Exercises](#exercises)
       2. [Recordings](#recordings)
       3. [Preprocessing](#preprocessing)
+   3. [Libraries Used](#libraries-used)
 
 
 ## Setup
@@ -89,3 +90,10 @@ TODO:
 TODO:
 - align audio to MIDI, same tempo so only time-shift
 -
+
+
+
+## Libraries Used
+
+- d3
+- https://github.com/cwilso/volume-meter

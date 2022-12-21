@@ -3,7 +3,11 @@
   import * as Plot from '@observablehq/plot';
   import { Utils } from 'musicvis-lib';
   import WaveSurfer from 'wavesurfer.js';
-  import { afterUpdate, onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
+  import HistogramPlot from './HistogramPlot.svelte';
+  import TickPlot from './TickPlot.svelte';
+  import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
+  import MainPlot from './MainPlot.svelte';
 
   let width = 800;
 
@@ -14,13 +18,14 @@
   let onsets = [];
   let audio;
 
-  // elements
-  let deltaPlotContainer;
+  let wavesurfer;
 
   // config
   let bpm = 120;
   let beats = 4;
   let contextBeats = 1;
+  let noteColorMode = 'none';
+  let xTicks = 1;
   $: spb = Utils.bpmToSecondsPerBeat(bpm);
   $: onsetsInBeats = onsets.map((d) => d / spb);
   $: deltas = onsets.slice(1).map((d, i) => d - onsets[i]);
@@ -63,16 +68,24 @@
       // audio
       audio = await extracted.file(`${selectedFile}.webm`).async('blob');
       console.log(notes, audio);
+      wavesurfer.loadBlob(audio);
+    }
+  };
+
+  const playPauseOnSpaceBar = (e) => {
+    if (e.key === ' ') {
+      wavesurfer.playPause();
     }
   };
 
   onMount(() => {
-    const wavesurfer = WaveSurfer.create({
+    wavesurfer = WaveSurfer.create({
       container: '#waveform',
       waveColor: '#bbb',
       progressColor: 'steelblue',
       mediaControls: true,
       normalize: true,
+      width: width - 20,
       height: 40,
     });
     wavesurfer.on('audioprocess', (time) => {
@@ -90,35 +103,23 @@
       wavesurfer.seekTo(startTime / duration);
       currentPlayerTime = startTime;
     });
+
+    // play and pause with spacebar
+    document.body.addEventListener('keydown', playPauseOnSpaceBar);
   });
 
-  afterUpdate(() => {
-    deltaPlotContainer.textContent = '';
-    const plot = Plot.plot({
-      width,
-      height: 100,
-      x: { label: 'Time between following notes (s)' },
-      y: { label: 'Frequency', grid: true },
-      marks: [
-        Plot.rectY(
-          deltas,
-          Plot.binX(
-            { y: 'count', thresholds: 200 },
-            { x: (d) => d, fill: '#aaa', inset: 0 }
-          )
-        ),
-        Plot.ruleY([0]),
-        // Mark for correct BPM
-        // Plot.ruleX()
-      ],
-    });
-
-    deltaPlotContainer.appendChild(plot);
+  onDestroy(() => {
+    document.removeEventListener('keydown', playPauseOnSpaceBar);
   });
 </script>
 
 <main>
-  <h1>Analysis</h1>
+  <h2>Analysis</h2>
+
+  <div>
+    Choose a .zip file with files for audio, MIDI, and metronome clicks. Can
+    contain multiple recordings.
+  </div>
   <input
     type="file"
     accept=".zip"
@@ -135,11 +136,7 @@
     </select>
   </label>
 
-  <div
-    bind:this="{deltaPlotContainer}"
-    width="{`${width}px`}"
-    height="100px"
-  ></div>
+  <DeltaTimeHistogramPlot width="{width}" deltas="{deltas}" />
 
   <label>
     Tempo in BPM
@@ -177,9 +174,65 @@
     />
   </label>
 
-  <div id="waveform"></div>
+  <label>
+    Note color mode
+    <select bind:value="{noteColorMode}">
+      {#each ['none', 'chroma', 'channel', 'velocity', 'duration'] as value}
+        <option value="{value}">{value}</option>
+      {/each}
+    </select>
+  </label>
 
-  <!-- <div bind:this={histoPlotContainer} width="500px" height="100px"/> -->
+  <label>
+    x axis ticks
+    <select bind:value="{xTicks}">
+      <option value="{1}">beats</option>
+      <option value="{1 / 2}">half-beats</option>
+      <option value="{1 / 3}">triplets</option>
+      <option value="{1 / 4}">quarter-beats</option>
+    </select>
+  </label>
+
+  <button
+    on:click="{() => wavesurfer.playPause()}"
+    disabled="{!audio}"
+    title="You can also use the space key"
+  >
+    play/pause
+  </button>
+
+  <div id="waveform" style="width: {width}px"></div>
+  <div>
+    Current player time: {currentPlayerTime}<br />
+    Current adjusted time: {currentAdjustedTime}<br />
+    Current time in beats: {currentTimeInBeats}<br />
+  </div>
+
+  <HistogramPlot
+    width="{width}"
+    values="{onsetsInBeats}"
+    beats="{beats}"
+    contextBeats="{contextBeats}"
+    xLabel="beats"
+  />
+  <TickPlot
+    width="{width}"
+    values="{onsetsInBeats}"
+    beats="{beats}"
+    contextBeats="{contextBeats}"
+    xLabel="beats"
+  />
+
+  <!-- <MainPlot
+    notes="{notes}"
+    onsets="{onsets}"
+    onsetsInBeats="{onsetsInBeats}"
+    beats="{beats}"
+    contextBeats="{contextBeats}"
+    colorMode="{noteColorMode}"
+    xTicks="{xTicks}"
+    currentTimeInBeats="{currentTimeInBeats}"
+  /> -->
 </main>
 
 <style>
@@ -189,5 +242,9 @@
 
   label {
     display: block;
+  }
+
+  #waveform {
+    padding: 0;
   }
 </style>

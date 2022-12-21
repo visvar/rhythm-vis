@@ -6,7 +6,10 @@
   import VolumeMeter from './components/VolumeMeter.svelte';
 
   const views = ['Recording', 'Analysis', 'Setup'];
-  let view = 'Recording';
+  let view = localStorage.getItem('view') ?? 'Recording';
+  $: {
+    localStorage.setItem('view', view);
+  }
 </script>
 
 <main>
