@@ -5,6 +5,7 @@
   import Metronome from '../lib/Metronome.js';
   import AudioPlayer from './AudioPlayer.svelte';
   import SheetMusic from './SheetMusic.svelte';
+  import PianoRoll from './PianoRoll.svelte';
 
   // Recorders
   let audioRecorder;
@@ -186,7 +187,14 @@
   </div>
 
   <div>
-    <AudioPlayer blob="{audio}" height="30" />
+    <AudioPlayer blob="{audio}" height="{30}" />
+    {#if notes?.length > 0}
+      <PianoRoll
+        notes="{notes}"
+        metronomeClicks="{metronomeClicks}"
+        width="{600}"
+      />
+    {/if}
   </div>
 
   <h2>How to use</h2>
