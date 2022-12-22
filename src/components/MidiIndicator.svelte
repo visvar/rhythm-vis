@@ -48,7 +48,8 @@
           y="0"
           width="8"
           height="8"
-          fill="{input.lastNotes.has(channel) ? 'steelblue' : '#444'}"></rect>
+          rx="2"
+          fill="{input.lastNotes.has(channel) ? 'steelblue' : '#aaa'}"></rect>
       {/each}
     </svg>
   {/each}

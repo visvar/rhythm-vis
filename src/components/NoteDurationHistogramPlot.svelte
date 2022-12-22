@@ -2,7 +2,7 @@
   import * as Plot from '@observablehq/plot';
   import { afterUpdate } from 'svelte';
 
-  export let deltas;
+  export let notes;
   export let width = 800;
   export let height = 50;
 
@@ -19,23 +19,18 @@
     const plot = Plot.plot({
       width,
       height: 100,
-      style: {
-        background: 'none',
-      },
-      x: { label: 'Time between following notes (s)' },
+      x: { label: 'Note duration (s)', labelPosition: 'center' },
       y: { label: 'Frequency', grid: true },
       marks: [
         Plot.rectY(
-          deltas,
+          notes.map((d) => d.end - d.start),
           Plot.binX(
-            { y: 'count', thresholds: 200 },
-            { x: (d) => d, fill: '#aaa', inset: 0 }
+            { y: 'count', thresholds: 100 },
+            { x: (d) => d, fill: '#aaa' }
           )
         ),
         Plot.ruleX([0]),
         Plot.ruleY([0]),
-        // Mark for correct BPM
-        // Plot.ruleX()
       ],
     });
 

@@ -11,14 +11,15 @@
   export let contextBeats;
   export let colorMode;
   export let xTicks;
+  export let currentTimeInBeats;
   export let width = 800;
   export let height = 50;
 
   let plotContainer;
+  let legendContainer;
+  let plot;
 
   afterUpdate(() => {
-    plotContainer.textContent = '';
-
     let noteColor;
     let noteColorType;
     let noteColorTickFormat;
@@ -43,14 +44,17 @@
       noteColorType = 'linear';
       noteColorScheme = 'spectral';
     }
-    const plot = Plot.plot({
+    plot = Plot.plot({
       width,
       marginTop: 2,
       marginBottom: 16,
       grid: true,
+      style: {
+        background: 'none',
+      },
       x: {
         label: 'beats',
-        ticks: d3.range(-contextBeats, beats + contextBeats, xTicks[1]),
+        ticks: d3.range(-contextBeats, beats + contextBeats, xTicks),
         tickFormat: (d) => (d == d.toFixed(0) ? d.toFixed(0) : ''),
       },
       y: {
@@ -105,10 +109,22 @@
       ],
     });
 
+    plotContainer.textContent = '';
     plotContainer.appendChild(plot);
+
+    // Update legend
+    const legend = plot.legend('color');
+    legendContainer.textContent = '';
+    if (legend) {
+      legendContainer.appendChild(legend);
+    }
   });
 </script>
 
-<main>
+<main width="{width}px">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
+  <div bind:this="{legendContainer}" width="{width}px"></div>
 </main>
+
+<style>
+</style>

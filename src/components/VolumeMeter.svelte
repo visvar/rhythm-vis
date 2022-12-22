@@ -13,6 +13,7 @@
 
   onMount(() => {
     canvasContext = canvas.getContext('2d');
+    startMeter();
   });
 
   const startMeter = () => {
@@ -61,7 +62,9 @@
 <main>
   <h2>Audio Volume</h2>
   <div>
-    <button on:click="{toggleMeter}">toggle volume meter</button>
+    <button on:click="{toggleMeter}">
+      turn volume meter {!meter ? 'on' : 'off'}
+    </button>
     <canvas bind:this="{canvas}" width="{width}px" height="{height}px"></canvas>
   </div>
 </main>

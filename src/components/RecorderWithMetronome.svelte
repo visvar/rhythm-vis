@@ -211,6 +211,10 @@
     Press <i>start</i> to start recording, <i>stop</i> to stop it, then download
     the audio and MIDI files.
   </div>
+  <div>
+    No data will be send, it completely remains under your control until you
+    submit it to us.
+  </div>
 </main>
 
 <style>

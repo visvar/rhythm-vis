@@ -12,7 +12,7 @@
   let plotContainer;
 
   const tickStyle = {
-    stroke: 'white',
+    stroke: 'black',
     opacity: 0.05,
     strokeWidth: 2,
   };

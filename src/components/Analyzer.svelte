@@ -1,6 +1,5 @@
 <script>
   import JSZip from 'jszip';
-  import * as Plot from '@observablehq/plot';
   import { Utils } from 'musicvis-lib';
   import WaveSurfer from 'wavesurfer.js';
   import { onDestroy, onMount } from 'svelte';
@@ -8,8 +7,9 @@
   import TickPlot from './TickPlot.svelte';
   import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
   import MainPlot from './MainPlot.svelte';
+  import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
 
-  let width = 800;
+  let width = window.innerWidth - 100;
 
   let fileInput;
   let files = [];
@@ -128,8 +128,9 @@
   />
 
   <label>
-    File
+    Recording
     <select on:input="{(e) => handleFileSelect(e.target.value)}">
+      <option value="" disabled selected>select a recording</option>
       {#each files as f}
         <option value="{f}">{f}</option>
       {/each}
@@ -137,6 +138,7 @@
   </label>
 
   <DeltaTimeHistogramPlot width="{width}" deltas="{deltas}" />
+  <NoteDurationHistogramPlot width="{width}" notes="{notes}" />
 
   <label>
     Tempo in BPM
@@ -150,7 +152,7 @@
     />
   </label>
 
-  <label>
+  <label title="Number of beats per row">
     Beats per row
     <input
       bind:value="{beats}"
@@ -162,8 +164,8 @@
     />
   </label>
 
-  <label>
-    Context beats (gray)
+  <label title="How many beats to show left and right as context">
+    Context beats
     <input
       bind:value="{contextBeats}"
       type="number"
@@ -175,7 +177,7 @@
   </label>
 
   <label>
-    Note color mode
+    Note color
     <select bind:value="{noteColorMode}">
       {#each ['none', 'chroma', 'channel', 'velocity', 'duration'] as value}
         <option value="{value}">{value}</option>
@@ -190,6 +192,10 @@
       <option value="{1 / 2}">half-beats</option>
       <option value="{1 / 3}">triplets</option>
       <option value="{1 / 4}">quarter-beats</option>
+      <option value="{1 / 5}">quintuplets</option>
+      <option value="{1 / 6}">sextuplets</option>
+      <option value="{1 / 7}">septuplets</option>
+      <option value="{1 / 8}">eighth-beats</option>
     </select>
   </label>
 
@@ -203,9 +209,9 @@
 
   <div id="waveform" style="width: {width}px"></div>
   <div>
-    Current player time: {currentPlayerTime}<br />
-    Current adjusted time: {currentAdjustedTime}<br />
-    Current time in beats: {currentTimeInBeats}<br />
+    Current player time: {currentPlayerTime.toFixed(3)}<br />
+    Current adjusted time: {currentAdjustedTime.toFixed(3)}<br />
+    Current time in beats: {currentTimeInBeats.toFixed(3)}<br />
   </div>
 
   <HistogramPlot
@@ -223,7 +229,8 @@
     xLabel="beats"
   />
 
-  <!-- <MainPlot
+  <MainPlot
+    width="{width}"
     notes="{notes}"
     onsets="{onsets}"
     onsetsInBeats="{onsetsInBeats}"
@@ -232,16 +239,13 @@
     colorMode="{noteColorMode}"
     xTicks="{xTicks}"
     currentTimeInBeats="{currentTimeInBeats}"
-  /> -->
+  />
 </main>
 
 <style>
-  select {
-    width: 200px;
-  }
-
   label {
-    display: block;
+    display: inline-block;
+    margin: 0 10px;
   }
 
   #waveform {
