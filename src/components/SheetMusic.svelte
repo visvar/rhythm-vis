@@ -1,12 +1,33 @@
 <script>
   import { afterUpdate, onMount } from 'svelte';
   import * as opensheetmusicdisplay from 'opensheetmusicdisplay';
-  import { cleanXml } from '../lib/lib';
 
   export let exercise;
 
   let container;
   let osmd;
+
+  const removeXmlElements = (parsedXml, selectors) => {
+    for (const selector of selectors) {
+      const elements = parsedXml.querySelectorAll(selector);
+      for (const element of elements) {
+        element.remove();
+      }
+    }
+    return parsedXml;
+  };
+
+  const cleanXml = (stringXml) => {
+    const parser = new DOMParser();
+    const parsedXml = parser.parseFromString(stringXml, 'text/xml');
+    const newXml = removeXmlElements(parsedXml, [
+      // 'direction words',
+      // 'note lyric',
+      'dynamics',
+    ]);
+    const serializer = new XMLSerializer();
+    return serializer.serializeToString(newXml);
+  };
 
   onMount(() => {
     osmd = new opensheetmusicdisplay.OpenSheetMusicDisplay(container);
@@ -14,8 +35,12 @@
       autoResize: true,
       backend: 'svg',
       drawingParameters: 'compacttight',
+      drawTitle: false,
       drawLyrics: false,
+      renderSingleHorizontalStaffline: true,
       autoGenerateMutipleRestMeasuresFromRestMeasures: false,
+      percussionOneLineCutoff: 0,
+      // spacingFactorSoftmax: 100,
     });
     if (exercise) {
       displaySheet();
@@ -24,7 +49,10 @@
 
   const displaySheet = async () => {
     if (exercise) {
-      const musicxml = await (await fetch(`/musicxml/${exercise}.xml`)).text();
+      const url = window.location.pathname;
+      const musicxml = await (
+        await fetch(`${url}/musicxml/${exercise}.xml`)
+      ).text();
       const cleaned = cleanXml(musicxml);
       await osmd.load(cleaned);
       await osmd.render();

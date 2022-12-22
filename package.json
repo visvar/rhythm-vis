@@ -1,7 +1,6 @@
 {
   "name": "rhythm-vis",
-  "license": "MIT",
-  "private": true,
+  "private": false,
   "version": "1.2.0",
   "type": "module",
   "scripts": {
