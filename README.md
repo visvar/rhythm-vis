@@ -9,6 +9,7 @@
       1. [Exercises](#exercises)
       2. [Recordings](#recordings)
       3. [Preprocessing](#preprocessing)
+      4. [Analysis](#analysis)
    3. [Libraries Used](#libraries-used)
 
 
@@ -39,10 +40,6 @@ Only required for development.
 
 ## Data
 
-File naming:
-
-`<exercise>_<person>_<YYYY-mm-dd>_<take>`, e.g., quarters-24-bars_frank-heyen_2022-12-14_2
-
 ### Exercises
 
 [data/exercises/](data/exercises/)
@@ -69,10 +66,18 @@ Concrete examples:
 
 Exercise naming:
 
-`<instrument>_<notes>_<note-duration-and-rhythm-basis>_<bars>_<click>_<tempo>`, e.g., guitar_a-minor-pentatonic_eights-and-triplets_4-bars_4-click_120-bpm
+`<instrument>_<notes>_<note-duration-and-rhythm-basis>`
+
+e.g., guitar_a-minor-pentatonic_eights-and-triplets
 
 
 ### Recordings
+
+Recording naming (`<exercise>` as defined above):
+
+`<exercise>_<tempo>_<click-on-nth-beat>_<person>_<YYYY-mm-dd-HH-MM-SS>_<take>`
+
+e.g., guitar_a-minor-pentatonic_eights-and-triplets_120-bpm_1-click_frank-heyen_2022-12-14_2
 
 [data/raw/](data/raw/)
 
@@ -89,6 +94,10 @@ Exercise naming:
 - [ ] align audio to MIDI, same tempo so only time-shift
 -
 
+
+### Analysis
+
+- [ ] allow to open a directory via file system API to directly analyze recordings without need to zip/unzip
 
 
 ## Libraries Used

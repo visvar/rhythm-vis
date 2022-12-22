@@ -4,6 +4,7 @@
   import { onMount } from 'svelte';
   import Metronome from '../lib/Metronome.js';
   import AudioPlayer from './AudioPlayer.svelte';
+  import SheetMusic from './SheetMusic.svelte';
 
   // Recorders
   let audioRecorder;
@@ -27,7 +28,19 @@
     //   metroDiv.style.background === 'none' ? 'steelblue' : 'none';
   });
 
-  const exercises = ['example 1', 'example 2'];
+  const exercises = [
+    'drum_snare_eighths-to-eighth-triplets',
+    'drum_snare_eighths-to-quarter-quintuplets',
+    'guitar_a-minor-pentatonic_eighths',
+    'guitar_a-minor_eighths',
+    'guitar_chords-f7_halfs',
+    'guitar_chords-fm7_halfs',
+    'guitar_e-string_quarters',
+    'guitar_e-string_quarters-to-eighths',
+    'guitar_powerchords_quarter-to-eighths-with-rest',
+    'guitar_single-notes_eighths-to-eighth-triplets',
+    'piano_c-major_eighths',
+  ];
 
   onMount(async () => {
     try {
@@ -66,7 +79,7 @@
     const pers = person.split(/\s+/).join('-');
     const now = Temporal.Now.plainDateTimeISO().toJSON();
     const date = now.substring(0, 10).replace(':', '-');
-    const name = `${exercise}_${pers}_${date}`;
+    const name = `${exercise}_${bpm}-bpm_${beep}-click_${pers}_${date}`;
     downloadTextFile(JSON.stringify(notes), `${name}.rec.json`);
     downloadTextFile(JSON.stringify(metronomeClicks), `${name}.clicks.json`);
     downloadBlob(audio, name);
@@ -105,13 +118,6 @@
 
 <main>
   <div>
-    Exercise:
-    <select bind:value="{exercise}">
-      {#each exercises as ex}
-        <option value="{ex}">{ex}</option>
-      {/each}
-    </select>
-
     Your Name:
     <input
       type="text"
@@ -120,6 +126,19 @@
       placeholder="Firstname Lastname"
     />
   </div>
+
+  <div>
+    <label>
+      Exercise:
+      <select bind:value="{exercise}">
+        <option value="" disabled>select an exercise</option>
+        {#each exercises as ex}
+          <option value="{ex}">{ex}</option>
+        {/each}
+      </select>
+    </label>
+  </div>
+  <SheetMusic exercise="{exercise}" />
 
   <div bind:this="{metroDiv}" class="metronome">
     Metronome:

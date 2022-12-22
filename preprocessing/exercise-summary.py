@@ -1,19 +1,30 @@
 from os import listdir
+import pathlib
+
+exerc_dir = "../data/exercises"
+prep_dir = "../data/raw"
 
 
-input_dir = "../data/raw"
-
-dir_list = listdir(input_dir)
-
-exercise_counts = {}
-
-for f in dir_list:
+unique_names = set({})
+exerc_list = listdir(exerc_dir)
+for f in exerc_list:
     if f == ".gitkeep":
         continue
+    file_without_ext = pathlib.Path(f).stem
+    unique_names.add(file_without_ext)
+
+for f in sorted(list(unique_names)):
     print(f)
+
+
+prep_list = listdir(prep_dir)
+exercise_counts = {}
+
+for f in prep_list:
+    if f == ".gitkeep":
+        continue
     # remove person, date, and take
     exercise = "_".join(f.split("_")[:-3])
-    print(exercise)
     if not exercise in exercise_counts:
         exercise_counts[exercise] = 1
     else:

@@ -10,19 +10,29 @@
   $: {
     localStorage.setItem('view', view);
   }
+
+  let corrP = 'rhyvis';
+  let password = localStorage.getItem('pwd') ?? '';
+  $: {
+    localStorage.setItem('pwd', password);
+  }
 </script>
 
 <main>
-  <Tabs options="{views}" bind:value="{view}" />
-  {#if view === 'Recording'}
-    <Recorder />
-  {:else if view === 'Analysis'}
-    <Analyzer />
+  {#if password !== corrP}
+    <input type="password" placeholder="password" bind:value="{password}" />
   {:else}
-    <div>
-      <VolumeMeter />
-      <MidiIndicator />
-    </div>
+    <Tabs options="{views}" bind:value="{view}" />
+    {#if view === 'Recording'}
+      <Recorder />
+    {:else if view === 'Analysis'}
+      <Analyzer />
+    {:else}
+      <div>
+        <VolumeMeter />
+        <MidiIndicator />
+      </div>
+    {/if}
   {/if}
 </main>
 
