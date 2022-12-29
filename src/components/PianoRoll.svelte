@@ -5,55 +5,108 @@
 
   export let notes;
   export let metronomeClicks;
+  export let pcm;
+  export let audioDuration;
   export let width = 800;
   export let height = 200;
 
   let plotContainer;
+  let plotContainer2;
 
   afterUpdate(() => {
     plotContainer.textContent = '';
+    plotContainer2.textContent = '';
+
+    const maxTime = Math.max(
+      d3.max(notes, (d) => d.end),
+      ...metronomeClicks
+    );
     const plot = Plot.plot({
       insetRight: 10,
       // height: 400,
       width,
       height,
       x: {
-        // label: 'Time in beats',
         label: 'Time in seconds',
+        domain: [0, maxTime],
       },
       y: {
         label: 'MIDI Pitch',
-        domain: d3.range(...d3.extent(notes, (d) => d.pitch)),
         grid: true,
       },
       r: {
-        // legend: true,
+        label: 'Duration',
+        legend: true,
         range: [0, 8],
       },
       color: {
-        scheme: 'rainbow',
-        type: 'ordinal',
-        legend: true,
+        label: 'Velocity',
+        // legend: true,
+        // scheme: 'rainbow',
+        // type: 'ordinal',
+        scheme: 'blues',
         // tickFormat: (d) => mvlib.Midi.NOTE_NAMES[d],
       },
       marks: [
-        Plot.dot(notes, {
-          // x: (d) => (d.start - notes[0].start) / spb,
-          x: (d) => d.start,
+        Plot.barX(notes, {
+          x1: (d) => d.start,
+          x2: (d) => d.end,
           y: (d) => d.pitch,
-          r: (d) => d.end - d.start,
-          // r: (d) => d.velocity,
+          // fill: (d) => d.pitch % 12,
+          fill: (d) => d.velocity,
+          stroke: '#ccc',
           title: (d) => `${d.name}\n${d.start.toFixed(1)}`,
-          fill: (d) => d.pitch % 12,
         }),
-        Plot.ruleX(metronomeClicks),
+        // metronome clicks
+        Plot.ruleX(metronomeClicks, { stroke: 'green' }),
+        Plot.ruleX([0]),
+      ],
+    });
+
+    // TODO: pcm is always one recording behind!
+    const plot2 = Plot.plot({
+      insetRight: 10,
+      width,
+      height: 100,
+      x: {
+        label: 'Time in seconds',
+        domain: [0, maxTime],
+      },
+      y: {
+        label: 'Audio amplitude',
+      },
+      marks: [
+        Plot.ruleX([0]),
+        Plot.ruleY([0]),
+        // metronome clicks
+        Plot.ruleX(metronomeClicks, { stroke: 'green' }),
+        // PCM
+        Plot.areaY(
+          pcm,
+          Plot.binX(
+            { y: 'max', filter: null },
+            {
+              x: (d, i) => (i / pcm.length) * audioDuration,
+              fill: '#333',
+              thresholds: 500,
+            }
+          )
+        ),
       ],
     });
 
     plotContainer.appendChild(plot);
+    plotContainer2.appendChild(plot2);
   });
 </script>
 
 <main>
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
+  <div bind:this="{plotContainer2}" width="{width}px" height="{100}px"></div>
 </main>
+
+<style>
+  div {
+    padding: 0;
+  }
+</style>

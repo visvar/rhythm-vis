@@ -6,7 +6,6 @@
   // Array of inputs, each input has a map of channels and when they were last active
   let inputs = [];
 
-  // Enable WebMidi.js and trigger the onEnabled() function when ready.
   WebMidi.enable()
     .then(onEnabled)
     .catch((err) => alert(err));
@@ -20,7 +19,7 @@
         lastNotes: new Map(),
       });
       input.addListener('noteon', (e) => {
-        // console.log(e);
+        console.log(e);
         const channel = e.message.channel;
         inputs[index].lastNotes.set(channel, e.timestamp);
         inputs = [...inputs];
@@ -29,8 +28,12 @@
     inputs = inputsNew;
   }
 
-  // Does not work
-  // onDestroy(WebMidi.disable);
+  onDestroy(() => {
+    // remove MIDI listeners to avoid duplicate calls and improve performance
+    for (const input of WebMidi.inputs) {
+      input.removeListener();
+    }
+  });
 </script>
 
 <main>
@@ -44,12 +47,12 @@
     <svg width="160" height="8">
       {#each d3.range(0, 16) as channel}
         <rect
-          x="{channel * 10}"
+          x={channel * 10}
           y="0"
           width="8"
           height="8"
           rx="2"
-          fill="{input.lastNotes.has(channel) ? 'steelblue' : '#aaa'}"></rect>
+          fill={input.lastNotes.has(channel) ? 'steelblue' : '#aaa'} />
       {/each}
     </svg>
   {/each}

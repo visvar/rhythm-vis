@@ -1,10 +1,12 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import WaveSurfer from 'wavesurfer.js';
 
   export let width = 800;
   export let blob;
+  export let volume = 0.5;
   export let height = 50;
+  export let pcm = [];
 
   let wavesurfer;
   onMount(() => {
@@ -13,45 +15,48 @@
       container: '#waveform-player',
       waveColor: 'gray',
       progressColor: 'steelblue',
+      width,
       height,
-      responsive: true,
+      // responsive: true,
     });
   });
 
   const updateBlob = async () => {
     wavesurfer.empty();
-    wavesurfer.loadBlob(blob);
+    await wavesurfer.loadBlob(blob);
+    // Allow other code to access PCM (amplitude at every frame)
+    pcm = await wavesurfer.exportPCM(1024, 1000, true);
   };
+
   $: if (wavesurfer && blob) {
     updateBlob();
   }
+
   $: if (wavesurfer && !blob) {
     wavesurfer.empty();
+    pcm = [];
   }
-
-  let playing = false;
-  let volume = 0.5;
 
   $: if (wavesurfer && volume >= 0) {
     wavesurfer.setVolume(volume);
   }
+
+  onDestroy(() => {
+    wavesurfer.destroy();
+  });
 </script>
 
 <main>
   {#if blob}
     <div>
-      <button
-        on:click="{() => {
-          playing = !playing;
-          wavesurfer.playPause();
-        }}"
-      >
-        {playing ? 'pause' : 'play'}
-      </button>
+      <button on:click="{() => wavesurfer.playPause()}"> play/pause </button>
     </div>
   {/if}
   <div id="waveform-player" width="{width}px"></div>
 </main>
 
 <style>
+  div {
+    padding: 0;
+  }
 </style>

@@ -76,7 +76,9 @@ def write_midi_json(midi_data, json_file_name):
                 "pitch": int(note.pitch),
                 "velocity": int(note.velocity),
                 "duration": note.get_duration(),
-                "name": note_number_to_name(note.pitch)
+                "name": note_number_to_name(note.pitch),
+                "port": "basic-pitch",
+                "channel": 0
             })
     json_object = {
         "notes": notes,

@@ -68,10 +68,16 @@
 
 <style>
   main {
+    margin: auto;
     background: white;
+    /* border: 1px solid #888; */
     border-radius: 5px;
+    max-width: 90%;
+    max-height: 400px;
+    overflow: auto;
   }
   div {
+    padding: 0;
     transform: scale(0.7);
   }
 </style>

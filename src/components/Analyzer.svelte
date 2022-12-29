@@ -110,6 +110,7 @@
 
   onDestroy(() => {
     document.removeEventListener('keydown', playPauseOnSpaceBar);
+    wavesurfer.destroy();
   });
 </script>
 

@@ -1,17 +1,30 @@
 <script>
-  import { recordAudio, recordMidi } from 'musicvis-lib';
+  import { recordAudio } from 'musicvis-lib';
   import { Temporal } from '@js-temporal/polyfill';
-  import { onMount } from 'svelte';
+  import { onMount, onDestroy } from 'svelte';
   import Metronome from '../lib/Metronome.js';
   import AudioPlayer from './AudioPlayer.svelte';
   import SheetMusic from './SheetMusic.svelte';
   import PianoRoll from './PianoRoll.svelte';
+  import { WebMidi } from 'webmidi';
+  import * as d3 from 'd3';
 
   // Recorders
+  let isRecording = false;
+  let recordingStartTime;
+  let recordingStopTime;
+  let noteOns = [];
+  let noteOffs = [];
+  const onEnabled = () => {
+    console.log(`MIDI enabled`);
+    for (const input of WebMidi.inputs) {
+      input.addListener('noteon', (e) => noteOns.push(e));
+      input.addListener('noteoff', (e) => noteOffs.push(e));
+    }
+  };
   let audioRecorder;
-  let midiRecorder;
   // Settings
-  let exercise;
+  let exercise = localStorage.getItem('exercise') ?? '';
   let person = localStorage.getItem('person') ?? '';
   let bpm = +(localStorage.getItem('bpm') ?? 120);
   let beep = +(localStorage.getItem('beep') ?? 1);
@@ -20,13 +33,12 @@
   let audio;
   let notes;
   let metronomeClicks = [];
+  let pcm;
   // Metronome
   let metroDiv;
   let metro = new Metronome();
-  metro.onClick((time) => {
+  metro.onClick((time, isAccent) => {
     metronomeClicks.push(time);
-    // metroDiv.style.background =
-    //   metroDiv.style.background === 'none' ? 'steelblue' : 'none';
   });
 
   const exercises = [
@@ -45,6 +57,7 @@
   ];
 
   onMount(async () => {
+    // enable MIDI and audio access
     try {
       audioRecorder = await recordAudio();
     } catch (e) {
@@ -52,7 +65,8 @@
       console.error(e);
     }
     try {
-      midiRecorder = await recordMidi();
+      await WebMidi.enable();
+      onEnabled();
     } catch (e) {
       console.error('Cannot enable MIDI recording');
       console.error(e);
@@ -61,20 +75,61 @@
 
   const start = () => {
     console.log('start');
+    isRecording = true;
     audio = null;
+    noteOns = [];
+    noteOffs = [];
     notes = null;
-    midiRecorder.start();
     audioRecorder.start();
     metro.start(bpm / beep, accent);
     metronomeClicks = [];
+    recordingStartTime = WebMidi.time;
   };
 
   const stop = async () => {
     console.log('stop');
     metro.stop();
+    recordingStopTime = WebMidi.time;
     audio = await audioRecorder.stop();
-    notes = midiRecorder.stop();
-    metroDiv.style.background = 'none';
+    const noteOffMap = d3.group(
+      noteOffs,
+      (d) => d.port.id,
+      (d) => d.message.channel,
+      (d) => d.note.number
+    );
+
+    // metronome clicks
+    const firstClick = metronomeClicks[0] ?? 0;
+    metronomeClicks = metronomeClicks.map((d) => d - firstClick);
+    // notes
+    notes = noteOns.map((noteOn) => {
+      // get end by closest-in-time noteOff event
+      const noteOffCandidates =
+        noteOffMap
+          .get(noteOn.port.id)
+          ?.get(noteOn.message.channel)
+          ?.get(noteOn.note.number) ?? [];
+      let noteOff = noteOffCandidates.filter(
+        (d) => d.timestamp >= noteOn.timestamp
+      );
+      const end =
+        noteOff.length === 0 ? recordingStopTime : noteOff[0].timestamp;
+      const startInSeconds = (noteOn.timestamp - recordingStartTime) / 1000;
+      const endInSeconds = (end - recordingStartTime) / 1000;
+      return {
+        port: noteOn.port.name,
+        channel: noteOn.message.channel,
+        pitch: noteOn.note.number,
+        name: noteOn.note.identifier,
+        start: startInSeconds,
+        end: endInSeconds,
+        duration: endInSeconds - startInSeconds,
+        velocity: noteOn.note.attack,
+      };
+    });
+    console.log('notes', notes);
+    console.log('metronome clicks', metronomeClicks);
+    isRecording = false;
   };
 
   const download = () => {
@@ -116,75 +171,101 @@
     // document.removeChild(a)
     window.URL.revokeObjectURL(url);
   };
+
+  onDestroy(() => {
+    // remove MIDI listeners to avoid duplicate calls and improve performance
+    for (const input of WebMidi.inputs) {
+      input.removeListener();
+    }
+  });
 </script>
 
 <main>
+  <h2>Recorder</h2>
   <div>
     Your Name:
     <input
       type="text"
-      bind:value={person}
-      on:input={(e) => localStorage.setItem('person', e.target.value)}
-      placeholder="Firstname Lastname" />
+      bind:value="{person}"
+      on:input="{(e) => localStorage.setItem('person', e.target.value)}"
+      placeholder="Firstname Lastname"
+    />
   </div>
 
   <div>
     <label>
       Exercise:
-      <select bind:value={exercise}>
+      <select
+        bind:value="{exercise}"
+        on:input="{(e) => localStorage.setItem('exercise', e.target.value)}"
+      >
         <option value="" disabled>select an exercise</option>
         {#each exercises as ex}
-          <option value={ex}>{ex}</option>
+          <option value="{ex}">{ex}</option>
         {/each}
       </select>
     </label>
   </div>
-  <SheetMusic {exercise} />
 
-  <div bind:this={metroDiv} class="metronome">
+  <SheetMusic exercise="{exercise}" />
+
+  <div bind:this="{metroDiv}" class="metronome">
     Metronome:
     <input
-      bind:value={bpm}
-      on:input={(e) => localStorage.setItem('bpm', e.target.value)}
+      bind:value="{bpm}"
+      on:input="{(e) => localStorage.setItem('bpm', e.target.value)}"
       type="number"
       min="60"
       max="240"
       step="10"
-      style="width: 50px" />
+      style="width: 50px"
+    />
     bpm, beep on every
     <input
-      bind:value={beep}
-      on:input={(e) => localStorage.setItem('beep', e.target.value)}
+      bind:value="{beep}"
+      on:input="{(e) => localStorage.setItem('beep', e.target.value)}"
       type="number"
       min="1"
       max="16"
       step="1"
-      style="width: 30px" />. beat, accent on every
+      style="width: 30px"
+    />. beat, accent on every
     <input
-      bind:value={accent}
-      on:input={(e) => localStorage.setItem('accent', e.target.value)}
+      bind:value="{accent}"
+      on:input="{(e) => localStorage.setItem('accent', e.target.value)}"
       type="number"
       min="1"
       max="16"
       step="1"
-      style="width: 30px" />. beep
+      style="width: 30px"
+    />. beep
   </div>
 
   <div>
     Recording:
-    <button on:click={start}>start</button>
-    <button on:click={stop}>stop</button>
+    <button on:click="{() => (isRecording ? stop() : start())}">
+      {isRecording ? 'stop' : 'start'}
+    </button>
   </div>
 
+  <h2>Result</h2>
   <div>
     Saving:
-    <button on:click={download} disabled={!audio && !notes}> download </button>
+    <button on:click="{download}" disabled="{!audio && !notes}">
+      download
+    </button>
   </div>
 
   <div>
-    <AudioPlayer blob={audio} height={30} />
+    <AudioPlayer blob="{audio}" width="{600}" height="{30}" bind:pcm="{pcm}" />
     {#if notes?.length > 0}
-      <PianoRoll {notes} {metronomeClicks} width={600} />
+      <PianoRoll
+        notes="{notes}"
+        metronomeClicks="{metronomeClicks}"
+        width="{600}"
+        pcm="{pcm}"
+        audioDuration="{(recordingStopTime - recordingStartTime) / 1000}"
+      />
     {/if}
   </div>
 
