@@ -9,7 +9,8 @@
       1. [Exercises](#exercises)
       2. [Recordings](#recordings)
       3. [Preprocessing](#preprocessing)
-      4. [Analysis](#analysis)
+      4. [MIDI to Score Alignment](#midi-to-score-alignment)
+      5. [Analysis](#analysis)
    3. [Libraries Used](#libraries-used)
 
 
@@ -70,6 +71,14 @@ Example: guitar_a-minor-pentatonic_eights-and-triplets_120-bpm_1-click_frank-hey
 
 - [ ] align audio to MIDI, same tempo so only time-shift
 -
+
+
+### MIDI to Score Alignment
+
+- MusicXML to MIDI with partitura
+  - https://cpjku.github.io/partitura_tutorial/
+- alignment?
+  - DTW with fasdtw https://cpjku.github.io/partitura_tutorial/notebooks/02_alignment/Symbolic_Music_Alignment.html
 
 
 ### Analysis

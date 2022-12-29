@@ -30,6 +30,7 @@
   });
 
   const exercises = [
+    // Run preprocessing/exercise-summary.py for a list
     'drum_snare_eighths-to-eighth-triplets',
     'drum_snare_eighths-to-quarter-quintuplets',
     'guitar_a-minor-pentatonic_eighths',
@@ -122,78 +123,68 @@
     Your Name:
     <input
       type="text"
-      bind:value="{person}"
-      on:input="{(e) => localStorage.setItem('person', e.target.value)}"
-      placeholder="Firstname Lastname"
-    />
+      bind:value={person}
+      on:input={(e) => localStorage.setItem('person', e.target.value)}
+      placeholder="Firstname Lastname" />
   </div>
 
   <div>
     <label>
       Exercise:
-      <select bind:value="{exercise}">
+      <select bind:value={exercise}>
         <option value="" disabled>select an exercise</option>
         {#each exercises as ex}
-          <option value="{ex}">{ex}</option>
+          <option value={ex}>{ex}</option>
         {/each}
       </select>
     </label>
   </div>
-  <SheetMusic exercise="{exercise}" />
+  <SheetMusic {exercise} />
 
-  <div bind:this="{metroDiv}" class="metronome">
+  <div bind:this={metroDiv} class="metronome">
     Metronome:
     <input
-      bind:value="{bpm}"
-      on:input="{(e) => localStorage.setItem('bpm', e.target.value)}"
+      bind:value={bpm}
+      on:input={(e) => localStorage.setItem('bpm', e.target.value)}
       type="number"
       min="60"
       max="240"
       step="10"
-      style="width: 50px"
-    />
+      style="width: 50px" />
     bpm, beep on every
     <input
-      bind:value="{beep}"
-      on:input="{(e) => localStorage.setItem('beep', e.target.value)}"
+      bind:value={beep}
+      on:input={(e) => localStorage.setItem('beep', e.target.value)}
       type="number"
       min="1"
       max="16"
       step="1"
-      style="width: 30px"
-    />. beat, accent on every
+      style="width: 30px" />. beat, accent on every
     <input
-      bind:value="{accent}"
-      on:input="{(e) => localStorage.setItem('accent', e.target.value)}"
+      bind:value={accent}
+      on:input={(e) => localStorage.setItem('accent', e.target.value)}
       type="number"
       min="1"
       max="16"
       step="1"
-      style="width: 30px"
-    />. beep
+      style="width: 30px" />. beep
   </div>
 
   <div>
     Recording:
-    <button on:click="{start}">start</button>
-    <button on:click="{stop}">stop</button>
+    <button on:click={start}>start</button>
+    <button on:click={stop}>stop</button>
   </div>
 
   <div>
     Saving:
-    <button on:click="{download}" disabled="{!audio && !notes}">
-      download
-    </button>
+    <button on:click={download} disabled={!audio && !notes}> download </button>
   </div>
 
   <div>
-    <AudioPlayer blob="{audio}" height="{30}" />
+    <AudioPlayer blob={audio} height={30} />
     {#if notes?.length > 0}
-      <PianoRoll
-        notes="{notes}"
-        metronomeClicks="{metronomeClicks}"
-        width="{600}"
-      />
+      <PianoRoll {notes} {metronomeClicks} width={600} />
     {/if}
   </div>
 
