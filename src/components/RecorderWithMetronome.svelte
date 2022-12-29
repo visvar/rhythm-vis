@@ -9,6 +9,7 @@
   import { WebMidi } from 'webmidi';
   import * as d3 from 'd3';
 
+  let width;
   // Recorders
   let isRecording = false;
   let recordingStartTime;
@@ -33,12 +34,16 @@
   let audio;
   let notes;
   let metronomeClicks = [];
+  let metronomeAccents = [];
   let pcm;
   // Metronome
   let metroDiv;
   let metro = new Metronome();
   metro.onClick((time, isAccent) => {
     metronomeClicks.push(time);
+    if (isAccent) {
+      metronomeAccents.push(time);
+    }
   });
 
   const exercises = [
@@ -101,6 +106,7 @@
     // metronome clicks
     const firstClick = metronomeClicks[0] ?? 0;
     metronomeClicks = metronomeClicks.map((d) => d - firstClick);
+    metronomeAccents = metronomeAccents.map((d) => d - firstClick);
     // notes
     notes = noteOns.map((noteOn) => {
       // get end by closest-in-time noteOff event
@@ -139,6 +145,7 @@
     const name = `${exercise}_${bpm}-bpm_${beep}-click_${pers}_${date}`;
     downloadTextFile(JSON.stringify(notes), `${name}.rec.json`);
     downloadTextFile(JSON.stringify(metronomeClicks), `${name}.clicks.json`);
+    downloadTextFile(JSON.stringify(metronomeAccents), `${name}.accents.json`);
     downloadBlob(audio, name);
   };
 
@@ -180,7 +187,7 @@
   });
 </script>
 
-<main>
+<main bind:clientWidth="{width}">
   <h2>Recorder</h2>
   <div>
     Your Name:
@@ -257,47 +264,30 @@
   </div>
 
   <div>
-    <AudioPlayer blob="{audio}" width="{600}" height="{30}" bind:pcm="{pcm}" />
+    <AudioPlayer
+      blob="{audio}"
+      width="{width}"
+      height="{30}"
+      bind:pcm="{pcm}"
+    />
     {#if notes?.length > 0}
       <PianoRoll
         notes="{notes}"
         metronomeClicks="{metronomeClicks}"
-        width="{600}"
+        metronomeAccents="{metronomeAccents}"
+        width="{width}"
         pcm="{pcm}"
         audioDuration="{(recordingStopTime - recordingStartTime) / 1000}"
       />
     {/if}
   </div>
-
-  <h2>How to use</h2>
-  <div>
-    <b>Audio:</b> If you want to record audio, make sure the correct audio input
-    is selected in your browser. You can test this in the <i>Setup</i> tab.
-  </div>
-  <div>
-    <b>MIDI:</b>
-    If you want to record MIDI, make sure your browser supports
-    <a href="https://caniuse.com/midi" target="_blank" rel="noreferrer"
-      >Web MIDI</a
-    >. You can test whether everything works in the <i>Setup</i> tab or in more
-    detail with
-    <a
-      href="https://github.com/fheyen/midi-pianoroll"
-      target="_blank"
-      rel="noreferrer">this tool</a
-    >.
-  </div>
-  <div>
-    Press <i>start</i> to start recording, <i>stop</i> to stop it, then download
-    the audio and MIDI files.
-  </div>
-  <div>
-    No data will be send, it completely remains under your control until you
-    submit it to us.
-  </div>
 </main>
 
 <style>
+  main {
+    padding: 0;
+  }
+
   .metronome {
     background: none;
     border-radius: 5px;

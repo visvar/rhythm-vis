@@ -1,4 +1,5 @@
 <script>
+  import { Utils } from 'musicvis-lib';
   import { onDestroy, onMount } from 'svelte';
   import WaveSurfer from 'wavesurfer.js';
 
@@ -17,7 +18,7 @@
       progressColor: 'steelblue',
       width,
       height,
-      // responsive: true,
+      responsive: true,
     });
   });
 
@@ -25,6 +26,7 @@
     wavesurfer.empty();
     await wavesurfer.loadBlob(blob);
     // Allow other code to access PCM (amplitude at every frame)
+    await Utils.delay(1);
     pcm = await wavesurfer.exportPCM(1024, 1000, true);
   };
 
@@ -56,6 +58,7 @@
 </main>
 
 <style>
+  main,
   div {
     padding: 0;
   }

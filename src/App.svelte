@@ -5,7 +5,7 @@
   import MidiIndicator from './components/MidiIndicator.svelte';
   import VolumeMeter from './components/VolumeMeter.svelte';
 
-  const views = ['Recording', 'Analysis', 'Setup'];
+  const views = ['Recording', 'Analysis', 'Setup', 'Help'];
   let view = localStorage.getItem('view') ?? 'Recording';
   $: {
     localStorage.setItem('view', view);
@@ -27,10 +27,37 @@
       <Recorder />
     {:else if view === 'Analysis'}
       <Analyzer />
+    {:else if view === 'Setup'}
+      <h2>Setup</h2>
+      <VolumeMeter />
+      <MidiIndicator />
     {:else}
+      <h2>How to use</h2>
       <div>
-        <VolumeMeter />
-        <MidiIndicator />
+        <b>Audio:</b> If you want to record audio, make sure the correct audio
+        input is selected in your browser. You can test this in the <i>Setup</i>
+        tab.
+      </div>
+      <div>
+        <b>MIDI:</b>
+        If you want to record MIDI, make sure your browser supports
+        <a href="https://caniuse.com/midi" target="_blank" rel="noreferrer"
+          >Web MIDI</a
+        >. You can test whether everything works in the <i>Setup</i> tab or in
+        more detail with
+        <a
+          href="https://github.com/fheyen/midi-pianoroll"
+          target="_blank"
+          rel="noreferrer">this tool</a
+        >.
+      </div>
+      <div>
+        Press <i>start</i> to start recording, <i>stop</i> to stop it, then download
+        the audio and MIDI files.
+      </div>
+      <div>
+        No data will be send, it completely remains under your control until you
+        submit it to us.
       </div>
     {/if}
   {/if}

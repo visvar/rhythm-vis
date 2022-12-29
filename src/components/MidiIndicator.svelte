@@ -37,22 +37,22 @@
 </script>
 
 <main>
-  <h2>MIDI inputs</h2>
+  <h3>MIDI inputs</h3>
 
   {#each inputs as input}
-    <h3>{input.input.name}</h3>
+    <h4>{input.input.name}</h4>
     <div>
       Channels received: {[...input.lastNotes.keys()].sort().join(', ')}
     </div>
     <svg width="160" height="8">
       {#each d3.range(0, 16) as channel}
         <rect
-          x={channel * 10}
+          x="{channel * 10}"
           y="0"
           width="8"
           height="8"
           rx="2"
-          fill={input.lastNotes.has(channel) ? 'steelblue' : '#aaa'} />
+          fill="{input.lastNotes.has(channel) ? 'steelblue' : '#ccc'}"></rect>
       {/each}
     </svg>
   {/each}

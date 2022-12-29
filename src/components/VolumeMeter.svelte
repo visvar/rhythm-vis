@@ -28,19 +28,18 @@
         // Create a new volume meter and connect it.
         meter = createAudioMeter(audioContext);
         mediaStreamSource.connect(meter);
-        // kick off the visual updating
         drawLoop();
       })
       .catch((err) => {
         // always check for errors at the end.
         console.error(`${err.name}: ${err.message}`);
-        alert('Stream generation failed.');
+        alert('Audio stream generation failed.');
       });
   };
 
   const drawLoop = () => {
     canvasContext.clearRect(0, 0, width, height);
-    canvasContext.fillStyle = meter.checkClipping() ? 'red' : 'green';
+    canvasContext.fillStyle = meter.checkClipping() ? 'crimson' : 'green';
     canvasContext.fillRect(0, 0, meter.volume * width * 1.4, height);
     rafID = window.requestAnimationFrame(drawLoop);
   };
@@ -52,39 +51,24 @@
     canvasContext?.clearRect(0, 0, width, height);
   };
 
-  const toggleMeter = () => {
-    !meter ? startMeter() : stopMeter();
-  };
-
   onDestroy(stopMeter);
 </script>
 
 <main>
-  <h2>Audio Volume</h2>
-  <div>
-    <button on:click="{toggleMeter}">
-      turn volume meter {!meter ? 'on' : 'off'}
-    </button>
-    <canvas bind:this="{canvas}" width="{width}px" height="{height}px"></canvas>
-  </div>
+  <h3>Audio Volume</h3>
+  {#if !meter}
+    <button on:click="{startMeter}"> turn on volume meter </button>
+  {/if}
+  <canvas bind:this="{canvas}" width="{width}px" height="{height}px"></canvas>
 </main>
 
 <style>
   canvas {
-    border: 1px solid #333;
-    border-radius: 3px;
+    border: 2px solid #888;
+    border-radius: 5px;
   }
 
   main {
     text-align: center;
-  }
-
-  div {
-    width: 500px;
-    margin: auto;
-    display: grid;
-    grid-template-columns: 250px 250px;
-    gap: 20px;
-    align-items: center;
   }
 </style>
