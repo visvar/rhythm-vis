@@ -16,11 +16,8 @@
   let legendContainer;
 
   const draw = () => {
-    pianoRollContainer.textContent = '';
-    audioPlotContainer.textContent = '';
-
     const maxTime = Math.max(
-      d3.max(notes, (d) => d.end),
+      notes.length > 0 ? d3.max(notes, (d) => d.end) : 0,
       ...metronomeClicks
     );
 
@@ -59,7 +56,12 @@
           // fill: (d) => d.pitch % 12,
           fill: (d) => d.velocity,
           stroke: '#ccc',
-          title: (d) => `${d.name}\n${d.start.toFixed(1)}`,
+          title: (d) =>
+            `MIDI ${d.pitch} (${d.name})\nstart: ${d.start.toFixed(
+              3
+            )}\nduration: ${d.duration.toFixed(
+              3
+            )}\nvelocity: ${d.velocity.toFixed(3)}`,
         }),
         // metronome clicks
         Plot.ruleX(metronomeClicks, { stroke: 'gray', strokeWidth: 0.5 }),
@@ -101,6 +103,9 @@
       ],
     });
 
+    // clear current plots and append new ones
+    pianoRollContainer.textContent = '';
+    audioPlotContainer.textContent = '';
     pianoRollContainer.appendChild(plot);
     audioPlotContainer.appendChild(plot2);
 

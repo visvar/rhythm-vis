@@ -1,5 +1,5 @@
 <script>
-  import { recordAudio } from 'musicvis-lib';
+  import { recordAudio, Utils } from 'musicvis-lib';
   import { Temporal } from '@js-temporal/polyfill';
   import { onMount, onDestroy } from 'svelte';
   import Metronome from '../lib/Metronome.js';
@@ -8,6 +8,8 @@
   import PianoRoll from './PianoRoll.svelte';
   import { WebMidi } from 'webmidi';
   import * as d3 from 'd3';
+
+  // Utils.pingMidiDevice('loopMIDI Port', 10);
 
   let width;
   // Recorders
@@ -35,11 +37,13 @@
   let notes;
   let metronomeClicks = [];
   let metronomeAccents = [];
+  // let metronomeClicksStartTime;
   let pcm;
   // Metronome
   let metroDiv;
   let metro = new Metronome();
   metro.onClick((time, isAccent) => {
+    // metronomeClicksStartTime = WebMidi.time;
     metronomeClicks.push(time);
     if (isAccent) {
       metronomeAccents.push(time);
@@ -79,7 +83,6 @@
   });
 
   const start = () => {
-    console.log('start');
     isRecording = true;
     audio = null;
     noteOns = [];
@@ -89,6 +92,7 @@
     metro.start(bpm / beep, accent);
     metronomeClicks = [];
     recordingStartTime = WebMidi.time;
+    console.log('start', recordingStartTime);
   };
 
   const stop = async () => {
@@ -104,9 +108,12 @@
     );
 
     // metronome clicks
-    const firstClick = metronomeClicks[0] ?? 0;
+    const firstClick = metronomeClicks.length > 0 ? metronomeClicks[0] : 0;
+    console.log(firstClick);
+
     metronomeClicks = metronomeClicks.map((d) => d - firstClick);
     metronomeAccents = metronomeAccents.map((d) => d - firstClick);
+
     // notes
     notes = noteOns.map((noteOn) => {
       // get end by closest-in-time noteOff event
@@ -270,7 +277,7 @@
       height="{30}"
       bind:pcm="{pcm}"
     />
-    {#if notes?.length > 0}
+    {#if notes?.length > 0 || audio}
       <PianoRoll
         notes="{notes}"
         metronomeClicks="{metronomeClicks}"
