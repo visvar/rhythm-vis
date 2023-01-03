@@ -8,6 +8,7 @@
   import PianoRoll from './PianoRoll.svelte';
   import { WebMidi } from 'webmidi';
   import * as d3 from 'd3';
+  import { downloadBlob, downloadTextFile } from '../lib/download.js';
 
   // Utils.pingMidiDevice('loopMIDI Port', 10);
 
@@ -150,40 +151,18 @@
     const now = Temporal.Now.plainDateTimeISO().toJSON();
     const date = now.substring(0, 10).replace(':', '-');
     const name = `${exercise}_${bpm}-bpm_${beep}-click_${pers}_${date}`;
-    downloadTextFile(JSON.stringify(notes), `${name}.rec.json`);
-    downloadTextFile(JSON.stringify(metronomeClicks), `${name}.clicks.json`);
-    downloadTextFile(JSON.stringify(metronomeAccents), `${name}.accents.json`);
-    downloadBlob(audio, name);
-  };
-
-  /**
-   * Download a text file
-   * @param {string} text JSON content
-   * @param {string} fileName file name
-   */
-  const downloadTextFile = (text, fileName) => {
-    const a = document.createElement('a');
-    a.href = 'data:text/plaincharset=utf-8,' + encodeURIComponent(text);
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    // document.removeChild(a)
-  };
-
-  /**
-   * Download a blob as binary file
-   * @param {Blob} blob content
-   * @param {string} fileName file name
-   */
-  const downloadBlob = (blob, fileName) => {
-    const a = document.createElement('a');
-    const url = window.URL.createObjectURL(blob);
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    // document.removeChild(a)
-    window.URL.revokeObjectURL(url);
+    downloadTextFile(document, JSON.stringify(notes), `${name}.rec.json`);
+    downloadTextFile(
+      document,
+      JSON.stringify(metronomeClicks),
+      `${name}.clicks.json`
+    );
+    downloadTextFile(
+      document,
+      JSON.stringify(metronomeAccents),
+      `${name}.accents.json`
+    );
+    downloadBlob(document, audio, name);
   };
 
   onDestroy(() => {

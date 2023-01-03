@@ -1,11 +1,13 @@
 <script>
   import { afterUpdate, onMount } from 'svelte';
   import * as opensheetmusicdisplay from 'opensheetmusicdisplay';
+  import { downloadTextFile } from '../lib/download';
 
   export let exercise;
 
   let container;
   let osmd;
+  let stringXml;
 
   const removeXmlElements = (parsedXml, selectors) => {
     for (const selector of selectors) {
@@ -50,10 +52,8 @@
   const displaySheet = async () => {
     if (exercise) {
       const url = window.location.pathname;
-      const musicxml = await (
-        await fetch(`${url}/musicxml/${exercise}.xml`)
-      ).text();
-      const cleaned = cleanXml(musicxml);
+      stringXml = await (await fetch(`${url}/musicxml/${exercise}.xml`)).text();
+      const cleaned = cleanXml(stringXml);
       await osmd.load(cleaned);
       await osmd.render();
     }
@@ -64,6 +64,12 @@
 
 <main style="background: {exercise ? 'white' : 'none'}">
   <div bind:this="{container}"></div>
+  <button
+    on:click="{() =>
+      downloadTextFile(document, stringXml, `${exercise}.musicxml`)}"
+  >
+    download exercise as MusicXML
+  </button>
 </main>
 
 <style>
