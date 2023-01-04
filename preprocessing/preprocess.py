@@ -81,10 +81,7 @@ def write_midi_json(midi_data, json_file_name):
                 "channel": 0
             })
     json_object = {
-        "notes": notes,
-        # "filename": file
-        # name
-        # date
+        "notes": notes
     }
     json_string = json.dumps(json_object)
     # write JSON to file

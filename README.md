@@ -9,8 +9,7 @@
       1. [Exercises](#exercises)
       2. [Recordings](#recordings)
       3. [Preprocessing](#preprocessing)
-      4. [MIDI to Score Alignment](#midi-to-score-alignment)
-      5. [Analysis](#analysis)
+      4. [Analysis](#analysis)
    3. [Libraries Used](#libraries-used)
 
 
@@ -61,19 +60,28 @@ Example: guitar_a-minor-pentatonic_eights-and-triplets_120-bpm_1-click_frank-hey
 
 [data/raw/](data/raw/)
 
-- [x] record metronome click, data then is audio, midi, metronome clicks
-- [x] split audio at silence to allow recording multiple takes at once
-- [ ] split MIDI at silence for MIDI-only instruments
+Raw data, one or more of the following
+- MIDI notes as .json
+- MIDI notes .mid or .midi
+- audio in any format
+- (required) metronome click times
+- (required) metadata such as exercise name, tempo, metronome settings
 
 ### Preprocessing
 
 [data/prep/](data/prep/)
 
-- [ ] align audio to MIDI, same tempo so only time-shift
--
+Resulting data
+- audio as .wav
+- MIDI as .json (multiple when audio and MIDI were present in raw data)
 
 
-### MIDI to Score Alignment
+
+MIDI to audio alignment
+ -https://github.com/craffel/align_midi/blob/master/align_midi/__init__.py
+
+
+MIDI to Score Alignment
 
 - MusicXML to MIDI with partitura
   - https://cpjku.github.io/partitura_tutorial/
@@ -86,6 +94,12 @@ Example: guitar_a-minor-pentatonic_eights-and-triplets_120-bpm_1-click_frank-hey
 - [ ] allow to open a directory via file system API to directly analyze recordings without need to zip/unzip
 
 ## Libraries Used
+
+Python
+- pretty_midi for MIDI file handling
+- basic_pitch for audio to MIDI conversion
+- auditok for silence detection
+-
 
 - d3
 - osmd
