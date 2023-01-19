@@ -1,5 +1,5 @@
 <script>
-  import { recordAudio, Utils } from 'musicvis-lib';
+  import { recordAudio } from 'musicvis-lib';
   import { Temporal } from '@js-temporal/polyfill';
   import { onMount, onDestroy } from 'svelte';
   import Metronome from '../lib/Metronome.js';
@@ -10,7 +10,7 @@
   import * as d3 from 'd3';
   import { downloadBlob, downloadTextFile } from '../lib/download.js';
 
-  // Utils.pingMidiDevice('loopMIDI Port', 10);
+  export let dataDirectoryHandle = null;
 
   let width;
   // Recorders
@@ -92,14 +92,14 @@
     audioRecorder.start();
     metro.start(bpm / beep, accent);
     metronomeClicks = [];
-    recordingStartTime = WebMidi.time;
+    recordingStartTime = performance.now();
     console.log('start', recordingStartTime);
   };
 
   const stop = async () => {
     console.log('stop');
     metro.stop();
-    recordingStopTime = WebMidi.time;
+    recordingStopTime = performance.now();
     audio = await audioRecorder.stop();
     const noteOffMap = d3.group(
       noteOffs,
@@ -163,6 +163,7 @@
       `${name}.accents.json`
     );
     downloadBlob(document, audio, name);
+    // Use file system API
   };
 
   onDestroy(() => {

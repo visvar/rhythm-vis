@@ -9,6 +9,8 @@
   import MainPlot from './MainPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
 
+  export let dataDirectoryHandle = null;
+
   let width = window.innerWidth - 100;
 
   let fileInput;
@@ -78,7 +80,8 @@
     }
   };
 
-  onMount(() => {
+  const setupWavesurfer = () => {
+    // set up wavesurfer
     wavesurfer = WaveSurfer.create({
       container: '#waveform',
       waveColor: '#bbb',
@@ -103,6 +106,12 @@
       wavesurfer.seekTo(startTime / duration);
       currentPlayerTime = startTime;
     });
+  };
+
+  onMount(() => {
+    // display list of recordings to analyze
+
+    setupWavesurfer();
 
     // play and pause with spacebar
     document.body.addEventListener('keydown', playPauseOnSpaceBar);

@@ -1,5 +1,5 @@
 <script>
-  import Recorder from './components/RecorderWithMetronome.svelte';
+  import Recorder from './components/Recorder.svelte';
   import Analyzer from './components/Analyzer.svelte';
   import Tabs from './components/Tabs.svelte';
   import MidiIndicator from './components/MidiIndicator.svelte';
@@ -16,17 +16,29 @@
   $: {
     localStorage.setItem('pwd', password);
   }
+
+  // file system access
+  let dataDirectoryHandle = null;
+  const selectDir = async () => {
+    const handle = await window.showDirectoryPicker();
+    console.log(handle);
+    if (!handle) {
+      return;
+    }
+    dataDirectoryHandle = handle;
+  };
 </script>
 
 <main>
   {#if password !== corrP}
     <input type="password" placeholder="password" bind:value="{password}" />
   {:else}
+    <button on:click="{selectDir}">Set recording directory</button>
     <Tabs options="{views}" bind:value="{view}" />
     {#if view === 'Recording'}
-      <Recorder />
+      <Recorder dataDirectoryHandle="{dataDirectoryHandle}" />
     {:else if view === 'Analysis'}
-      <Analyzer />
+      <Analyzer dataDirectoryHandle="{dataDirectoryHandle}" />
     {:else if view === 'Setup'}
       <h2>Setup</h2>
       <VolumeMeter />

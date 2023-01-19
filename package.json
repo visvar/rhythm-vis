@@ -17,16 +17,16 @@
     "gh-pages": "^4.0.0",
     "npm-check-updates": "^16.6.2",
     "standard": "^17.0.0",
-    "svelte": "^3.55.0",
-    "vite": "^4.0.3"
+    "svelte": "^3.55.1",
+    "vite": "^4.0.4"
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.4.3",
     "@observablehq/plot": "^0.6.1",
-    "d3": "^7.8.0",
+    "d3": "^7.8.1",
     "jszip": "^3.10.1",
     "musicvis-lib": "^0.57.1",
-    "opensheetmusicdisplay": "^1.7.0",
+    "opensheetmusicdisplay": "^1.7.1",
     "wavesurfer.js": "^6.4.0",
     "webmidi": "^3.0.25"
   }

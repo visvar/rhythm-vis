@@ -20,6 +20,8 @@ class Metronome {
   #startTimeStamp = null;
   // Stores the number of the current beat (for accents)
   #beatCount = null;
+  // First beep time from performance.now()
+  #firstBeepTime = null;
   #audioCtx = new AudioContext();
   // Callback
   #onClick = null;
@@ -27,17 +29,17 @@ class Metronome {
   /**
    * @returns {number} bpm
    */
-  get bpm () { return this.#bpm }
+  get bpm() { return this.#bpm }
 
   /**
    * @returns {number} beat count
    */
-  get beatCount () { return this.#beatCount }
+  get beatCount() { return this.#beatCount }
 
   /**
    * @param {function} callback callback
    */
-  onClick (callback) {
+  onClick(callback) {
     this.#onClick = callback
   }
 
@@ -47,7 +49,7 @@ class Metronome {
    * @param {number} bpm tempo in bpm
    * @param {number} [accent=4] accent every nth beat by changing pitch
    */
-  start (bpm, accent = 4) {
+  start(bpm, accent = 4) {
     if (!bpm || Number.isNaN(+bpm)) {
       console.error(`[Metronome] Invalid bpm ${bpm}`)
       return
@@ -72,7 +74,7 @@ class Metronome {
   /**
    * Stops the metronome
    */
-  stop () {
+  stop() {
     console.log('[Metronome] stopped')
     clearTimeout(this.#timerID)
     this.#isPlaying = false
@@ -84,7 +86,7 @@ class Metronome {
    * @param {number} bpm tempo in bpm, last used bpm will be used as fallback
    * @param {number} [accent=4] accent every nth beat by changing pitch
    */
-  toggle (bpm, accent = 4) {
+  toggle(bpm, accent = 4) {
     if (this.#isPlaying) {
       this.stop()
     } else {
@@ -113,6 +115,9 @@ class Metronome {
       const isAccent = this.#beatCount % accentNote === accentNote - 1 || this.#beatCount === -1
       this._playSound(nextNotetime, isAccent)
       this.#beatCount++
+      if (this.beatCount === 0) {
+        this.#firstBeepTime = performance.now()
+      }
     }
     // Plan next scheduler run
     this.#timerID = setTimeout(this._scheduler, this.#scheduleTimeout)
@@ -125,7 +130,7 @@ class Metronome {
    * @param {number} time  AudioContext time in seconds
    * @param {boolean} isAccent true for accented beep (higher pitch)
    */
-  _playSound (time, isAccent) {
+  _playSound(time, isAccent) {
     this.#onClick(time, isAccent)
     const osc = this.#audioCtx.createOscillator()
     osc.connect(this.#audioCtx.destination)
