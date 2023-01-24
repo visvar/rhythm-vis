@@ -32,8 +32,10 @@
 <main>
   {#if password !== corrP}
     <input type="password" placeholder="password" bind:value="{password}" />
-  {:else}
+  {:else if !dataDirectoryHandle}
     <button on:click="{selectDir}">Set recording directory</button>
+  {:else}
+    <div>Data directoy: {dataDirectoryHandle.name}</div>
     <Tabs options="{views}" bind:value="{view}" />
     {#if view === 'Recording'}
       <Recorder dataDirectoryHandle="{dataDirectoryHandle}" />

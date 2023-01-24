@@ -1,5 +1,5 @@
 <script>
-  import { recordAudio } from 'musicvis-lib';
+  import { recordAudio } from '../lib/AudioRecorder';
   import { Temporal } from '@js-temporal/polyfill';
   import { onMount, onDestroy } from 'svelte';
   import Metronome from '../lib/Metronome.js';
@@ -146,24 +146,39 @@
     isRecording = false;
   };
 
+  const fileExists = async (name) => {
+    try {
+      await dataDirectoryHandle.getFileHandle(name);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const writeFile = async (name, data) => {
+    console.log(`Writing ${name}`);
+    if (await fileExists(name)) {
+      alert(`File ${name} already exists`);
+      return;
+    }
+    const file = await dataDirectoryHandle.getFileHandle(name, {
+      create: true,
+    });
+    const w = await file.createWritable();
+    await w.write(data);
+    w.close();
+  };
+
   const download = () => {
+    console.log('download');
     const pers = person.split(/\s+/).join('-');
     const now = Temporal.Now.plainDateTimeISO().toJSON();
-    const date = now.substring(0, 10).replace(':', '-');
+    const date = now.substring(0, 16).replace(':', '-');
     const name = `${exercise}_${bpm}-bpm_${beep}-click_${pers}_${date}`;
-    downloadTextFile(document, JSON.stringify(notes), `${name}.rec.json`);
-    downloadTextFile(
-      document,
-      JSON.stringify(metronomeClicks),
-      `${name}.clicks.json`
-    );
-    downloadTextFile(
-      document,
-      JSON.stringify(metronomeAccents),
-      `${name}.accents.json`
-    );
-    downloadBlob(document, audio, name);
-    // Use file system API
+    writeFile(`${name}.rec.json`, JSON.stringify(notes));
+    writeFile(`${name}.clicks.json`, JSON.stringify(metronomeClicks));
+    writeFile(`${name}.accents.json`, JSON.stringify(metronomeAccents));
+    writeFile(`${name}.audio.wa`, audio);
   };
 
   onDestroy(() => {
