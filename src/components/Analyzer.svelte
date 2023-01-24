@@ -8,17 +8,18 @@
   import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
   import MainPlot from './MainPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
+  import { group } from 'd3';
 
   export let dataDirectoryHandle = null;
 
   let width = window.innerWidth - 100;
 
-  let fileInput;
-  let files = [];
-  let extracted;
+  let recordings = new Map();
   let notes = [];
   let onsets = [];
-  let audio;
+  let metroClicks = [];
+  let metroAccents = [];
+  let audio = null;
 
   let wavesurfer;
 
@@ -37,41 +38,51 @@
   $: currentAdjustedTime = currentPlayerTime - (notes[0]?.start ?? 0);
   $: currentTimeInBeats = currentAdjustedTime / spb;
 
-  // Parse MusicXML into a MusicPiece
-  const handleFileInput = async (event) => {
-    const file = event.target.files[0];
-    if (!file) {
-      // TODO: reset everything
-      return;
-    } else if (file.name.endsWith('.zip')) {
-      const compressed = await file.arrayBuffer();
-      extracted = await JSZip.loadAsync(compressed);
-      const allFiles = Object.keys(extracted.files);
-      files = [
-        ...new Set(allFiles.map((d) => d.substring(0, d.lastIndexOf('.')))),
-      ];
-    } else {
-      alert('Invalid file');
-      return;
-    }
+  const readJsonFile = async (handle) => {
+    const buffer = await handle.getFile();
+    const json = await buffer.text();
+    return JSON.parse(json);
   };
 
   // extract selected file from zip and get data
-  const handleFileSelect = async (selectedFile) => {
-    console.log(selectedFile);
-    if (selectedFile !== null) {
-      // notes
-      const json = await extracted.file(`${selectedFile}.json`).async('string');
-      notes = JSON.parse(json).notes;
-      // onsets
-      const ons = notes.map((d) => d.start);
-      const first = ons[0];
-      onsets = ons.map((d) => d - first);
-      // audio
-      audio = await extracted.file(`${selectedFile}.webm`).async('blob');
-      console.log(notes, audio);
-      wavesurfer.loadBlob(audio);
+  const handleFileSelect = async (recName) => {
+    console.log(recName);
+    const files = recordings.get(recName);
+    notes = [];
+    onsets = [];
+    metroClicks = [];
+    metroAccents = [];
+    audio = null;
+    if (!files) {
+      return;
     }
+    for (const file of files) {
+      if (file.name.endsWith('.rec.json')) {
+        // notes
+        notes = await readJsonFile(file.handle);
+        // onsets
+        try {
+          const ons = notes.map((d) => d.start);
+          const first = ons[0];
+          onsets = ons.map((d) => d - first);
+        } catch (e) {
+          console.log('Cannot calculate onsets from notes', { notes });
+        }
+      } else if (file.name.endsWith('.clicks.json')) {
+        // metronome clicks
+        metroClicks = await readJsonFile(file.handle);
+      } else if (file.name.endsWith('.accents.json')) {
+        // metronome accents
+        metroAccents = await readJsonFile(file.handle);
+      } else if (file.name.endsWith('.audio.weba')) {
+        // audio
+        const f = await file.handle.getFile();
+        const buffer = await f.arrayBuffer();
+        audio = new Blob([buffer]);
+      }
+    }
+    console.log({ notes, metroClicks, metroAccents, audio });
+    wavesurfer.loadBlob(audio);
   };
 
   const playPauseOnSpaceBar = (e) => {
@@ -108,11 +119,19 @@
     });
   };
 
-  onMount(() => {
+  onMount(async () => {
     // display list of recordings to analyze
-
+    const files = [];
+    for await (const [key, value] of dataDirectoryHandle.entries()) {
+      files.push({ name: key, handle: value });
+    }
+    // group by recording name, to get all files that the belong to the same recording
+    const grouped = group(files, (d) =>
+      d.name.substring(0, d.name.indexOf('.'))
+    );
+    recordings = grouped;
+    // wavesurfer
     setupWavesurfer();
-
     // play and pause with spacebar
     document.body.addEventListener('keydown', playPauseOnSpaceBar);
   });
@@ -126,23 +145,12 @@
 <main>
   <h2>Analysis</h2>
 
-  <div>
-    Choose a .zip file with files for audio, MIDI, and metronome clicks. Can
-    contain multiple recordings.
-  </div>
-  <input
-    type="file"
-    accept=".zip"
-    bind:this="{fileInput}"
-    on:input="{handleFileInput}"
-  />
-
   <label>
     Recording
     <select on:input="{(e) => handleFileSelect(e.target.value)}">
       <option value="" disabled selected>select a recording</option>
-      {#each files as f}
-        <option value="{f}">{f}</option>
+      {#each [...recordings.keys()] as recName}
+        <option value="{recName}">{recName}</option>
       {/each}
     </select>
   </label>

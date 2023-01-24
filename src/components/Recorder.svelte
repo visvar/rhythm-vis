@@ -8,7 +8,7 @@
   import PianoRoll from './PianoRoll.svelte';
   import { WebMidi } from 'webmidi';
   import * as d3 from 'd3';
-  import { downloadBlob, downloadTextFile } from '../lib/download.js';
+  import { group } from 'd3';
 
   export let dataDirectoryHandle = null;
 
@@ -38,6 +38,7 @@
   let notes;
   let metronomeClicks = [];
   let metronomeAccents = [];
+  let recCount = 0;
   // let metronomeClicksStartTime;
   let pcm;
   // Metronome
@@ -66,6 +67,15 @@
     'piano_c-major_eighths',
   ];
 
+  const updateRecCount = async () => {
+    // Update recording count
+    const files = [];
+    for await (const [key] of dataDirectoryHandle.entries()) {
+      files.push(key);
+    }
+    recCount = group(files, (d) => d.substring(0, d.indexOf('.'))).size;
+  };
+
   onMount(async () => {
     // enable MIDI and audio access
     try {
@@ -81,18 +91,20 @@
       console.error('Cannot enable MIDI recording');
       console.error(e);
     }
+    updateRecCount();
   });
 
   const start = () => {
     isRecording = true;
-    audio = null;
     noteOns = [];
     noteOffs = [];
     notes = null;
+    metronomeClicks = [];
+    metronomeAccents = [];
+    audio = null;
+    recordingStartTime = performance.now();
     audioRecorder.start();
     metro.start(bpm / beep, accent);
-    metronomeClicks = [];
-    recordingStartTime = performance.now();
     console.log('start', recordingStartTime);
   };
 
@@ -107,14 +119,11 @@
       (d) => d.message.channel,
       (d) => d.note.number
     );
-
     // metronome clicks
     const firstClick = metronomeClicks.length > 0 ? metronomeClicks[0] : 0;
     console.log(firstClick);
-
     metronomeClicks = metronomeClicks.map((d) => d - firstClick);
     metronomeAccents = metronomeAccents.map((d) => d - firstClick);
-
     // notes
     notes = noteOns.map((noteOn) => {
       // get end by closest-in-time noteOff event
@@ -144,6 +153,8 @@
     console.log('notes', notes);
     console.log('metronome clicks', metronomeClicks);
     isRecording = false;
+    // save automatically
+    saveRecordingFiles();
   };
 
   const fileExists = async (name) => {
@@ -169,16 +180,20 @@
     w.close();
   };
 
-  const download = () => {
-    console.log('download');
+  const saveRecordingFiles = async () => {
     const pers = person.split(/\s+/).join('-');
     const now = Temporal.Now.plainDateTimeISO().toJSON();
-    const date = now.substring(0, 16).replace(':', '-');
+    const date = now.substring(0, 19).split(':').join('-');
     const name = `${exercise}_${bpm}-bpm_${beep}-click_${pers}_${date}`;
-    writeFile(`${name}.rec.json`, JSON.stringify(notes));
-    writeFile(`${name}.clicks.json`, JSON.stringify(metronomeClicks));
-    writeFile(`${name}.accents.json`, JSON.stringify(metronomeAccents));
-    writeFile(`${name}.audio.wa`, audio);
+    try {
+      await writeFile(`${name}.rec.json`, JSON.stringify(notes));
+      await writeFile(`${name}.clicks.json`, JSON.stringify(metronomeClicks));
+      await writeFile(`${name}.accents.json`, JSON.stringify(metronomeAccents));
+      await writeFile(`${name}.audio.weba`, audio);
+    } catch (e) {
+      alert(e);
+    }
+    updateRecCount();
   };
 
   onDestroy(() => {
@@ -191,6 +206,8 @@
 
 <main bind:clientWidth="{width}">
   <h2>Recorder</h2>
+  <div>Currently {recCount} recordings</div>
+
   <div>
     Your Name:
     <input
@@ -254,14 +271,6 @@
     Recording:
     <button on:click="{() => (isRecording ? stop() : start())}">
       {isRecording ? 'stop' : 'start'}
-    </button>
-  </div>
-
-  <h2>Result</h2>
-  <div>
-    Saving:
-    <button on:click="{download}" disabled="{!audio && !notes}">
-      download
     </button>
   </div>
 
