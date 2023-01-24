@@ -11,6 +11,7 @@
       3. [Preprocessing](#preprocessing)
       4. [Analysis](#analysis)
    3. [Libraries Used](#libraries-used)
+   4. [Trouble Shooting](#trouble-shooting)
 
 
 ## Setup
@@ -106,3 +107,14 @@ Python
 - svelte
 - Plot
 - https://github.com/cwilso/volume-meter
+
+
+## Trouble Shooting
+
+**Weird audio issuem, where there is a different volume/no recorded sound during metronome beeps.**
+This is due to to the browser's echo cancellation.
+Microsoft Edge seems not to be affected.
+You can turn it off in Chrome-based browsers:
+In the URL bar, go to chrome://flags/
+Search for echo
+Set Chrome-wide echo cancellation to disabled
