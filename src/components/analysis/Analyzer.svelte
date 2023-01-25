@@ -276,6 +276,7 @@
     </select>
   </label>
 
+  <!-- audio player -->
   <div class="player">
     <div id="waveform" style="width: {width}px"></div>
     <div class="time-display">
@@ -286,8 +287,20 @@
       >
         play/pause
       </button>
-      <span>player time: {currentPlayerTime.toFixed(3)}</span>
-      <span>adjusted time: {currentAdjustedTime.toFixed(3)}</span>
+      <label title="Playback rate, e.g., 1 for normal, 0.5 for half speed">
+        speed
+        <input
+          on:input="{(e) => wavesurfer.setPlaybackRate(+e.target.value)}"
+          type="number"
+          value="1"
+          min="0.1"
+          max="2"
+          step="0.1"
+          style="width: 50px"
+        />
+      </label>
+      <span>time in seconds: {currentPlayerTime.toFixed(3)}</span>
+      <!-- <span>adjusted time: {currentAdjustedTime.toFixed(3)}</span> -->
       <span>time in beats: {currentTimeInBeats.toFixed(3)}</span>
     </div>
   </div>

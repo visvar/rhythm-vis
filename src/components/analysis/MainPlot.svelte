@@ -62,7 +62,7 @@
       },
       y: {
         label: 'row',
-        domain: d3.range(0, Math.floor(d3.max(onsetsInBeats) / beats)),
+        domain: d3.range(0, Math.ceil(d3.max(onsetsInBeats) / beats)),
       },
       color: {
         type: noteColorType,
