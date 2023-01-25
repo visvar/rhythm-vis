@@ -1,7 +1,7 @@
 <script>
   import { afterUpdate, onMount } from 'svelte';
   import * as opensheetmusicdisplay from 'opensheetmusicdisplay';
-  import { downloadTextFile } from '../lib/download';
+  import { downloadTextFile } from '../../lib/download';
 
   export let exercise;
   export let showDownloadButton = true;

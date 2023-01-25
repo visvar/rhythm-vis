@@ -1,5 +1,4 @@
 <script>
-  import JSZip from 'jszip';
   import { Utils } from 'musicvis-lib';
   import WaveSurfer from 'wavesurfer.js';
   import { onDestroy, onMount } from 'svelte';
@@ -9,7 +8,10 @@
   import MainPlot from './MainPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
   import { group } from 'd3';
-  import SheetMusic from './SheetMusic.svelte';
+  import SheetMusic from '../common/SheetMusic.svelte';
+  import PianoRoll from '../common/PianoRoll.svelte';
+  import { readJsonFile } from '../../lib/files';
+  import MultiSelect from '../common/MultiSelect.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -23,6 +25,17 @@
   let audio = null;
 
   let wavesurfer;
+  let views = [
+    'Exercise',
+    'Time diff.',
+    'Durations',
+    'Piano roll',
+    // 'Waveform',
+    'Histogram',
+    'Ticks',
+    'Main',
+  ];
+  let currentViews = new Set(['Exercise', 'Waveform', 'Histogram', 'Main']);
 
   // config
   let exercise;
@@ -37,14 +50,9 @@
 
   // player etc
   let currentPlayerTime = 0;
-  $: currentAdjustedTime = currentPlayerTime - (notes[0]?.start ?? 0);
+  $: timeAlignment = 0;
+  $: currentAdjustedTime = currentPlayerTime - timeAlignment;
   $: currentTimeInBeats = currentAdjustedTime / spb;
-
-  const readJsonFile = async (handle) => {
-    const buffer = await handle.getFile();
-    const json = await buffer.text();
-    return JSON.parse(json);
-  };
 
   // extract selected file from zip and get data
   const handleFileSelect = async (recName) => {
@@ -90,6 +98,7 @@
     const [ins, exc, rhy, tem, clk, per, dat] = fileName.split('_');
     exercise = [ins, exc, rhy].join('_');
     bpm = +tem.replace('-bpm', '');
+    timeAlignment = notes[0]?.start ?? 0;
   };
 
   const playPauseOnSpaceBar = (e) => {
@@ -162,13 +171,40 @@
     </select>
   </label>
 
-  <SheetMusic exercise="{exercise}" showDownloadButton="{false}" />
+  <MultiSelect options="{views}" bind:values="{currentViews}" label="Views:" />
 
-  <DeltaTimeHistogramPlot width="{width}" deltas="{deltas}" />
-  <NoteDurationHistogramPlot width="{width}" notes="{notes}" />
+  {#if currentViews.has('Exercise')}
+    <SheetMusic exercise="{exercise}" showDownloadButton="{false}" />
+  {/if}
+  {#if currentViews.has('Time diff.')}
+    <DeltaTimeHistogramPlot width="{width}" deltas="{deltas}" />
+  {/if}
+  {#if currentViews.has('Durations')}
+    <NoteDurationHistogramPlot width="{width}" notes="{notes}" />
+  {/if}
+  {#if currentViews.has('Piano roll')}
+    <PianoRoll
+      notes="{notes}"
+      metronomeClicks="{metroClicks}"
+      metronomeAccents="{metroAccents}"
+      width="{width}"
+    />
+  {/if}
 
   <label>
-    Tempo in BPM
+    time alignment
+    <input
+      bind:value="{timeAlignment}"
+      type="number"
+      min="-10"
+      max="10"
+      step="0.01"
+      style="width: 50px"
+    />
+  </label>
+
+  <label>
+    tempo in BPM
     <input
       bind:value="{bpm}"
       type="number"
@@ -180,7 +216,7 @@
   </label>
 
   <label title="Number of beats per row">
-    Beats per row
+    beats per row
     <input
       bind:value="{beats}"
       type="number"
@@ -192,7 +228,7 @@
   </label>
 
   <label title="How many beats to show left and right as context">
-    Context beats
+    context beats
     <input
       bind:value="{contextBeats}"
       type="number"
@@ -204,7 +240,7 @@
   </label>
 
   <label>
-    Note color
+    note color
     <select bind:value="{noteColorMode}">
       {#each ['none', 'chroma', 'channel', 'velocity', 'duration'] as value}
         <option value="{value}">{value}</option>
@@ -215,7 +251,7 @@
   <label>
     x axis ticks
     <select bind:value="{xTicks}">
-      <option value="{1}">beats</option>
+      <option value="{1 / 1}">beats</option>
       <option value="{1 / 2}">half-beats</option>
       <option value="{1 / 3}">triplets</option>
       <option value="{1 / 4}">quarter-beats</option>
@@ -226,47 +262,52 @@
     </select>
   </label>
 
-  <button
-    on:click="{() => wavesurfer.playPause()}"
-    disabled="{!audio}"
-    title="You can also use the space key"
-  >
-    play/pause
-  </button>
-
   <div id="waveform" style="width: {width}px"></div>
-  <div>
-    Current player time: {currentPlayerTime.toFixed(3)}<br />
-    Current adjusted time: {currentAdjustedTime.toFixed(3)}<br />
-    Current time in beats: {currentTimeInBeats.toFixed(3)}<br />
+
+  <div class="time-display">
+    <button
+      on:click="{() => wavesurfer.playPause()}"
+      disabled="{!audio}"
+      title="You can also use the space key"
+    >
+      play/pause
+    </button>
+    <span>player time: {currentPlayerTime.toFixed(3)}</span>
+    <span>adjusted time: {currentAdjustedTime.toFixed(3)}</span>
+    <span>time in beats: {currentTimeInBeats.toFixed(3)}</span>
   </div>
 
-  <HistogramPlot
-    width="{width}"
-    values="{onsetsInBeats}"
-    beats="{beats}"
-    contextBeats="{contextBeats}"
-    xLabel="beats"
-  />
-  <TickPlot
-    width="{width}"
-    values="{onsetsInBeats}"
-    beats="{beats}"
-    contextBeats="{contextBeats}"
-    xLabel="beats"
-  />
-
-  <MainPlot
-    width="{width}"
-    notes="{notes}"
-    onsets="{onsets}"
-    onsetsInBeats="{onsetsInBeats}"
-    beats="{beats}"
-    contextBeats="{contextBeats}"
-    colorMode="{noteColorMode}"
-    xTicks="{xTicks}"
-    currentTimeInBeats="{currentTimeInBeats}"
-  />
+  {#if currentViews.has('Histogram')}
+    <HistogramPlot
+      width="{width}"
+      values="{onsetsInBeats}"
+      beats="{beats}"
+      contextBeats="{contextBeats}"
+      xLabel="beats"
+    />
+  {/if}
+  {#if currentViews.has('Ticks')}
+    <TickPlot
+      width="{width}"
+      values="{onsetsInBeats}"
+      beats="{beats}"
+      contextBeats="{contextBeats}"
+      xLabel="beats"
+    />
+  {/if}
+  {#if currentViews.has('Main')}
+    <MainPlot
+      width="{width}"
+      notes="{notes}"
+      onsets="{onsets}"
+      onsetsInBeats="{onsetsInBeats}"
+      beats="{beats}"
+      contextBeats="{contextBeats}"
+      colorMode="{noteColorMode}"
+      xTicks="{xTicks}"
+      currentTimeInBeats="{currentTimeInBeats}"
+    />
+  {/if}
 </main>
 
 <style>
@@ -277,5 +318,13 @@
 
   #waveform {
     padding: 0;
+  }
+
+  .time-display {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    justify-items: center;
+    align-items: center;
   }
 </style>

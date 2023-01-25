@@ -13,11 +13,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+
+  --accent: steelblue;
 }
 
 a {
   font-weight: 500;
-  color: steelblue;
+  color: var(--accent);
   text-decoration: inherit;
 }
 
@@ -62,7 +64,7 @@ select {
 button:hover,
 input:hover,
 select:hover {
-  border-color: steelblue;
+  border-color: var(--accent);
 }
 
 button:focus,

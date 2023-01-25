@@ -1,6 +1,6 @@
 <script>
   import { onDestroy, onMount } from 'svelte';
-  import createAudioMeter from '../lib/volume-meter-main/volume-meter.js';
+  import createAudioMeter from '../../lib/volume-meter-main/volume-meter.js';
 
   let audioContext = null;
   let meter = null;

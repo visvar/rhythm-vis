@@ -1,16 +1,32 @@
 <script>
-  import { recordAudio } from '../lib/AudioRecorder';
+  import { recordAudio } from '../../lib/AudioRecorder';
   import { Temporal } from '@js-temporal/polyfill';
   import { onMount, onDestroy } from 'svelte';
-  import Metronome from '../lib/Metronome.js';
+  import Metronome from '../../lib/Metronome.js';
   import AudioPlayer from './AudioPlayer.svelte';
-  import SheetMusic from './SheetMusic.svelte';
-  import PianoRoll from './PianoRoll.svelte';
+  import SheetMusic from '../common/SheetMusic.svelte';
+  import PianoRoll from '../common/PianoRoll.svelte';
   import { WebMidi } from 'webmidi';
   import * as d3 from 'd3';
   import { group } from 'd3';
+  import { fileExists } from '../../lib/files';
 
   export let dataDirectoryHandle = null;
+
+  const exercises = [
+    // Run preprocessing/exercise-summary.py for a list
+    'drum_snare_eighths-to-eighth-triplets',
+    'drum_snare_eighths-to-quarter-quintuplets',
+    'guitar_a-minor-pentatonic_eighths',
+    'guitar_a-minor_eighths',
+    'guitar_chords-f7_halfs',
+    'guitar_chords-fm7_halfs',
+    'guitar_e-string_quarters',
+    'guitar_e-string_quarters-to-eighths',
+    'guitar_powerchords_quarter-to-eighths-with-rest',
+    'guitar_single-notes_eighths-to-eighth-triplets',
+    'piano_c-major_eighths',
+  ];
 
   let width;
   // Recorders
@@ -49,21 +65,6 @@
       metronomeAccents.push(globalBeepTime);
     }
   });
-
-  const exercises = [
-    // Run preprocessing/exercise-summary.py for a list
-    'drum_snare_eighths-to-eighth-triplets',
-    'drum_snare_eighths-to-quarter-quintuplets',
-    'guitar_a-minor-pentatonic_eighths',
-    'guitar_a-minor_eighths',
-    'guitar_chords-f7_halfs',
-    'guitar_chords-fm7_halfs',
-    'guitar_e-string_quarters',
-    'guitar_e-string_quarters-to-eighths',
-    'guitar_powerchords_quarter-to-eighths-with-rest',
-    'guitar_single-notes_eighths-to-eighth-triplets',
-    'piano_c-major_eighths',
-  ];
 
   const updateRecCount = async () => {
     // Update recording count
@@ -156,18 +157,9 @@
     saveRecordingFiles();
   };
 
-  const fileExists = async (name) => {
-    try {
-      await dataDirectoryHandle.getFileHandle(name);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
   const writeFile = async (name, data) => {
     console.log(`Writing ${name}`);
-    if (await fileExists(name)) {
+    if (await fileExists(dataDirectoryHandle, name)) {
       alert(`File ${name} already exists`);
       return;
     }

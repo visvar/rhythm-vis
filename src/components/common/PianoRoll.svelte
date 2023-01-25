@@ -6,8 +6,8 @@
   export let notes;
   export let metronomeClicks;
   export let metronomeAccents;
-  export let pcm;
-  export let audioDuration;
+  export let pcm = null;
+  export let audioDuration = 0;
   export let width = 800;
   export let height = 200;
 
@@ -64,45 +64,46 @@
         Plot.ruleX([0]),
       ],
     });
-
-    // audio PCM (amplitude over time, as binned area chart)
-    const plot2 = Plot.plot({
-      insetRight: 10,
-      width,
-      height: 100,
-      x: {
-        label: 'Time in seconds',
-        domain: [0, maxTime],
-      },
-      y: {
-        label: 'Audio amplitude',
-      },
-      marks: [
-        Plot.ruleX([0]),
-        Plot.ruleY([0]),
-        // metronome clicks
-        Plot.ruleX(metronomeClicks, { stroke: 'gray', strokeWidth: 0.5 }),
-        Plot.ruleX(metronomeAccents, { stroke: 'black', strokeWidth: 0.5 }),
-        // PCM
-        Plot.areaY(
-          pcm,
-          Plot.binX(
-            { y: 'max', filter: null },
-            {
-              x: (d, i) => (i / pcm.length) * audioDuration,
-              fill: '#333',
-              thresholds: 500,
-            }
-          )
-        ),
-      ],
-    });
-
     // clear current plots and append new ones
     pianoRollContainer.textContent = '';
-    audioPlotContainer.textContent = '';
     pianoRollContainer.appendChild(plot);
-    audioPlotContainer.appendChild(plot2);
+
+    // audio PCM (amplitude over time, as binned area chart)
+    if (pcm) {
+      const plot2 = Plot.plot({
+        insetRight: 10,
+        width,
+        height: 100,
+        x: {
+          label: 'Time in seconds',
+          domain: [0, maxTime],
+        },
+        y: {
+          label: 'Audio amplitude',
+        },
+        marks: [
+          Plot.ruleX([0]),
+          Plot.ruleY([0]),
+          // metronome clicks
+          Plot.ruleX(metronomeClicks, { stroke: 'gray', strokeWidth: 0.5 }),
+          Plot.ruleX(metronomeAccents, { stroke: 'black', strokeWidth: 0.5 }),
+          // PCM
+          Plot.areaY(
+            pcm,
+            Plot.binX(
+              { y: 'max', filter: null },
+              {
+                x: (d, i) => (i / pcm.length) * audioDuration,
+                fill: '#333',
+                thresholds: 500,
+              }
+            )
+          ),
+        ],
+      });
+      audioPlotContainer.textContent = '';
+      audioPlotContainer.appendChild(plot2);
+    }
 
     // color legend
     legendContainer.textContent = '';

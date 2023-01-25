@@ -1,9 +1,9 @@
 <script>
-  import Recorder from './components/Recorder.svelte';
-  import Analyzer from './components/Analyzer.svelte';
-  import Tabs from './components/Tabs.svelte';
-  import MidiIndicator from './components/MidiIndicator.svelte';
-  import VolumeMeter from './components/VolumeMeter.svelte';
+  import Recorder from './components/recorder/Recorder.svelte';
+  import Analyzer from './components/analysis/Analyzer.svelte';
+  import Tabs from './components/common/Tabs.svelte';
+  import MidiIndicator from './components/setup/MidiIndicator.svelte';
+  import VolumeMeter from './components/setup/VolumeMeter.svelte';
 
   const views = ['Recording', 'Analysis', 'Setup', 'Help'];
   let view = localStorage.getItem('view') ?? 'Recording';
