@@ -15,15 +15,8 @@
 
   export let dataDirectoryHandle = null;
 
+  // views etc
   let width = window.innerWidth - 100;
-
-  let recordings = new Map();
-  let notes = [];
-  let onsets = [];
-  let metroClicks = [];
-  let metroAccents = [];
-  let audio = null;
-
   let wavesurfer;
   let views = [
     'Exercise',
@@ -45,24 +38,33 @@
   let noteColorMode = 'none';
   let xTicks = 1;
   $: spb = Utils.bpmToSecondsPerBeat(bpm);
-  $: onsetsInBeats = onsets.map((d) => d / spb);
-  $: deltas = onsets.slice(1).map((d, i) => d - onsets[i]);
 
   // player etc
   let currentPlayerTime = 0;
-  $: timeAlignment = 0;
-  $: currentAdjustedTime = currentPlayerTime - timeAlignment;
+  let timeAlignment = 0;
+  $: currentAdjustedTime = currentPlayerTime + timeAlignment;
   $: currentTimeInBeats = currentAdjustedTime / spb;
+
+  // data
+  let recordings = new Map();
+  let currentRecName;
+  let notes = [];
+  let metroClicks = [];
+  let metroAccents = [];
+  let audio = null;
+  $: onsets = notes.map((d) => d.start - timeAlignment);
+  $: onsetsInBeats = onsets.map((d) => d / spb);
+  $: deltas = onsets.slice(1).map((d, i) => d - onsets[i]);
 
   // extract selected file from zip and get data
   const handleFileSelect = async (recName) => {
     console.log(recName);
-    const files = recordings.get(recName);
+    currentRecName = null;
     notes = [];
-    onsets = [];
     metroClicks = [];
     metroAccents = [];
     audio = null;
+    const files = recordings.get(recName);
     if (!files) {
       return;
     }
@@ -70,14 +72,6 @@
       if (file.name.endsWith('.rec.json')) {
         // notes
         notes = await readJsonFile(file.handle);
-        // onsets
-        try {
-          const ons = notes.map((d) => d.start);
-          const first = ons[0];
-          onsets = ons.map((d) => d - first);
-        } catch (e) {
-          console.log('Cannot calculate onsets from notes', { notes });
-        }
       } else if (file.name.endsWith('.clicks.json')) {
         // metronome clicks
         metroClicks = await readJsonFile(file.handle);
@@ -94,17 +88,46 @@
     console.log({ notes, metroClicks, metroAccents, audio });
     wavesurfer.loadBlob(audio);
     // read exercise parameters from file name
+    currentRecName = recName;
     const fileName = files[0].name.substring(0, files[0].name.indexOf('.'));
     const [ins, exc, rhy, tem, clk, per, dat] = fileName.split('_');
     exercise = [ins, exc, rhy].join('_');
     bpm = +tem.replace('-bpm', '');
-    timeAlignment = notes[0]?.start ?? 0;
+    // timeAlignment = Utils.roundToNDecimals(notes[0]?.start ?? 0, 2);
+    timeAlignment = 0;
+  };
+
+  const deleteCurrentRecording = async () => {
+    if (
+      confirm(
+        `Are you sure you want to delete this recording?:\n\n${currentRecName}\n\nThis cannot be undone!`
+      )
+    ) {
+      const files = recordings.get(currentRecName);
+      for (const file of files) {
+        dataDirectoryHandle.removeEntry(file.name);
+      }
+      updateRecordingList();
+    }
   };
 
   const playPauseOnSpaceBar = (e) => {
     if (e.key === ' ') {
       wavesurfer.playPause();
     }
+  };
+
+  const updateRecordingList = async () => {
+    // display list of recordings to analyze
+    const files = [];
+    for await (const [key, value] of dataDirectoryHandle.entries()) {
+      files.push({ name: key, handle: value });
+    }
+    // group by recording name, to get all files that the belong to the same recording
+    const grouped = group(files, (d) =>
+      d.name.substring(0, d.name.indexOf('.'))
+    );
+    recordings = grouped;
   };
 
   const setupWavesurfer = () => {
@@ -127,26 +150,17 @@
       currentPlayerTime = time;
     });
     // Move time cursor to first note when audio loaded
-    wavesurfer.on('ready', () => {
-      const startTime = notes[0].start;
-      const duration = wavesurfer.getDuration();
-      wavesurfer.seekTo(startTime / duration);
-      currentPlayerTime = startTime;
-    });
+    // wavesurfer.on('ready', () => {
+    //   // const startTime = notes[0].start;
+    //   // const duration = wavesurfer.getDuration();
+    //   // wavesurfer.seekTo(startTime / duration);
+    //   // currentPlayerTime = startTime;
+    //   wavesurfer.seekTo(timeAlignment);
+    // });
   };
 
-  onMount(async () => {
-    // display list of recordings to analyze
-    const files = [];
-    for await (const [key, value] of dataDirectoryHandle.entries()) {
-      files.push({ name: key, handle: value });
-    }
-    // group by recording name, to get all files that the belong to the same recording
-    const grouped = group(files, (d) =>
-      d.name.substring(0, d.name.indexOf('.'))
-    );
-    recordings = grouped;
-    // wavesurfer
+  onMount(() => {
+    updateRecordingList();
     setupWavesurfer();
     // play and pause with spacebar
     document.body.addEventListener('keydown', playPauseOnSpaceBar);
@@ -191,7 +205,7 @@
     />
   {/if}
 
-  <label>
+  <!-- <label>
     time alignment
     <input
       bind:value="{timeAlignment}"
@@ -199,11 +213,11 @@
       min="-10"
       max="10"
       step="0.01"
-      style="width: 50px"
+      style="width: 60px"
     />
-  </label>
+  </label> -->
 
-  <label>
+  <!-- <label>
     tempo in BPM
     <input
       bind:value="{bpm}"
@@ -213,7 +227,7 @@
       step="1"
       style="width: 50px"
     />
-  </label>
+  </label> -->
 
   <label title="Number of beats per row">
     beats per row
@@ -232,7 +246,7 @@
     <input
       bind:value="{contextBeats}"
       type="number"
-      min="1"
+      min="0"
       max="8"
       step="1"
       style="width: 50px"
@@ -242,7 +256,7 @@
   <label>
     note color
     <select bind:value="{noteColorMode}">
-      {#each ['none', 'chroma', 'channel', 'velocity', 'duration'] as value}
+      {#each ['none', 'chroma', 'pitch', 'channel', 'velocity', 'duration'] as value}
         <option value="{value}">{value}</option>
       {/each}
     </select>
@@ -262,19 +276,20 @@
     </select>
   </label>
 
-  <div id="waveform" style="width: {width}px"></div>
-
-  <div class="time-display">
-    <button
-      on:click="{() => wavesurfer.playPause()}"
-      disabled="{!audio}"
-      title="You can also use the space key"
-    >
-      play/pause
-    </button>
-    <span>player time: {currentPlayerTime.toFixed(3)}</span>
-    <span>adjusted time: {currentAdjustedTime.toFixed(3)}</span>
-    <span>time in beats: {currentTimeInBeats.toFixed(3)}</span>
+  <div class="player">
+    <div id="waveform" style="width: {width}px"></div>
+    <div class="time-display">
+      <button
+        on:click="{() => wavesurfer.playPause()}"
+        disabled="{!audio}"
+        title="You can also use the space key"
+      >
+        play/pause
+      </button>
+      <span>player time: {currentPlayerTime.toFixed(3)}</span>
+      <span>adjusted time: {currentAdjustedTime.toFixed(3)}</span>
+      <span>time in beats: {currentTimeInBeats.toFixed(3)}</span>
+    </div>
   </div>
 
   {#if currentViews.has('Histogram')}
@@ -299,7 +314,6 @@
     <MainPlot
       width="{width}"
       notes="{notes}"
-      onsets="{onsets}"
       onsetsInBeats="{onsetsInBeats}"
       beats="{beats}"
       contextBeats="{contextBeats}"
@@ -308,12 +322,23 @@
       currentTimeInBeats="{currentTimeInBeats}"
     />
   {/if}
+
+  <button on:click="{deleteCurrentRecording}" disabled="{!currentRecName}">
+    delete current recording
+  </button>
 </main>
 
 <style>
   label {
     display: inline-block;
     margin: 0 10px;
+  }
+
+  .player {
+    margin: 2px 5px;
+    padding: 10px 25px 0 25px;
+    background: #f8f8f8;
+    border-radius: 5px;
   }
 
   #waveform {

@@ -5,7 +5,6 @@
   import { Midi } from 'musicvis-lib';
 
   export let notes;
-  export let onsets;
   export let onsetsInBeats;
   export let beats;
   export let contextBeats;
@@ -31,6 +30,10 @@
       noteColorType = 'ordinal';
       noteColorTickFormat = (d) => Midi.NOTE_NAMES[d];
       noteColorScheme = 'rainbow';
+    } else if (colorMode === 'pitch') {
+      noteColor = (d, i) => notes[i].pitch;
+      noteColorType = 'ordinal';
+      noteColorScheme = 'spectral';
     } else if (colorMode === 'channel') {
       noteColor = (d, i) => notes[i].channel;
       noteColorType = 'ordinal';
@@ -59,7 +62,7 @@
       },
       y: {
         label: 'row',
-        domain: d3.range(0, Math.floor(d3.max(onsets) / beats)),
+        domain: d3.range(0, Math.floor(d3.max(onsetsInBeats) / beats)),
       },
       color: {
         type: noteColorType,
@@ -67,6 +70,14 @@
         tickFormat: noteColorTickFormat,
       },
       marks: [
+        // Current player time
+        Plot.dot([currentTimeInBeats], {
+          x: (d) => Math.max(0, d % beats),
+          y: (d) => Math.floor(d / beats),
+          fill: '#8886',
+          r: 15,
+        }),
+        // Main data
         Plot.tickX(onsetsInBeats, {
           x: (d) => d % beats,
           y: (d) => Math.floor(d / beats),
@@ -99,18 +110,12 @@
             strokeWidth: 2,
           }
         ),
-        // Current player time
-        Plot.dot([currentTimeInBeats], {
-          x: (d) => Math.max(0, d % beats),
-          y: (d) => Math.floor(d / beats),
-          stroke: 'red',
-          r: 15,
-        }),
       ],
     });
 
     plotContainer.textContent = '';
     plotContainer.appendChild(plot);
+    plot.addEventListener('click', handleClick);
 
     // Update legend
     const legend = plot.legend('color');
@@ -119,6 +124,21 @@
       legendContainer.appendChild(legend);
     }
   });
+
+  /**
+   * Clicking on the visualization updates the currentTimeInBeats parameter
+   * of this component and the parent component.
+   * @param {PointerEvent} e click event
+   */
+  const handleClick = (e) => {
+    const { offsetX: x, offsetY: y } = e;
+    const [min, max] = plot.scale('y').range;
+    const rowCount = plot.scale('y').domain.length;
+    const row = Math.floor((y / max) * rowCount);
+    const xTime = plot.scale('x').invert(x);
+    const time = beats * row + xTime;
+    currentTimeInBeats = time;
+  };
 </script>
 
 <main width="{width}px">
