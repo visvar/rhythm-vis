@@ -9,6 +9,7 @@
   import MainPlot from './MainPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
   import { group } from 'd3';
+  import SheetMusic from './SheetMusic.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -24,6 +25,7 @@
   let wavesurfer;
 
   // config
+  let exercise;
   let bpm = 120;
   let beats = 4;
   let contextBeats = 1;
@@ -83,6 +85,11 @@
     }
     console.log({ notes, metroClicks, metroAccents, audio });
     wavesurfer.loadBlob(audio);
+    // read exercise parameters from file name
+    const fileName = files[0].name.substring(0, files[0].name.indexOf('.'));
+    const [ins, exc, rhy, tem, clk, per, dat] = fileName.split('_');
+    exercise = [ins, exc, rhy].join('_');
+    bpm = +tem.replace('-bpm', '');
   };
 
   const playPauseOnSpaceBar = (e) => {
@@ -146,7 +153,7 @@
   <h2>Analysis</h2>
 
   <label>
-    Recording
+    Recording:
     <select on:input="{(e) => handleFileSelect(e.target.value)}">
       <option value="" disabled selected>select a recording</option>
       {#each [...recordings.keys()] as recName}
@@ -154,6 +161,8 @@
       {/each}
     </select>
   </label>
+
+  <SheetMusic exercise="{exercise}" showDownloadButton="{false}" />
 
   <DeltaTimeHistogramPlot width="{width}" deltas="{deltas}" />
   <NoteDurationHistogramPlot width="{width}" notes="{notes}" />

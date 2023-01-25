@@ -39,16 +39,14 @@
   let metronomeClicks = [];
   let metronomeAccents = [];
   let recCount = 0;
-  // let metronomeClicksStartTime;
   let pcm;
   // Metronome
   let metroDiv;
   let metro = new Metronome();
-  metro.onClick((time, isAccent) => {
-    // metronomeClicksStartTime = WebMidi.time;
-    metronomeClicks.push(time);
+  metro.onClick((time, globalBeepTime, isAccent) => {
+    metronomeClicks.push(globalBeepTime);
     if (isAccent) {
-      metronomeAccents.push(time);
+      metronomeAccents.push(globalBeepTime);
     }
   });
 
@@ -120,10 +118,12 @@
       (d) => d.note.number
     );
     // metronome clicks
-    const firstClick = metronomeClicks.length > 0 ? metronomeClicks[0] : 0;
-    console.log(firstClick);
-    metronomeClicks = metronomeClicks.map((d) => d - firstClick);
-    metronomeAccents = metronomeAccents.map((d) => d - firstClick);
+    metronomeClicks = metronomeClicks.map(
+      (d) => (d - recordingStartTime) / 1000
+    );
+    metronomeAccents = metronomeAccents.map(
+      (d) => (d - recordingStartTime) / 1000
+    );
     // notes
     notes = noteOns.map((noteOn) => {
       // get end by closest-in-time noteOff event
@@ -150,8 +150,7 @@
         velocity: noteOn.note.attack,
       };
     });
-    console.log('notes', notes);
-    console.log('metronome clicks', metronomeClicks);
+    console.log({ notes, metronomeClicks, metronomeAccents });
     isRecording = false;
     // save automatically
     saveRecordingFiles();
@@ -180,6 +179,9 @@
     w.close();
   };
 
+  /**
+   * Saves recorded data to separate files using the File System API
+   */
   const saveRecordingFiles = async () => {
     const pers = person.split(/\s+/).join('-');
     const now = Temporal.Now.plainDateTimeISO().toJSON();
@@ -206,7 +208,7 @@
 
 <main bind:clientWidth="{width}">
   <h2>Recorder</h2>
-  <div>Currently {recCount} recordings</div>
+  <div>Currently <b>{recCount}</b> recordings</div>
 
   <div>
     Your Name:
@@ -268,9 +270,8 @@
   </div>
 
   <div>
-    Recording:
     <button on:click="{() => (isRecording ? stop() : start())}">
-      {isRecording ? 'stop' : 'start'}
+      {isRecording ? 'stop and save' : 'start recording'}
     </button>
   </div>
 

@@ -14,20 +14,20 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.2",
-    "gh-pages": "^4.0.0",
-    "npm-check-updates": "^16.6.2",
+    "gh-pages": "^5.0.0",
+    "npm-check-updates": "^16.6.3",
     "standard": "^17.0.0",
     "svelte": "^3.55.1",
     "vite": "^4.0.4"
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.4.3",
-    "@observablehq/plot": "^0.6.1",
-    "d3": "^7.8.1",
+    "@observablehq/plot": "^0.6.2",
+    "d3": "^7.8.2",
     "jszip": "^3.10.1",
     "musicvis-lib": "^0.57.1",
-    "opensheetmusicdisplay": "^1.7.1",
+    "opensheetmusicdisplay": "^1.7.3",
     "wavesurfer.js": "^6.4.0",
-    "webmidi": "^3.0.25"
+    "webmidi": "^3.1.2"
   }
 }

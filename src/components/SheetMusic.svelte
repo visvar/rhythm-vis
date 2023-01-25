@@ -4,6 +4,7 @@
   import { downloadTextFile } from '../lib/download';
 
   export let exercise;
+  export let showDownloadButton = true;
 
   let container;
   let osmd;
@@ -64,12 +65,14 @@
 
 <main style="background: {exercise ? 'white' : 'none'}">
   <div bind:this="{container}"></div>
-  <button
-    on:click="{() =>
-      downloadTextFile(document, stringXml, `${exercise}.musicxml`)}"
-  >
-    download exercise as MusicXML
-  </button>
+  {#if showDownloadButton}
+    <button
+      on:click="{() =>
+        downloadTextFile(document, stringXml, `${exercise}.musicxml`)}"
+    >
+      download exercise as MusicXML
+    </button>
+  {/if}
 </main>
 
 <style>

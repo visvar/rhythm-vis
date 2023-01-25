@@ -51,6 +51,8 @@ Exercise naming:
 
 Example: guitar_a-minor-pentatonic_eights-and-triplets
 
+*Each field must not contain '_'.*
+
 ### Recordings
 
 Recording naming (`<exercise>` as defined above):
