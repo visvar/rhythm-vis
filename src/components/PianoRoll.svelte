@@ -24,7 +24,6 @@
     // piano roll
     const plot = Plot.plot({
       insetRight: 10,
-      // height: 400,
       width,
       height,
       x: {
@@ -34,11 +33,6 @@
       y: {
         label: 'MIDI Pitch',
         grid: true,
-      },
-      r: {
-        label: 'Duration',
-        legend: true,
-        range: [0, 8],
       },
       color: {
         label: 'Note velocity',
@@ -51,7 +45,8 @@
       marks: [
         Plot.barX(notes, {
           x1: (d) => d.start,
-          x2: (d) => d.end,
+          // drum notes have duration 0 and would be invisible
+          x2: (d) => Math.max(d.end, d.start + 0.025),
           y: (d) => d.pitch,
           // fill: (d) => d.pitch % 12,
           fill: (d) => d.velocity,
