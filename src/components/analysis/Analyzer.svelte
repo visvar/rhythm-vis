@@ -7,7 +7,7 @@
   import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
   import MainPlot from './MainPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
-  import { group } from 'd3';
+  import { group, some } from 'd3';
   import SheetMusic from '../common/SheetMusic.svelte';
   import PianoRoll from '../common/PianoRoll.svelte';
   import { readJsonFile } from '../../lib/files';
@@ -47,6 +47,8 @@
 
   // data
   let recordings = new Map();
+  let sortBy = 'date';
+  let filterBy = '';
   let currentRecName;
   let notes = [];
   let metroClicks = [];
@@ -170,6 +172,30 @@
     document.removeEventListener('keydown', playPauseOnSpaceBar);
     wavesurfer.destroy();
   });
+
+  /**
+   * Sorts recordings for the select options
+   * @param {string[]} recordingNames recording names
+   * @param {string} by sorty by...
+   */
+  const sortRecs = (recordingNames, by) => {
+    // const [ins, exc, rhy, tem, clk, per, dat] = fileName.split('_');
+    if (by === 'name') {
+      recordingNames.sort();
+    } else if (by === 'date') {
+      recordingNames.sort((a, b) =>
+        a.split('_')[6] < b.split('_')[6] ? 1 : -1
+      );
+    }
+    return [...recordingNames];
+  };
+
+  const filterRecs = (recordingNames, by) => {
+    const search = by.split(/\s+/);
+    return [
+      ...recordingNames.filter((d) => some(search, (s) => d.includes(s))),
+    ];
+  };
 </script>
 
 <main>
@@ -179,10 +205,25 @@
     Recording:
     <select on:input="{(e) => handleFileSelect(e.target.value)}">
       <option value="" disabled selected>select a recording</option>
-      {#each [...recordings.keys()] as recName}
-        <option value="{recName}">{recName}</option>
+      {#each sortRecs(filterRecs([...recordings.keys()], filterBy), sortBy) as rName}
+        <option value="{rName}">{rName}</option>
       {/each}
     </select>
+  </label>
+  <label>
+    Sort:
+    <select bind:value="{sortBy}">
+      <option value="name">name</option>
+      <option value="date">date</option>
+    </select>
+  </label>
+  <label>
+    Filter:
+    <input
+      type="text"
+      placeholder="space-separated words"
+      bind:value="{filterBy}"
+    />
   </label>
 
   <MultiSelect options="{views}" bind:values="{currentViews}" label="Views:" />

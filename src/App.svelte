@@ -22,7 +22,6 @@
   let dataDirectoryHandle = null;
   const selectDir = async () => {
     const handle = await window.showDirectoryPicker();
-    console.log(handle);
     if (!handle) {
       return;
     }

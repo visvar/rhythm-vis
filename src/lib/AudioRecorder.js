@@ -16,7 +16,19 @@ export const recordAudio = () => {
   return new Promise(async resolve => {
     let stream
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      // stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      stream = await navigator.mediaDevices.getUserMedia({
+        audio: {
+          autoGainControl: false,
+          // channelCount: 2,
+          echoCancellation: false,
+          latency: 0,
+          noiseSuppression: false,
+          sampleRate: 48000,
+          sampleSize: 16,
+          suppressLocalAudioPlayback: false,
+        }
+      })
     } catch (error) {
       console.warn('[AudioInput] Cannot access audio', error)
       return

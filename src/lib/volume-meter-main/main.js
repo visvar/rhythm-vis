@@ -34,7 +34,7 @@ window.onload = function () {
   canvasContext = document.getElementById('meter').getContext('2d')
 }
 
-function startMeter() {
+function startMeter () {
   // grab an audio context
   audioContext = new AudioContext()
 
@@ -42,13 +42,13 @@ function startMeter() {
   navigator.mediaDevices.getUserMedia(
     {
       audio: {
-        // mandatory: {
-        //   // googEchoCancellation: 'false',
-        //   // googAutoGainControl: 'false',
-        //   // googNoiseSuppression: 'false',
-        //   // googHighpassFilter: 'false'
-        // },
-        // optional: []
+        autoGainControl: false,
+        echoCancellation: false,
+        latency: 0,
+        noiseSuppression: false,
+        sampleRate: 48000,
+        sampleSize: 16,
+        suppressLocalAudioPlayback: false,
       }
     })
     .then((stream) => {
@@ -65,12 +65,13 @@ function startMeter() {
     .catch((err) => {
       // always check for errors at the end.
       console.error(`${err.name}: ${err.message}`)
-      alert('Stream generation failed.')
+      // alert('Stream generation failed.')
+      alert('Cannot get audio, did you connect a microphone and gave the browser access?')
     })
 }
 
 
-function drawLoop(time) {
+function drawLoop (time) {
   // clear the background
   canvasContext.clearRect(0, 0, WIDTH, HEIGHT)
 
