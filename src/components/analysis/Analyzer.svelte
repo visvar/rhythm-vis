@@ -36,6 +36,7 @@
   let beats = 4;
   let contextBeats = 1;
   let noteColorMode = 'none';
+  // let noteOpacityMode = 'none';
   let xTicks = 1;
   $: spb = Utils.bpmToSecondsPerBeat(bpm);
 
@@ -44,6 +45,19 @@
   let timeAlignment = 0;
   $: currentAdjustedTime = currentPlayerTime + timeAlignment;
   $: currentTimeInBeats = currentAdjustedTime / spb;
+
+  $: {
+    if (wavesurfer) {
+      // when interacting with visualization, jump to same place in audio
+      const time = currentTimeInBeats * spb;
+      const duration = wavesurfer.getDuration();
+      if (duration > 0 && !wavesurfer.isPlaying()) {
+        const position = time / duration;
+        console.log(currentTimeInBeats, time, duration, position);
+        wavesurfer.seekTo(position);
+      }
+    }
+  }
 
   // data
   let recordings = new Map();
@@ -294,14 +308,23 @@
     />
   </label>
 
-  <label>
-    note color
+  <label title="Note color mode">
+    color
     <select bind:value="{noteColorMode}">
       {#each ['none', 'chroma', 'pitch', 'channel', 'velocity', 'duration'] as value}
         <option value="{value}">{value}</option>
       {/each}
     </select>
   </label>
+
+  <!-- <label title="Note opacity mode">
+    opacity
+    <select bind:value="{noteOpacityMode}">
+      {#each ['none', 'velocity', 'duration'] as value}
+        <option value="{value}">{value}</option>
+      {/each}
+    </select>
+  </label> -->
 
   <label>
     x axis ticks
@@ -373,7 +396,7 @@
       contextBeats="{contextBeats}"
       colorMode="{noteColorMode}"
       xTicks="{xTicks}"
-      currentTimeInBeats="{currentTimeInBeats}"
+      bind:currentTimeInBeats="{currentTimeInBeats}"
     />
   {/if}
 
