@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.4.3",
-    "@observablehq/plot": "^0.6.2",
+    "@observablehq/plot": "^0.6.1",
     "d3": "^7.8.2",
     "jszip": "^3.10.1",
     "musicvis-lib": "^0.57.1",
