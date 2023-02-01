@@ -75,3 +75,8 @@ select:focus,
 select:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
+
+/* disable text select in SVG */
+svg text {
+  user-select: none;
+}

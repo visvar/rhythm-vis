@@ -32,6 +32,7 @@
 
   // config
   let exercise;
+  let midiSource = 'recorded';
   let bpm = 120;
   let beats = 4;
   let contextBeats = 1;
@@ -53,7 +54,7 @@
       const duration = wavesurfer.getDuration();
       if (duration > 0 && !wavesurfer.isPlaying()) {
         const position = time / duration;
-        console.log(currentTimeInBeats, time, duration, position);
+        // console.log(currentTimeInBeats, time, duration, position);
         wavesurfer.seekTo(position);
       }
     }
@@ -85,8 +86,11 @@
       return;
     }
     for (const file of files) {
-      if (file.name.endsWith('.rec.json')) {
-        // notes
+      if (midiSource === 'converted' && file.name.endsWith('.conv.rec.json')) {
+        // notes from converter
+        notes = await readJsonFile(file.handle);
+      } else if (midiSource === 'recorded' && file.name.endsWith('.rec.json')) {
+        // notes from recorder
         notes = await readJsonFile(file.handle);
       } else if (file.name.endsWith('.clicks.json')) {
         // metronome clicks
@@ -128,7 +132,7 @@
   };
 
   const playPauseOnSpaceBar = (e) => {
-    if (e.key === ' ') {
+    if (e.key === ' ' && wavesurfer) {
       wavesurfer.playPause();
     }
   };
@@ -140,10 +144,7 @@
       files.push({ name: key, handle: value });
     }
     // group by recording name, to get all files that the belong to the same recording
-    const grouped = group(files, (d) =>
-      d.name.substring(0, d.name.indexOf('.'))
-    );
-    recordings = grouped;
+    recordings = group(files, (d) => d.name.substring(0, d.name.indexOf('.')));
   };
 
   const setupWavesurfer = () => {
@@ -165,14 +166,6 @@
       const time = wavesurfer.getCurrentTime();
       currentPlayerTime = time;
     });
-    // Move time cursor to first note when audio loaded
-    // wavesurfer.on('ready', () => {
-    //   // const startTime = notes[0].start;
-    //   // const duration = wavesurfer.getDuration();
-    //   // wavesurfer.seekTo(startTime / duration);
-    //   // currentPlayerTime = startTime;
-    //   wavesurfer.seekTo(timeAlignment);
-    // });
   };
 
   onMount(() => {
@@ -272,17 +265,13 @@
     />
   </label> -->
 
-  <!-- <label>
-    tempo in BPM
-    <input
-      bind:value="{bpm}"
-      type="number"
-      min="1"
-      max="500"
-      step="1"
-      style="width: 50px"
-    />
-  </label> -->
+  <select
+    bind:value="{midiSource}"
+    on:change="{() => handleFileSelect(currentRecName)}"
+  >
+    <option value="recorded">recorded</option>
+    <option value="converted">converted</option>
+  </select>
 
   <label title="Number of beats per row">
     beats per row
