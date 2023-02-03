@@ -46,73 +46,86 @@
 
   const convert = async (recName) => {
     isConverting = true;
-    const files = recordings.get(recName);
-    const audioFile = files.filter((d) => d.name.endsWith('.audio.weba'));
-    if (audioFile.length === 0) {
-      alert('This recording has no audio');
-    }
-    // read audio file and convert to correct format
-    const f = await audioFile[0].handle.getFile();
-    const buffer = await f.arrayBuffer();
-    const audioCtx = new AudioContext({
-      // This samplerate is required by basic-pitch
-      sampleRate: 22050,
-    });
-    const audioBuffer = await audioCtx.decodeAudioData(buffer);
-    // run basic-pitch
-    const frames = [];
-    const onsets = [];
-    const contours = [];
-    let pct;
-    await basicPitch.evaluateModel(
-      audioBuffer,
-      (f, o, c) => {
-        frames.push(...f);
-        onsets.push(...o);
-        contours.push(...c);
-      },
-      (p) => {
-        pct = p;
-      }
-    );
-    // TODO: choose good params, see https://github.com/spotify/basic-pitch-ts/blob/main/src/toMidi.ts
-    // onsetThresh: minimum amplitude of an onset activation to be considered an onset
-    const onsetThresh = 0.25;
-    // frameThresh: minimum amplitude of a frame activation for a note to remain "on"
-    const frameThresh = 0.25;
-    // minNoteLen: minimum allowed note length in frames
-    const minNoteLen = 5;
-    // inferOnsets: if True, add additional onsets when there are large differences in frame amplitudes
-    const inferOnsets = true;
-    // maxFreq: maximum allowed output frequency, in Hz
-    const maxFreq = null;
-    // minFreq: minimum allowed output frequency, in Hz
-    const minFreq = null;
-    // melodiaTrick: remove semitones near a peak
-    const melodiaTrick = true;
-    // energyTolerance: number of frames allowed to drop below 0
-    const energyTolerance = 1;
-    const notes = noteFramesToTime(
-      addPitchBendsToNoteEvents(
-        contours,
-        outputToNotesPoly(frames, onsets, onsetThresh, frameThresh, minNoteLen)
-      )
-    );
-    // convert note format to fit Recorder's
-    const notes2 = notes.map((n) => {
-      return {
-        pitch: n.pitchMidi,
-        start: n.startTimeSeconds,
-        velocity: n.amplitude,
-        duration: n.durationSeconds,
-        end: n.startTimeSeconds + n.durationSeconds,
-        name: Midi.getMidiNoteByNr(n.pitchMidi).label,
-        pitchBends: n.pitchBends,
-        channel: 0,
-      };
-    });
-    console.log('converted notes', notes2);
     try {
+      const files = recordings.get(recName);
+      const audioFile = files.filter((d) => d.name.endsWith('.audio.weba'));
+      if (audioFile.length === 0) {
+        alert(`${recName}\n\nThis recording has no audio`);
+        isConverting = false;
+        return;
+      }
+      // read audio file and convert to correct format
+      const f = await audioFile[0].handle.getFile();
+      const buffer = await f.arrayBuffer();
+      const audioCtx = new AudioContext({
+        // This samplerate is required by basic-pitch
+        sampleRate: 22050,
+      });
+      const audioBuffer = await audioCtx.decodeAudioData(buffer);
+      // run basic-pitch
+      const frames = [];
+      const onsets = [];
+      const contours = [];
+      let pct;
+      await basicPitch.evaluateModel(
+        audioBuffer,
+        (f, o, c) => {
+          frames.push(...f);
+          onsets.push(...o);
+          contours.push(...c);
+        },
+        (p) => {
+          pct = p;
+        }
+      );
+      // TODO: choose good params, see https://github.com/spotify/basic-pitch-ts/blob/main/src/toMidi.ts
+      // onsetThresh: minimum amplitude of an onset activation to be considered an onset
+      const onsetThresh = 0.25;
+      // frameThresh: minimum amplitude of a frame activation for a note to remain "on"
+      const frameThresh = 0.25;
+      // minNoteLen: minimum allowed note length in frames
+      const minNoteLen = 5;
+      // inferOnsets: if True, add additional onsets when there are large differences in frame amplitudes
+      const inferOnsets = true;
+      // maxFreq: maximum allowed output frequency, in Hz
+      const maxFreq = null;
+      // minFreq: minimum allowed output frequency, in Hz
+      const minFreq = null;
+      // melodiaTrick: remove semitones near a peak
+      const melodiaTrick = true;
+      // energyTolerance: number of frames allowed to drop below 0
+      const energyTolerance = 1;
+      const notes = noteFramesToTime(
+        addPitchBendsToNoteEvents(
+          contours,
+          outputToNotesPoly(
+            frames,
+            onsets,
+            onsetThresh,
+            frameThresh,
+            minNoteLen,
+            inferOnsets,
+            maxFreq,
+            minFreq,
+            melodiaTrick,
+            energyTolerance
+          )
+        )
+      );
+      // convert note format to fit Recorder's
+      const notes2 = notes.map((n) => {
+        return {
+          pitch: n.pitchMidi,
+          start: n.startTimeSeconds,
+          velocity: n.amplitude,
+          duration: n.durationSeconds,
+          end: n.startTimeSeconds + n.durationSeconds,
+          name: Midi.getMidiNoteByNr(n.pitchMidi).label,
+          pitchBends: n.pitchBends,
+          channel: 0,
+        };
+      });
+      console.log('converted notes', notes2);
       await writeFile(`${recName}.conv.rec.json`, JSON.stringify(notes2));
     } catch (e) {
       alert(e);

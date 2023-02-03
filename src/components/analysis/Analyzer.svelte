@@ -1,6 +1,7 @@
 <script>
   import { Utils } from 'musicvis-lib';
   import WaveSurfer from 'wavesurfer.js';
+  import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions';
   import { onDestroy, onMount } from 'svelte';
   import HistogramPlot from './HistogramPlot.svelte';
   import TickPlot from './TickPlot.svelte';
@@ -12,6 +13,7 @@
   import PianoRoll from '../common/PianoRoll.svelte';
   import { readJsonFile } from '../../lib/files';
   import MultiSelect from '../common/MultiSelect.svelte';
+  import { MusicSheetReadingException } from 'opensheetmusicdisplay';
 
   export let dataDirectoryHandle = null;
 
@@ -46,6 +48,25 @@
   let timeAlignment = 0;
   $: currentAdjustedTime = currentPlayerTime + timeAlignment;
   $: currentTimeInBeats = currentAdjustedTime / spb;
+  let selectionEndTime = null;
+  $: {
+    setRegion(selectionEndTime);
+  }
+
+  const setRegion = (selectionEndTime) => {
+    if (wavesurfer) {
+      wavesurfer.clearRegions();
+      if (selectionEndTime !== null) {
+        wavesurfer.addRegion({
+          start: currentPlayerTime,
+          end: selectionEndTime,
+          loop: true,
+          drag: false,
+          resize: false,
+        });
+      }
+    }
+  };
 
   $: {
     if (wavesurfer) {
@@ -81,6 +102,7 @@
     metroClicks = [];
     metroAccents = [];
     audio = null;
+    wavesurfer.empty();
     const files = recordings.get(recName);
     if (!files) {
       return;
@@ -106,15 +128,20 @@
       }
     }
     console.log({ notes, metroClicks, metroAccents, audio });
-    wavesurfer.loadBlob(audio);
     // read exercise parameters from file name
     currentRecName = recName;
     const fileName = files[0].name.substring(0, files[0].name.indexOf('.'));
     const [ins, exc, rhy, tem, clk, per, dat] = fileName.split('_');
     exercise = [ins, exc, rhy].join('_');
     bpm = +tem.replace('-bpm', '');
+    console.log(exercise, bpm);
     // timeAlignment = Utils.roundToNDecimals(notes[0]?.start ?? 0, 2);
     timeAlignment = 0;
+    try {
+      wavesurfer.loadBlob(audio);
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   const deleteCurrentRecording = async () => {
@@ -157,6 +184,7 @@
       normalize: true,
       width: width - 20,
       height: 40,
+      plugins: [RegionsPlugin.create({})],
     });
     wavesurfer.on('audioprocess', (time) => {
       currentPlayerTime = Utils.roundToNDecimals(time, 2);
@@ -386,6 +414,7 @@
       colorMode="{noteColorMode}"
       xTicks="{xTicks}"
       bind:currentTimeInBeats="{currentTimeInBeats}"
+      bind:selectionEndTime="{selectionEndTime}"
     />
   {/if}
 

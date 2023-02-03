@@ -13,6 +13,7 @@
   // export let opacityMode;
   export let xTicks;
   export let currentTimeInBeats;
+  export let selectionEndTime = null;
   export let width = 800;
   export let height = 50;
 
@@ -20,7 +21,10 @@
   let legendContainer;
   let plot;
 
+  let isBrushing = false;
+
   // note colors
+  // TODO: only compute when notes change
   let noteColor;
   let noteColorType;
   let noteColorTickFormat;
@@ -44,13 +48,15 @@
     } else if (colorMode === 'velocity') {
       noteColor = (d, i) => notes[i].velocity;
       noteColorType = 'linear';
-      noteColorScheme = 'spectral';
+      noteColorScheme = 'greys';
     } else if (colorMode === 'duration') {
       noteColor = (d, i) => notes[i].end - notes[i].start;
       noteColorType = 'linear';
       noteColorScheme = 'spectral';
     }
   }
+
+  // TODO: allow to only show every nth row
 
   afterUpdate(() => {
     // note opacity
@@ -92,6 +98,14 @@
           fill: '#8886',
           r: 15,
         }),
+        // Selection
+        selectionEndTime &&
+          Plot.dot([selectionEndTime], {
+            x: (d) => Math.max(0, d % beats),
+            y: (d) => Math.floor(d / beats),
+            fill: '#8883',
+            r: 15,
+          }),
         // Main data
         Plot.tickX(onsetsInBeats, {
           x: (d) => d % beats,
@@ -131,7 +145,8 @@
 
     plotContainer.textContent = '';
     plotContainer.appendChild(plot);
-    plot.addEventListener('click', handleClick);
+    plot.addEventListener('mousedown', handleClick);
+    plot.addEventListener('mouseup', handleSelectionEnd);
 
     // Update legend
     const legend = plot.legend('color');
@@ -141,19 +156,45 @@
     }
   });
 
-  /**
-   * Clicking on the visualization updates the currentTimeInBeats parameter
-   * of this component and the parent component.
-   * @param {PointerEvent} e click event
-   */
-  const handleClick = (e) => {
+  const getTimeFromMouseEvent = (e) => {
     const { offsetX: x, offsetY: y } = e;
     const [min, max] = plot.scale('y').range;
     const rowCount = plot.scale('y').domain.length;
     const row = Math.floor((y / max) * rowCount);
     const xTime = plot.scale('x').invert(x);
     const time = beats * row + xTime;
-    currentTimeInBeats = time;
+    return time;
+  };
+
+  /**
+   * Clicking on the visualization updates the currentTimeInBeats parameter
+   * of this component and the parent component.
+   * @param {PointerEvent} e mousedown event
+   */
+  const handleClick = (e) => {
+    currentTimeInBeats = getTimeFromMouseEvent(e);
+    if (e.ctrlKey) {
+      isBrushing = true;
+    }
+  };
+
+  /**
+   * Clicking on the visualization updates the currentTimeInBeats parameter
+   * of this component and the parent component.
+   * @param {PointerEvent} e click event
+   */
+  const handleSelectionEnd = (e) => {
+    if (isBrushing) {
+      isBrushing = false;
+      selectionEndTime = getTimeFromMouseEvent(e);
+      if (selectionEndTime < currentTimeInBeats) {
+        const tmp = selectionEndTime;
+        selectionEndTime = currentTimeInBeats;
+        currentTimeInBeats = tmp;
+      }
+    } else {
+      selectionEndTime = null;
+    }
   };
 </script>
 
