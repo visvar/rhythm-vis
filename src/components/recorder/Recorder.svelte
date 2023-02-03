@@ -239,7 +239,6 @@
       <input
         type="text"
         placeholder="space-separated words"
-        on:input|preventDefault
         bind:value="{filterBy}"
       />
     </label>

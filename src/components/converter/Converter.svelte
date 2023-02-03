@@ -15,7 +15,6 @@
   const model = `${window.location.pathname}/spotify-basic-pitch/model.json`;
   const basicPitch = new BasicPitch(model);
   let recordings = new Map();
-  const audioCtx = new AudioContext();
   let isConverting = false;
 
   const updateRecordingList = async () => {
@@ -67,7 +66,6 @@
     let pct;
     await basicPitch.evaluateModel(
       audioBuffer,
-      // (f: number[][], o: number[][], c: number[][]) => {
       (f, o, c) => {
         frames.push(...f);
         onsets.push(...o);
@@ -77,10 +75,27 @@
         pct = p;
       }
     );
+    // TODO: choose good params, see https://github.com/spotify/basic-pitch-ts/blob/main/src/toMidi.ts
+    // onsetThresh: minimum amplitude of an onset activation to be considered an onset
+    const onsetThresh = 0.25;
+    // frameThresh: minimum amplitude of a frame activation for a note to remain "on"
+    const frameThresh = 0.25;
+    // minNoteLen: minimum allowed note length in frames
+    const minNoteLen = 5;
+    // inferOnsets: if True, add additional onsets when there are large differences in frame amplitudes
+    const inferOnsets = true;
+    // maxFreq: maximum allowed output frequency, in Hz
+    const maxFreq = null;
+    // minFreq: minimum allowed output frequency, in Hz
+    const minFreq = null;
+    // melodiaTrick: remove semitones near a peak
+    const melodiaTrick = true;
+    // energyTolerance: number of frames allowed to drop below 0
+    const energyTolerance = 1;
     const notes = noteFramesToTime(
       addPitchBendsToNoteEvents(
         contours,
-        outputToNotesPoly(frames, onsets, 0.25, 0.25, 5)
+        outputToNotesPoly(frames, onsets, onsetThresh, frameThresh, minNoteLen)
       )
     );
     // convert note format to fit Recorder's
