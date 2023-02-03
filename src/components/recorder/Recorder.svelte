@@ -158,7 +158,7 @@
   };
 
   const writeFile = async (name, data) => {
-    console.log(`Writing ${name}`);
+    // console.log(`Writing ${name}`);
     if (await fileExists(dataDirectoryHandle, name)) {
       alert(`File ${name} already exists`);
       return;
@@ -200,7 +200,7 @@
 
 <main bind:clientWidth="{width}">
   <h2>Recorder</h2>
-  <div>Currently <b>{recCount}</b> recordings</div>
+  <div>Currently, you have <b>{recCount}</b> recordings</div>
 
   <div>
     Your Name:
