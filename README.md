@@ -102,8 +102,9 @@ Python
 - pretty_midi for MIDI file handling
 - basic_pitch for audio to MIDI conversion
 - auditok for silence detection
--
 
+
+JavaScript
 - d3
 - osmd
 - svelte

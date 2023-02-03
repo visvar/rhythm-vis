@@ -4,6 +4,7 @@
   import { downloadTextFile } from '../../lib/download';
 
   export let exercise;
+  export let exerciseXml = null;
   export let showDownloadButton = true;
 
   let container;
@@ -51,9 +52,13 @@
   });
 
   const displaySheet = async () => {
-    if (exercise) {
+    if (exerciseXml) {
+      stringXml = exerciseXml;
+    } else if (exercise) {
       const url = window.location.pathname;
       stringXml = await (await fetch(`${url}/musicxml/${exercise}.xml`)).text();
+    }
+    if (stringXml) {
       const cleaned = cleanXml(stringXml);
       await osmd.load(cleaned);
       await osmd.render();

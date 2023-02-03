@@ -3,12 +3,14 @@
   import * as Plot from '@observablehq/plot';
   import { afterUpdate } from 'svelte';
   import { Midi } from 'musicvis-lib';
+  // import { max } from 'd3';
 
   export let notes;
   export let onsetsInBeats;
   export let beats;
   export let contextBeats;
   export let colorMode;
+  // export let opacityMode;
   export let xTicks;
   export let currentTimeInBeats;
   export let width = 800;
@@ -18,11 +20,12 @@
   let legendContainer;
   let plot;
 
-  afterUpdate(() => {
-    let noteColor;
-    let noteColorType;
-    let noteColorTickFormat;
-    let noteColorScheme;
+  // note colors
+  let noteColor;
+  let noteColorType;
+  let noteColorTickFormat;
+  let noteColorScheme;
+  $: {
     if (colorMode === 'none') {
       noteColor = 'black';
     } else if (colorMode === 'chroma') {
@@ -47,6 +50,18 @@
       noteColorType = 'linear';
       noteColorScheme = 'spectral';
     }
+  }
+
+  afterUpdate(() => {
+    // note opacity
+    // let opacity = (d) => 1;
+    // if (opacityMode === 'velocity') {
+    //   opacity = (d) => d.velocity;
+    // }
+    // if (opacityMode === 'duration') {
+    //   const maxDuration = max(notes, (d) => d.duration);
+    //   opacity = (d) => d.duration / maxDuration;
+    // }
     plot = Plot.plot({
       width,
       marginTop: 2,
@@ -83,6 +98,7 @@
           y: (d) => Math.floor(d / beats),
           stroke: noteColor,
           strokeWidth: 2,
+          // strokeOpacity: opacity,
         }),
         // Context on the right
         Plot.tickX(

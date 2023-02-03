@@ -7,7 +7,7 @@
   import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
   import MainPlot from './MainPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
-  import { group } from 'd3';
+  import { group, some } from 'd3';
   import SheetMusic from '../common/SheetMusic.svelte';
   import PianoRoll from '../common/PianoRoll.svelte';
   import { readJsonFile } from '../../lib/files';
@@ -32,10 +32,12 @@
 
   // config
   let exercise;
+  let midiSource = 'recorded';
   let bpm = 120;
   let beats = 4;
   let contextBeats = 1;
   let noteColorMode = 'none';
+  // let noteOpacityMode = 'none';
   let xTicks = 1;
   $: spb = Utils.bpmToSecondsPerBeat(bpm);
 
@@ -45,8 +47,23 @@
   $: currentAdjustedTime = currentPlayerTime + timeAlignment;
   $: currentTimeInBeats = currentAdjustedTime / spb;
 
+  $: {
+    if (wavesurfer) {
+      // when interacting with visualization, jump to same place in audio
+      const time = currentTimeInBeats * spb;
+      const duration = wavesurfer.getDuration();
+      if (duration > 0 && !wavesurfer.isPlaying()) {
+        const position = time / duration;
+        // console.log(currentTimeInBeats, time, duration, position);
+        wavesurfer.seekTo(position);
+      }
+    }
+  }
+
   // data
   let recordings = new Map();
+  let sortBy = 'date';
+  let filterBy = '';
   let currentRecName;
   let notes = [];
   let metroClicks = [];
@@ -69,8 +86,11 @@
       return;
     }
     for (const file of files) {
-      if (file.name.endsWith('.rec.json')) {
-        // notes
+      if (midiSource === 'converted' && file.name.endsWith('.conv.rec.json')) {
+        // notes from converter
+        notes = await readJsonFile(file.handle);
+      } else if (midiSource === 'recorded' && file.name.endsWith('.rec.json')) {
+        // notes from recorder
         notes = await readJsonFile(file.handle);
       } else if (file.name.endsWith('.clicks.json')) {
         // metronome clicks
@@ -112,7 +132,7 @@
   };
 
   const playPauseOnSpaceBar = (e) => {
-    if (e.key === ' ') {
+    if (e.key === ' ' && wavesurfer) {
       wavesurfer.playPause();
     }
   };
@@ -124,10 +144,7 @@
       files.push({ name: key, handle: value });
     }
     // group by recording name, to get all files that the belong to the same recording
-    const grouped = group(files, (d) =>
-      d.name.substring(0, d.name.indexOf('.'))
-    );
-    recordings = grouped;
+    recordings = group(files, (d) => d.name.substring(0, d.name.indexOf('.')));
   };
 
   const setupWavesurfer = () => {
@@ -149,14 +166,6 @@
       const time = wavesurfer.getCurrentTime();
       currentPlayerTime = time;
     });
-    // Move time cursor to first note when audio loaded
-    // wavesurfer.on('ready', () => {
-    //   // const startTime = notes[0].start;
-    //   // const duration = wavesurfer.getDuration();
-    //   // wavesurfer.seekTo(startTime / duration);
-    //   // currentPlayerTime = startTime;
-    //   wavesurfer.seekTo(timeAlignment);
-    // });
   };
 
   onMount(() => {
@@ -170,6 +179,30 @@
     document.removeEventListener('keydown', playPauseOnSpaceBar);
     wavesurfer.destroy();
   });
+
+  /**
+   * Sorts recordings for the select options
+   * @param {string[]} recordingNames recording names
+   * @param {string} by sorty by...
+   */
+  const sortRecs = (recordingNames, by) => {
+    // const [ins, exc, rhy, tem, clk, per, dat] = fileName.split('_');
+    if (by === 'name') {
+      recordingNames.sort();
+    } else if (by === 'date') {
+      recordingNames.sort((a, b) =>
+        a.split('_')[6] < b.split('_')[6] ? 1 : -1
+      );
+    }
+    return [...recordingNames];
+  };
+
+  const filterRecs = (recordingNames, by) => {
+    const search = by.split(/\s+/);
+    return [
+      ...recordingNames.filter((d) => some(search, (s) => d.includes(s))),
+    ];
+  };
 </script>
 
 <main>
@@ -179,10 +212,25 @@
     Recording:
     <select on:input="{(e) => handleFileSelect(e.target.value)}">
       <option value="" disabled selected>select a recording</option>
-      {#each [...recordings.keys()] as recName}
-        <option value="{recName}">{recName}</option>
+      {#each sortRecs(filterRecs([...recordings.keys()], filterBy), sortBy) as rName}
+        <option value="{rName}">{rName}</option>
       {/each}
     </select>
+  </label>
+  <label>
+    Sort:
+    <select bind:value="{sortBy}">
+      <option value="name">name</option>
+      <option value="date">date</option>
+    </select>
+  </label>
+  <label>
+    Filter:
+    <input
+      type="text"
+      placeholder="space-separated words"
+      bind:value="{filterBy}"
+    />
   </label>
 
   <MultiSelect options="{views}" bind:values="{currentViews}" label="Views:" />
@@ -217,17 +265,13 @@
     />
   </label> -->
 
-  <!-- <label>
-    tempo in BPM
-    <input
-      bind:value="{bpm}"
-      type="number"
-      min="1"
-      max="500"
-      step="1"
-      style="width: 50px"
-    />
-  </label> -->
+  <select
+    bind:value="{midiSource}"
+    on:change="{() => handleFileSelect(currentRecName)}"
+  >
+    <option value="recorded">recorded</option>
+    <option value="converted">converted</option>
+  </select>
 
   <label title="Number of beats per row">
     beats per row
@@ -253,14 +297,23 @@
     />
   </label>
 
-  <label>
-    note color
+  <label title="Note color mode">
+    color
     <select bind:value="{noteColorMode}">
       {#each ['none', 'chroma', 'pitch', 'channel', 'velocity', 'duration'] as value}
         <option value="{value}">{value}</option>
       {/each}
     </select>
   </label>
+
+  <!-- <label title="Note opacity mode">
+    opacity
+    <select bind:value="{noteOpacityMode}">
+      {#each ['none', 'velocity', 'duration'] as value}
+        <option value="{value}">{value}</option>
+      {/each}
+    </select>
+  </label> -->
 
   <label>
     x axis ticks
@@ -332,7 +385,7 @@
       contextBeats="{contextBeats}"
       colorMode="{noteColorMode}"
       xTicks="{xTicks}"
-      currentTimeInBeats="{currentTimeInBeats}"
+      bind:currentTimeInBeats="{currentTimeInBeats}"
     />
   {/if}
 

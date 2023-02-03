@@ -5,8 +5,9 @@
   import MidiIndicator from './components/setup/MidiIndicator.svelte';
   import VolumeMeter from './components/setup/VolumeMeter.svelte';
   import Help from './components/help/Help.svelte';
+  import Converter from './components/converter/Converter.svelte';
 
-  const views = ['Recording', 'Analysis', 'Setup', 'Help'];
+  const views = ['Recording', 'Analysis', 'Setup', 'Converter', 'Help'];
   let view = localStorage.getItem('view') ?? 'Recording';
   $: {
     localStorage.setItem('view', view);
@@ -22,7 +23,6 @@
   let dataDirectoryHandle = null;
   const selectDir = async () => {
     const handle = await window.showDirectoryPicker();
-    console.log(handle);
     if (!handle) {
       return;
     }
@@ -46,6 +46,8 @@
       <h2>Setup</h2>
       <VolumeMeter />
       <MidiIndicator />
+    {:else if view === 'Converter'}
+      <Converter dataDirectoryHandle="{dataDirectoryHandle}" />
     {:else}
       <Help />
     {/if}

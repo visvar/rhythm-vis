@@ -8,15 +8,18 @@
   import PianoRoll from '../common/PianoRoll.svelte';
   import { WebMidi } from 'webmidi';
   import * as d3 from 'd3';
-  import { group } from 'd3';
+  import { group, some } from 'd3';
   import { fileExists } from '../../lib/files';
 
   export let dataDirectoryHandle = null;
 
   const exercises = [
     // Run preprocessing/exercise-summary.py for a list
+    'any-instrument_empty_exercise',
     'drum_snare_eighths-to-eighth-triplets',
     'drum_snare_eighths-to-quarter-quintuplets',
+    'drum_song-1_mixed-notes',
+    'drum_song-2_mixed-notes',
     'guitar_a-minor-pentatonic_eighths',
     'guitar_a-minor_eighths',
     'guitar_chords-f7_halfs',
@@ -27,6 +30,7 @@
     'guitar_single-notes_eighths-to-eighth-triplets',
     'piano_c-major_eighths',
   ];
+  let filterBy = '';
 
   let width;
   // Recorders
@@ -76,6 +80,7 @@
   };
 
   onMount(async () => {
+    updateRecCount();
     // enable MIDI and audio access
     try {
       audioRecorder = await recordAudio();
@@ -90,7 +95,6 @@
       console.error('Cannot enable MIDI recording');
       console.error(e);
     }
-    updateRecCount();
   });
 
   const start = () => {
@@ -196,6 +200,11 @@
       input.removeListener();
     }
   });
+
+  const filterExecises = (names, by) => {
+    const search = by.split(/\s+/);
+    return [...names.filter((d) => some(search, (s) => d.includes(s)))];
+  };
 </script>
 
 <main bind:clientWidth="{width}">
@@ -220,10 +229,18 @@
         on:input="{(e) => localStorage.setItem('exercise', e.target.value)}"
       >
         <option value="" disabled>select an exercise</option>
-        {#each exercises as ex}
+        {#each filterExecises(exercises, filterBy) as ex}
           <option value="{ex}">{ex}</option>
         {/each}
       </select>
+    </label>
+    <label>
+      Filter:
+      <input
+        type="text"
+        placeholder="space-separated words"
+        bind:value="{filterBy}"
+      />
     </label>
   </div>
 
