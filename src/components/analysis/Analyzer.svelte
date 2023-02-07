@@ -1,5 +1,5 @@
 <script>
-  import { Utils } from 'musicvis-lib';
+  import { MusicPiece, Utils } from 'musicvis-lib';
   import WaveSurfer from 'wavesurfer.js';
   import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions';
   import { onDestroy, onMount } from 'svelte';
@@ -8,12 +8,11 @@
   import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
   import MainPlot from './MainPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
-  import { group, some } from 'd3';
+  import { group, max, some } from 'd3';
   import SheetMusic from '../common/SheetMusic.svelte';
   import PianoRoll from '../common/PianoRoll.svelte';
   import { readJsonFile } from '../../lib/files';
   import MultiSelect from '../common/MultiSelect.svelte';
-  import { MusicSheetReadingException } from 'opensheetmusicdisplay';
 
   export let dataDirectoryHandle = null;
 
@@ -34,6 +33,7 @@
 
   // config
   let exercise;
+  let exerciseXml;
   let midiSource = 'recorded';
   let bpm = 120;
   let beats = 4;
@@ -41,10 +41,29 @@
   let noteColorMode = 'none';
   // let noteOpacityMode = 'none';
   let xTicks = 1;
+  const loadExerciseXml = async (exercise) => {
+    // load exercise XML when exercise changes
+    const url = window.location.pathname;
+    return await (await fetch(`${url}/musicxml/${exercise}.xml`)).text();
+  };
+  $: {
+    if (exercise) {
+      loadExerciseXml(exercise).then((xml) => {
+        // get number of beats from exercise
+        const mp = MusicPiece.fromMusicXml('ex', xml);
+        console.log(mp);
+        const quartersPerBar = mp.timeSignatures[0].signature[0];
+        const barCount = max(mp.xmlMeasureIndices) + 1;
+        exerciseXml = xml;
+        beats = barCount * quartersPerBar;
+      });
+    }
+  }
   $: spb = Utils.bpmToSecondsPerBeat(bpm);
 
   // player etc
   let currentPlayerTime = 0;
+  // adjust for delayed recording start by shifting notes
   let timeAlignment = 0;
   $: currentAdjustedTime = currentPlayerTime + timeAlignment;
   $: currentTimeInBeats = currentAdjustedTime / spb;
@@ -264,7 +283,11 @@
   <MultiSelect options="{views}" bind:values="{currentViews}" label="Views:" />
 
   {#if currentViews.has('Exercise')}
-    <SheetMusic exercise="{exercise}" showDownloadButton="{false}" />
+    <SheetMusic
+      exercise="{exercise}"
+      exerciseXml="{exerciseXml}"
+      showDownloadButton="{false}"
+    />
   {/if}
   {#if currentViews.has('Time diff.')}
     <DeltaTimeHistogramPlot width="{width}" deltas="{deltas}" />
