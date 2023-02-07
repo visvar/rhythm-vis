@@ -31,7 +31,13 @@
     'Main',
     'Aggregated',
   ];
-  let currentViews = new Set(['Exercise', 'Waveform', 'Histogram', 'Main']);
+  let currentViews = new Set([
+    'Exercise',
+    'Waveform',
+    'Histogram',
+    'Main',
+    'Aggregated',
+  ]);
 
   // config
   let exercise;
@@ -96,7 +102,14 @@
       if (duration > 0 && !wavesurfer.isPlaying()) {
         const position = time / duration;
         // console.log(currentTimeInBeats, time, duration, position);
-        wavesurfer.seekTo(position);
+        try {
+          wavesurfer.seekTo(position);
+        } catch (e) {
+          console.warn(e);
+          console.log(
+            `Wavesurfer cannot seek to ${position}, for time ${time} and duration ${duration}`
+          );
+        }
       }
     }
   }

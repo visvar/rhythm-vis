@@ -71,7 +71,7 @@
     plot = Plot.plot({
       width,
       marginTop: 2,
-      marginBottom: 16,
+      marginBottom: 18,
       grid: true,
       style: {
         background: 'none',
