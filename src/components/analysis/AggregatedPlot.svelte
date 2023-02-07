@@ -1,28 +1,15 @@
 <script>
   import * as Plot from '@observablehq/plot';
-  import { groups, max } from 'd3';
+  import { max } from 'd3';
   import { afterUpdate } from 'svelte';
-  import HistogramPlot from './HistogramPlot.svelte';
-  import TickPlot from './TickPlot.svelte';
 
   export let onsetsInBeats;
   export let beats = 4;
-  export let contextBeats = 0;
   export let binsPerBeat = 20;
   export let width = 800;
 
   let groupSize = 4;
   let mode = 'histogram';
-
-  let rows = [];
-  $: {
-    // group <groupSize> repetitions together
-    rows = groups(onsetsInBeats, (d) => Math.floor(d / beats / groupSize)).map(
-      (d) => d
-    );
-    console.log(rows);
-  }
-
   let plotContainer;
 
   afterUpdate(() => {
@@ -45,7 +32,7 @@
       facet: {
         data: onsetsInBeats,
         y: (d) => Math.floor(d / beats / groupSize),
-        margin: 2,
+        marginBottom: 10,
       },
       marks: [
         mode === 'histogram'
@@ -70,6 +57,7 @@
 </script>
 
 <main>
+  <h4>Aggregated Repetitions</h4>
   <label title="Number of rows that will be aggregated into each summary row">
     group size
     <input
@@ -87,21 +75,4 @@
   </select>
 
   <div bind:this="{plotContainer}" width="{width}px"></div>
-  <!-- {#if mode === 'Histogram'}
-    <HistogramPlot
-      width="{width}"
-      values="{onsetsInBeats}"
-      beats="{beats}"
-      contextBeats="{contextBeats}"
-      binsPerBeat="{binsPerBeat}"
-    />
-  {/if}
-  {#if mode === 'Ticks'}
-    <TickPlot
-      width="{width}"
-      values="{onsetsInBeats}"
-      beats="{beats}"
-      contextBeats="{contextBeats}"
-    />
-  {/if} -->
 </main>

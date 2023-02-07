@@ -446,7 +446,6 @@
     <AggregatedPlot
       onsetsInBeats="{onsetsInBeats}"
       beats="{beats}"
-      contextBeats="{contextBeats}"
       width="{width}"
     />
   {/if}
