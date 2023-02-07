@@ -3,9 +3,9 @@
   import { afterUpdate } from 'svelte';
 
   export let values;
-  export let xLabel;
+  export let xLabel = 'beats';
   export let beats;
-  export let contextBeats;
+  export let contextBeats = 0;
   export let width = 800;
   export let height = 50;
 

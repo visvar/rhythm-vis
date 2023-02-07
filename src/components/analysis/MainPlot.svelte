@@ -3,12 +3,11 @@
   import * as Plot from '@observablehq/plot';
   import { afterUpdate } from 'svelte';
   import { Midi } from 'musicvis-lib';
-  // import { max } from 'd3';
 
   export let notes;
   export let onsetsInBeats;
   export let beats;
-  export let contextBeats;
+  export let contextBeats = 0;
   export let colorMode;
   // export let opacityMode;
   export let xTicks;
@@ -24,7 +23,6 @@
   let isBrushing = false;
 
   // note colors
-  // TODO: only compute when notes change
   let noteColor;
   let noteColorType;
   let noteColorTickFormat;
@@ -40,23 +38,25 @@
     } else if (colorMode === 'pitch') {
       noteColor = (d, i) => notes[i].pitch;
       noteColorType = 'ordinal';
+      noteColorTickFormat = (d) => d;
       noteColorScheme = 'spectral';
     } else if (colorMode === 'channel') {
       noteColor = (d, i) => notes[i].channel;
       noteColorType = 'ordinal';
+      noteColorTickFormat = (d) => d;
       noteColorScheme = 'tableau10';
     } else if (colorMode === 'velocity') {
       noteColor = (d, i) => notes[i].velocity;
       noteColorType = 'linear';
+      noteColorTickFormat = (d) => d;
       noteColorScheme = 'greys';
     } else if (colorMode === 'duration') {
       noteColor = (d, i) => notes[i].end - notes[i].start;
       noteColorType = 'linear';
+      noteColorTickFormat = (d) => d;
       noteColorScheme = 'spectral';
     }
   }
-
-  // TODO: allow to only show every nth row
 
   afterUpdate(() => {
     // note opacity
@@ -201,6 +201,7 @@
 <main width="{width}px">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
   <div bind:this="{legendContainer}" width="{width}px"></div>
+  <i>Select a time span by pressing CTRL and draging the mouse.</i>
 </main>
 
 <style>

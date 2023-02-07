@@ -7,6 +7,7 @@
   import TickPlot from './TickPlot.svelte';
   import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
   import MainPlot from './MainPlot.svelte';
+  import AggregatedPlot from './AggregatedPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
   import { group, max, some } from 'd3';
   import SheetMusic from '../common/SheetMusic.svelte';
@@ -28,6 +29,7 @@
     'Histogram',
     'Ticks',
     'Main',
+    'Aggregated',
   ];
   let currentViews = new Set(['Exercise', 'Waveform', 'Histogram', 'Main']);
 
@@ -51,7 +53,6 @@
       loadExerciseXml(exercise).then((xml) => {
         // get number of beats from exercise
         const mp = MusicPiece.fromMusicXml('ex', xml);
-        console.log(mp);
         const quartersPerBar = mp.timeSignatures[0].signature[0];
         const barCount = max(mp.xmlMeasureIndices) + 1;
         exerciseXml = xml;
@@ -438,6 +439,15 @@
       xTicks="{xTicks}"
       bind:currentTimeInBeats="{currentTimeInBeats}"
       bind:selectionEndTime="{selectionEndTime}"
+    />
+  {/if}
+
+  {#if currentViews.has('Aggregated')}
+    <AggregatedPlot
+      onsetsInBeats="{onsetsInBeats}"
+      beats="{beats}"
+      contextBeats="{contextBeats}"
+      width="{width}"
     />
   {/if}
 
