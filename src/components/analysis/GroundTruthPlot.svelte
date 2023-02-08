@@ -6,22 +6,16 @@
 
   export let notes;
   export let onsetsInBeats;
-  export let exerciseNoteOnsetsInBeats;
   export let beats;
   export let contextBeats = 0;
   export let colorMode;
-  // export let opacityMode;
   export let xTicks;
   export let currentTimeInBeats = 0;
-  export let selectionEndTime = null;
   export let width = 800;
   export let height = 50;
 
   let plotContainer;
-  let legendContainer;
   let plot;
-
-  let isBrushing = false;
 
   // note colors
   let noteColor;
@@ -62,21 +56,13 @@
   afterUpdate(() => {
     let xTickValues;
     if (xTicks === 'exercise') {
-      xTickValues = exerciseNoteOnsetsInBeats;
+      xTickValues = onsetsInBeats;
     } else {
       xTickValues = d3.range(-contextBeats, beats + contextBeats, xTicks);
     }
-    // note opacity
-    // let opacity = (d) => 1;
-    // if (opacityMode === 'velocity') {
-    //   opacity = (d) => d.velocity;
-    // }
-    // if (opacityMode === 'duration') {
-    //   const maxDuration = max(notes, (d) => d.duration);
-    //   opacity = (d) => d.duration / maxDuration;
-    // }
     plot = Plot.plot({
       width,
+      height: 50,
       marginTop: 2,
       marginBottom: 18,
       grid: true,
@@ -106,14 +92,6 @@
           fill: '#8886',
           r: 15,
         }),
-        // Selection
-        selectionEndTime &&
-          Plot.dot([selectionEndTime], {
-            x: (d) => Math.max(0, d % beats),
-            y: (d) => Math.floor(d / beats),
-            fill: '#8883',
-            r: 15,
-          }),
         // Main data
         Plot.tickX(onsetsInBeats, {
           x: (d) => d % beats,
@@ -153,63 +131,11 @@
 
     plotContainer.textContent = '';
     plotContainer.appendChild(plot);
-    plot.addEventListener('mousedown', handleClick);
-    plot.addEventListener('mouseup', handleSelectionEnd);
-
-    // Update legend
-    const legend = plot.legend('color');
-    legendContainer.textContent = '';
-    if (legend) {
-      legendContainer.appendChild(legend);
-    }
   });
-
-  const getTimeFromMouseEvent = (e) => {
-    const { offsetX: x, offsetY: y } = e;
-    const [min, max] = plot.scale('y').range;
-    const rowCount = plot.scale('y').domain.length;
-    const row = Math.floor((y / max) * rowCount);
-    const xTime = plot.scale('x').invert(x);
-    const time = beats * row + xTime;
-    return time;
-  };
-
-  /**
-   * Clicking on the visualization updates the currentTimeInBeats parameter
-   * of this component and the parent component.
-   * @param {PointerEvent} e mousedown event
-   */
-  const handleClick = (e) => {
-    currentTimeInBeats = getTimeFromMouseEvent(e);
-    if (e.ctrlKey) {
-      isBrushing = true;
-    }
-  };
-
-  /**
-   * Clicking on the visualization updates the currentTimeInBeats parameter
-   * of this component and the parent component.
-   * @param {PointerEvent} e click event
-   */
-  const handleSelectionEnd = (e) => {
-    if (isBrushing) {
-      isBrushing = false;
-      selectionEndTime = getTimeFromMouseEvent(e);
-      if (selectionEndTime < currentTimeInBeats) {
-        const tmp = selectionEndTime;
-        selectionEndTime = currentTimeInBeats;
-        currentTimeInBeats = tmp;
-      }
-    } else {
-      selectionEndTime = null;
-    }
-  };
 </script>
 
 <main width="{width}px">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
-  <div bind:this="{legendContainer}" width="{width}px"></div>
-  <i>Select a time span by pressing CTRL and draging the mouse.</i>
 </main>
 
 <style>

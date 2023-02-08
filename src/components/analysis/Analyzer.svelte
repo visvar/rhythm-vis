@@ -14,6 +14,7 @@
   import PianoRoll from '../common/PianoRoll.svelte';
   import { readJsonFile } from '../../lib/files';
   import MultiSelect from '../common/MultiSelect.svelte';
+  import GroundTruthPlot from './GroundTruthPlot.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -25,7 +26,7 @@
     'Time diff.',
     'Durations',
     'Piano roll',
-    // 'Waveform',
+    'Ground truth',
     'Histogram',
     'Ticks',
     'Main',
@@ -34,6 +35,7 @@
   let currentViews = new Set([
     'Exercise',
     'Waveform',
+    'Ground truth',
     'Histogram',
     'Main',
     'Aggregated',
@@ -42,6 +44,8 @@
   // config
   let exercise;
   let exerciseXml;
+  let exerciseNotes;
+  let exerciseNoteOnsetsInBeats = [];
   let midiSource = 'recorded';
   let bpm = 120;
   let beats = 4;
@@ -52,18 +56,31 @@
   const loadExerciseXml = async (exercise) => {
     // load exercise XML when exercise changes
     const url = window.location.pathname;
-    return await (await fetch(`${url}/musicxml/${exercise}.xml`)).text();
+    exerciseXml = await (await fetch(`${url}/musicxml/${exercise}.xml`)).text();
+    // get number of beats from exercise
+    const mp = MusicPiece.fromMusicXml('ex', exerciseXml);
+    const quartersPerBar = mp.timeSignatures[0].signature[0];
+    const barCount = max(mp.xmlMeasureIndices) + 1;
+    beats = barCount * quartersPerBar;
+    contextBeats = Math.ceil(beats / 8);
+    // get notes from exercise and scale to current bpm
+    const durationWithoutRep = beats * Utils.bpmToSecondsPerBeat(120);
+    const tempoFactor = mp.tempos[0].bpm / bpm;
+    exerciseNotes = mp.tracks[0].notes
+      .filter((d) => d.start < durationWithoutRep)
+      .map((d) => {
+        return {
+          ...d,
+          start: d.start * tempoFactor,
+          end: d.end * tempoFactor,
+          duration: (d.end - d.start) * tempoFactor,
+        };
+      });
+    exerciseNoteOnsetsInBeats = exerciseNotes.map((d) => d.start / spb);
   };
   $: {
     if (exercise) {
-      loadExerciseXml(exercise).then((xml) => {
-        // get number of beats from exercise
-        const mp = MusicPiece.fromMusicXml('ex', xml);
-        const quartersPerBar = mp.timeSignatures[0].signature[0];
-        const barCount = max(mp.xmlMeasureIndices) + 1;
-        exerciseXml = xml;
-        beats = barCount * quartersPerBar;
-      });
+      loadExerciseXml(exercise);
     }
   }
   $: spb = Utils.bpmToSecondsPerBeat(bpm);
@@ -78,7 +95,6 @@
   $: {
     setRegion(selectionEndTime);
   }
-
   const setRegion = (selectionEndTime) => {
     if (wavesurfer) {
       wavesurfer.clearRegions();
@@ -391,6 +407,7 @@
       <option value="{1 / 6}">sextuplets</option>
       <option value="{1 / 7}">septuplets</option>
       <option value="{1 / 8}">eighth-beats</option>
+      <option value="exercise">exercise</option>
     </select>
   </label>
 
@@ -441,11 +458,24 @@
       xLabel="beats"
     />
   {/if}
+  {#if currentViews.has('Ground truth')}
+    <GroundTruthPlot
+      width="{width}"
+      notes="{exerciseNotes}"
+      onsetsInBeats="{exerciseNoteOnsetsInBeats}"
+      beats="{beats}"
+      contextBeats="{contextBeats}"
+      colorMode="{noteColorMode}"
+      xTicks="{xTicks}"
+      currentTimeInBeats="{currentTimeInBeats % beats}"
+    />
+  {/if}
   {#if currentViews.has('Main')}
     <MainPlot
       width="{width}"
       notes="{notes}"
       onsetsInBeats="{onsetsInBeats}"
+      exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
       beats="{beats}"
       contextBeats="{contextBeats}"
       colorMode="{noteColorMode}"

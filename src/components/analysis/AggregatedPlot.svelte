@@ -14,63 +14,66 @@
   let binsPerBeat = 20;
 
   afterUpdate(() => {
-    // mark mode
-    let mark;
-    if (mode === 'histogram') {
-      // histogram for each group
-      mark = Plot.rectY(
-        onsetsInBeats,
-        Plot.binX(
-          { y: 'count', thresholds: binsPerBeat * beats },
-          { x: (d) => d % beats, fill: 'black' }
-        )
-      );
-    } else if (mode === 'ticks') {
-      // semi-transparent ticks for each group
-      mark = Plot.tickX(onsetsInBeats, {
-        x: (d) => d % beats,
-        stroke: 'black',
-        opacity: 0.1,
-        strokeWidth: 2,
-      });
-    } else if (mode === 'last') {
-      // opaque ticks for the last row of each group
-      mark = Plot.tickX(onsetsInBeats, {
-        filter: (d) => {
-          const row = Math.floor(d / beats);
-          return row % groupSize === groupSize - 1;
-        },
-        x: (d) => d % beats,
-        stroke: 'black',
-        strokeWidth: 2,
-      });
-    }
-    // plot
-    const plot = Plot.plot({
-      width,
-      height:
-        mode === 'ticks'
-          ? undefined
-          : Math.floor(max(onsetsInBeats, (d) => d / beats / groupSize)) * 41 +
-            35,
-      marginTop: 5,
-      marginBottom: 30,
-      style: {
-        background: 'none',
-      },
-      grid: true,
-      x: { label: 'beats' },
-      // y: { label: 'frequency' },
-      facet: {
-        data: onsetsInBeats,
-        y: (d) => Math.floor(d / beats / groupSize),
-        marginBottom: 10,
-      },
-      marks: [mark],
-    });
-
     plotContainer.textContent = '';
-    plotContainer.appendChild(plot);
+
+    if (onsetsInBeats.length > 0) {
+      // mark mode
+      let mark;
+      if (mode === 'histogram') {
+        // histogram for each group
+        mark = Plot.rectY(
+          onsetsInBeats,
+          Plot.binX(
+            { y: 'count', thresholds: binsPerBeat * beats },
+            { x: (d) => d % beats, fill: 'black' }
+          )
+        );
+      } else if (mode === 'ticks') {
+        // semi-transparent ticks for each group
+        mark = Plot.tickX(onsetsInBeats, {
+          x: (d) => d % beats,
+          stroke: 'black',
+          opacity: 0.1,
+          strokeWidth: 2,
+        });
+      } else if (mode === 'last') {
+        // opaque ticks for the last row of each group
+        mark = Plot.tickX(onsetsInBeats, {
+          filter: (d) => {
+            const row = Math.floor(d / beats);
+            return row % groupSize === groupSize - 1;
+          },
+          x: (d) => d % beats,
+          stroke: 'black',
+          strokeWidth: 2,
+        });
+      }
+      // plot
+      const plot = Plot.plot({
+        width,
+        height:
+          mode === 'ticks'
+            ? undefined
+            : Math.floor(max(onsetsInBeats, (d) => d / beats / groupSize)) *
+                41 +
+              35,
+        marginTop: 5,
+        marginBottom: 30,
+        style: {
+          background: 'none',
+        },
+        grid: true,
+        x: { label: 'beats' },
+        // y: { label: 'frequency' },
+        facet: {
+          data: onsetsInBeats,
+          y: (d) => Math.floor(d / beats / groupSize),
+          marginBottom: 10,
+        },
+        marks: [mark],
+      });
+      plotContainer.appendChild(plot);
+    }
   });
 </script>
 
