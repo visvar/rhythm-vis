@@ -29,7 +29,7 @@
         background: 'none',
       },
       grid: true,
-      x: { label: xLabel },
+      x: { label: xLabel, domain: [-contextBeats, beats + contextBeats] },
       y: { label: 'row' },
       marks: [
         Plot.tickX(values, {

@@ -20,13 +20,13 @@ export const recordAudio = () => {
       stream = await navigator.mediaDevices.getUserMedia({
         audio: {
           autoGainControl: false,
-          // channelCount: 2,
+          channelCount: 1,
           echoCancellation: false,
           latency: 0,
           noiseSuppression: false,
           sampleRate: 48000,
           sampleSize: 16,
-          suppressLocalAudioPlayback: false,
+          suppressLocalAudioPlayback: false
         }
       })
     } catch (error) {

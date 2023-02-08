@@ -24,7 +24,7 @@
         // color: 'white',
       },
       grid: true,
-      x: { label: xLabel },
+      x: { label: xLabel, domain: [-contextBeats, beats + contextBeats] },
       y: { label: 'frequency' },
       marks: [
         Plot.rectY(

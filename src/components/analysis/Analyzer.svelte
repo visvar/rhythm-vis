@@ -1,8 +1,6 @@
 <script>
   import { MusicPiece, Utils } from 'musicvis-lib';
-  import WaveSurfer from 'wavesurfer.js';
-  import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions';
-  import { onDestroy, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import HistogramPlot from './HistogramPlot.svelte';
   import TickPlot from './TickPlot.svelte';
   import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
@@ -15,6 +13,7 @@
   import { readJsonFile } from '../../lib/files';
   import MultiSelect from '../common/MultiSelect.svelte';
   import GroundTruthPlot from './GroundTruthPlot.svelte';
+  import AudioPlayer2 from './AudioPlayer2.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -35,10 +34,10 @@
   let currentViews = new Set([
     'Exercise',
     'Waveform',
-    'Ground truth',
+    // 'Ground truth',
     'Histogram',
     'Main',
-    'Aggregated',
+    // 'Aggregated',
   ]);
 
   // config
@@ -92,43 +91,6 @@
   $: currentAdjustedTime = currentPlayerTime + timeAlignment;
   $: currentTimeInBeats = currentAdjustedTime / spb;
   let selectionEndTime = null;
-  $: {
-    setRegion(selectionEndTime);
-  }
-  const setRegion = (selectionEndTime) => {
-    if (wavesurfer) {
-      wavesurfer.clearRegions();
-      if (selectionEndTime !== null) {
-        wavesurfer.addRegion({
-          start: currentPlayerTime,
-          end: selectionEndTime,
-          loop: true,
-          drag: false,
-          resize: false,
-        });
-      }
-    }
-  };
-
-  $: {
-    if (wavesurfer) {
-      // when interacting with visualization, jump to same place in audio
-      const time = currentTimeInBeats * spb;
-      const duration = wavesurfer.getDuration();
-      if (duration > 0 && !wavesurfer.isPlaying()) {
-        const position = time / duration;
-        // console.log(currentTimeInBeats, time, duration, position);
-        try {
-          wavesurfer.seekTo(position);
-        } catch (e) {
-          console.warn(e);
-          console.log(
-            `Wavesurfer cannot seek to ${position}, for time ${time} and duration ${duration}`
-          );
-        }
-      }
-    }
-  }
 
   // data
   let recordings = new Map();
@@ -151,7 +113,6 @@
     metroClicks = [];
     metroAccents = [];
     audio = null;
-    wavesurfer.empty();
     const files = recordings.get(recName);
     if (!files) {
       return;
@@ -186,11 +147,6 @@
     console.log(exercise, bpm);
     // timeAlignment = Utils.roundToNDecimals(notes[0]?.start ?? 0, 2);
     timeAlignment = 0;
-    try {
-      wavesurfer.loadBlob(audio);
-    } catch (e) {
-      console.error(e);
-    }
   };
 
   const deleteCurrentRecording = async () => {
@@ -207,12 +163,6 @@
     }
   };
 
-  const playPauseOnSpaceBar = (e) => {
-    if (e.key === ' ' && wavesurfer) {
-      wavesurfer.playPause();
-    }
-  };
-
   const updateRecordingList = async () => {
     // display list of recordings to analyze
     const files = [];
@@ -223,38 +173,8 @@
     recordings = group(files, (d) => d.name.substring(0, d.name.indexOf('.')));
   };
 
-  const setupWavesurfer = () => {
-    // set up wavesurfer
-    wavesurfer = WaveSurfer.create({
-      container: '#waveform',
-      waveColor: '#bbb',
-      progressColor: 'steelblue',
-      mediaControls: true,
-      normalize: true,
-      width: width - 20,
-      height: 40,
-      plugins: [RegionsPlugin.create({})],
-    });
-    wavesurfer.on('audioprocess', (time) => {
-      currentPlayerTime = Utils.roundToNDecimals(time, 2);
-    });
-    // React to interaction (brush-link)
-    wavesurfer.on('interaction', () => {
-      const time = wavesurfer.getCurrentTime();
-      currentPlayerTime = time;
-    });
-  };
-
   onMount(() => {
     updateRecordingList();
-    setupWavesurfer();
-    // play and pause with spacebar
-    document.body.addEventListener('keydown', playPauseOnSpaceBar);
-  });
-
-  onDestroy(() => {
-    document.removeEventListener('keydown', playPauseOnSpaceBar);
-    wavesurfer.destroy();
   });
 
   /**
@@ -334,17 +254,15 @@
     />
   {/if}
 
-  <!-- <label>
-    time alignment
+  <label>
+    shift by N beats
     <input
       bind:value="{timeAlignment}"
       type="number"
-      min="-10"
-      max="10"
-      step="0.01"
+      step="1"
       style="width: 60px"
     />
-  </label> -->
+  </label>
 
   <select
     bind:value="{midiSource}"
@@ -411,34 +329,14 @@
     </select>
   </label>
 
-  <!-- audio player -->
-  <div class="player">
-    <div id="waveform" style="width: {width}px"></div>
-    <div class="time-display">
-      <button
-        on:click="{() => wavesurfer.playPause()}"
-        disabled="{!audio}"
-        title="You can also use the space key"
-      >
-        play/pause
-      </button>
-      <label title="Playback rate, e.g., 1 for normal, 0.5 for half speed">
-        speed
-        <input
-          on:input="{(e) => wavesurfer.setPlaybackRate(+e.target.value)}"
-          type="number"
-          value="1"
-          min="0.1"
-          max="2"
-          step="0.1"
-          style="width: 50px"
-        />
-      </label>
-      <span>time in seconds: {currentPlayerTime.toFixed(3)}</span>
-      <!-- <span>adjusted time: {currentAdjustedTime.toFixed(3)}</span> -->
-      <span>time in beats: {currentTimeInBeats.toFixed(3)}</span>
-    </div>
-  </div>
+  <AudioPlayer2
+    width="{width}"
+    audio="{audio}"
+    bind:currentPlayerTime="{currentPlayerTime}"
+    bind:currentTimeInBeats="{currentTimeInBeats}"
+    selectionEndTime="{selectionEndTime}"
+    spb="{spb}"
+  />
 
   {#if currentViews.has('Histogram')}
     <HistogramPlot
@@ -502,24 +400,5 @@
   label {
     display: inline-block;
     margin: 0 10px;
-  }
-
-  .player {
-    margin: 2px 5px;
-    padding: 10px 25px 0 25px;
-    background: #f8f8f8;
-    border-radius: 5px;
-  }
-
-  #waveform {
-    padding: 0;
-  }
-
-  .time-display {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    justify-items: center;
-    align-items: center;
   }
 </style>
