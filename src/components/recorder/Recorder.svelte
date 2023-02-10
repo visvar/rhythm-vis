@@ -10,6 +10,7 @@
   import * as d3 from 'd3';
   import { group, some } from 'd3';
   import { fileExists } from '../../lib/files';
+  import ExerciseAudio from './ExerciseAudio.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -261,6 +262,7 @@
   </div>
 
   <SheetMusic exercise="{exercise}" />
+  <ExerciseAudio exercise="{exercise}" />
 
   <div bind:this="{metroDiv}" class="metronome">
     Metronome:
