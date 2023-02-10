@@ -17,6 +17,7 @@ class Metronome {
   #timerID = null
   #bpm = null
   #accent = 4
+  #maxBeeps = Infinity
   #startTimeStamp
   // Stores the number of the current beat (for accents)
   #beatCount = null
@@ -46,8 +47,10 @@ class Metronome {
    *
    * @param {number} bpm tempo in bpm
    * @param {number} [accent=4] accent every nth beat by changing pitch
+   * @param {number} [maxBeeps=Infinity] number of beeps to produce, can be
+   *  used for count-ins
    */
-  start(bpm, accent = 4) {
+  start(bpm, accent = 4, maxBeeps = Infinity) {
     if (!bpm || Number.isNaN(+bpm)) {
       console.error(`[Metronome] Invalid bpm ${bpm}`)
       return
@@ -56,13 +59,18 @@ class Metronome {
       console.error(`[Metronome] Invalid accent ${accent}`)
       return
     }
-    console.log(`Metronome @ ${bpm}bpm, accent every ${accent}. beat`)
+    if (!maxBeeps || Number.isNaN(+maxBeeps)) {
+      console.error(`[Metronome] Invalid maxBeeps ${maxBeeps}`)
+      return
+    }
     if (this.#audioCtx.state === 'suspended') {
       this.#audioCtx.resume()
     }
     this.#bpm = +bpm
     this.#accent = +accent
+    this.#maxBeeps = +maxBeeps
     this.#isPlaying = true
+    console.log(`Metronome @ ${bpm}bpm, accent every ${accent}. beat, limited to ${maxBeeps}`)
     // Reset state
     this.#beatCount = -1
     this.#startTimeStamp = this.#audioCtx.currentTime
@@ -108,16 +116,23 @@ class Metronome {
     let nextNotetime = this.#startTimeStamp + this.#beatCount * secondsPerBeat
     // Only schedule beats until the lookahead is reached
     while (nextNotetime < this.#audioCtx.currentTime + this.#lookAheadTime) {
-      nextNotetime += secondsPerBeat
-      // Accent on every n-th note starting with the 0th
-      const isAccent = this.#beatCount % accentNote === accentNote - 1 || this.#beatCount === -1
-      const timeToNextBeep = nextNotetime - this.#audioCtx.currentTime
-      const globalBeepTime = performance.now() + (timeToNextBeep * 1000)
-      this._playSound(nextNotetime, globalBeepTime, isAccent)
-      this.#beatCount++
+      console.log(this.#beatCount, this.#maxBeeps)
+      if (this.#beatCount < this.#maxBeeps - 1) {
+        nextNotetime += secondsPerBeat
+        // Accent on every n-th note starting with the 0th
+        const isAccent = this.#beatCount % accentNote === accentNote - 1 || this.#beatCount === -1
+        const timeToNextBeep = nextNotetime - this.#audioCtx.currentTime
+        const globalBeepTime = performance.now() + (timeToNextBeep * 1000)
+        this._playSound(nextNotetime, globalBeepTime, isAccent)
+        this.#beatCount++
+      }
     }
     // Plan next scheduler run
-    this.#timerID = setTimeout(this._scheduler, this.#scheduleTimeout)
+    if (this.#beatCount < this.#maxBeeps - 1) {
+      this.#timerID = setTimeout(this._scheduler, this.#scheduleTimeout)
+    } else {
+      this.stop()
+    }
   }
 
   /**

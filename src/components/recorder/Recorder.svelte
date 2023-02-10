@@ -64,6 +64,7 @@
   let bpm = +(localStorage.getItem('bpm') ?? 120);
   let beep = +(localStorage.getItem('beep') ?? 1);
   let accent = +(localStorage.getItem('accent') ?? 1);
+  let beepLimit = localStorage.getItem('beepLimit') ?? 'infinite';
   // Data
   let audio;
   let notes;
@@ -118,7 +119,11 @@
     audio = null;
     recordingStartTime = performance.now();
     audioRecorder.start();
-    metro.start(bpm / beep, accent);
+    metro.start(
+      bpm / beep,
+      accent,
+      beepLimit === 'infinite' ? Infinity : +beepLimit
+    );
     console.log('start', recordingStartTime);
   };
 
@@ -286,7 +291,18 @@
       max="16"
       step="1"
       style="width: 30px"
-    />. beep
+    />. beep, limit to
+    <select
+      bind:value="{beepLimit}"
+      on:input="{(e) => localStorage.setItem('beepLimit', e.target.value)}"
+    >
+      <option value="infinite">infinite</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="6">6</option>
+      <option value="8">8</option>
+    </select>
+    beeps
   </div>
 
   <div>

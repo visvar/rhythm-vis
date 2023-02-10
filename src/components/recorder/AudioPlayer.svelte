@@ -13,7 +13,7 @@
   onMount(() => {
     // https://wavesurfer-js.org/docs/options.html
     wavesurfer = WaveSurfer.create({
-      container: '#waveform-player',
+      container: '.waveform-player',
       waveColor: 'gray',
       progressColor: 'steelblue',
       width,
@@ -54,7 +54,7 @@
       <button on:click="{() => wavesurfer.playPause()}"> play/pause </button>
     </div>
   {/if}
-  <div id="waveform-player" width="{width}px"></div>
+  <div class="waveform-player" width="{width}px"></div>
 </main>
 
 <style>
