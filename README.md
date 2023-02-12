@@ -53,6 +53,8 @@ Example: guitar_a-minor-pentatonic_eights-and-triplets
 
 *Each field must not contain '_'.*
 
+*Exercises have to be 120bpm.*
+
 ### Recordings
 
 Recording naming (`<exercise>` as defined above):
