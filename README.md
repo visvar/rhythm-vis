@@ -110,6 +110,7 @@ JavaScript
 - svelte
 - Plot
 - https://github.com/cwilso/volume-meter
+- [fast-kde](https://www.npmjs.com/package/fast-kde) by Heer
 
 
 ## Trouble Shooting

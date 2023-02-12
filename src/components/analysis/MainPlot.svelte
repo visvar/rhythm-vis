@@ -59,13 +59,17 @@
     }
   }
 
-  afterUpdate(() => {
-    let xTickValues;
+  // ticks (and grid lines)
+  let xTickValues;
+  $: {
     if (xTicks === 'exercise') {
       xTickValues = exerciseNoteOnsetsInBeats;
     } else {
       xTickValues = d3.range(-contextBeats, beats + contextBeats, xTicks);
     }
+  }
+
+  afterUpdate(() => {
     // note opacity
     // let opacity = (d) => 1;
     // if (opacityMode === 'velocity') {
