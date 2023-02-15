@@ -17,6 +17,7 @@
   const exercises = [
     // Run preprocessing/exercise-summary.py for a list
     'any-instrument_empty_exercise',
+    'drum_4-4_polyrhythm',
     'drum_snare_eighths-to-eighth-triplets',
     'drum_snare_eighths-to-quarter-quintuplets',
     'drum_song-1_mixed-notes',
@@ -29,6 +30,7 @@
     'drums_4-4-snare_eighths-triplets',
     'drums_4-4-standard-halftime_eighths',
     'drums_4-4-standard-offbeat_eighths',
+    'guitar_a-blues_eighths',
     'guitar_a-minor-pentatonic_eighth-triplets',
     'guitar_a-minor-pentatonic_eighths',
     'guitar_a-minor_eighths',

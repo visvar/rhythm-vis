@@ -9,6 +9,7 @@
     export let currentPlayerTime;
     export let currentTimeInBeats;
     export let selectionEndTime;
+    export let timeAlignment;
     export let spb;
 
     let wavesurfer;
@@ -16,22 +17,26 @@
     const setupWavesurfer = () => {
         // set up wavesurfer
         wavesurfer = WaveSurfer.create({
-            container: '#waveform',
+            container: '.waveform',
             waveColor: '#bbb',
             progressColor: 'steelblue',
             mediaControls: true,
             normalize: true,
             width: width - 20,
             height: 40,
+            cursorWidth: 2,
+            loopSelection: true,
+            // splitChannels: true,
             plugins: [RegionsPlugin.create({})],
         });
+        // update global time during playback
         wavesurfer.on('audioprocess', (time) => {
-            currentPlayerTime = Utils.roundToNDecimals(time, 2);
+            currentPlayerTime = Utils.roundToNDecimals(time - timeAlignment, 2);
         });
-        // React to interaction (brush-link)
+        // react to interaction on wavesurfer
         wavesurfer.on('interaction', () => {
             const time = wavesurfer.getCurrentTime();
-            currentPlayerTime = time;
+            currentPlayerTime = time - timeAlignment;
         });
     };
 
@@ -44,7 +49,7 @@
         }
     }
 
-    // react to time span selection (by user brushing)
+    // react to time span selection (by user brushing vis)
     $: {
         setRegion(selectionEndTime);
     }
@@ -64,11 +69,11 @@
         }
     };
 
-    // react to time point selection (by user clicking)
+    // react to time point selection (by user clicking vis)
     $: {
         if (wavesurfer && !wavesurfer.isPlaying()) {
             // when interacting with visualization, jump to same place in audio
-            const time = currentTimeInBeats * spb;
+            const time = (currentTimeInBeats + timeAlignment) * spb;
             const duration = wavesurfer.getDuration();
             if (duration > 0) {
                 const position = time / duration;
@@ -104,7 +109,7 @@
 </script>
 
 <main>
-    <div id="waveform" style="width: {width}px"></div>
+    <div class="waveform" style="width: {width}px"></div>
     <div class="time-display">
         <button
             on:click="{() => wavesurfer.playPause()}"
@@ -139,7 +144,7 @@
         border-radius: 5px;
     }
 
-    #waveform {
+    .waveform {
         padding: 0;
     }
 

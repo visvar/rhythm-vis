@@ -19,7 +19,6 @@
 
   // views etc
   let width = window.innerWidth - 100;
-  let wavesurfer;
   let views = [
     'Exercise',
     'Time diff.',
@@ -88,8 +87,7 @@
   let currentPlayerTime = 0;
   // adjust for delayed recording start by shifting notes
   let timeAlignment = 0;
-  $: currentAdjustedTime = currentPlayerTime + timeAlignment;
-  $: currentTimeInBeats = currentAdjustedTime / spb;
+  $: currentTimeInBeats = currentPlayerTime / spb;
   let selectionEndTime = null;
 
   // data
@@ -259,7 +257,7 @@
     <input
       bind:value="{timeAlignment}"
       type="number"
-      step="1"
+      step="0.1"
       style="width: 60px"
     />
   </label>
@@ -334,6 +332,7 @@
     audio="{audio}"
     bind:currentPlayerTime="{currentPlayerTime}"
     bind:currentTimeInBeats="{currentTimeInBeats}"
+    timeAlignment="{timeAlignment}"
     selectionEndTime="{selectionEndTime}"
     spb="{spb}"
   />
