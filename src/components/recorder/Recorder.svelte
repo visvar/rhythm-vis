@@ -264,7 +264,7 @@
   </div>
 
   <SheetMusic exercise="{exercise}" />
-  <ExerciseAudio exercise="{exercise}" />
+  <ExerciseAudio exercise="{exercise}" bpm="{bpm}" />
 
   <div bind:this="{metroDiv}" class="metronome">
     Metronome:

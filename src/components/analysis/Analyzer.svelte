@@ -14,6 +14,7 @@
   import MultiSelect from '../common/MultiSelect.svelte';
   import GroundTruthPlot from './GroundTruthPlot.svelte';
   import AudioPlayer2 from './AudioPlayer2.svelte';
+  import DensityPlot from './DensityPlot.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -27,6 +28,7 @@
     'Ground truth',
     'Histogram',
     'Ticks',
+    'Density',
     'Main',
     'Aggregated',
   ];
@@ -36,7 +38,7 @@
     // 'Ground truth',
     'Histogram',
     'Main',
-    // 'Aggregated',
+    'Aggregated',
   ]);
 
   // config
@@ -355,6 +357,15 @@
       xLabel="beats"
     />
   {/if}
+  {#if currentViews.has('Density')}
+    <DensityPlot
+      width="{width}"
+      values="{onsetsInBeats}"
+      beats="{beats}"
+      contextBeats="{contextBeats}"
+      xLabel="beats"
+    />
+  {/if}
   {#if currentViews.has('Ground truth')}
     <GroundTruthPlot
       width="{width}"
@@ -387,6 +398,8 @@
       onsetsInBeats="{onsetsInBeats}"
       beats="{beats}"
       width="{width}"
+      xTicks="{xTicks}"
+      exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
     />
   {/if}
 

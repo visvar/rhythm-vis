@@ -53,6 +53,8 @@ Example: guitar_a-minor-pentatonic_eights-and-triplets
 
 *Each field must not contain '_'.*
 
+*Exercises have to be 120bpm.*
+
 ### Recordings
 
 Recording naming (`<exercise>` as defined above):
@@ -110,6 +112,7 @@ JavaScript
 - svelte
 - Plot
 - https://github.com/cwilso/volume-meter
+- [fast-kde](https://www.npmjs.com/package/fast-kde) by Heer
 
 
 ## Trouble Shooting

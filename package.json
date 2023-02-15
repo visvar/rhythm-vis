@@ -1,7 +1,7 @@
 {
   "name": "rhythm-vis",
   "private": false,
-  "version": "1.6.0",
+  "version": "1.7.0",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -15,16 +15,17 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.2",
     "gh-pages": "^5.0.0",
-    "npm-check-updates": "^16.6.5",
+    "npm-check-updates": "^16.7.4",
     "standard": "^17.0.0",
     "svelte": "^3.55.1",
     "vite": "^4.1.1"
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.4.3",
-    "@observablehq/plot": "^0.6.3",
+    "@observablehq/plot": "^0.6.1",
     "@spotify/basic-pitch": "^1.0.1",
     "d3": "^7.8.2",
+    "fast-kde": "^0.2.1",
     "jszip": "^3.10.1",
     "musicvis-lib": "^0.57.1",
     "opensheetmusicdisplay": "^1.7.4",
