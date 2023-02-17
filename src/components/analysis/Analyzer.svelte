@@ -40,10 +40,11 @@
     'Exercise',
     'Waveform',
     // 'Ground truth',
-    'Histogram',
+    // 'Histogram',
+    'Density',
     'Main',
     'Aggregated',
-    'Density Separate',
+    // 'Density Separate',
   ]);
 
   // config

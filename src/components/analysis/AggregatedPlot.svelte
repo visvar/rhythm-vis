@@ -10,7 +10,7 @@
   export let xTicks;
   export let exerciseNoteOnsetsInBeats;
 
-  let groupSize = 2;
+  let groupSize = 4;
   let mode = 'density';
   let plotContainer;
   let histoBinsPerBeat = 20;
@@ -40,7 +40,7 @@
     const plotOptions = {
       width,
       height,
-      marginTop: 5,
+      marginTop: 25,
       marginBottom: 30,
       style: {
         background: 'none',
@@ -53,7 +53,6 @@
     if (mode === 'density') {
       // KDE area chart for each group
       let pad = 4;
-      // let pad = 0;
       let bins = 512;
       const g = groups(onsetsInBeats, (d) => Math.floor(d / beats / groupSize));
       const marks = g.map((row, rowIndex) => {
@@ -79,6 +78,7 @@
       plot = Plot.plot({
         ...plotOptions,
         y: {
+          label: 'Repetitions (rows from above)',
           domain: [Math.ceil(max(onsetsInBeats) / beats / groupSize), 0],
           tickFormat: (d) => `${d * groupSize} - ${(d + 1) * groupSize - 1}`,
         },
@@ -127,6 +127,7 @@
       plot = Plot.plot({
         ...plotOptions,
         y: {
+          label: 'Repetitions (rows from above)',
           ticks: false,
         },
         facet: {
@@ -200,5 +201,8 @@
   .options {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+  }
+  select {
+    max-width: 200px;
   }
 </style>

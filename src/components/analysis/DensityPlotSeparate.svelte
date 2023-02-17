@@ -2,6 +2,7 @@
   import * as Plot from '@observablehq/plot';
   import { extent, groups, max, range, scaleLinear } from 'd3';
   import * as kde from 'fast-kde';
+  import { Midi } from 'musicvis-lib';
   import { afterUpdate } from 'svelte';
   import { drumPitchReplacementMap } from '../../lib/drums';
 
@@ -38,19 +39,24 @@
 
     let grpFn;
     if (mode === 'chroma') {
-      grpFn = (d) => d.pitch % 12;
+      grpFn = (d) => Midi.MIDI_NOTES[d.pitch % 12].name;
     } else if (mode === 'pitch') {
       grpFn = (d) => d.pitch;
     } else if (mode === 'channel') {
       grpFn = (d) => d.channel;
     } else if (mode === 'drums') {
-      grpFn = (d) => drumPitchReplacementMap.get(d.pitch).label;
+      grpFn = (d) => drumPitchReplacementMap.get(d.pitch)?.label ?? 'other';
     }
-    const g = groups(onsetsInBeats, grpFn);
+    const notesWithOnsets = notes.map((d, i) => {
+      return { ...d, onsetInBeats: onsetsInBeats[i] };
+    });
+    const g = groups(notesWithOnsets, grpFn).sort((a, b) =>
+      a[0] < b[0] ? -1 : 1
+    );
     console.log(g);
     // KDE area chart for each group
     const marks = g.map((row, rowIndex) => {
-      const onsets = row[1].map((d) => d % beats);
+      const onsets = row[1].map((d) => d.onsetInBeats % beats);
       const density1d = kde.density1d(onsets, {
         bandwidth: densBandwidth,
         pad,
@@ -84,11 +90,16 @@
       grid: true,
       x: { label: 'beats', domain: [-0.5, beats + 0.5], ticks: xTickValues },
     };
+
     plot = Plot.plot({
       ...plotOptions,
       y: {
+        reverse: true,
         // domain: [Math.ceil(max(onsetsInBeats) / beats / groupSize), 0],
-        // tickFormat: (d, i) => (g[i]?.length ? grpFn(g[i][0]) : ''),
+        tickFormat: (d, i) => {
+          console.log(d, i, g[d]);
+          return g[d] ? g[d][0] : '';
+        },
       },
       marks,
     });
@@ -127,5 +138,8 @@
   .options {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+  }
+  select {
+    max-width: 200px;
   }
 </style>
