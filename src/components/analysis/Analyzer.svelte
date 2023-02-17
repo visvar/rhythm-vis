@@ -107,8 +107,8 @@
   let metroClicks = [];
   let metroAccents = [];
   let audio = null;
-  $: onsets = notes.map((d) => d.start - timeAlignment);
-  $: onsetsInBeats = onsets.map((d) => d / spb);
+  $: onsets = notes.map((d) => d.start);
+  $: onsetsInBeats = onsets.map((d) => d / spb - timeAlignment);
   $: deltas = onsets.slice(1).map((d, i) => d - onsets[i]);
 
   // extract selected file from zip and get data
