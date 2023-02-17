@@ -3,6 +3,7 @@
   import * as Plot from '@observablehq/plot';
   import { afterUpdate } from 'svelte';
   import { Midi } from 'musicvis-lib';
+  import { drumPitchReplacementMap } from '../../lib/drums';
 
   export let notes;
   export let onsetsInBeats;
@@ -40,6 +41,11 @@
       noteColor = (d, i) => notes[i].pitch;
       noteColorType = 'ordinal';
       noteColorTickFormat = (d) => d;
+      noteColorScheme = 'spectral';
+    } else if (colorMode === 'drums') {
+      noteColor = (d, i) => notes[i].pitch;
+      noteColorType = 'ordinal';
+      noteColorTickFormat = (d) => drumPitchReplacementMap.get(d)?.label;
       noteColorScheme = 'spectral';
     } else if (colorMode === 'channel') {
       noteColor = (d, i) => notes[i].channel;
@@ -81,7 +87,7 @@
     // }
     plot = Plot.plot({
       width,
-      marginTop: 2,
+      marginTop: 3,
       marginBottom: 18,
       grid: true,
       style: {

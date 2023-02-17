@@ -11,6 +11,7 @@
   import { group, some } from 'd3';
   import { fileExists } from '../../lib/files';
   import ExerciseAudio from './ExerciseAudio.svelte';
+  import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -75,6 +76,7 @@
   let metronomeAccents = [];
   let recCount = 0;
   let pcm;
+  let lastRecFileName;
   // Metronome
   let metroDiv;
   let metro = new Metronome();
@@ -201,7 +203,8 @@
     const pers = person.split(/\s+/).join('-');
     const now = Temporal.Now.plainDateTimeISO().toJSON();
     const date = now.substring(0, 19).split(':').join('-');
-    const name = `${exercise}_${bpm}-bpm_${beep}-click_${pers}_${date}`;
+    const name = `${exercise}_${bpm}-bpm_${beep}-click_${accent}-accent_${beepLimit}-beeps_${pers}_${date}`;
+    lastRecFileName = name;
     try {
       await writeFile(`${name}.rec.json`, JSON.stringify(notes));
       await writeFile(`${name}.clicks.json`, JSON.stringify(metronomeClicks));
@@ -314,6 +317,16 @@
       {isRecording ? 'stop and save' : 'start recording'}
     </button>
   </div>
+
+  {#if lastRecFileName}
+    <div>
+      Keep a text note for the last saved recording?
+      <ExerciseNotepad
+        dataDirectoryHandle="{dataDirectoryHandle}"
+        fileName="{lastRecFileName}"
+      />
+    </div>
+  {/if}
 
   <div>
     <AudioPlayer

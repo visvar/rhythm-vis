@@ -15,6 +15,8 @@
   import GroundTruthPlot from './GroundTruthPlot.svelte';
   import AudioPlayer2 from './AudioPlayer2.svelte';
   import DensityPlot from './DensityPlot.svelte';
+  import DensityPlotSeparate from './DensityPlotSeparate.svelte';
+  import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -22,6 +24,7 @@
   let width = window.innerWidth - 100;
   let views = [
     'Exercise',
+    'Notepad',
     'Time diff.',
     'Durations',
     'Piano roll',
@@ -31,6 +34,7 @@
     'Density',
     'Main',
     'Aggregated',
+    'Density Separate',
   ];
   let currentViews = new Set([
     'Exercise',
@@ -39,6 +43,7 @@
     'Histogram',
     'Main',
     'Aggregated',
+    'Density Separate',
   ]);
 
   // config
@@ -137,14 +142,14 @@
         audio = new Blob([buffer]);
       }
     }
-    console.log({ notes, metroClicks, metroAccents, audio });
     // read exercise parameters from file name
     currentRecName = recName;
     const fileName = files[0].name.substring(0, files[0].name.indexOf('.'));
-    const [ins, exc, rhy, tem, clk, per, dat] = fileName.split('_');
+    const [ins, exc, rhy, tem, clk, acc, lim, per, dat] = fileName.split('_');
     exercise = [ins, exc, rhy].join('_');
-    bpm = +tem.replace('-bpm', '');
-    console.log(exercise, bpm);
+    // bpm = +tem.replace('-bpm', '');
+    bpm = +tem.split('-')[0];
+    console.log({ notes, metroClicks, metroAccents, audio, exercise, bpm });
     // timeAlignment = Utils.roundToNDecimals(notes[0]?.start ?? 0, 2);
     timeAlignment = 0;
   };
@@ -239,6 +244,12 @@
       showDownloadButton="{false}"
     />
   {/if}
+  {#if currentViews.has('Notepad')}
+    <ExerciseNotepad
+      dataDirectoryHandle="{dataDirectoryHandle}"
+      fileName="{currentRecName}"
+    />
+  {/if}
   {#if currentViews.has('Time diff.')}
     <DeltaTimeHistogramPlot width="{width}" deltas="{deltas}" />
   {/if}
@@ -299,7 +310,7 @@
   <label title="Note color mode">
     color
     <select bind:value="{noteColorMode}">
-      {#each ['none', 'chroma', 'pitch', 'channel', 'velocity', 'duration'] as value}
+      {#each ['none', 'chroma', 'pitch', 'drums', 'channel', 'velocity', 'duration'] as value}
         <option value="{value}">{value}</option>
       {/each}
     </select>
@@ -403,7 +414,22 @@
     />
   {/if}
 
-  <button on:click="{deleteCurrentRecording}" disabled="{!currentRecName}">
+  {#if currentViews.has('Density Separate')}
+    <DensityPlotSeparate
+      notes="{notes}"
+      onsetsInBeats="{onsetsInBeats}"
+      beats="{beats}"
+      width="{width}"
+      xTicks="{xTicks}"
+      exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
+    />
+  {/if}
+
+  <button
+    on:click="{deleteCurrentRecording}"
+    disabled="{!currentRecName}"
+    style="background: #ffdecc"
+  >
     delete current recording
   </button>
 </main>
