@@ -6,13 +6,18 @@
 
     export let audio;
     export let width;
-    export let currentPlayerTime;
     export let currentTimeInBeats;
     export let selectionEndTime;
     export let timeAlignment;
     export let spb;
 
     let wavesurfer;
+    let playButton;
+    let currentAudioTime = 0;
+
+    const audioTimeToBeatTime = (audioTime, spb, timeAlignment) => {
+        return audioTime / spb - timeAlignment;
+    };
 
     const setupWavesurfer = () => {
         // set up wavesurfer
@@ -31,12 +36,19 @@
         });
         // update global time during playback
         wavesurfer.on('audioprocess', (time) => {
-            currentPlayerTime = Utils.roundToNDecimals(time - timeAlignment, 2);
+            currentAudioTime = Utils.roundToNDecimals(time, 2);
+            currentTimeInBeats = audioTimeToBeatTime(
+                currentAudioTime,
+                spb,
+                timeAlignment
+            );
         });
         // react to interaction on wavesurfer
-        wavesurfer.on('interaction', () => {
+        wavesurfer.on('interaction', async (e) => {
+            await Utils.delay(0.02);
             const time = wavesurfer.getCurrentTime();
-            currentPlayerTime = time - timeAlignment;
+            currentAudioTime = time;
+            currentTimeInBeats = audioTimeToBeatTime(time, spb, timeAlignment);
         });
     };
 
@@ -54,12 +66,12 @@
         setRegion(selectionEndTime);
     }
     const setRegion = (selectionEndTime) => {
-        console.log(currentPlayerTime, selectionEndTime);
         if (wavesurfer) {
+            console.log(currentAudioTime, selectionEndTime);
             wavesurfer.clearRegions();
             if (selectionEndTime !== null) {
                 wavesurfer.addRegion({
-                    start: currentPlayerTime,
+                    start: currentAudioTime,
                     end: selectionEndTime,
                     loop: true,
                     drag: false,
@@ -79,7 +91,9 @@
                 const position = time / duration;
                 // console.log(currentTimeInBeats, time, duration, position);
                 try {
-                    wavesurfer.seekTo(position);
+                    if (time !== currentAudioTime) {
+                        wavesurfer.seekTo(time / wavesurfer.getDuration());
+                    }
                 } catch (e) {
                     console.warn(e);
                     console.log(
@@ -93,7 +107,8 @@
     // react to spacebar
     const playPauseOnSpaceBar = (e) => {
         if (e.key === ' ' && wavesurfer) {
-            wavesurfer.playPause();
+            // wavesurfer.playPause();
+            playButton.click();
         }
     };
 
@@ -112,6 +127,7 @@
     <div class="waveform" style="width: {width}px"></div>
     <div class="time-display">
         <button
+            bind:this="{playButton}"
             on:click="{() => wavesurfer.playPause()}"
             disabled="{!audio}"
             title="You can also use the space key"
@@ -130,9 +146,8 @@
                 style="width: 50px"
             />
         </label>
-        <span>time in seconds: {currentPlayerTime.toFixed(3)}</span>
-        <!-- <span>adjusted time: {currentAdjustedTime.toFixed(3)}</span> -->
-        <span>time in beats: {currentTimeInBeats.toFixed(3)}</span>
+        <span>{currentAudioTime.toFixed(1)} seconds</span>
+        <span>{currentTimeInBeats.toFixed(1)} beats</span>
     </div>
 </main>
 

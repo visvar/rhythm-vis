@@ -1,4 +1,8 @@
 <script>
+  /**
+   * A chart one line for the note density of each group.
+   * Grouped by pitch, chroma, ...
+   */
   import * as Plot from '@observablehq/plot';
   import { extent, groups, max, range, scaleLinear } from 'd3';
   import * as kde from 'fast-kde';
@@ -16,6 +20,7 @@
   let mode = 'chroma';
   let densBandwidth = 0.03;
   let plotContainer;
+  let legendContainer;
 
   // ticks (and grid lines)
   let xTickValues;
@@ -62,25 +67,18 @@
         bins,
       });
       const points = [...density1d];
-      const rowY = rowIndex;
-      const scaleY = scaleLinear()
-        .domain(extent(points, (d) => d.y))
-        .range([rowY + 1, rowY]);
-      return Plot.areaY(points, {
+      const scaleY = scaleLinear().domain(extent(points, (d) => d.y));
+      return Plot.lineY(points, {
         x: 'x',
-        y1: (d) => scaleY(d.y),
-        y2: rowIndex + 1,
+        y: (d) => scaleY(d.y),
         sort: 'x',
-        fill: '#ccc',
+        stroke: rowIndex,
       });
     });
 
-    // row count and plot height
-    const height = g.length * 41 + 35;
-
-    const plotOptions = {
+    plot = Plot.plot({
       width,
-      height,
+      height: 80,
       marginTop: 5,
       marginBottom: 30,
       style: {
@@ -88,22 +86,23 @@
       },
       grid: true,
       x: { label: 'beats', domain: [-0.5, beats + 0.5], ticks: xTickValues },
-    };
-
-    plot = Plot.plot({
-      ...plotOptions,
       y: {
-        reverse: true,
-        // domain: [Math.ceil(max(onsetsInBeats) / beats / groupSize), 0],
-        tickFormat: (d, i) => {
-          console.log(d, i, g[d]);
-          return g[d] ? g[d][0] : '';
-        },
+        label: 'density',
+      },
+      color: {
+        type: 'categorical',
       },
       marks,
     });
 
     plotContainer.appendChild(plot);
+
+    // legend
+    const legend = plot.legend('color');
+    legendContainer.textContent = '';
+    if (legend) {
+      legendContainer.appendChild(legend);
+    }
   });
 </script>
 
@@ -131,6 +130,7 @@
   </div>
 
   <div bind:this="{plotContainer}" width="{width}px"></div>
+  <div bind:this="{legendContainer}" width="{width}px"></div>
 </main>
 
 <style>

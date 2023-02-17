@@ -25,8 +25,8 @@
   let views = [
     'Exercise',
     'Notepad',
-    'Time diff.',
-    'Durations',
+    // 'Time diff.',
+    // 'Durations',
     'Piano roll',
     'Ground truth',
     'Histogram',
@@ -43,7 +43,7 @@
     // 'Histogram',
     'Density',
     'Main',
-    'Aggregated',
+    // 'Aggregated',
     // 'Density Separate',
   ]);
 
@@ -58,7 +58,7 @@
   let contextBeats = 1;
   let noteColorMode = 'none';
   // let noteOpacityMode = 'none';
-  let xTicks = 1;
+  let xTicks = 'exercise';
   const loadExerciseXml = async (exercise) => {
     // load exercise XML when exercise changes
     const url = window.location.pathname;
@@ -91,12 +91,10 @@
   }
   $: spb = Utils.bpmToSecondsPerBeat(bpm);
 
-  // player etc
-  let currentPlayerTime = 0;
   // adjust for delayed recording start by shifting notes
   let timeAlignment = 0;
-  $: currentTimeInBeats = currentPlayerTime / spb;
   let selectionEndTime = null;
+  let currentTimeInBeats = 0;
 
   // data
   let recordings = new Map();
@@ -329,6 +327,7 @@
   <label>
     x axis ticks
     <select bind:value="{xTicks}">
+      <option value="exercise">exercise</option>
       <option value="{1 / 1}">beats</option>
       <option value="{1 / 2}">half-beats</option>
       <option value="{1 / 3}">triplets</option>
@@ -337,14 +336,12 @@
       <option value="{1 / 6}">sextuplets</option>
       <option value="{1 / 7}">septuplets</option>
       <option value="{1 / 8}">eighth-beats</option>
-      <option value="exercise">exercise</option>
     </select>
   </label>
 
   <AudioPlayer2
     width="{width}"
     audio="{audio}"
-    bind:currentPlayerTime="{currentPlayerTime}"
     bind:currentTimeInBeats="{currentTimeInBeats}"
     timeAlignment="{timeAlignment}"
     selectionEndTime="{selectionEndTime}"
