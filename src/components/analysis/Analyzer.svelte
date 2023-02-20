@@ -11,6 +11,7 @@
   import SheetMusic from '../common/SheetMusic.svelte';
   import PianoRoll from '../common/PianoRoll.svelte';
   import { readJsonFile } from '../../lib/files';
+  import Filter from './Filter.svelte';
   import MultiSelect from '../common/MultiSelect.svelte';
   import GroundTruthPlot from './GroundTruthPlot.svelte';
   import AudioPlayer2 from './AudioPlayer2.svelte';
@@ -102,6 +103,7 @@
   let sortBy = 'date';
   let filterBy = '';
   let currentRecName;
+  let unfilteredNotes = [];
   let notes = [];
   let metroClicks = [];
   let metroAccents = [];
@@ -149,6 +151,7 @@
         audio = new Blob([buffer]);
       }
     }
+    unfilteredNotes = notes;
     // read exercise parameters from file name
     currentRecName = recName;
     const fileName = files[0].name.substring(0, files[0].name.indexOf('.'));
@@ -271,6 +274,8 @@
       width="{width}"
     />
   {/if}
+
+  <Filter unfilteredNotes="{unfilteredNotes}" bind:notes="{notes}" />
 
   <label>
     shift by N beats

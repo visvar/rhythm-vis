@@ -47,6 +47,10 @@ div {
   padding: 5px;
 }
 
+label {
+  user-select: none;
+}
+
 button,
 input,
 select {
@@ -59,6 +63,7 @@ select {
   font-family: inherit;
   background-color: #eee;
   cursor: pointer;
+  user-select: none;
 }
 
 button:hover,
@@ -74,6 +79,10 @@ input:focus-visible,
 select:focus,
 select:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+input[type='range'] {
+  accent-color: var(--accent);
 }
 
 /* disable text select in SVG */
