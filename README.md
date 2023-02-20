@@ -113,11 +113,12 @@ JavaScript
 - Plot
 - https://github.com/cwilso/volume-meter
 - [fast-kde](https://www.npmjs.com/package/fast-kde) by Heer
+- [lubenard/simple-mp3-cutter](https://github.com/lubenard/simple-mp3-cutter/blob/master/src/cutter.js)
 
 
 ## Trouble Shooting
 
-**Weird audio issuem, where there is a different volume/no recorded sound during metronome beeps.**
+**Weird audio issue, where there is a different volume/no recorded sound during metronome beeps.**
 This is due to to the browser's echo cancellation.
 Microsoft Edge seems not to be affected.
 You can turn it off in Chrome-based browsers:

@@ -58,7 +58,7 @@
   let contextBeats = 1;
   let noteColorMode = 'none';
   // let noteOpacityMode = 'none';
-  let xTicks = 'exercise';
+  $: xTicks = exercise !== 'any-instrument_empty_exercise' ? 'exercise' : 1;
   const loadExerciseXml = async (exercise) => {
     // load exercise XML when exercise changes
     const url = window.location.pathname;
@@ -105,6 +105,13 @@
   let metroClicks = [];
   let metroAccents = [];
   let audio = null;
+  // // TODO:
+  // let audio2;
+  // $: removeSlices(audio, [
+  //   [20, 21],
+  //   [30, 35],
+  //   [40, 50],
+  // ]).then((d) => (audio2 = d));
   $: onsets = notes.map((d) => d.start);
   $: onsetsInBeats = onsets.map((d) => d / spb - timeAlignment);
   $: deltas = onsets.slice(1).map((d, i) => d - onsets[i]);
@@ -347,6 +354,15 @@
     selectionEndTime="{selectionEndTime}"
     spb="{spb}"
   />
+
+  <!-- <AudioPlayer2
+    width="{width}"
+    audio="{audio2}"
+    currentTimeInBeats="{0}"
+    timeAlignment="{0}"
+    selectionEndTime="{null}"
+    spb="{spb}"
+  /> -->
 
   {#if currentViews.has('Histogram')}
     <HistogramPlot

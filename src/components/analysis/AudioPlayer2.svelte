@@ -11,6 +11,7 @@
     export let timeAlignment;
     export let spb;
 
+    let container;
     let wavesurfer;
     let playButton;
     let currentAudioTime = 0;
@@ -22,7 +23,8 @@
     const setupWavesurfer = () => {
         // set up wavesurfer
         wavesurfer = WaveSurfer.create({
-            container: '.waveform',
+            // container: '.waveform',
+            container,
             waveColor: '#bbb',
             progressColor: 'steelblue',
             mediaControls: true,
@@ -124,7 +126,11 @@
 </script>
 
 <main>
-    <div class="waveform" style="width: {width}px"></div>
+    <div
+        bind:this="{container}"
+        class="waveform"
+        style="width: {width}px"
+    ></div>
     <div class="time-display">
         <button
             bind:this="{playButton}"
@@ -148,6 +154,11 @@
         </label>
         <span>{currentAudioTime.toFixed(1)} seconds</span>
         <span>{currentTimeInBeats.toFixed(1)} beats</span>
+        <span
+            >duration {audio && wavesurfer
+                ? wavesurfer.getDuration().toFixed(1)
+                : 0}</span
+        >
     </div>
 </main>
 
@@ -165,7 +176,7 @@
 
     .time-display {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: 10px;
         justify-items: center;
         align-items: center;

@@ -10,7 +10,7 @@ export function downloadTextFile(document, text, fileName) {
   a.download = fileName
   document.body.appendChild(a)
   a.click()
-  // document.removeChild(a)
+  document.body.removeChild(a)
 }
 
 /**
@@ -18,7 +18,7 @@ export function downloadTextFile(document, text, fileName) {
  * @param {Document} document HTMl document of the current page
  * @param {Blob} blob content
  * @param {string} fileName file name
- */
+*/
 export function downloadBlob(document, blob, fileName) {
   const a = document.createElement('a')
   const url = window.URL.createObjectURL(blob)
@@ -26,6 +26,6 @@ export function downloadBlob(document, blob, fileName) {
   a.download = fileName
   document.body.appendChild(a)
   a.click()
-  // document.removeChild(a)
+  document.body.removeChild(a)
   window.URL.revokeObjectURL(url)
 }
