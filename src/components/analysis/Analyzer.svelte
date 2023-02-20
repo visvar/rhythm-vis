@@ -91,12 +91,6 @@
       loadExerciseXml(exercise);
     }
   }
-  $: spb = Utils.bpmToSecondsPerBeat(bpm);
-
-  // adjust for delayed recording start by shifting notes
-  let timeAlignment = 0;
-  let selectionEndTime = null;
-  let currentTimeInBeats = 0;
 
   // data
   let recordings = new Map();
@@ -108,16 +102,13 @@
   let metroClicks = [];
   let metroAccents = [];
   let audio = null;
-  // // TODO:
-  // let audio2;
-  // $: removeSlices(audio, [
-  //   [20, 21],
-  //   [30, 35],
-  //   [40, 50],
-  // ]).then((d) => (audio2 = d));
+  $: spb = Utils.bpmToSecondsPerBeat(bpm);
   $: onsets = notes.map((d) => d.start);
   $: onsetsInBeats = onsets.map((d) => d / spb - timeAlignment);
   $: deltas = onsets.slice(1).map((d, i) => d - onsets[i]);
+  let timeAlignment = 0;
+  let selectionEndTime = null;
+  let currentTimeInBeats = 0;
 
   // extract selected file from zip and get data
   const handleFileSelect = async (recName) => {
@@ -127,6 +118,7 @@
     metroClicks = [];
     metroAccents = [];
     audio = null;
+    currentTimeInBeats = 0;
     const files = recordings.get(recName);
     if (!files) {
       return;
@@ -160,8 +152,10 @@
     // bpm = +tem.replace('-bpm', '');
     bpm = +tem.split('-')[0];
     console.log({ notes, metroClicks, metroAccents, audio, exercise, bpm });
-    // timeAlignment = Utils.roundToNDecimals(notes[0]?.start ?? 0, 2);
-    timeAlignment = 0;
+    // align beginning automatically
+    const firstNoteStart = notes[0]?.start ?? 0;
+    const spb = Utils.bpmToSecondsPerBeat(bpm);
+    timeAlignment = Math.floor(firstNoteStart / spb);
   };
 
   const deleteCurrentRecording = async () => {

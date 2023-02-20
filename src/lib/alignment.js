@@ -1,6 +1,19 @@
 import { removeSlice, removeSlices } from './audioProcessing.js'
 
 /**
+ * Returns the last metronome click that happened before <time>
+ * @param {number} time time in seconds
+ * @param {number[]} clicks metronome clicks in seconds
+ * @returns
+ */
+export function roundDownToClick(time, clicks) {
+  for (const [index, click] of clicks.entries()) {
+    if (click > time) { return clicks[index - 1] }
+  }
+  return clicks.at(-1)
+}
+
+/**
  * Detect practice breaks as time spans where there occurs no note for at least minTimeDifference seconds
  * @param {Note[]} notes notes
  * @param {number} minTimeDifference minimum time difference between consecutive note starts (seconds)
