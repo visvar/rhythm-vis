@@ -16,16 +16,15 @@ export const recordAudio = () => {
   return new Promise(async resolve => {
     let stream
     try {
-      // stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       stream = await navigator.mediaDevices.getUserMedia({
         audio: {
-          autoGainControl: false,
           channelCount: 1,
-          echoCancellation: false,
-          latency: 0,
-          noiseSuppression: false,
           sampleRate: 48000,
           sampleSize: 16,
+          latency: 0,
+          autoGainControl: false,
+          noiseSuppression: false,
+          echoCancellation: false,
           suppressLocalAudioPlayback: false
         }
       })
@@ -59,7 +58,6 @@ export const recordAudio = () => {
         if (!mediaRecorder) { return }
         console.log('[AudioInput] Stopping audio recording')
         mediaRecorder.addEventListener('stop', () => {
-          // Audio blob contains the data to store on the server
           // const blobOptions = { type: 'audio/wav' }
           const blobOptions = { type: mediaRecorder.mimeType }
           const audioBlob = new Blob(audioChunks, blobOptions)

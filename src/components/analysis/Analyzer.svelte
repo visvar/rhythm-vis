@@ -57,6 +57,7 @@
   let beats = 4;
   let contextBeats = 1;
   let noteColorMode = 'none';
+  let noteThicknessMode = 'none';
   // let noteOpacityMode = 'none';
   $: xTicks = exercise !== 'any-instrument_empty_exercise' ? 'exercise' : 1;
   const loadExerciseXml = async (exercise) => {
@@ -322,6 +323,15 @@
     </select>
   </label>
 
+  <label title="Note thickness mode">
+    thickness
+    <select bind:value="{noteThicknessMode}">
+      {#each ['none', 'velocity', 'duration'] as value}
+        <option value="{value}">{value}</option>
+      {/each}
+    </select>
+  </label>
+
   <!-- <label title="Note opacity mode">
     opacity
     <select bind:value="{noteOpacityMode}">
@@ -412,6 +422,7 @@
       beats="{beats}"
       contextBeats="{contextBeats}"
       colorMode="{noteColorMode}"
+      thicknessMode="{noteThicknessMode}"
       xTicks="{xTicks}"
       bind:currentTimeInBeats="{currentTimeInBeats}"
       bind:selectionEndTime="{selectionEndTime}"

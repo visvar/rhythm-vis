@@ -11,6 +11,7 @@
   export let beats;
   export let contextBeats = 0;
   export let colorMode;
+  export let thicknessMode;
   // export let opacityMode;
   export let xTicks;
   export let currentTimeInBeats = 0;
@@ -62,6 +63,18 @@
       noteColorType = 'linear';
       noteColorTickFormat = (d) => d;
       noteColorScheme = 'spectral';
+    }
+  }
+
+  // note thickness
+  let thickness;
+  $: {
+    if (thicknessMode === 'none') {
+      thickness = 2;
+    } else if (thicknessMode === 'velocity') {
+      thickness = (d, i) => notes[i].velocity * 2;
+    } else if (thicknessMode === 'duration') {
+      thickness = (d, i) => Math.min(notes[i].duration, 3);
     }
   }
 
@@ -129,7 +142,7 @@
           x: (d) => d % beats,
           y: (d) => Math.floor(d / beats),
           stroke: noteColor,
-          strokeWidth: 2,
+          strokeWidth: thickness,
           // strokeOpacity: opacity,
         }),
         // Context on the right
@@ -141,7 +154,7 @@
             x: (d) => (d % beats) + beats,
             y: (d) => Math.floor(d / beats) - 1,
             stroke: '#ccc',
-            strokeWidth: 2,
+            strokeWidth: thickness,
           }
         ),
         // Context on the left
@@ -155,7 +168,7 @@
             x: (d) => (d % beats) - beats,
             y: (d) => Math.floor(d / beats) + 1,
             stroke: '#ccc',
-            strokeWidth: 2,
+            strokeWidth: thickness,
           }
         ),
       ],
