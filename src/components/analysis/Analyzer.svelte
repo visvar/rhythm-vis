@@ -27,6 +27,7 @@
   let views = [
     'Exercise',
     'Notepad',
+    'Filter',
     // 'Time diff.',
     // 'Durations',
     'Piano roll',
@@ -40,7 +41,7 @@
   ];
   let currentViews = new Set([
     'Exercise',
-    'Waveform',
+    'Filter',
     // 'Ground truth',
     // 'Histogram',
     'Density',
@@ -269,7 +270,9 @@
     />
   {/if}
 
-  <Filter unfilteredNotes="{unfilteredNotes}" bind:notes="{notes}" />
+  {#if currentViews.has('Filter')}
+    <Filter unfilteredNotes="{unfilteredNotes}" bind:notes="{notes}" />
+  {/if}
 
   <label>
     shift by N beats

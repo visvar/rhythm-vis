@@ -81,7 +81,8 @@ select:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-input[type='range'] {
+input[type='range'],
+input[type='checkbox'] {
   accent-color: var(--accent);
 }
 

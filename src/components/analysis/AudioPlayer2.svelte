@@ -72,9 +72,11 @@
             console.log(currentAudioTime, selectionEndTime);
             wavesurfer.clearRegions();
             if (selectionEndTime !== null) {
+                const endTimeInSeconds =
+                    (selectionEndTime + timeAlignment) * spb;
                 wavesurfer.addRegion({
                     start: currentAudioTime,
-                    end: selectionEndTime,
+                    end: endTimeInSeconds,
                     loop: true,
                     drag: false,
                     resize: false,
