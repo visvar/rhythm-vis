@@ -32,20 +32,22 @@
     if (onsetsInBeats.length === 0) {
       return;
     }
-    let plot;
-
     let pad = 4;
     let bins = 512;
 
     let grpFn;
+    let type = 'categorical';
+    let scheme = 'tableau10';
     if (mode === 'chroma') {
-      grpFn = (d) => Midi.MIDI_NOTES[d.pitch % 12].name;
+      grpFn = (d) => Midi.MIDI_NOTES[d.pitch % 12]?.name ?? '';
     } else if (mode === 'pitch') {
       grpFn = (d) => d.pitch;
     } else if (mode === 'channel') {
       grpFn = (d) => d.channel;
     } else if (mode === 'drums') {
       grpFn = (d) => drumPitchReplacementMap.get(d.pitch)?.label ?? 'other';
+    } else if (mode === 'drumsType') {
+      grpFn = (d) => drumPitchReplacementMap.get(d.pitch)?.type ?? 'other';
     }
     const notesWithOnsets = notes.map((d, i) => {
       return { ...d, onsetInBeats: onsetsInBeats[i] };
@@ -66,21 +68,20 @@
       const scaleY = scaleLinear()
         .domain(extent(points, (d) => d.y))
         .range([rowY + 1, rowY]);
+      console.log(row[0]);
       return Plot.areaY(points, {
         x: 'x',
         y1: (d) => scaleY(d.y),
         y2: rowIndex + 1,
         sort: 'x',
-        fill: '#ccc',
+        // fill: '#ccc',
+        fill: rowIndex,
       });
     });
 
-    // row count and plot height
-    const height = g.length * 41 + 35;
-
-    const plotOptions = {
+    const plot = Plot.plot({
       width,
-      height,
+      height: g.length * 41 + 35,
       marginTop: 5,
       marginBottom: 30,
       style: {
@@ -88,17 +89,13 @@
       },
       grid: true,
       x: { label: 'beats', domain: [-0.5, beats + 0.5], ticks: xTickValues },
-    };
-
-    plot = Plot.plot({
-      ...plotOptions,
+      color: {
+        type,
+        scheme,
+      },
       y: {
         reverse: true,
-        // domain: [Math.ceil(max(onsetsInBeats) / beats / groupSize), 0],
-        tickFormat: (d, i) => {
-          console.log(d, i, g[d]);
-          return g[d] ? g[d][0] : '';
-        },
+        tickFormat: (d) => (g[d] ? g[d][0] : ''),
       },
       marks,
     });
@@ -115,6 +112,7 @@
       <option value="pitch">pitch</option>
       <option value="channel">channel</option>
       <option value="drums">drums</option>
+      <option value="drumsType">drumsType</option>
     </select>
 
     <label>

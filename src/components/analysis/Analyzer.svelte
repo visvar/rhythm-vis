@@ -18,6 +18,7 @@
   import DensityPlot from './DensityPlot.svelte';
   import DensityPlotSeparate from './DensityPlotSeparate.svelte';
   import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
+  import NoteColor from './NoteColor.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -57,9 +58,8 @@
   let bpm = 120;
   let beats = 4;
   let contextBeats = 1;
-  let noteColorMode = 'none';
-  let noteThicknessMode = 'none';
-  // let noteOpacityMode = 'none';
+  let noteColorOptions;
+  let noteThicknessMode = 'velocity';
   $: xTicks = exercise !== 'any-instrument_empty_exercise' ? 'exercise' : 1;
   const loadExerciseXml = async (exercise) => {
     // load exercise XML when exercise changes
@@ -313,14 +313,7 @@
     />
   </label>
 
-  <label title="Note color mode">
-    color
-    <select bind:value="{noteColorMode}">
-      {#each ['none', 'chroma', 'pitch', 'drums', 'channel', 'velocity', 'duration'] as value}
-        <option value="{value}">{value}</option>
-      {/each}
-    </select>
-  </label>
+  <NoteColor notes="{notes}" bind:noteColorOptions="{noteColorOptions}" />
 
   <label title="Note thickness mode">
     thickness
@@ -330,15 +323,6 @@
       {/each}
     </select>
   </label>
-
-  <!-- <label title="Note opacity mode">
-    opacity
-    <select bind:value="{noteOpacityMode}">
-      {#each ['none', 'velocity', 'duration'] as value}
-        <option value="{value}">{value}</option>
-      {/each}
-    </select>
-  </label> -->
 
   <label>
     x axis ticks
@@ -407,7 +391,7 @@
       onsetsInBeats="{exerciseNoteOnsetsInBeats}"
       beats="{beats}"
       contextBeats="{contextBeats}"
-      colorMode="{noteColorMode}"
+      noteColorOptions="{noteColorOptions}"
       xTicks="{xTicks}"
       currentTimeInBeats="{currentTimeInBeats % beats}"
     />
@@ -420,7 +404,7 @@
       exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
       beats="{beats}"
       contextBeats="{contextBeats}"
-      colorMode="{noteColorMode}"
+      noteColorOptions="{noteColorOptions}"
       thicknessMode="{noteThicknessMode}"
       xTicks="{xTicks}"
       bind:currentTimeInBeats="{currentTimeInBeats}"
@@ -440,10 +424,10 @@
 
   {#if currentViews.has('Density Separate')}
     <DensityPlotSeparate
+      width="{width}"
       notes="{notes}"
       onsetsInBeats="{onsetsInBeats}"
       beats="{beats}"
-      width="{width}"
       xTicks="{xTicks}"
       exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
     />

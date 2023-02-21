@@ -8,7 +8,7 @@
   export let onsetsInBeats;
   export let beats;
   export let contextBeats = 0;
-  export let colorMode;
+  export let noteColorOptions;
   export let xTicks;
   export let currentTimeInBeats = 0;
   export let width = 800;
@@ -23,6 +23,7 @@
   let noteColorTickFormat;
   let noteColorScheme;
   $: {
+    const colorMode = noteColorOptions.mode;
     if (colorMode === 'none') {
       noteColor = 'black';
     } else if (colorMode === 'chroma') {
@@ -54,6 +55,11 @@
   }
 
   afterUpdate(() => {
+    plotContainer.textContent = '';
+    if (!notes || notes.length === 0) {
+      return;
+    }
+
     let xTickValues;
     if (xTicks === 'exercise') {
       xTickValues = onsetsInBeats;
@@ -76,8 +82,7 @@
         domain: [-contextBeats, beats + contextBeats],
       },
       y: {
-        label: 'row',
-        domain: d3.range(0, Math.ceil(d3.max(onsetsInBeats) / beats)),
+        domain: [0, 0],
       },
       color: {
         type: noteColorType,
@@ -88,48 +93,18 @@
         // Current player time
         Plot.dot([currentTimeInBeats], {
           x: (d) => Math.max(0, d % beats),
-          y: (d) => Math.floor(d / beats),
           fill: '#8886',
           r: 15,
         }),
         // Main data
         Plot.tickX(onsetsInBeats, {
           x: (d) => d % beats,
-          y: (d) => Math.floor(d / beats),
           stroke: noteColor,
           strokeWidth: 2,
-          // strokeOpacity: opacity,
         }),
-        // Context on the right
-        Plot.tickX(
-          onsetsInBeats.filter(
-            (d) => Math.floor(d / beats) > 0 && d % beats < contextBeats
-          ),
-          {
-            x: (d) => (d % beats) + beats,
-            y: (d) => Math.floor(d / beats) - 1,
-            stroke: '#ccc',
-            strokeWidth: 2,
-          }
-        ),
-        // Context on the left
-        Plot.tickX(
-          onsetsInBeats.filter(
-            (d) =>
-              // Math.floor(d / shownSeconds) > 0 &&
-              d % beats > beats - contextBeats
-          ),
-          {
-            x: (d) => (d % beats) - beats,
-            y: (d) => Math.floor(d / beats) + 1,
-            stroke: '#ccc',
-            strokeWidth: 2,
-          }
-        ),
       ],
     });
 
-    plotContainer.textContent = '';
     plotContainer.appendChild(plot);
   });
 </script>
