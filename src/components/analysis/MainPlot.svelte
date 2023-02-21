@@ -2,6 +2,7 @@
   import * as d3 from 'd3';
   import * as Plot from '@observablehq/plot';
   import { afterUpdate } from 'svelte';
+  import { groups } from 'd3';
 
   export let notes;
   export let onsetsInBeats;
@@ -43,7 +44,46 @@
     }
   }
 
+  let align = false;
+
   afterUpdate(() => {
+    const yDomain = d3.range(0, Math.ceil(d3.max(onsetsInBeats) / beats));
+    let rowAlign = new Array(yDomain.length).fill(0);
+    if (align) {
+      const groupedByRow = groups(onsetsInBeats, (d) => Math.floor(d / beats));
+      rowAlign = groupedByRow.map(([key, values]) => values[0] % beats);
+    }
+    // selection
+    let selectionMarks = [];
+    if (selectionEndTime) {
+      const row1 = Math.floor(currentTimeInBeats / beats);
+      const row2 = Math.floor(selectionEndTime / beats);
+      selectionMarks = [
+        Plot.rect([1], {
+          x1: currentTimeInBeats % beats,
+          x2: row1 === row2 ? selectionEndTime % beats : beats,
+          y1: row1,
+          y2: row1 + 1,
+          fill: '#8882',
+          rx: 5,
+          dy: '50%',
+        }),
+      ];
+      for (let row = row1 + 1; row <= row2; row++) {
+        selectionMarks.push(
+          Plot.rect([1], {
+            x1: 0,
+            x2: row === row2 ? selectionEndTime % beats : beats,
+            y1: row,
+            y2: row + 1,
+            fill: '#8882',
+            rx: 5,
+            dy: '50%',
+          })
+        );
+      }
+    }
+    // plot
     plot = Plot.plot({
       width,
       marginTop: 3,
@@ -60,7 +100,7 @@
       },
       y: {
         label: 'row',
-        domain: d3.range(0, Math.ceil(d3.max(onsetsInBeats) / beats)),
+        domain: yDomain,
       },
       color: {
         type: noteColorOptions?.type,
@@ -68,6 +108,7 @@
         tickFormat: noteColorOptions?.tickFormat,
       },
       marks: [
+        ...selectionMarks,
         // Current player time
         Plot.dot([currentTimeInBeats], {
           x: (d) => Math.max(0, d % beats),
@@ -75,17 +116,9 @@
           fill: '#8886',
           r: 15,
         }),
-        // Selection
-        selectionEndTime &&
-          Plot.dot([selectionEndTime], {
-            x: (d) => Math.max(0, d % beats),
-            y: (d) => Math.floor(d / beats),
-            fill: '#8883',
-            r: 15,
-          }),
         // Main data
         Plot.tickX(onsetsInBeats, {
-          x: (d) => d % beats,
+          x: (d) => (d - rowAlign[Math.floor(d / beats)]) % beats,
           y: (d) => Math.floor(d / beats),
           stroke: noteColorOptions?.color,
           strokeWidth: thickness,
@@ -174,6 +207,10 @@
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
   <div bind:this="{legendContainer}" width="{width}px"></div>
   <i>Select a time span by pressing CTRL and draging the mouse.</i>
+  <label>
+    Align first note to start of row
+    <input type="checkbox" bind:checked="{align}" />
+  </label>
 </main>
 
 <style>
