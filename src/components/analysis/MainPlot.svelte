@@ -122,6 +122,7 @@
           y: (d) => Math.floor(d / beats),
           stroke: noteColorOptions?.color,
           strokeWidth: thickness,
+          // title: (d, i) => notes[i].name,
         }),
         // Context on the right
         Plot.tickX(

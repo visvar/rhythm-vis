@@ -2,6 +2,7 @@
     import { onDestroy, onMount } from 'svelte';
     import WaveSurfer from 'wavesurfer.js';
     import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions';
+    import TimelinePlugin from 'wavesurfer.js/dist/plugin/wavesurfer.timeline';
     import { Utils } from 'musicvis-lib';
 
     export let audio;
@@ -12,6 +13,7 @@
     export let spb;
 
     let container;
+    let timelineContainer;
     let wavesurfer;
     let playButton;
     let currentAudioTime = 0;
@@ -34,7 +36,14 @@
             cursorWidth: 2,
             loopSelection: true,
             // splitChannels: true,
-            plugins: [RegionsPlugin.create({})],
+            plugins: [
+                RegionsPlugin.create({}),
+                TimelinePlugin.create({
+                    container: timelineContainer,
+                    height: 16,
+                    notchPercentHeight: 50,
+                }),
+            ],
         });
         // update global time during playback
         wavesurfer.on('audioprocess', (time) => {
@@ -133,6 +142,11 @@
         class="waveform"
         style="width: {width}px"
     ></div>
+    <div
+        bind:this="{timelineContainer}"
+        class="waveform"
+        style="width: {width}px"
+    ></div>
     <div class="time-display">
         <button
             bind:this="{playButton}"
@@ -156,11 +170,11 @@
         </label>
         <span>{currentAudioTime.toFixed(1)} seconds</span>
         <span>{currentTimeInBeats.toFixed(1)} beats</span>
-        <span
-            >duration {audio && wavesurfer
+        <span>
+            duration {audio && wavesurfer
                 ? wavesurfer.getDuration().toFixed(1)
-                : 0}</span
-        >
+                : 0}
+        </span>
     </div>
 </main>
 

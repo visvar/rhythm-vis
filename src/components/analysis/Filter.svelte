@@ -78,10 +78,10 @@
                 step="0.05"
             />
         </label>
-        <button on:click="{reset}">reset</button>
         <span>keeping {notes.length} of {unfilteredNotes.length} notes</span>
+        <button on:click="{reset}">reset</button>
     </div>
-    <label title="Pitches to exclude">
+    <label title="Pitches to exclude (select multiple by pressing CTRL)">
         <span>pitches<br />to<br />exclude</span>
         <select bind:value="{selectedPitches}" multiple>
             {#each pitches as pitch}
@@ -91,7 +91,7 @@
             {/each}
         </select>
     </label>
-    <label title="Channels to exclude">
+    <label title="Channels to exclude (select multiple by pressing CTRL)">
         <span>channels<br />to<br />exclude</span>
         <select bind:value="{selectedChannels}" multiple>
             {#each channels as channel}
@@ -128,11 +128,16 @@
         display: inline-grid;
         grid-template-columns: auto auto auto;
         align-items: center;
-        justify-items: center;
+        justify-items: end;
         gap: 3px;
     }
 
     select {
         height: 90%;
+    }
+
+    button {
+        width: min-content;
+        margin: 3px auto;
     }
 </style>
