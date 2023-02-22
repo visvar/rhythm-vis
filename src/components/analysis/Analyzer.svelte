@@ -193,12 +193,15 @@
    * @param {string} by sorty by...
    */
   const sortRecs = (recordingNames, by) => {
-    // const [ins, exc, rhy, tem, clk, per, dat] = fileName.split('_');
+    // const [ins, exc, rhy, tem, clk, acc, lim, per, dat] = fileName.split('_');
     if (by === 'name') {
       recordingNames.sort();
     } else if (by === 'date') {
       recordingNames.sort((a, b) =>
-        a.split('_')[6] < b.split('_')[6] ? 1 : -1
+        a.substring(a.lastIndexOf('_'), a.lastIndexOf('-') + 2) <
+        b.substring(b.lastIndexOf('_'), b.lastIndexOf('-') + 2)
+          ? 1
+          : -1
       );
     }
     return [...recordingNames];

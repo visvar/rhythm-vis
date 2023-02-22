@@ -6,6 +6,7 @@
 
     let content = '';
     let saved = true;
+    let lastFileName;
 
     $: {
         if (dataDirectoryHandle && fileName) {
@@ -14,6 +15,13 @@
     }
 
     const getContent = async () => {
+        if (!saved) {
+            if (confirm('Do you want to save your note first?')) {
+                save(lastFileName);
+            }
+        }
+        lastFileName = fileName;
+        saved = true;
         console.log('loading text', fileName);
         try {
             const handle = await dataDirectoryHandle.getFileHandle(
@@ -27,7 +35,7 @@
         }
     };
 
-    const save = async () => {
+    const save = async (fileName) => {
         writeTextFile(dataDirectoryHandle, `${fileName}.notes.txt`, content);
         saved = true;
     };
@@ -35,12 +43,12 @@
 
 <main>
     <label for="notepadtextarea">Notepad</label>
-    <button on:click="{save}" disabled="{saved}">save</button>
+    <button on:click="{() => save(fileName)}" disabled="{saved}">save</button>
     <div>
         <textarea
             id="notepadtextarea"
             bind:value="{content}"
-            on:change="{() => {
+            on:input="{() => {
                 saved = false;
             }}"
             on:keypress="{() => {
