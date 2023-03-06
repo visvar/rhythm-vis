@@ -68,7 +68,7 @@
       const scaleY = scaleLinear()
         .domain(extent(points, (d) => d.y))
         .range([rowY + 1, rowY]);
-      console.log(row[0]);
+      // console.log(row[0]);
       return Plot.areaY(points, {
         x: 'x',
         y1: (d) => scaleY(d.y),

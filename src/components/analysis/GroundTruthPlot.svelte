@@ -8,7 +8,7 @@
   export let onsetsInBeats;
   export let beats;
   export let contextBeats = 0;
-  export let noteColorOptions;
+  export let noteColorMode;
   export let xTicks;
   export let currentTimeInBeats = 0;
   export let width = 800;
@@ -23,31 +23,30 @@
   let noteColorTickFormat;
   let noteColorScheme;
   $: {
-    const colorMode = noteColorOptions.mode;
-    if (colorMode === 'none') {
+    if (noteColorMode === 'none') {
       noteColor = 'black';
-    } else if (colorMode === 'chroma') {
+    } else if (noteColorMode === 'chroma') {
       noteColor = (d, i) => notes[i].pitch % 12;
       noteColorType = 'ordinal';
       noteColorTickFormat = (d) => Midi.NOTE_NAMES[d];
       noteColorScheme = 'rainbow';
-    } else if (colorMode === 'pitch') {
+    } else if (noteColorMode === 'pitch') {
       noteColor = (d, i) => notes[i].pitch;
       noteColorType = 'ordinal';
       noteColorTickFormat = (d) => d;
       noteColorScheme = 'spectral';
-    } else if (colorMode === 'channel') {
+    } else if (noteColorMode === 'channel') {
       noteColor = (d, i) => notes[i].channel;
       noteColorType = 'ordinal';
       noteColorTickFormat = (d) => d;
       noteColorScheme = 'tableau10';
-    } else if (colorMode === 'velocity') {
+    } else if (noteColorMode === 'velocity') {
       noteColor = (d, i) => notes[i].velocity;
       noteColorType = 'linear';
       noteColorTickFormat = (d) => d;
       noteColorScheme = 'greys';
-    } else if (colorMode === 'duration') {
-      noteColor = (d, i) => notes[i].end - notes[i].start;
+    } else if (noteColorMode === 'duration') {
+      noteColor = (d, i) => notes[i].duration;
       noteColorType = 'linear';
       noteColorTickFormat = (d) => d;
       noteColorScheme = 'spectral';

@@ -2,25 +2,30 @@
   import * as d3 from 'd3';
   import * as Plot from '@observablehq/plot';
   import { afterUpdate } from 'svelte';
-  import { groups } from 'd3';
+  import { groups, min } from 'd3';
+  import { drumPitchReplacementMap } from '../../lib/drums';
+  import { Midi } from 'musicvis-lib';
 
   export let notes;
   export let onsetsInBeats;
   export let exerciseNoteOnsetsInBeats;
   export let beats;
   export let contextBeats = 0;
-  export let noteColorOptions;
+  export let noteColorMode;
   export let thicknessMode;
   export let xTicks;
   export let currentTimeInBeats = 0;
   export let selectionEndTime = null;
   export let width = 800;
   export let height = 50;
+  export let rowLimit = Infinity;
 
   let plotContainer;
   let legendContainer;
   let plot;
   let isBrushing = false;
+  let align = false;
+  let minRow = 0;
 
   // note thickness
   let thickness;
@@ -44,10 +49,60 @@
     }
   }
 
-  let align = false;
+  // note color
+  let color;
+  let colorType;
+  let colorTickFormat = (d) => d;
+  let colorScheme;
+  $: {
+    colorTickFormat = (d) => d;
+    if (noteColorMode === 'none') {
+      color = 'black';
+    } else if (noteColorMode === 'chroma') {
+      color = (d, i) => notes[i].pitch % 12;
+      colorType = 'ordinal';
+      colorTickFormat = (d) => Midi.NOTE_NAMES[d];
+      colorScheme = 'rainbow';
+    } else if (noteColorMode === 'pitch') {
+      color = (d, i) => notes[i]?.pitch;
+      colorType = 'linear';
+      colorScheme = 'viridis';
+    } else if (noteColorMode === 'drums') {
+      color = (d, i) => drumPitchReplacementMap.get(notes[i].pitch)?.label;
+      colorType = 'categorical';
+      colorTickFormat = (d) => d ?? 'other';
+      colorScheme = 'tableau10';
+    } else if (noteColorMode === 'drumsType') {
+      color = (d, i) => drumPitchReplacementMap.get(notes[i].pitch)?.type;
+      colorType = 'categorical';
+      colorTickFormat = (d) => d ?? 'other';
+      colorScheme = 'tableau10';
+    } else if (noteColorMode === 'channel') {
+      color = (d, i) => notes[i].channel;
+      colorType = 'ordinal';
+      colorScheme = 'tableau10';
+    } else if (noteColorMode === 'velocity') {
+      color = (d, i) => notes[i].velocity;
+      colorType = 'linear';
+      colorScheme = 'greys';
+    } else if (noteColorMode === 'duration') {
+      color = (d, i) => notes[i].duration;
+      colorType = 'linear';
+      colorScheme = 'greys';
+    } else if (noteColorMode === 'distance to grid') {
+      color = (d, i) => {
+        const x = d % beats;
+        return min(xTickValues.map((d) => Math.abs(d - x)));
+      };
+      colorType = 'linear';
+      colorScheme = 'reds';
+    }
+  }
 
   afterUpdate(() => {
-    const yDomain = d3.range(0, Math.ceil(d3.max(onsetsInBeats) / beats));
+    const maxRow = Math.ceil(d3.max(onsetsInBeats) / beats);
+    minRow = rowLimit === Infinity ? 0 : Math.max(0, maxRow - rowLimit);
+    const yDomain = d3.range(minRow, maxRow);
     let rowAlign = new Array(yDomain.length).fill(0);
     if (align) {
       const groupedByRow = groups(onsetsInBeats, (d) => Math.floor(d / beats));
@@ -103,9 +158,10 @@
         domain: yDomain,
       },
       color: {
-        type: noteColorOptions?.type,
-        scheme: noteColorOptions?.scheme,
-        tickFormat: noteColorOptions?.tickFormat,
+        type: colorType,
+        scheme: colorScheme,
+        tickFormat: colorTickFormat,
+        label: noteColorMode,
       },
       marks: [
         ...selectionMarks,
@@ -118,9 +174,9 @@
         }),
         // Main data
         Plot.tickX(onsetsInBeats, {
-          x: (d) => (d - rowAlign[Math.floor(d / beats)]) % beats,
+          x: (d) => (d - rowAlign[Math.floor(d / beats) - minRow]) % beats,
           y: (d) => Math.floor(d / beats),
-          stroke: noteColorOptions?.color,
+          stroke: color,
           strokeWidth: thickness,
           // title: (d, i) => notes[i].name,
         }),

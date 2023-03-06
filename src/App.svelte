@@ -6,8 +6,9 @@
   import VolumeMeter from './components/setup/VolumeMeter.svelte';
   import Help from './components/help/Help.svelte';
   import Converter from './components/converter/Converter.svelte';
+  import Live from './components/realtime/Live.svelte';
 
-  const views = ['Recording', 'Analysis', 'Setup', 'Converter', 'Help'];
+  const views = ['Recording', 'Analysis', 'Setup', 'Converter', 'Live', 'Help'];
   let view = localStorage.getItem('view') ?? 'Recording';
   $: {
     localStorage.setItem('view', view);
@@ -36,7 +37,6 @@
   {:else if !dataDirectoryHandle}
     <button on:click="{selectDir}">Set recording directory</button>
   {:else}
-    <div>Data directoy: {dataDirectoryHandle.name}</div>
     <Tabs options="{views}" bind:value="{view}" />
     {#if view === 'Recording'}
       <Recorder dataDirectoryHandle="{dataDirectoryHandle}" />
@@ -46,6 +46,8 @@
       <h2>Setup</h2>
       <VolumeMeter />
       <MidiIndicator />
+    {:else if view === 'Live'}
+      <Live />
     {:else if view === 'Converter'}
       <Converter dataDirectoryHandle="{dataDirectoryHandle}" />
     {:else}

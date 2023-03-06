@@ -8,12 +8,6 @@
 
   let plotContainer;
 
-  const tickStyle = {
-    stroke: 'white',
-    opacity: 0.05,
-    strokeWidth: 2,
-  };
-
   afterUpdate(() => {
     plotContainer.textContent = '';
     const plot = Plot.plot({
@@ -34,8 +28,6 @@
         ),
         Plot.ruleX([0]),
         Plot.ruleY([0]),
-        // Mark for correct BPM
-        // Plot.ruleX()
       ],
     });
 

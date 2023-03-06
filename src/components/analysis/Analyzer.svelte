@@ -18,7 +18,6 @@
   import DensityPlot from './DensityPlot.svelte';
   import DensityPlotSeparate from './DensityPlotSeparate.svelte';
   import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
-  import NoteColor from './NoteColor.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -59,7 +58,7 @@
   let bpm = 120;
   let beats = 4;
   let contextBeats = 1;
-  let noteColorOptions;
+  let noteColorMode = 'none';
   let noteThicknessMode = 'velocity';
   $: xTicks = exercise !== 'any-instrument_empty_exercise' ? 'exercise' : 1;
   const loadExerciseXml = async (exercise) => {
@@ -120,6 +119,7 @@
     metroAccents = [];
     audio = null;
     currentTimeInBeats = 0;
+    selectionEndTime = null;
     const files = recordings.get(recName);
     if (!files) {
       return;
@@ -301,7 +301,7 @@
       bind:value="{beats}"
       type="number"
       min="1"
-      max="32"
+      max="100"
       step="1"
       style="width: 50px"
     />
@@ -319,7 +319,14 @@
     />
   </label>
 
-  <NoteColor notes="{notes}" bind:noteColorOptions="{noteColorOptions}" />
+  <label title="Note color mode">
+    color
+    <select bind:value="{noteColorMode}">
+      {#each ['none', 'chroma', 'pitch', 'drums', 'drumsType', 'channel', 'velocity', 'duration', 'error'] as value}
+        <option value="{value}">{value}</option>
+      {/each}
+    </select>
+  </label>
 
   <label title="Note thickness mode">
     thickness
@@ -397,7 +404,7 @@
       onsetsInBeats="{exerciseNoteOnsetsInBeats}"
       beats="{beats}"
       contextBeats="{contextBeats}"
-      noteColorOptions="{noteColorOptions}"
+      noteColorMode="{noteColorMode}"
       xTicks="{xTicks}"
       currentTimeInBeats="{currentTimeInBeats % beats}"
     />
@@ -410,7 +417,7 @@
       exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
       beats="{beats}"
       contextBeats="{contextBeats}"
-      noteColorOptions="{noteColorOptions}"
+      noteColorMode="{noteColorMode}"
       thicknessMode="{noteThicknessMode}"
       xTicks="{xTicks}"
       bind:currentTimeInBeats="{currentTimeInBeats}"

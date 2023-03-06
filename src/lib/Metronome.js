@@ -116,7 +116,6 @@ class Metronome {
     let nextNotetime = this.#startTimeStamp + this.#beatCount * secondsPerBeat
     // Only schedule beats until the lookahead is reached
     while (nextNotetime < this.#audioCtx.currentTime + this.#lookAheadTime) {
-      console.log(this.#beatCount, this.#maxBeeps)
       if (this.#beatCount < this.#maxBeeps - 1) {
         nextNotetime += secondsPerBeat
         // Accent on every n-th note starting with the 0th
@@ -143,7 +142,9 @@ class Metronome {
    * @param {boolean} isAccent true for accented beep (higher pitch)
    */
   _playSound(time, globalBeepTime, isAccent) {
-    this.#onClick(time, globalBeepTime, isAccent)
+    if (this.#onClick) {
+      this.#onClick(time, globalBeepTime, isAccent)
+    }
     const osc = this.#audioCtx.createOscillator()
     osc.connect(this.#audioCtx.destination)
     const frequency = isAccent ? 300 : 200
