@@ -18,6 +18,7 @@
   import DensityPlot from './DensityPlot.svelte';
   import DensityPlotSeparate from './DensityPlotSeparate.svelte';
   import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
+  import TempoEstimation from './TempoEstimation.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -30,6 +31,7 @@
     // 'Time diff.',
     // 'Durations',
     'Piano roll',
+    'Tempo Estimation',
     'Ground truth',
     // 'Histogram',
     // 'Ticks',
@@ -272,6 +274,16 @@
       width="{width}"
     />
   {/if}
+  {#if currentViews.has('Tempo Estimation')}
+    <TempoEstimation
+      notes="{notes}"
+      bpm="{bpm}"
+      xLabel="estimated BPM"
+      bandwidth="{0.5}"
+      width="{width}"
+      height="{70}"
+    />
+  {/if}
 
   {#if currentViews.has('Filter')}
     <Filter unfilteredNotes="{unfilteredNotes}" bind:notes="{notes}" />
@@ -285,6 +297,11 @@
       step="0.1"
       style="width: 60px"
     />
+  </label>
+
+  <label>
+    bpm
+    <input bind:value="{bpm}" type="number" step="1" style="width: 60px" />
   </label>
 
   <select

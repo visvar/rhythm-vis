@@ -4,7 +4,7 @@
   import { afterUpdate } from 'svelte';
   import { groups, min } from 'd3';
   import { drumPitchReplacementMap } from '../../lib/drums';
-  import { Midi } from 'musicvis-lib';
+  import { Midi, Utils } from 'musicvis-lib';
 
   export let notes;
   export let onsetsInBeats;
@@ -89,7 +89,7 @@
       color = (d, i) => notes[i].duration;
       colorType = 'linear';
       colorScheme = 'greys';
-    } else if (noteColorMode === 'distance to grid') {
+    } else if (noteColorMode === 'error') {
       color = (d, i) => {
         const x = d % beats;
         return min(xTickValues.map((d) => Math.abs(d - x)));
@@ -150,7 +150,8 @@
       x: {
         label: 'beats',
         ticks: xTickValues,
-        tickFormat: (d) => (d == d.toFixed(0) ? d.toFixed(0) : ''),
+        tickFormat: (d) =>
+          Utils.roundToNDecimals(d, 2) == d.toFixed(0) ? d.toFixed(0) : '',
         domain: [-contextBeats, beats + contextBeats],
       },
       y: {

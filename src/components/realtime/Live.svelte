@@ -204,7 +204,7 @@
       bind:value="{bpm}"
       on:input="{(e) => localStorage.setItem('bpm', e.target.value)}"
       type="number"
-      min="60"
+      min="30"
       max="240"
       step="10"
       style="width: 50px"
@@ -243,7 +243,7 @@
 
   <div>
     <button on:click="{() => (isRecording ? stop() : start())}">
-      {isRecording ? 'stop and save' : 'start recording'}
+      {isRecording ? 'stop' : 'start recording'}
     </button>
   </div>
 

@@ -6,7 +6,7 @@
   import * as Plot from '@observablehq/plot';
   import { extent, groups, max, range, scaleLinear } from 'd3';
   import * as kde from 'fast-kde';
-  import { Midi } from 'musicvis-lib';
+  import { Midi, Utils } from 'musicvis-lib';
   import { afterUpdate } from 'svelte';
   import { drumPitchReplacementMap } from '../../lib/drums';
 
@@ -85,7 +85,13 @@
         background: 'none',
       },
       grid: true,
-      x: { label: 'beats', domain: [-0.5, beats + 0.5], ticks: xTickValues },
+      x: {
+        label: 'beats',
+        domain: [-0.5, beats + 0.5],
+        ticks: xTickValues,
+        tickFormat: (d) =>
+          Utils.roundToNDecimals(d, 2) == d.toFixed(0) ? d.toFixed(0) : '',
+      },
       y: {
         label: 'density',
       },
