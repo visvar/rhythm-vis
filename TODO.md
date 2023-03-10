@@ -1,0 +1,2 @@
+- play click during analysis
+- compact vis for error from old tool
