@@ -119,9 +119,9 @@
 
     // react to spacebar
     const playPauseOnSpaceBar = (e) => {
-        if (e.key === ' ' && wavesurfer) {
+        if (e.key === ' ' && e.srcElement === document.body && wavesurfer) {
             // wavesurfer.playPause();
-            playButton.click();
+            playButton?.click();
         }
     };
 

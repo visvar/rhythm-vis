@@ -39,6 +39,11 @@
         writeTextFile(dataDirectoryHandle, `${fileName}.notes.txt`, content);
         saved = true;
     };
+
+    const onInput = (event) => {
+        event.stopPropagation();
+        saved = false;
+    };
 </script>
 
 <main>
@@ -48,12 +53,8 @@
         <textarea
             id="notepadtextarea"
             bind:value="{content}"
-            on:input="{() => {
-                saved = false;
-            }}"
-            on:keypress="{() => {
-                saved = false;
-            }}"></textarea>
+            on:input="{onInput}"
+            on:keypress="{onInput}"></textarea>
     </div>
 </main>
 
