@@ -38,6 +38,7 @@
     'guitar_a-minor-pentatonic_eighth-triplets',
     'guitar_a-minor-pentatonic_eighths',
     'guitar_a-minor_eighths',
+    'guitar_arpeggios_eighths',
     'guitar_autumn-chords_halfs',
     'guitar_chords-f7_halfs',
     'guitar_chords-fm7_halfs',

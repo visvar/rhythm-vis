@@ -23,6 +23,7 @@
   let plot;
   let yMode = 'pitch';
   let showOnlySelection = true;
+  let collapseRepetitions = false;
 
   // note thickness
   let thickness;
@@ -123,7 +124,7 @@
     // plot
     plot = Plot.plot({
       width,
-      marginTop: 10,
+      marginTop: 15,
       marginBottom: 28,
       grid: true,
       style: {
@@ -159,10 +160,12 @@
             }),
         // current player time
         Plot.ruleX([currentTimeInBeats], {
-          x: (d) => d,
+          x: collapseRepetitions ? (d) => d % beats : (d) => d,
         }),
         Plot.dot(notes, {
-          x: (d, i) => onsetsInBeats[i],
+          x: collapseRepetitions
+            ? (d, i) => onsetsInBeats[i] % beats
+            : (d, i) => onsetsInBeats[i],
           y: yAccessor,
           fill: color,
           r: 2,
@@ -190,6 +193,8 @@
   </label>
   show only selection
   <input type="checkbox" bind:checked="{showOnlySelection}" />
+  collapse repetitions
+  <input type="checkbox" bind:checked="{collapseRepetitions}" />
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
 </main>
 

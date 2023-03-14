@@ -274,7 +274,7 @@
   <label title="Note color mode">
     color
     <select bind:value="{noteColorMode}">
-      {#each ['none', 'chroma', 'pitch', 'drums', 'drumsType', 'channel', 'velocity', 'duration', 'error'] as value}
+      {#each ['none', 'chroma', 'pitch', 'drums', 'drumsType', 'channel', 'velocity', 'duration', 'device', 'error'] as value}
         <option value="{value}">{value}</option>
       {/each}
     </select>

@@ -90,6 +90,10 @@
       color = (d, i) => notes[i].duration;
       colorType = 'linear';
       colorScheme = 'greys';
+    } else if (noteColorMode === 'device') {
+      color = (d, i) => notes[i].port;
+      colorType = 'categorical';
+      colorScheme = 'tableau10';
     } else if (noteColorMode === 'error') {
       color = (d, i) => {
         const x = d % beats;

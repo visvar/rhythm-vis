@@ -38,6 +38,7 @@
     // 'Ticks',
     'Density',
     'Main',
+    'Scatterplot',
     'Aggregated',
     'Density Separate',
   ];
@@ -359,6 +360,7 @@
       </optgroup>
       <option value="velocity">velocity / dynamics</option>
       <option value="duration">duration</option>
+      <option value="device">device</option>
       <option value="error">distance to grid</option>
     </select>
   </label>
@@ -460,20 +462,22 @@
       bind:selectionEndTime="{selectionEndTime}"
     />
   {/if}
-  <ScatterPlot
-    width="{width}"
-    notes="{notes}"
-    onsetsInBeats="{onsetsInBeats}"
-    exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
-    beats="{beats}"
-    contextBeats="{contextBeats}"
-    noteColorMode="{noteColorMode}"
-    thicknessMode="{noteThicknessMode}"
-    xTicks="{xTicks}"
-    bind:currentTimeInBeats="{currentTimeInBeats}"
-    bind:selectionStartTime="{selectionStartTime}"
-    bind:selectionEndTime="{selectionEndTime}"
-  />
+
+  {#if currentViews.has('Scatterplot')}
+    <ScatterPlot
+      width="{width}"
+      notes="{notes}"
+      onsetsInBeats="{onsetsInBeats}"
+      exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
+      beats="{beats}"
+      noteColorMode="{noteColorMode}"
+      thicknessMode="{noteThicknessMode}"
+      xTicks="{xTicks}"
+      bind:currentTimeInBeats="{currentTimeInBeats}"
+      bind:selectionStartTime="{selectionStartTime}"
+      bind:selectionEndTime="{selectionEndTime}"
+    />
+  {/if}
 
   {#if currentViews.has('Aggregated')}
     <AggregatedPlot
