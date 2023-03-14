@@ -19,6 +19,7 @@
   import DensityPlotSeparate from './DensityPlotSeparate.svelte';
   import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
   import TempoEstimation from './TempoEstimation.svelte';
+  import ScatterPlot from './ScatterPlot.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -109,6 +110,7 @@
   $: onsetsInBeats = onsets.map((d) => d / spb - timeAlignment);
   $: deltas = onsets.slice(1).map((d, i) => d - onsets[i]);
   let timeAlignment = 0;
+  let selectionStartTime = null;
   let selectionEndTime = null;
   let currentTimeInBeats = 0;
 
@@ -121,6 +123,7 @@
     metroAccents = [];
     audio = null;
     currentTimeInBeats = 0;
+    selectionStartTime = null;
     selectionEndTime = null;
     const files = recordings.get(recName);
     if (!files) {
@@ -307,6 +310,7 @@
   <select
     bind:value="{midiSource}"
     on:change="{() => handleFileSelect(currentRecName)}"
+    title="Note data source, either recorded MIDI or converted from audio"
   >
     <option value="recorded">recorded</option>
     <option value="converted">converted</option>
@@ -339,9 +343,23 @@
   <label title="Note color mode">
     color
     <select bind:value="{noteColorMode}">
-      {#each ['none', 'chroma', 'pitch', 'drums', 'drumsType', 'channel', 'velocity', 'duration', 'error'] as value}
-        <option value="{value}">{value}</option>
-      {/each}
+      <option value="none">none</option>
+      <option value="channel">channel / string</option>
+      <optgroup label="pitch">
+        <option value="chroma">chroma</option>
+        <option value="pitch">pitch</option>
+      </optgroup>
+      <optgroup label="drums">
+        <option value="drums" title="e.g., tom1, tom2, cymbal1, cymbal2">
+          drum parts
+        </option>
+        <option value="drumsType" title="e.g., tom, cymbal">
+          drum part type
+        </option>
+      </optgroup>
+      <option value="velocity">velocity / dynamics</option>
+      <option value="duration">duration</option>
+      <option value="error">distance to grid</option>
     </select>
   </label>
 
@@ -438,9 +456,24 @@
       thicknessMode="{noteThicknessMode}"
       xTicks="{xTicks}"
       bind:currentTimeInBeats="{currentTimeInBeats}"
+      bind:selectionStartTime="{selectionStartTime}"
       bind:selectionEndTime="{selectionEndTime}"
     />
   {/if}
+  <ScatterPlot
+    width="{width}"
+    notes="{notes}"
+    onsetsInBeats="{onsetsInBeats}"
+    exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
+    beats="{beats}"
+    contextBeats="{contextBeats}"
+    noteColorMode="{noteColorMode}"
+    thicknessMode="{noteThicknessMode}"
+    xTicks="{xTicks}"
+    bind:currentTimeInBeats="{currentTimeInBeats}"
+    bind:selectionStartTime="{selectionStartTime}"
+    bind:selectionEndTime="{selectionEndTime}"
+  />
 
   {#if currentViews.has('Aggregated')}
     <AggregatedPlot
@@ -463,6 +496,7 @@
     />
   {/if}
 
+  <h4>Recording Options</h4>
   <button
     on:click="{deleteCurrentRecording}"
     disabled="{!currentRecName}"

@@ -15,6 +15,7 @@
   export let thicknessMode;
   export let xTicks;
   export let currentTimeInBeats = 0;
+  export let selectionStartTime = null;
   export let selectionEndTime = null;
   export let width = 800;
   export let height = 50;
@@ -111,11 +112,11 @@
     // selection
     let selectionMarks = [];
     if (selectionEndTime) {
-      const row1 = Math.floor(currentTimeInBeats / beats);
+      const row1 = Math.floor(selectionStartTime / beats);
       const row2 = Math.floor(selectionEndTime / beats);
       selectionMarks = [
         Plot.rect([1], {
-          x1: currentTimeInBeats % beats,
+          x1: selectionStartTime % beats,
           x2: row1 === row2 ? selectionEndTime % beats : beats,
           y1: row1,
           y2: row1 + 1,
@@ -255,7 +256,9 @@
         selectionEndTime = currentTimeInBeats;
         currentTimeInBeats = tmp;
       }
+      selectionStartTime = currentTimeInBeats;
     } else {
+      selectionStartTime = null;
       selectionEndTime = null;
     }
   };
