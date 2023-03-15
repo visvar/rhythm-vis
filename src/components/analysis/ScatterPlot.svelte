@@ -178,7 +178,7 @@
   });
 </script>
 
-<main width="{width}px">
+<main width="{width}px" class="view">
   <h4>Scatterplot</h4>
   <label>
     x axis

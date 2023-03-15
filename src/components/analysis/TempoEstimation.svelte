@@ -3,12 +3,13 @@
   import { afterUpdate } from 'svelte';
   import * as kde from 'fast-kde';
   import { estimateBpmFromNotes } from '../../lib/tempo-estimation.js';
+  import { max, maxIndex } from 'd3';
 
   export let notes;
   export let bpm;
   export let xLabel = 'x';
   export let width = 800;
-  export let height = 50;
+  export let height = 60;
 
   export let bandwidth = 0.05;
   export let pad = 4;
@@ -20,18 +21,18 @@
   $: density1d = kde.density1d(bpmEstimate, { bandwidth, pad, bins });
 
   afterUpdate(() => {
-    const densityPoints = density1d.bandwidth(bandwidth);
+    const densityPoints = [...density1d.bandwidth(bandwidth)];
     const plot = Plot.plot({
       width,
       height,
-      marginTop: 10,
+      marginTop: 15,
       marginBottom: 30,
       style: {
         background: 'none',
       },
       grid: true,
       x: { label: xLabel },
-      // y: { label: 'frequency' },
+      y: { label: 'probability' },
       marks: [
         // use bandwidth method to update efficiently without re-binning
         Plot.areaY(densityPoints, {
@@ -40,18 +41,19 @@
           fill: '#ccc',
         }),
         Plot.ruleY([0]),
+        Plot.ruleX([densityPoints[maxIndex(density1d, (d) => d.y)].x]),
+        Plot.ruleY([densityPoints[maxIndex(density1d, (d) => d.y)].y], {
+          stroke: '#eee',
+        }),
         Plot.text(
           densityPoints,
           Plot.selectMaxY({
             x: 'x',
             y: 'y',
-            text: 'x',
+            text: (d) => `Most probable: ${d.x.toFixed(1)} bpm`,
             textAnchor: 'start',
             dx: 3,
-          }),
-          Plot.ruleX([0]),
-          Plot.ruleX([100])
-          // Plot.ruleX([densityPoints[maxIndex(densityPoints, (d) => d.y)]])
+          })
         ),
       ],
     });
@@ -61,6 +63,7 @@
   });
 </script>
 
-<main>
+<main class="view">
+  <h4>Tempo Estimation</h4>
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
 </main>

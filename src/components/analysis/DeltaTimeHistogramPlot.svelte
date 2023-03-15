@@ -2,9 +2,11 @@
   import * as Plot from '@observablehq/plot';
   import { afterUpdate } from 'svelte';
 
-  export let deltas;
+  export let onsetsInBeats;
   export let width = 800;
   export let height = 50;
+
+  $: deltas = onsetsInBeats.slice(1).map((d, i) => d - onsetsInBeats[i]);
 
   let plotContainer;
 
@@ -16,7 +18,7 @@
       style: {
         background: 'none',
       },
-      x: { label: 'Time between following notes (s)' },
+      x: { label: 'Time between following notes (in beats)' },
       y: { label: 'Frequency', grid: true },
       marks: [
         Plot.rectY(
@@ -35,6 +37,6 @@
   });
 </script>
 
-<main>
+<main class="view">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
 </main>

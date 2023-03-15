@@ -44,7 +44,8 @@ h1 {
 }
 
 div {
-  padding: 5px;
+  margin: 0;
+  padding: 0;
 }
 
 label {
@@ -89,4 +90,25 @@ input[type='checkbox'] {
 /* disable text select in SVG */
 svg text {
   user-select: none;
+}
+
+
+h1,
+h2,
+h3,
+h4 {
+  color: #556;
+}
+
+
+.view {
+  margin: 15px auto;
+  padding: 5px;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: #bbb 0 0 8px;
+}
+
+.view h4 {
+  margin: 2px;
 }

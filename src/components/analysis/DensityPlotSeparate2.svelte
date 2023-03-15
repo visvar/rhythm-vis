@@ -112,7 +112,7 @@
   });
 </script>
 
-<main>
+<main class="view">
   <h4>Density Separated</h4>
   <div class="options">
     <select bind:value="{mode}">

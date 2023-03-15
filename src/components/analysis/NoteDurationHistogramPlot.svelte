@@ -38,6 +38,6 @@
   });
 </script>
 
-<main>
+<main class="view">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
 </main>

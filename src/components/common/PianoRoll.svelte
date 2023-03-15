@@ -116,7 +116,7 @@
   afterUpdate(draw);
 </script>
 
-<main>
+<main class="view">
   <div
     bind:this="{pianoRollContainer}"
     width="{width}px"

@@ -32,7 +32,7 @@
       },
       grid: true,
       x: { label: xLabel, domain: [-contextBeats, beats + contextBeats] },
-      // y: { label: 'frequency' },
+      y: { label: 'density' },
       marks: [
         // use bandwidth method to update efficiently without re-binning
         Plot.areaY(density1d.bandwidth(bandwidth), {

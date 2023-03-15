@@ -150,7 +150,7 @@
   });
 </script>
 
-<main>
+<main class="view">
   <h4>Aggregated Repetitions</h4>
   <div class="options">
     <select bind:value="{mode}">
