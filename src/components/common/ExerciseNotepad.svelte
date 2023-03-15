@@ -59,11 +59,21 @@
 </main>
 
 <style>
+    main {
+        display: grid;
+        grid-template-columns: min-content min-content auto;
+        align-items: center;
+        gap: 20px;
+        width: 100%;
+        max-width: 800px;
+        margin: 10px auto;
+    }
     textarea {
-        width: 600px;
-        min-height: 50px;
+        width: 100%;
+        min-height: 2.5rem;
         outline: none;
         border: 2px solid #ccc;
         border-radius: 3px;
+        background-color: #fcfcfc;
     }
 </style>

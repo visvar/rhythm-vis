@@ -42,6 +42,7 @@
     'guitar_autumn-chords_halfs',
     'guitar_chords-f7_halfs',
     'guitar_chords-fm7_halfs',
+    'guitar_chromatic_bursts',
     'guitar_e-string_dotted-quarters',
     'guitar_e-string_eighths-to-eighth-triplets',
     'guitar_e-string_quarters',

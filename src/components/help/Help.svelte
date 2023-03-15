@@ -1,11 +1,11 @@
 <main>
     <h2>How to use</h2>
-    <div>
+    <p>
         <b>Audio:</b> If you want to record audio, make sure the correct audio
         input is selected in your browser. You can test this in the <i>Setup</i>
         tab.
-    </div>
-    <div>
+    </p>
+    <p>
         <b>MIDI:</b>
         If you want to record MIDI, make sure your browser supports
         <a href="https://caniuse.com/midi" target="_blank" rel="noreferrer"
@@ -17,9 +17,16 @@
             target="_blank"
             rel="noreferrer">this tool</a
         >.
-    </div>
-    <div>
+    </p>
+    <p>
         No data will be sent, it completely remains under your control until you
         submit it to us.
-    </div>
+    </p>
 </main>
+
+<style>
+    p {
+        max-width: 650px;
+        margin: 1em auto;
+    }
+</style>

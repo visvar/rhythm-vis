@@ -3,7 +3,7 @@
   import { afterUpdate } from 'svelte';
   import * as kde from 'fast-kde';
   import { estimateBpmFromNotes } from '../../lib/tempo-estimation.js';
-  import { max, maxIndex } from 'd3';
+  import { maxIndex } from 'd3';
 
   export let notes;
   export let bpm;
@@ -53,6 +53,9 @@
             text: (d) => `Most probable: ${d.x.toFixed(1)} bpm`,
             textAnchor: 'start',
             dx: 3,
+            fill: 'black',
+            stroke: 'white',
+            strokeWidth: 2,
           })
         ),
       ],

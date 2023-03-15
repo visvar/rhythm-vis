@@ -44,16 +44,22 @@
     'Piano roll',
     'Tempo Estimation',
   ];
-  let currentViews = new Set([
-    'Exercise',
-    'Filter',
-    // 'Ground truth',
-    'Density',
-    'Main',
-    'Note Distance',
-    // 'Aggregated',
-    // 'Density Separate',
-  ]);
+  let currentViews = localStorage.getItem('currentViews')
+    ? new Set(localStorage.getItem('currentViews').split(','))
+    : new Set([
+        'Exercise',
+        'Notepad',
+        'Filter',
+        // 'Ground truth',
+        'Density',
+        'Main',
+        'Note Distance',
+        // 'Aggregated',
+        // 'Density Separate',
+      ]);
+  $: {
+    localStorage.setItem('currentViews', [...currentViews].join(','));
+  }
 
   // config
   let exercise;
@@ -304,6 +310,8 @@
       step="1"
       style="width: 50px"
     />
+    <button class="near" on:click="{() => (beats = beats * 2)}">x2</button>
+    <button class="near" on:click="{() => (beats = beats / 2)}">/2</button>
   </label>
 
   <label title="How many beats to show left and right as context">

@@ -87,6 +87,10 @@ input[type='checkbox'] {
   accent-color: var(--accent);
 }
 
+button.near {
+  margin-left: 0;
+}
+
 /* disable text select in SVG */
 svg text {
   user-select: none;

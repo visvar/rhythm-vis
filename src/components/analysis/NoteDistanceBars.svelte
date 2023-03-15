@@ -154,7 +154,7 @@
 </script>
 
 <main width="{width}px" class="view">
-  <h4>Note distance bars</h4>
+  <h4>Note Distance</h4>
   <label>
     show only selection
     <input type="checkbox" bind:checked="{showOnlySelection}" />
