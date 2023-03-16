@@ -118,9 +118,16 @@
   $: onsets = notes.map((d) => d.start);
   $: onsetsInBeats = onsets.map((d) => d / spb - timeAlignment);
   let timeAlignment = 0;
+  let currentTimeInBeats = 0;
   let selectionStartTime = null;
   let selectionEndTime = null;
-  let currentTimeInBeats = 0;
+  let notesInSelection;
+  let onsetsInSelection;
+  // TODO:
+  $: {
+    notesInSelection = [];
+    onsetsInSelection = [];
+  }
 
   // extract selected file from zip and get data
   const handleFileSelect = async (recName) => {

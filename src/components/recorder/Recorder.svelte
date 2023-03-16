@@ -16,6 +16,7 @@
   export let dataDirectoryHandle = null;
 
   const exercises = [
+    'any-instrument_empty_exercise',
     // Run preprocessing/exercise-summary.py for a list
     'drum_4-4_polyrhythm',
     'drum_snare_eighths-to-eighth-triplets',

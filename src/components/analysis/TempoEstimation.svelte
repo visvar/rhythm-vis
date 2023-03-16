@@ -25,7 +25,7 @@
     const plot = Plot.plot({
       width,
       height,
-      marginTop: 15,
+      marginTop: 18,
       marginBottom: 30,
       style: {
         background: 'none',
