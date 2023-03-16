@@ -15,6 +15,7 @@
     'Setup',
     'Converter',
     'Live',
+    'Comparison',
     'Recordings',
     'Help',
   ];
@@ -57,6 +58,11 @@
       <MidiIndicator />
     {:else if view === 'Live'}
       <Live />
+    {:else if view === 'Comparison'}
+      <div class="comparison">
+        <Analyzer dataDirectoryHandle="{dataDirectoryHandle}" />
+        <Analyzer dataDirectoryHandle="{dataDirectoryHandle}" />
+      </div>
     {:else if view === 'Recordings'}
       <Recordings dataDirectoryHandle="{dataDirectoryHandle}" />
     {:else if view === 'Converter'}
@@ -68,4 +74,8 @@
 </main>
 
 <style>
+  .comparison {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 </style>
