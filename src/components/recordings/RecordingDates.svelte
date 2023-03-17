@@ -1,16 +1,16 @@
 <script>
   import * as Plot from '@observablehq/plot';
+  import { extent, utcWeek } from 'd3';
   import { afterUpdate } from 'svelte';
 
-  export let onsetsInBeats;
+  export let dates;
   export let width = 800;
   export let height = 50;
-
-  $: deltas = onsetsInBeats.slice(1).map((d, i) => d - onsetsInBeats[i]);
 
   let plotContainer;
 
   afterUpdate(() => {
+    console.log(dates);
     plotContainer.textContent = '';
     const plot = Plot.plot({
       width,
@@ -18,13 +18,17 @@
       style: {
         background: 'none',
       },
-      x: { label: 'Time between following notes (in beats)', nice: true },
-      y: { label: 'Frequency', grid: true, nice: true },
+      x: {
+        label: 'Number of recordings over time',
+        domain: extent(dates),
+        nice: true,
+      },
+      y: { label: 'Count', grid: true, nice: true },
       marks: [
         Plot.rectY(
-          deltas,
+          dates,
           Plot.binX(
-            { y: 'count', thresholds: 200 },
+            { y: 'count', thresholds: utcWeek },
             { x: (d) => d, fill: '#aaa', inset: 0 }
           )
         ),

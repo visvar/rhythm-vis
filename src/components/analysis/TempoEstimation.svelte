@@ -31,8 +31,8 @@
         background: 'none',
       },
       grid: true,
-      x: { label: xLabel },
-      y: { label: 'probability' },
+      x: { label: xLabel, nice: true },
+      y: { label: 'probability', nice: true },
       marks: [
         // use bandwidth method to update efficiently without re-binning
         Plot.areaY(densityPoints, {

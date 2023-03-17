@@ -33,6 +33,7 @@
       y: {
         label: 'MIDI Pitch',
         grid: true,
+        // type: 'linear',
       },
       color: {
         label: 'Note velocity',

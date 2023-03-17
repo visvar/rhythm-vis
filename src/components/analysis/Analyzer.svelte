@@ -96,7 +96,10 @@
           duration: (d.end - d.start) * tempoFactor,
         };
       });
-    exerciseNoteOnsetsInBeats = exerciseNotes.map((d) => d.start / spb);
+    exerciseNoteOnsetsInBeats = [
+      ...exerciseNotes.map((d) => d.start / spb),
+      mp.duration,
+    ];
   };
   $: {
     if (exercise) {
@@ -129,7 +132,7 @@
     onsetsInSelection = [];
   }
 
-  // extract selected file from zip and get data
+  // get data from files
   const handleFileSelect = async (recName) => {
     console.log(recName);
     currentRecName = null;
@@ -228,6 +231,11 @@
     return [...recordingNames];
   };
 
+  /**
+   * Filters recording names
+   * @param {string[]} recordingNames recording names
+   * @param {string} by sorty by...
+   */
   const filterRecs = (recordingNames, by) => {
     const search = by.split(/\s+/);
     return [
@@ -242,7 +250,7 @@
   <label>
     Recording:
     <select on:input="{(e) => handleFileSelect(e.target.value)}">
-      <option value="" disabled selected>select a recording</option>
+      <option value="" selected>select a recording</option>
       {#each sortRecs(filterRecs([...recordings.keys()], filterBy), sortBy) as rName}
         <option value="{rName}">{rName}</option>
       {/each}
@@ -251,8 +259,8 @@
   <label>
     Sort:
     <select bind:value="{sortBy}">
-      <option value="name">name</option>
       <option value="date">date</option>
+      <option value="name">name</option>
     </select>
   </label>
   <label>
@@ -263,6 +271,9 @@
       bind:value="{filterBy}"
     />
   </label>
+  <div>
+    {currentRecName ?? ''}
+  </div>
 
   <MultiSelect options="{views}" bind:values="{currentViews}" label="Views:" />
 
