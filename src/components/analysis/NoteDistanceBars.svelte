@@ -71,7 +71,10 @@
     return onsets.length;
   };
 
-  $: deltas = onsetsInBeats.slice(1).map((d, i) => d - onsetsInBeats[i]);
+  $: deltas = [
+    0,
+    ...onsetsInBeats.slice(1).map((d, i) => d - onsetsInBeats[i]),
+  ];
   $: maxDelta = max(deltas);
   $: yLimit = Math.ceil(maxDelta);
 
