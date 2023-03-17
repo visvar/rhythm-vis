@@ -113,10 +113,11 @@
         label: noteColorMode,
       },
       marks: [
-        Plot.axisX({
-          tickSize: 0,
-          tickFormat: (d) => '',
-        }),
+        // TODO:
+        // Plot.axisX({
+        //   tickSize: 0,
+        //   tickFormat: (d) => '',
+        // }),
         // next note
         Plot.barY([prevNoteIndex], {
           x: (d) => d + 2,

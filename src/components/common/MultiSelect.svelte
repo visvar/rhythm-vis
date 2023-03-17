@@ -28,7 +28,7 @@
   button,
   button:focus,
   button:focus-visible {
-    margin: 0 4px;
+    margin: 3px 4px;
     user-select: none;
     cursor: pointer;
     outline: none;
