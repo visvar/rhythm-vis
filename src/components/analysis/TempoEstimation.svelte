@@ -22,6 +22,8 @@
 
   afterUpdate(() => {
     const densityPoints = [...density1d.bandwidth(bandwidth)];
+    const peakPoint = densityPoints[maxIndex(density1d, (d) => d.y)];
+    console.log(notes, bpmEstimate, densityPoints, peakPoint);
     const plot = Plot.plot({
       width,
       height,
@@ -41,10 +43,12 @@
           fill: '#ccc',
         }),
         Plot.ruleY([0]),
-        Plot.ruleX([densityPoints[maxIndex(density1d, (d) => d.y)].x]),
-        Plot.ruleY([densityPoints[maxIndex(density1d, (d) => d.y)].y], {
-          stroke: '#eee',
-        }),
+        peakPoint ? Plot.ruleX([peakPoint.x]) : null,
+        peakPoint
+          ? Plot.ruleY([peakPoint.y], {
+              stroke: '#eee',
+            })
+          : null,
         Plot.text(
           densityPoints,
           Plot.selectMaxY({
