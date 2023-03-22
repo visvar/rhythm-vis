@@ -11,7 +11,7 @@
   export let beats = 4;
   export let width = 800;
   export let xTicks;
-  export let exerciseNoteOnsetsInBeats;
+  export let exerciseNoteOnsetsInBeats = null;
 
   let mode = 'chroma';
   let densBandwidth = 0.03;

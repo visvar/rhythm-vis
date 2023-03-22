@@ -1,28 +1,28 @@
 <script>
   import { MusicPiece, Utils } from 'musicvis-lib';
-  import { onMount } from 'svelte';
-  import HistogramPlot from './HistogramPlot.svelte';
-  import TickPlot from './TickPlot.svelte';
-  import DeltaTimeHistogramPlot from './DeltaTimeHistogramPlot.svelte';
-  import MainPlot from './MainPlot.svelte';
-  import AggregatedPlot from './AggregatedPlot.svelte';
-  import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
+  import HistogramPlot from '../analysis/HistogramPlot.svelte';
+  import TickPlot from '../analysis/TickPlot.svelte';
+  import DeltaTimeHistogramPlot from '../analysis/DeltaTimeHistogramPlot.svelte';
+  import MainPlot from '../analysis/MainPlot.svelte';
+  import AggregatedPlot from '../analysis/AggregatedPlot.svelte';
+  import NoteDurationHistogramPlot from '../analysis/NoteDurationHistogramPlot.svelte';
   import { group, max, range, some } from 'd3';
   import SheetMusic from '../common/SheetMusic.svelte';
   import PianoRoll from '../common/PianoRoll.svelte';
-  import { readJsonFile } from '../../lib/files';
-  import Filter from './Filter.svelte';
+  import Filter from '../analysis/Filter.svelte';
   import MultiSelect from '../common/MultiSelect.svelte';
-  import GroundTruthPlot from './GroundTruthPlot.svelte';
-  import AudioPlayer2 from './AudioPlayer2.svelte';
-  import DensityPlot from './DensityPlot.svelte';
-  import DensityPlotSeparate from './DensityPlotSeparate.svelte';
-  import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
-  import TempoEstimation from './TempoEstimation.svelte';
-  import ScatterPlot from './ScatterPlot.svelte';
-  import NoteDistanceBars from './NoteDistanceBars.svelte';
+  import GroundTruthPlot from '../analysis/GroundTruthPlot.svelte';
+  import AudioPlayer2 from '../analysis/AudioPlayer2.svelte';
+  import DensityPlot from '../analysis/DensityPlot.svelte';
+  import DensityPlotSeparate from '../analysis/DensityPlotSeparate.svelte';
+  import TempoEstimation from '../analysis/TempoEstimation.svelte';
+  import ScatterPlot from '../analysis/ScatterPlot.svelte';
+  import NoteDistanceBars from '../analysis/NoteDistanceBars.svelte';
+  import ExerciseAudio from '../recorder/ExerciseAudio.svelte';
 
-  export let dataDirectoryHandle = null;
+  export let exercises;
+
+  let filterBy = '';
 
   // views etc
   let width = window.innerWidth - 100;
@@ -66,7 +66,6 @@
   let exerciseXml;
   let exerciseNotes;
   let exerciseNoteOnsetsInBeats = [];
-  let midiSource = 'recorded';
   let bpm = 120;
   let beats = 4;
   let contextBeats = 1;
@@ -108,9 +107,6 @@
   }
 
   // data
-  let recordings = new Map();
-  let sortBy = 'date';
-  let filterBy = '';
   let currentRecName;
   let unfilteredNotes = [];
   let notes = [];
@@ -124,169 +120,41 @@
   let currentTimeInBeats = 0;
   let selectionStartTime = null;
   let selectionEndTime = null;
-  let notesInSelection;
-  let onsetsInSelection;
-  // TODO:
-  $: {
-    notesInSelection = [];
-    onsetsInSelection = [];
-  }
 
-  // get data from files
-  const handleFileSelect = async (recName) => {
-    console.log(recName);
-    currentRecName = null;
-    notes = [];
-    metroClicks = [];
-    metroAccents = [];
-    audio = null;
-    currentTimeInBeats = 0;
-    selectionStartTime = null;
-    selectionEndTime = null;
-    const files = recordings.get(recName);
-    if (!files) {
-      return;
-    }
-    for (const file of files) {
-      if (midiSource === 'converted' && file.name.endsWith('.conv.rec.json')) {
-        // notes from converter
-        notes = await readJsonFile(file.handle);
-      } else if (midiSource === 'recorded' && file.name.endsWith('.rec.json')) {
-        // notes from recorder
-        notes = await readJsonFile(file.handle);
-      } else if (file.name.endsWith('.clicks.json')) {
-        // metronome clicks
-        metroClicks = await readJsonFile(file.handle);
-      } else if (file.name.endsWith('.accents.json')) {
-        // metronome accents
-        metroAccents = await readJsonFile(file.handle);
-      } else if (file.name.endsWith('.audio.weba')) {
-        // audio
-        const f = await file.handle.getFile();
-        const buffer = await f.arrayBuffer();
-        audio = new Blob([buffer]);
-      }
-    }
-    notes.sort((a, b) => a.start - b.start);
-    unfilteredNotes = notes;
-    // read exercise parameters from file name
-    currentRecName = recName;
-    const fileName = files[0].name.substring(0, files[0].name.indexOf('.'));
-    const [ins, exc, rhy, tem, clk, acc, lim, per, dat] = fileName.split('_');
-    exercise = [ins, exc, rhy].join('_');
-    // bpm = +tem.replace('-bpm', '');
-    bpm = +tem.split('-')[0];
-    console.log({ notes, metroClicks, metroAccents, audio, exercise, bpm });
-    // align beginning automatically
-    const firstNoteStart = notes[0]?.start ?? 0;
-    const spb = Utils.bpmToSecondsPerBeat(bpm);
-    timeAlignment = Math.floor(firstNoteStart / spb);
-  };
-
-  /**
-   * Allows to toggle between showing recorded notes and humanized simulated notes
-   */
-  // let isExerciseNotes = false;
-  // const toggleExerciseNotes = () => {
-  //   if (isExerciseNotes) {
-  //     notes = unfilteredNotes;
-  //   } else {
-  //     notes = range(0,4).flatMap((d) => exerciseNotes.map(n=>{return{...n, start: }}));
-  //   }
-  //   isExerciseNotes = !isExerciseNotes;
-  // };
-
-  const deleteCurrentRecording = async () => {
-    if (
-      confirm(
-        `Are you sure you want to delete this recording?:\n\n${currentRecName}\n\nThis cannot be undone!`
-      )
-    ) {
-      const files = recordings.get(currentRecName);
-      for (const file of files) {
-        dataDirectoryHandle.removeEntry(file.name);
-      }
-      updateRecordingList();
-    }
-  };
-
-  const updateRecordingList = async () => {
-    // display list of recordings to analyze
-    const files = [];
-    for await (const [key, value] of dataDirectoryHandle.entries()) {
-      files.push({ name: key, handle: value });
-    }
-    // group by recording name, to get all files that the belong to the same recording
-    recordings = group(files, (d) => d.name.substring(0, d.name.indexOf('.')));
-  };
-
-  onMount(() => {
-    updateRecordingList();
-  });
-
-  /**
-   * Sorts recordings for the select options
-   * @param {string[]} recordingNames recording names
-   * @param {string} by sorty by...
-   */
-  const sortRecs = (recordingNames, by) => {
-    // const [ins, exc, rhy, tem, clk, acc, lim, per, dat] = fileName.split('_');
-    if (by === 'name') {
-      recordingNames.sort();
-    } else if (by === 'date') {
-      recordingNames.sort((a, b) =>
-        a.substring(a.lastIndexOf('_'), a.lastIndexOf('-') + 2) <
-        b.substring(b.lastIndexOf('_'), b.lastIndexOf('-') + 2)
-          ? 1
-          : -1
-      );
-    }
-    return [...recordingNames];
-  };
-
-  /**
-   * Filters recording names
-   * @param {string[]} recordingNames recording names
-   * @param {string} by sorty by...
-   */
-  const filterRecs = (recordingNames, by) => {
+  const filterExercises = (names, by) => {
     const search = by.split(/\s+/);
-    return [
-      ...recordingNames.filter((d) => some(search, (s) => d.includes(s))),
-    ];
+    return [...names.filter((d) => some(search, (s) => d.includes(s)))];
   };
 </script>
 
 <main>
-  <h2>Analysis</h2>
+  <h2>Simulator</h2>
 
-  <label>
-    Recording:
-    <select on:input="{(e) => handleFileSelect(e.target.value)}">
-      <option value="" selected>select a recording</option>
-      {#each sortRecs(filterRecs([...recordings.keys()], filterBy), sortBy) as rName}
-        <option value="{rName}">{rName}</option>
-      {/each}
-    </select>
-  </label>
-  <label>
-    Sort:
-    <select bind:value="{sortBy}">
-      <option value="date">date</option>
-      <option value="name">name</option>
-    </select>
-  </label>
-  <label>
-    Filter:
-    <input
-      type="text"
-      placeholder="space-separated words"
-      bind:value="{filterBy}"
-    />
-  </label>
   <div>
-    {currentRecName ?? ''}
+    <label>
+      Exercise:
+      <select
+        bind:value="{exercise}"
+        on:input="{(e) => localStorage.setItem('exercise', e.target.value)}"
+      >
+        <option value="" disabled>select an exercise</option>
+        {#each filterExercises(exercises, filterBy) as ex}
+          <option value="{ex}">{ex}</option>
+        {/each}
+      </select>
+    </label>
+    <label>
+      Filter:
+      <input
+        type="text"
+        placeholder="space-separated words"
+        bind:value="{filterBy}"
+      />
+    </label>
   </div>
+
+  <SheetMusic exercise="{exercise}" />
+  <ExerciseAudio exercise="{exercise}" bpm="{bpm}" />
 
   <MultiSelect options="{views}" bind:values="{currentViews}" label="Views:" />
 
@@ -295,12 +163,6 @@
       exercise="{exercise}"
       exerciseXml="{exerciseXml}"
       showDownloadButton="{false}"
-    />
-  {/if}
-  {#if currentViews.has('Notepad')}
-    <ExerciseNotepad
-      dataDirectoryHandle="{dataDirectoryHandle}"
-      fileName="{currentRecName}"
     />
   {/if}
   {#if currentViews.has('Filter')}
@@ -321,15 +183,6 @@
     bpm
     <input bind:value="{bpm}" type="number" step="1" style="width: 60px" />
   </label>
-
-  <select
-    bind:value="{midiSource}"
-    on:change="{() => handleFileSelect(currentRecName)}"
-    title="Note data source, either recorded MIDI or converted from audio"
-  >
-    <option value="recorded">recorded</option>
-    <option value="converted">converted</option>
-  </select>
 
   <label title="Number of beats per row">
     beats per row
@@ -547,17 +400,6 @@
         height="{80}"
       />
     {/if}
-
-    <h4>Recording Options</h4>
-    <button
-      on:click="{deleteCurrentRecording}"
-      disabled="{!currentRecName}"
-      style="background: #ffdecc"
-    >
-      delete current recording
-    </button>
-
-    <!-- <button on:click="{toggleExerciseNotes}">simulate</button> -->
   {/if}
 </main>
 

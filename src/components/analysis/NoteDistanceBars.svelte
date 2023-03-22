@@ -3,7 +3,7 @@
   import { afterUpdate } from 'svelte';
   import { max, range } from 'd3';
   import { drumPitchReplacementMap } from '../../lib/drums';
-  import { Midi } from 'musicvis-lib';
+  import { Midi, Utils } from 'musicvis-lib';
 
   export let notes;
   export let onsetsInBeats;
@@ -71,9 +71,12 @@
     return onsets.length;
   };
 
-  $: deltas = onsetsInBeats.slice(1).map((d, i) => d - onsetsInBeats[i]);
+  $: deltas = [
+    0,
+    ...onsetsInBeats.slice(1).map((d, i) => d - onsetsInBeats[i]),
+  ];
   $: maxDelta = max(deltas);
-  $: yLimit = Math.ceil(maxDelta);
+  $: yLimit = Utils.roundToNDecimals(maxDelta * 1.1, 1);
 
   $: prevNoteIndex = getPreviousNoteIndex(currentTimeInBeats, onsetsInBeats);
 
@@ -96,7 +99,8 @@
       x: {
         label: 'note',
         domain: xDomain ? range(...xDomain) : undefined,
-        tickFormat: (d, i) => (i % 5 === 0 ? d : ''),
+        tickFormat: (d) => '',
+        tickSize: 0,
       },
       y: {
         label: 'distance to previous note in beats',
@@ -110,17 +114,14 @@
         label: noteColorMode,
       },
       marks: [
-        // TODO:
-        // Plot.axisX({
-        //   tickSize: 0,
-        //   tickFormat: (d) => '',
-        // }),
         // next note
-        Plot.barY([prevNoteIndex], {
-          x: (d) => d + 2,
-          y: yLimit,
-          fill: '#888888aa',
-        }),
+        currentTimeInBeats === 0
+          ? null
+          : Plot.barY([prevNoteIndex], {
+              x: (d) => d + 2,
+              y: yLimit,
+              fill: '#888888aa',
+            }),
         Plot.barY(deltas, {
           x: (d, i) => i + 2,
           y: (d) => d,

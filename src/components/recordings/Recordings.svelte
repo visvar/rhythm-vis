@@ -1,15 +1,48 @@
 <script>
   import { onMount } from 'svelte';
-  import { group } from 'd3';
+  import { every, group, isoParse, some } from 'd3';
   import { readJsonFile, readTextFile } from '../../lib/files';
+  import { Utils } from 'musicvis-lib';
+  import NoteDistanceBars from '../analysis/NoteDistanceBars.svelte';
+  import DensityPlotSeparate from '../analysis/DensityPlotSeparate.svelte';
+  import RecordingDates from './RecordingDates.svelte';
 
   export let dataDirectoryHandle = null;
 
-  // data
-  let recFiles = new Set([]);
-  let recordings = [];
+  let width = window.innerWidth - 100;
 
-  // extract selected file from zip and get data
+  // data
+  let recFiles = new Set();
+  let recordings = [];
+  $: filteredRecordings = filterRecs(recordings, filterBy);
+  let selectedRecordings = new Set();
+
+  // config
+  let filterBy = '';
+  let sortBy = 'date';
+  let noteColorMode = 'none';
+
+  let views = [
+    'Exercise',
+    'Notepad',
+    'Filter',
+    // 'Histogram',
+    // 'Ticks',
+    'Density',
+    'Ground truth',
+    'Main',
+    'Note Distance',
+    'Scatterplot',
+    'Aggregated',
+    'Density Separate',
+    'Time diff.',
+    // 'Durations',
+    'Piano roll',
+    'Tempo Estimation',
+  ];
+  let currentView = 'Note Distance';
+
+  // get data from files
   const handleFileSelect = async (recName, recFiles) => {
     const files = recFiles.get(recName);
     if (!files) {
@@ -36,6 +69,7 @@
       } else if (file.name.endsWith('.audio.weba')) {
         // audio
         rec.hasAudio = true;
+        rec.audioFile = file.name;
       } else if (file.name.endsWith('.notes.txt')) {
         // notes
         rec.notes = await readTextFile(file.handle);
@@ -51,31 +85,26 @@
       per = acc;
       acc = undefined;
       dat = lim;
-      lim = undefined;
+      lim = 'infinite';
     }
     rec.exercise = [ins, exc, rhy].join('_');
-    // bpm = +tem.replace('-bpm', '');
+    rec.person = per.split('-').join(' ');
+    let [date, time] = dat.split('T');
+    time = time?.split('-').join(':') ?? '00:00:00';
+    rec.date = `${date} ${time}`;
+    // rec.dateObj = new Temporal(dat);
+    rec.dateObj = new Date(`${date}T${time}`);
     rec.bpm = +tem.split('-')[0];
-    rec.click = clk;
-    rec.accent = acc;
-    rec.limit = lim;
-    rec.person = per;
-    rec.date = dat;
+    rec.metroClick = clk.split('-')[0];
+    rec.metroAccent = acc?.split('-')[0];
+    rec.metroLimit = lim?.split('-')[0];
+    // data preprocessing
+    const firstNoteStart = rec.notesRec[0]?.start ?? 0;
+    const spb = Utils.bpmToSecondsPerBeat(rec.bpm);
+    rec.timeAlignment = Math.floor(firstNoteStart / spb);
+    const onsets = rec.notesRec.map((d) => d.start);
+    rec.onsetsInBeats = onsets.map((d) => d / spb - rec.timeAlignment);
     return rec;
-  };
-
-  const deleteRecording = async (recName) => {
-    if (
-      confirm(
-        `Are you sure you want to delete this recording?:\n\n${recName}\n\nThis cannot be undone!`
-      )
-    ) {
-      const files = recFiles.get(recName);
-      for (const file of files) {
-        dataDirectoryHandle.removeEntry(file.name);
-      }
-      updateRecordingList();
-    }
   };
 
   const updateRecordingList = async () => {
@@ -98,44 +127,234 @@
   onMount(async () => {
     await updateRecordingList();
   });
+
+  /**
+   * Sorts recordings for the select options
+   * @param {object[]} recordings recording names
+   * @param {string} by sorty by...
+   */
+  const sortRecs = (recordings, by) => {
+    // const [ins, exc, rhy, tem, clk, acc, lim, per, dat] = fileName.split('_');
+    if (by === 'name') {
+      recordings.sort();
+    } else if (by === 'date') {
+      recordings.sort((a, b) => (a.date < b.date ? 1 : -1));
+    } else if (by === 'exercise') {
+      recordings.sort((a, b) => (a.exercise > b.exercise ? 1 : -1));
+    } else if (by === 'person') {
+      recordings.sort((a, b) => (a.person < b.person ? 1 : -1));
+    } else if (by === 'noteCount') {
+      recordings.sort((a, b) => b.notesRec.length - a.notesRec.length);
+    } else if (by === 'notes') {
+      recordings.sort((a, b) => (a.notes < b.notes ? 1 : -1));
+    } else if (by === 'bpm') {
+      recordings.sort((a, b) => b.bpm - a.bpm);
+    } else if (by === 'metroLimit') {
+      recordings.sort((a, b) => (b.metroLimit < a.metroLimit ? -1 : 1));
+    }
+    return [...recordings];
+  };
+
+  /**
+   * Filters recording names
+   * @param {object[]} recordings recording names
+   * @param {string} by sorty by...
+   */
+  const filterRecs = (recordings, by) => {
+    const search = by.split(/\s+/);
+    return [
+      // ...recordings.filter((d) => some(search, (s) => d.name.includes(s))),
+      ...recordings.filter((d) => every(search, (s) => d.name.includes(s))),
+    ];
+  };
 </script>
 
 <main>
   <h2>Recordings Overview</h2>
 
-  {recordings.length} recordings
+  <div>
+    {recordings.length} recordings, {filteredRecordings.length} filtered, {selectedRecordings.size}
+    selected
+  </div>
 
-  <table>
-    <tr>
-      <th>exercise</th>
-      <th>date</th>
-      <th>person</th>
-      <th>bpm</th>
-      <th>notes</th>
-      <th>has audio</th>
-      <th>notes</th>
-    </tr>
-    <tbody>
-      {#each recordings as rec}
-        <tr title="{rec.name}">
-          <td>{rec.exercise}</td>
-          <td>{rec.date ?? ''}</td>
-          <td>{rec.person ?? ''}</td>
-          <td>{rec.bpm}</td>
-          <td>{rec.notesRec.length}</td>
-          <td>{rec.hasAudio ? '✓' : ''}</td>
-          <td>{rec.notes ?? ''}</td>
+  <label title="e.g., 100-bpm">
+    Filter:
+    <input
+      type="text"
+      placeholder="space-separated words"
+      bind:value="{filterBy}"
+    />
+  </label>
+  <div class="table-container view">
+    <table>
+      <thead>
+        <tr>
+          <th>✓</th>
+          <th on:click="{() => (sortBy = 'exercise')}">
+            exercise {sortBy === 'exercise' ? '🠧' : ''}
+          </th>
+          <th on:click="{() => (sortBy = 'date')}">
+            date {sortBy === 'date' ? '🠥' : ''}
+          </th>
+          <th on:click="{() => (sortBy = 'person')}">
+            person {sortBy === 'person' ? '🠧' : ''}
+          </th>
+          <th on:click="{() => (sortBy = 'bpm')}">
+            bpm {sortBy === 'bpm' ? '🠧' : ''}
+          </th>
+          <th on:click="{() => (sortBy = 'metroLimit')}">
+            metro limit {sortBy === 'metroLimit' ? '🠥' : ''}
+          </th>
+          <th on:click="{() => (sortBy = 'noteCount')}">
+            notes {sortBy === 'noteCount' ? '🠧' : ''}
+          </th>
+          <th on:click="{() => (sortBy = 'hasAudio')}">
+            has audio {sortBy === 'hasAudio' ? '🠧' : ''}
+          </th>
+          <th on:click="{() => (sortBy = 'notes')}">
+            notes {sortBy === 'notes' ? '🠥' : ''}
+          </th>
         </tr>
-      {/each}
-    </tbody>
-  </table>
+      </thead>
+      <tbody>
+        {#each sortRecs(filteredRecordings, sortBy) as rec}
+          <tr title="{rec.name}">
+            <td>
+              <input
+                type="checkbox"
+                checked="{selectedRecordings.has(rec)}"
+                on:click="{() => {
+                  selectedRecordings.has(rec)
+                    ? selectedRecordings.delete(rec)
+                    : selectedRecordings.add(rec);
+                  selectedRecordings = new Set([...selectedRecordings]);
+                  console.log(selectedRecordings);
+                }}"
+              />
+            </td>
+            <td>{rec.exercise}</td>
+            <td>{rec.date ?? ''}</td>
+            <td>{rec.person ?? ''}</td>
+            <td>{rec.bpm}</td>
+            <td>{rec.metroLimit ?? ''}</td>
+            <td>{rec.notesRec.length}</td>
+            <td>{rec.hasAudio ? '✓' : ''}</td>
+            <td>{rec.notes ?? ''}</td>
+          </tr>
+        {/each}
+      </tbody>
+    </table>
+  </div>
+
+  <div>
+    <label>
+      View:
+      <select bind:value="{currentView}">
+        {#each views as view}
+          <option value="{view}">{view}</option>
+        {/each}
+      </select>
+    </label>
+
+    <label title="Note color mode">
+      color
+      <select bind:value="{noteColorMode}">
+        <option value="none">none</option>
+        <option value="channel">channel / string</option>
+        <optgroup label="pitch">
+          <option value="chroma">chroma</option>
+          <option value="pitch">pitch</option>
+        </optgroup>
+        <optgroup label="drums">
+          <option value="drums" title="e.g., tom1, tom2, cymbal1, cymbal2">
+            drum parts
+          </option>
+          <option value="drumsType" title="e.g., tom, cymbal">
+            drum part type
+          </option>
+        </optgroup>
+        <option value="velocity">velocity / dynamics</option>
+        <option value="duration">duration</option>
+        <option value="device">device</option>
+        <option value="error">distance to grid</option>
+      </select>
+    </label>
+  </div>
+
+  <RecordingDates
+    width="{width}"
+    dates="{filteredRecordings.map((d) => d.dateObj)}"
+  />
+
+  <div>
+    {#each [...selectedRecordings] as rec}
+      <div>
+        {rec.name}
+        {#if currentView === 'Note Distance'}
+          <NoteDistanceBars
+            width="{width}"
+            notes="{rec.notesRec}"
+            onsetsInBeats="{rec.onsetsInBeats}"
+            noteColorMode="{noteColorMode}"
+          />
+        {/if}
+        {#if currentView === 'Density Separate'}
+          <DensityPlotSeparate
+            width="{width}"
+            notes="{rec.notesRec}"
+            onsetsInBeats="{rec.onsetsInBeats}"
+            beats="{4}"
+            xTicks="beat"
+          />
+        {/if}
+      </div>
+    {/each}
+  </div>
 </main>
 
 <style>
   main {
     padding: 0 10px 20px 10px;
   }
+
+  .table-container {
+    max-height: 400px;
+    overflow-y: scroll;
+  }
+
+  table {
+    width: 100%;
+    font-size: 0.9em;
+  }
+
+  thead {
+    background: white;
+  }
+
+  thead tr th {
+    position: sticky;
+    top: 0;
+  }
+
+  td,
+  th {
+    border-radius: 4px;
+  }
+
+  th {
+    cursor: pointer;
+    background-color: #ddd;
+  }
+
   tbody tr:nth-child(even) {
     background-color: #eee;
+  }
+
+  tbody td:nth-child(2) {
+    text-align: left;
+  }
+  tbody td:nth-child(5),
+  tbody td:nth-child(7) {
+    text-align: right;
   }
 </style>
