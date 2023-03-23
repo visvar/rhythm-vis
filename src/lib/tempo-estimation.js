@@ -19,7 +19,7 @@ export function estimateBpmFromNotes (notes, targetBpm = null) {
   let bpms = deltas
     .map(d => Utils.roundToNDecimals(60 / d, 1))
     // .map(d => 60 / d)
-    .filter(d => d > 30 && d < 240)
+    .filter(d => d > 20 && d < 300)
   // const grps = groups(bpms, d => d)
   //   .sort((a, b) => b[1].length - a[1].length)
   // return grps
@@ -27,8 +27,8 @@ export function estimateBpmFromNotes (notes, targetBpm = null) {
     return bpms
   }
   // aggregate to some range around targetBpm
-  const lower = 0.8 * targetBpm
-  const higher = 1.2 * targetBpm
+  const lower = 0.7 * targetBpm
+  const higher = 1.3 * targetBpm
   bpms = bpms.map(d => {
     while (d < lower) {
       d *= 2
@@ -38,7 +38,8 @@ export function estimateBpmFromNotes (notes, targetBpm = null) {
     }
     return d
   })
-  return bpms.filter(d => d > lower && d < higher)
+  // return bpms.filter(d => d > lower && d < higher)
+  return bpms
 }
 
 

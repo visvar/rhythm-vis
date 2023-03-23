@@ -124,7 +124,7 @@
     // plot
     plot = Plot.plot({
       width,
-      marginTop: 15,
+      marginTop: 18,
       marginBottom: 28,
       grid: true,
       style: {

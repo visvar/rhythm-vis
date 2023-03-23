@@ -23,7 +23,7 @@
   afterUpdate(() => {
     const densityPoints = [...density1d.bandwidth(bandwidth)];
     const peakPoint = densityPoints[maxIndex(density1d, (d) => d.y)];
-    console.log(notes, bpmEstimate, densityPoints, peakPoint);
+    // console.log(notes, bpmEstimate, densityPoints, peakPoint);
     const plot = Plot.plot({
       width,
       height,
