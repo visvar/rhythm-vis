@@ -20,6 +20,9 @@
   import NoteDistanceBars from '../analysis/NoteDistanceBars.svelte';
   import ExerciseAudio from '../recorder/ExerciseAudio.svelte';
   import { onMount } from 'svelte';
+  // import stdlib from '@stdlib/stdlib';
+  // console.log(stdlib);
+  // import ndarray from '@stdlib/ndarray/array';
 
   export let exercises;
 
@@ -47,7 +50,7 @@
     ? new Set(localStorage.getItem('currentViewsSim').split(','))
     : new Set([
         // 'Filter',
-        'Ground truth',
+        // 'Ground truth',
         'Density',
         'Main',
         'Note Distance',
@@ -168,9 +171,8 @@
   let wobble;
   // amount a beat is off (does cascade) - portion of beat [(amt,bias)]
   let drift;
-  // slow down - basically multiply step by 1-sd - use negative to speed up
-  // amount to slow down (percent)
-  let slowdown;
+  let tempoFactor;
+  let acceleration = 0;
   // get back to click every N clicks (also resets step length)
   let reground;
   const resetSimulator = () => {
@@ -180,7 +182,7 @@
     drop = 0;
     wobble = 0;
     drift = 0;
-    slowdown = 0;
+    tempoFactor = 1;
     reground = 0;
   };
 
@@ -192,9 +194,11 @@
     console.log(beats, bpm, exerciseDuration);
 
     const simNotes = [];
-    let currentOffset = 0;
-    let currentBeat = 0;
     const rand = randomNormal(0, wobble);
+    // const rand = normal.factory({
+    //   seed: 12345,
+    // });
+
     for (let rep = 0; rep < repetitions; rep++) {
       for (const [index, note] of exerciseNotes.entries()) {
         // dropped note?
@@ -203,6 +207,12 @@
         }
         // this would be perfect
         let start = note.start + rep * exerciseDuration;
+        const currentBeat = start / spb;
+        if (reground > 0 && currentBeat % reground === 0) {
+        }
+        // wrong tempo?
+        const currentTempoFactor = tempoFactor + start * acceleration;
+        start *= currentTempoFactor;
         // consistently too late?
         start += late;
         // wobble
@@ -214,7 +224,7 @@
         });
       }
     }
-    return simNotes;
+    return simNotes.sort((a, b) => a.start - b.start);
   };
 
   $: {
@@ -222,11 +232,12 @@
       notes = simulate({
         repetitions,
         simBpm,
-        startOffset: late,
+        late,
         drop,
         wobble,
         drift,
-        slowdown,
+        tempoFactor,
+        acceleration,
         reground,
       });
       console.log(notes);
@@ -306,12 +317,21 @@
       <input type="number" bind:value="{drift}" step="{0.1}" />
     </label>
     <label>
-      slowdown
-      <input type="number" bind:value="{slowdown}" step="{0.1}" />
+      tempo factor
+      <input type="number" bind:value="{tempoFactor}" step="{0.01}" />
+    </label>
+    <label>
+      acceleration
+      <input
+        type="number"
+        bind:value="{acceleration}"
+        step="{0.001}"
+        style="width:55px"
+      />
     </label>
     <label>
       reground
-      <input type="number" bind:value="{reground}" step="{1}" />
+      <input type="number" bind:value="{reground}" min="1" step="{1}" />
     </label>
     <button on:click="{resetSimulator}">reset</button>
   </div>
