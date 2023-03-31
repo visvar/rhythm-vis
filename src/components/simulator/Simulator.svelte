@@ -167,6 +167,8 @@
   //  multiplied by rand
   //  we allow either numbers, or tuples (portion, bias)
   let drop;
+  // probability for each note that a 'noise note' will be added
+  let add;
   // amount a beat is off (doesn't cascade) - portion of beat - or tuple [(amt,bias)]
   let wobble;
   // amount a beat is off (does cascade) - portion of beat [(amt,bias)]
@@ -180,6 +182,7 @@
     simBpm = bpm;
     late = 0;
     drop = 0;
+    add = 0;
     wobble = 0;
     drift = 0;
     tempoFactor = 1;
@@ -222,6 +225,14 @@
           start,
           end: start + note.duration,
         });
+        if (add > 0 && Math.random() <= add) {
+          const start2 = start + randomNormal(0, 0.05)();
+          simNotes.push({
+            ...note,
+            start: start2,
+            end: start2 + note.duration,
+          });
+        }
       }
     }
     return simNotes.sort((a, b) => a.start - b.start);
@@ -234,6 +245,7 @@
         simBpm,
         late,
         drop,
+        add,
         wobble,
         drift,
         tempoFactor,
@@ -297,6 +309,16 @@
       <input
         type="number"
         bind:value="{drop}"
+        step="{0.01}"
+        min="{0}"
+        max="{1}"
+      />
+    </label>
+    <label>
+      add
+      <input
+        type="number"
+        bind:value="{add}"
         step="{0.01}"
         min="{0}"
         max="{1}"
