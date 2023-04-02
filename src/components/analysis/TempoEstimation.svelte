@@ -43,6 +43,7 @@
           fill: '#ccc',
         }),
         Plot.ruleY([0]),
+        // peak
         peakPoint ? Plot.ruleX([peakPoint.x]) : null,
         peakPoint
           ? Plot.ruleY([peakPoint.y], {
@@ -54,14 +55,29 @@
           Plot.selectMaxY({
             x: 'x',
             y: 'y',
-            text: (d) => `Most probable: ${d.x.toFixed(1)} bpm`,
+            text: (d) => `Estimated: ${d.x.toFixed(1)}`,
             textAnchor: 'start',
             dx: 3,
             fill: 'black',
             stroke: 'white',
-            strokeWidth: 2,
+            strokeWidth: 3,
           })
         ),
+        // expected bpm
+        bpm ? Plot.ruleX([bpm], { stroke: 'steelblue' }) : null,
+        bpm
+          ? Plot.text([{ x: bpm, y: 0 }], {
+              x: 'x',
+              y: 'y',
+              text: (d) => `Expected: ${bpm}`,
+              textAnchor: 'start',
+              dx: 3,
+              dy: -7,
+              fill: 'black',
+              stroke: 'white',
+              strokeWidth: 3,
+            })
+          : null,
       ],
     });
 

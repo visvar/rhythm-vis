@@ -1,11 +1,14 @@
 <script>
   import { onMount } from 'svelte';
-  import { every, group, isoParse, some } from 'd3';
+  import { every, group } from 'd3';
   import { readJsonFile, readTextFile } from '../../lib/files';
   import { Utils } from 'musicvis-lib';
   import NoteDistanceBars from '../analysis/NoteDistanceBars.svelte';
   import DensityPlotSeparate from '../analysis/DensityPlotSeparate.svelte';
   import RecordingDates from './RecordingDates.svelte';
+  import DensityPlot from '../analysis/DensityPlot.svelte';
+  import TempoEstimation from '../analysis/TempoEstimation.svelte';
+  import PianoRoll from '../common/PianoRoll.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -14,7 +17,19 @@
   // data
   let recFiles = new Set();
   let recordings = [];
-  $: filteredRecordings = filterRecs(recordings, filterBy);
+  // filter
+  let persons = [];
+  let selectedPersons = [];
+  let exercises = [];
+  let selectedExercises = [];
+  let selectedClicks = [];
+  $: filteredRecordings = filterRecs(
+    recordings,
+    filterBy,
+    selectedExercises,
+    selectedPersons,
+    selectedClicks
+  );
   let selectedRecordings = new Set();
 
   // config
@@ -23,21 +38,20 @@
   let noteColorMode = 'none';
 
   let views = [
-    'Exercise',
-    'Notepad',
-    'Filter',
+    // 'Exercise',
+    // 'Notepad',
+    // 'Filter',
     // 'Histogram',
     // 'Ticks',
     'Density',
-    'Ground truth',
+    // 'Ground truth',
     'Main',
     'Note Distance',
     'Scatterplot',
     'Aggregated',
     'Density Separate',
     'Time diff.',
-    // 'Durations',
-    'Piano roll',
+    'Piano Roll',
     'Tempo Estimation',
   ];
   let currentView = 'Note Distance';
@@ -121,7 +135,14 @@
       tmp.push(await handleFileSelect(name, recFiles));
     }
     recordings = tmp;
-    console.log(recordings);
+    // set filter options, select all by default
+    persons = Utils.removeDuplicates(recordings.map((d) => d.person)).sort();
+    selectedPersons = persons;
+    exercises = Utils.removeDuplicates(
+      recordings.map((d) => d.exercise)
+    ).sort();
+    selectedExercises = exercises;
+    selectedClicks = ['3', '4', '6', '8', 'infinite'];
   };
 
   onMount(async () => {
@@ -160,12 +181,36 @@
    * @param {object[]} recordings recording names
    * @param {string} by sorty by...
    */
-  const filterRecs = (recordings, by) => {
-    const search = by.split(/\s+/);
-    return [
-      // ...recordings.filter((d) => some(search, (s) => d.name.includes(s))),
-      ...recordings.filter((d) => every(search, (s) => d.name.includes(s))),
-    ];
+  const filterRecs = (
+    recordings,
+    by,
+    selectedExercises,
+    selectedPersons,
+    selectedClicks
+  ) => {
+    const p = new Set(selectedPersons);
+    const e = new Set(selectedExercises);
+    const c = new Set(selectedClicks);
+    // const search = by.split(/\s+/);
+    return recordings.filter(
+      (d) => p.has(d.person) && e.has(d.exercise) && c.has(d.metroLimit)
+      // &&
+      // every(search, (s) => d.name.includes(s))
+    );
+  };
+
+  const deleteRecording = async (recName) => {
+    if (
+      confirm(
+        `Are you sure you want to delete this recording?:\n\n${recName}\n\nThis cannot be undone!`
+      )
+    ) {
+      const files = recFiles.get(recName);
+      for (const file of files) {
+        dataDirectoryHandle.removeEntry(file.name);
+      }
+      updateRecordingList();
+    }
   };
 </script>
 
@@ -177,19 +222,56 @@
     selected
   </div>
 
-  <label title="e.g., 100-bpm">
+  <!-- <label title="e.g., 100-bpm">
     Filter:
     <input
       type="text"
       placeholder="space-separated words"
       bind:value="{filterBy}"
     />
-  </label>
+  </label> -->
+
+  <div class="filter">
+    <label>
+      <span>Persons:</span>
+      <select bind:value="{selectedPersons}" multiple>
+        {#each persons as person}
+          <option value="{person}">{person}</option>
+        {/each}
+      </select>
+    </label>
+
+    <label>
+      <span>Exercises:</span>
+      <select bind:value="{selectedExercises}" multiple>
+        {#each exercises as exercise}
+          <option value="{exercise}">{exercise}</option>
+        {/each}
+      </select>
+    </label>
+
+    <label>
+      <span>Clicks:</span>
+      <select bind:value="{selectedClicks}" multiple>
+        {#each ['3', '4', '6', '8', 'infinite'] as click}
+          <option value="{click}">{click}</option>
+        {/each}
+      </select>
+    </label>
+  </div>
+
   <div class="table-container view">
     <table>
       <thead>
         <tr>
-          <th>✓</th>
+          <th
+            title="select / deselect all"
+            on:click="{() => {
+              selectedRecordings.size === recordings.length
+                ? (selectedRecordings = new Set())
+                : (selectedRecordings = new Set(filteredRecordings));
+            }}">✓</th
+          >
           <th on:click="{() => (sortBy = 'exercise')}">
             exercise {sortBy === 'exercise' ? '🠧' : ''}
           </th>
@@ -214,10 +296,11 @@
           <th on:click="{() => (sortBy = 'notes')}">
             notes {sortBy === 'notes' ? '🠥' : ''}
           </th>
+          <th style="cursor: default;"> x </th>
         </tr>
       </thead>
       <tbody>
-        {#each sortRecs(filteredRecordings, sortBy) as rec}
+        {#each sortRecs(filteredRecordings, sortBy) as rec (rec.name)}
           <tr title="{rec.name}">
             <td>
               <input
@@ -240,6 +323,9 @@
             <td>{rec.notesRec.length}</td>
             <td>{rec.hasAudio ? '✓' : ''}</td>
             <td>{rec.notes ?? ''}</td>
+            <td title="delete recording">
+              <button on:click="{() => deleteRecording(rec.name)}">x</button>
+            </td>
           </tr>
         {/each}
       </tbody>
@@ -298,6 +384,15 @@
             noteColorMode="{noteColorMode}"
           />
         {/if}
+        {#if currentView === 'Density'}
+          <DensityPlot
+            width="{width}"
+            values="{rec.onsetsInBeats}"
+            beats="{4}"
+            contextBeats="{1}"
+            xLabel="beats"
+          />
+        {/if}
         {#if currentView === 'Density Separate'}
           <DensityPlotSeparate
             width="{width}"
@@ -305,6 +400,24 @@
             onsetsInBeats="{rec.onsetsInBeats}"
             beats="{4}"
             xTicks="beat"
+          />
+        {/if}
+        {#if currentView === 'Tempo Estimation'}
+          <TempoEstimation
+            notes="{rec.notesRec}"
+            bpm="{rec.bpm}"
+            xLabel="estimated BPM"
+            bandwidth="{0.5}"
+            width="{width}"
+            height="{80}"
+          />
+        {/if}
+        {#if currentView === 'Piano Roll'}
+          <PianoRoll
+            notes="{rec.notesRec}"
+            metronomeClicks="{rec.metroClicks}"
+            metronomeAccents="{rec.metroAccents}"
+            width="{width}"
           />
         {/if}
       </div>
@@ -315,6 +428,20 @@
 <style>
   main {
     padding: 0 10px 20px 10px;
+  }
+
+  .filter {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    justify-items: center;
+    align-items: center;
+  }
+  .filter label {
+    display: grid;
+    grid-template-columns: repeat(2, auto);
+    justify-items: center;
+    align-items: center;
+    gap: 5px;
   }
 
   .table-container {

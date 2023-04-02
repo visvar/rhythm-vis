@@ -198,6 +198,13 @@
     const search = by.split(/\s+/);
     return [...names.filter((d) => some(search, (s) => d.includes(s)))];
   };
+
+  const setExercise = (ex) => {
+    return () => {
+      exercise = ex;
+      localStorage.setItem('exercise', ex);
+    };
+  };
 </script>
 
 <main bind:clientWidth="{width}">
@@ -316,6 +323,36 @@
         audioDuration="{(recordingStopTime - recordingStartTime) / 1000}"
       />
     {/if}
+  </div>
+
+  <div>
+    <h3>Wanted Recordings</h3>
+    <p>
+      Argpeggio, to see how evenly notes are distributed, how long they are, how
+      the dynamics are.
+      <button on:click="{setExercise('guitar_arpeggios_eighths')}">
+        guitar_arpeggios_eighths
+      </button>
+    </p>
+    <p>
+      Blues with identical notes but different swing styles (listen to the
+      audio).
+      <button on:click="{setExercise('guitar_a-blues_eighths')}">
+        guitar_a-blues_eighths
+      </button>
+      <button on:click="{setExercise('guitar_a-blues-2_eighths')}">
+        guitar_a-blues-2_eighths
+      </button>
+      <button on:click="{setExercise('guitar_a-blues-3_eighths')}">
+        guitar_a-blues-3_eighths
+      </button>
+      <button on:click="{setExercise('guitar_a-blues-4_eighths')}">
+        guitar_a-blues-4_eighths
+      </button>
+      <button on:click="{setExercise('guitar_a-blues-5_eighths')}">
+        guitar_a-blues-5_eighths
+      </button>
+    </p>
   </div>
 </main>
 

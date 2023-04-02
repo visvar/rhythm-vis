@@ -10,7 +10,7 @@
   let plotContainer;
 
   afterUpdate(() => {
-    console.log(dates);
+    // console.log(dates);
     plotContainer.textContent = '';
     const plot = Plot.plot({
       width,
@@ -29,7 +29,7 @@
           dates,
           Plot.binX(
             { y: 'count', thresholds: utcWeek },
-            { x: (d) => d, fill: '#aaa', inset: 0 }
+            { x: (d) => d, fill: '#aaa', inset: 1, rx: 2, clip: true }
           )
         ),
         Plot.ruleX([0]),

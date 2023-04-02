@@ -41,7 +41,7 @@
     'Density Separate',
     'Time diff.',
     // 'Durations',
-    'Piano roll',
+    'Piano Roll',
     'Tempo Estimation',
   ];
   let currentViews = localStorage.getItem('currentViews')
@@ -528,7 +528,7 @@
       <NoteDurationHistogramPlot width="{width}" notes="{notes}" />
     {/if}
 
-    {#if currentViews.has('Piano roll')}
+    {#if currentViews.has('Piano Roll')}
       <PianoRoll
         notes="{notes}"
         metronomeClicks="{metroClicks}"

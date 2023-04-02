@@ -13,6 +13,7 @@
   export let selectionEndTime = null;
   export let width = 800;
   export let height = 50;
+  export let showControls = true;
 
   let plotContainer;
   let showOnlySelection = true;
@@ -157,27 +158,29 @@
 
 <main width="{width}px" class="view">
   <h4>Note Distance</h4>
-  <label>
-    show only selection
-    <input type="checkbox" bind:checked="{showOnlySelection}" />
-  </label>
-  <label>
-    y limit
-    <input
-      type="range"
-      bind:value="{yLimit}"
-      min="0"
-      max="{maxDelta}"
-      step="0.01"
-    />
-    <input
-      bind:value="{yLimit}"
-      type="number"
-      min="0"
-      max="{maxDelta}"
-      step="0.01"
-    />
-  </label>
+  {#if showControls}
+    <label>
+      show only selection
+      <input type="checkbox" bind:checked="{showOnlySelection}" />
+    </label>
+    <label>
+      y limit
+      <input
+        type="range"
+        bind:value="{yLimit}"
+        min="0"
+        max="{maxDelta}"
+        step="0.01"
+      />
+      <input
+        bind:value="{yLimit}"
+        type="number"
+        min="0"
+        max="{maxDelta}"
+        step="0.01"
+      />
+    </label>
+  {/if}
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
 </main>
 

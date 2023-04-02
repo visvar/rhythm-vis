@@ -55,7 +55,7 @@
     'Setup',
     'Converter',
     'Live',
-    'Comparison',
+    // 'Comparison',
     'Recordings',
     'Help',
   ];
