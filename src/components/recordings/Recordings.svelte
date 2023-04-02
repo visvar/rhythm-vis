@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { every, group } from 'd3';
+  import { group } from 'd3';
   import { readJsonFile, readTextFile } from '../../lib/files';
   import { Utils } from 'musicvis-lib';
   import NoteDistanceBars from '../analysis/NoteDistanceBars.svelte';
@@ -9,6 +9,7 @@
   import DensityPlot from '../analysis/DensityPlot.svelte';
   import TempoEstimation from '../analysis/TempoEstimation.svelte';
   import PianoRoll from '../common/PianoRoll.svelte';
+  import DeltaTimeHistogramPlot from '../analysis/DeltaTimeHistogramPlot.svelte';
 
   export let dataDirectoryHandle = null;
 
@@ -45,10 +46,10 @@
     // 'Ticks',
     'Density',
     // 'Ground truth',
-    'Main',
+    // 'Main',
     'Note Distance',
-    'Scatterplot',
-    'Aggregated',
+    // 'Scatterplot',
+    // 'Aggregated',
     'Density Separate',
     'Time diff.',
     'Piano Roll',
@@ -379,9 +380,11 @@
         {#if currentView === 'Note Distance'}
           <NoteDistanceBars
             width="{width}"
+            height="{100}"
             notes="{rec.notesRec}"
             onsetsInBeats="{rec.onsetsInBeats}"
             noteColorMode="{noteColorMode}"
+            showControls="{false}"
           />
         {/if}
         {#if currentView === 'Density'}
@@ -420,6 +423,24 @@
             width="{width}"
           />
         {/if}
+        {#if currentView === 'Time diff.'}
+          <DeltaTimeHistogramPlot
+            width="{width}"
+            onsetsInBeats="{rec.onsetsInBeats}"
+          />
+        {/if}
+        <!-- {#if currentView === 'Scatterplot'}
+          <ScatterPlot
+            width="{width}"
+            notes="{rec.notesRec}"
+            onsetsInBeats="{rec.onsetsInBeats}"
+            exerciseNoteOnsetsInBeats="{rec.onsetsInBeats}"
+            beats="{4}"
+            noteColorMode="{noteColorMode}"
+            thicknessMode="{'velocity'}"
+            xTicks="{1}"
+          />
+        {/if} -->
       </div>
     {/each}
   </div>

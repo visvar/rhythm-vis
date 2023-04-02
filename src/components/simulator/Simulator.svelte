@@ -522,6 +522,7 @@
     {#if currentViews.has('Note Distance')}
       <NoteDistanceBars
         width="{width}"
+        height="{300}"
         notes="{notes}"
         onsetsInBeats="{onsetsInBeats}"
         noteColorMode="{noteColorMode}"

@@ -91,7 +91,7 @@
     // plot
     const plot = Plot.plot({
       width,
-      height: 300,
+      height,
       marginTop: 18,
       marginBottom: 15,
       style: {
