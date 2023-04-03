@@ -9,6 +9,7 @@
   import Live from './components/realtime/Live.svelte';
   import Recordings from './components/recordings/Recordings.svelte';
   import Simulator from './components/simulator/Simulator.svelte';
+  import { getUrlParam, setUrlParam } from './lib/url';
 
   const exercises = [
     'any-instrument_empty_exercise',
@@ -59,9 +60,11 @@
     'Recordings',
     'Help',
   ];
-  let view = localStorage.getItem('view') ?? 'Recording';
+  let view =
+    getUrlParam(window, 'view') ?? localStorage.getItem('view') ?? 'Recording';
   $: {
     localStorage.setItem('view', view);
+    setUrlParam(window, 'view', view);
   }
 
   let corrP = 'rhyvis';

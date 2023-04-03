@@ -161,22 +161,15 @@
   let repetitions;
   let simBpm;
   let late;
-  // probability of missing a beat
-  //  note : this will go from -1/2 to 1/2 - so 100% is 1/2 of a beat
-  //  0=no bias, -.5=max behind, +5=max ahead"),
-  //  multiplied by rand
-  //  we allow either numbers, or tuples (portion, bias)
   let drop;
-  // probability for each note that a 'noise note' will be added
   let add;
-  // amount a beat is off (doesn't cascade) - portion of beat - or tuple [(amt,bias)]
   let wobble;
-  // amount a beat is off (does cascade) - portion of beat [(amt,bias)]
   let drift;
   let tempoFactor;
-  let acceleration = 0;
-  // get back to click every N clicks (also resets step length)
+  let acceleration;
   let reground;
+  let velocityDev;
+  let durationDev;
   const resetSimulator = () => {
     repetitions = 5;
     simBpm = bpm;
@@ -184,24 +177,44 @@
     drop = 0;
     add = 0;
     wobble = 0;
-    drift = 0;
     tempoFactor = 1;
+    acceleration = 0;
     reground = 0;
+    velocityDev = 0;
+    durationDev = 0;
   };
+
+  $: {
+    if (exerciseNotes?.length) {
+      notes = simulate({
+        repetitions,
+        simBpm,
+        late,
+        drop,
+        add,
+        wobble,
+        tempoFactor,
+        acceleration,
+        reground,
+        velocityDev,
+        durationDev,
+      });
+    }
+  }
 
   onMount(resetSimulator);
 
   const simulate = (options) => {
-    console.log('simulate');
     const exerciseDuration = beats * Utils.bpmToSecondsPerBeat(bpm);
-    console.log(beats, bpm, exerciseDuration);
-
     const simNotes = [];
-    const rand = randomNormal(0, wobble);
+    const randStart = randomNormal(0, wobble);
+    const randVelo = randomNormal(0.5, velocityDev);
+    const randDur = randomNormal(0, durationDev);
     // const rand = normal.factory({
     //   seed: 12345,
     // });
 
+    let timeOfLastReground = 0;
     for (let rep = 0; rep < repetitions; rep++) {
       for (const [index, note] of exerciseNotes.entries()) {
         // dropped note?
@@ -212,18 +225,28 @@
         let start = note.start + rep * exerciseDuration;
         const currentBeat = start / spb;
         if (reground > 0 && currentBeat % reground === 0) {
+          // reground to click
+          timeOfLastReground = start;
+        } else {
+          // wrong tempo?
+          const currentTempoFactor =
+            1 / tempoFactor + (start - timeOfLastReground) * acceleration;
+          // start *= currentTempoFactor;
+          start =
+            timeOfLastReground +
+            (start - timeOfLastReground) * currentTempoFactor;
         }
-        // wrong tempo?
-        const currentTempoFactor = tempoFactor + start * acceleration;
-        start *= currentTempoFactor;
         // consistently too late?
         start += late;
         // wobble
-        start += rand();
+        start += randStart();
+        const end = start + note.duration * randDur();
         simNotes.push({
           ...note,
           start,
-          end: start + note.duration,
+          end,
+          duration: end - start,
+          velocity: randVelo(),
         });
         if (add > 0 && Math.random() <= add) {
           const start2 = start + randomNormal(0, 0.05)();
@@ -237,24 +260,6 @@
     }
     return simNotes.sort((a, b) => a.start - b.start);
   };
-
-  $: {
-    if (exerciseNotes?.length) {
-      notes = simulate({
-        repetitions,
-        simBpm,
-        late,
-        drop,
-        add,
-        wobble,
-        drift,
-        tempoFactor,
-        acceleration,
-        reground,
-      });
-      console.log(notes);
-    }
-  }
 </script>
 
 <main>
@@ -292,19 +297,19 @@
 
   <div class="simSettings">
     Simulator settings:
-    <label>
+    <label title="the number of exercise repetitions">
       repetitions
       <input type="number" bind:value="{repetitions}" min="{1}" step="{1}" />
     </label>
-    <label>
+    <label title="the intended tempo (beats per minute)">
       bpm
       <input type="number" bind:value="{simBpm}" min="{30}" step="{1}" />
     </label>
-    <label>
+    <label title="constant latency added to each note (seconds)">
       late
       <input type="number" bind:value="{late}" step="{0.01}" />
     </label>
-    <label>
+    <label title="probability for each note to be missed in [0, 1]">
       drop
       <input
         type="number"
@@ -314,7 +319,7 @@
         max="{1}"
       />
     </label>
-    <label>
+    <label title="probability for each note to be doubled in [0, 1]">
       add
       <input
         type="number"
@@ -324,7 +329,9 @@
         max="{1}"
       />
     </label>
-    <label>
+    <label
+      title="normally distributed random error for each note (parameter controls standard deviation in seconds)"
+    >
       wobble
       <input
         type="number"
@@ -334,15 +341,11 @@
         max="{0.5}"
       />
     </label>
-    <label>
-      drift
-      <input type="number" bind:value="{drift}" step="{0.1}" />
-    </label>
-    <label>
+    <label title="the actually played tempo will be bpm*factor">
       tempo factor
       <input type="number" bind:value="{tempoFactor}" step="{0.01}" />
     </label>
-    <label>
+    <label title="the rate of increasing tempo">
       acceleration
       <input
         type="number"
@@ -351,9 +354,35 @@
         style="width:55px"
       />
     </label>
-    <label>
+    <label
+      title="number of beats between metronome clicks, where the player resets to the correct timing, before drifting off again"
+    >
       reground
       <input type="number" bind:value="{reground}" min="1" step="{1}" />
+    </label>
+    <label
+      title="normally distributed error, added to a velocity of 0.5 (parameter controls standard deviation)"
+    >
+      velocity
+      <input
+        type="number"
+        bind:value="{velocityDev}"
+        min="0"
+        max="{1}"
+        step="{0.01}"
+      />
+    </label>
+    <label
+      title="normally distributed error, multiplied with the expected duration (parameter controls standard deviation)"
+    >
+      duration
+      <input
+        type="number"
+        bind:value="{durationDev}"
+        min="0"
+        max="{5}"
+        step="{0.01}"
+      />
     </label>
     <button on:click="{resetSimulator}">reset</button>
   </div>
