@@ -99,7 +99,7 @@
       });
     exerciseNoteOnsetsInBeats = [
       ...exerciseNotes.map((d) => d.start / spb),
-      mp.duration,
+      // mp.duration,
     ];
   };
   // const loadExerciseMidi = async (exercise) => {

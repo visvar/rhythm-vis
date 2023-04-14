@@ -271,7 +271,7 @@
 <main width="{width}px">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
   <div bind:this="{legendContainer}" width="{width}px"></div>
-  <i>Select a time span by pressing CTRL and draging the mouse.</i>
+  <i>To select a time span, press CTRL and drag the mouse.</i>
   <label>
     Align first note to start of row
     <input type="checkbox" bind:checked="{align}" />

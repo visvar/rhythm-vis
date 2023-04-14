@@ -168,7 +168,11 @@
                 style="width: 50px"
             />
         </label>
-        <span>{currentAudioTime.toFixed(1)} seconds</span>
+        <span>
+            {currentAudioTime.toFixed(1)}
+            {selectionEndTime ? `- ${selectionEndTime}` : ''}
+            seconds
+        </span>
         <span>{currentTimeInBeats.toFixed(1)} beats</span>
         <span>
             duration {audio && wavesurfer

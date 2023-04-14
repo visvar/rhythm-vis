@@ -21,6 +21,7 @@
   import TempoEstimation from './TempoEstimation.svelte';
   import ScatterPlot from './ScatterPlot.svelte';
   import NoteDistanceBars from './NoteDistanceBars.svelte';
+  import { getUrlParam, setUrlParam } from '../../lib/url';
 
   export let dataDirectoryHandle = null;
 
@@ -44,21 +45,27 @@
     'Piano Roll',
     'Tempo Estimation',
   ];
-  let currentViews = localStorage.getItem('currentViews')
-    ? new Set(localStorage.getItem('currentViews').split(','))
-    : new Set([
-        'Exercise',
-        'Notepad',
-        'Filter',
-        // 'Ground truth',
-        'Density',
-        'Main',
-        'Note Distance',
-        // 'Aggregated',
-        // 'Density Separate',
-      ]);
+  let currentViews;
+  if (getUrlParam(window, 'ana-views')) {
+    currentViews = new Set(getUrlParam(window, 'ana-views').split(','));
+  } else if (localStorage.getItem('ana-views')) {
+    currentViews = new Set(localStorage.getItem('ana-views').split(','));
+  } else {
+    currentViews = new Set([
+      'Exercise',
+      'Notepad',
+      'Filter',
+      'Density',
+      'Main',
+      'Note Distance',
+    ]);
+  }
   $: {
-    localStorage.setItem('currentViews', [...currentViews].join(','));
+    const v = [...currentViews].join(',');
+    localStorage.setItem('ana-views', v);
+    if (v !== getUrlParam(window, 'ana-views')) {
+      setUrlParam(window, 'ana-views', v);
+    }
   }
 
   // config
@@ -122,18 +129,19 @@
   $: onsetsInBeats = onsets.map((d) => d / spb - timeAlignment);
   let timeAlignment = 0;
   let currentTimeInBeats = 0;
+  // time selection
   let selectionStartTime = null;
   let selectionEndTime = null;
   let notesInSelection;
   let onsetsInSelection;
   // TODO:
   $: {
-    notesInSelection = [];
-    onsetsInSelection = [];
+    // notesInSelection = notes.filter() ;
+    // onsetsInSelection = [];
   }
 
   // get data from files
-  const handleFileSelect = async (recName) => {
+  const handleRecordingSelect = async (recName) => {
     console.log(recName);
     currentRecName = null;
     notes = [];
@@ -145,6 +153,7 @@
     selectionEndTime = null;
     const files = recordings.get(recName);
     if (!files) {
+      console.log('no files');
       return;
     }
     for (const file of files) {
@@ -181,6 +190,8 @@
     const firstNoteStart = notes[0]?.start ?? 0;
     const spb = Utils.bpmToSecondsPerBeat(bpm);
     timeAlignment = Math.floor(firstNoteStart / spb);
+    // set URL param
+    setUrlParam(window, 'ana-rec', currentRecName);
   };
 
   /**
@@ -220,8 +231,13 @@
     recordings = group(files, (d) => d.name.substring(0, d.name.indexOf('.')));
   };
 
-  onMount(() => {
-    updateRecordingList();
+  onMount(async () => {
+    await updateRecordingList();
+    // get URL params
+    const rec = getUrlParam(window, 'ana-rec');
+    if (rec) {
+      handleRecordingSelect(rec);
+    }
   });
 
   /**
@@ -262,7 +278,7 @@
 
   <label>
     Recording:
-    <select on:input="{(e) => handleFileSelect(e.target.value)}">
+    <select on:input="{(e) => handleRecordingSelect(e.target.value)}">
       <option value="" selected>select a recording</option>
       {#each sortRecs(filterRecs([...recordings.keys()], filterBy), sortBy) as rName}
         <option value="{rName}">{rName}</option>
@@ -324,7 +340,7 @@
 
   <select
     bind:value="{midiSource}"
-    on:change="{() => handleFileSelect(currentRecName)}"
+    on:change="{() => handleRecordingSelect(currentRecName)}"
     title="Note data source, either recorded MIDI or converted from audio"
   >
     <option value="recorded">recorded</option>
