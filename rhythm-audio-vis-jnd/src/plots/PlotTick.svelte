@@ -1,0 +1,37 @@
+<script>
+    import * as Plot from '@observablehq/plot';
+    import { afterUpdate } from 'svelte';
+
+    export let pattern;
+    export let width = 800;
+    export let height = 100;
+
+    let plotContainer;
+
+    afterUpdate(() => {
+        const plot = Plot.plot({
+            width,
+            height,
+            marginLeft: 50,
+            x: {
+                axis: false,
+                // domain: [0, Math.max(...pattern) + 1],
+            },
+            y: {
+                axis: false,
+            },
+            marks: [Plot.tickX(pattern, { x: (d) => d })],
+        });
+
+        plotContainer.textContent = '';
+        plotContainer.appendChild(plot);
+    });
+</script>
+
+<main>
+    <div
+        bind:this="{plotContainer}"
+        width="{width}px"
+        height="{height}px"
+    ></div>
+</main>
