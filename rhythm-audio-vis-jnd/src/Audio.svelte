@@ -20,11 +20,16 @@
       audioData = simulate(audioSample, pattern);
       audioDataToAudioEl(audioData, audioSample.sampleRate, audioEl);
       console.log('rendered audio and attached to element');
+      // auto play
+      window.setTimeout(play, 200);
     }
   };
+  $: console.log(pattern);
+
   $: renderAndLoadAudio(pattern, audioSample);
 
   const play = () => {
+    console.log('play');
     audioEl.pause();
     audioEl.currentTime = 0;
     audioEl.play();
