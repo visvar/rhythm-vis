@@ -1,158 +1,215 @@
 <script>
-  import { audioDataToAudioEl, generatePatternSimple, simulate } from './lib';
-  import AudioDecode from 'audio-decode';
-  import PlotTick from './plots/PlotTick.svelte';
-  import PlotBar from './plots/PlotBar.svelte';
-  import PlotColor from './plots/PlotColor.svelte';
-  import PlotWaveform from './plots/PlotWaveform.svelte';
-  import PlotStudyResponses from './plots/PlotStudyResponses.svelte';
+    import {
+        audioDataToAudioEl,
+        fetchAudio,
+        generatePatternSimple,
+        simulate,
+    } from './lib/lib.js';
+    import AudioDecode from 'audio-decode';
+    import PlotTick from './plots/PlotTick.svelte';
+    import PlotBar from './plots/PlotBar.svelte';
+    import PlotColor from './plots/PlotColor.svelte';
+    import PlotWaveform from './plots/PlotWaveform.svelte';
+    import Audio from './Audio.svelte';
+    import { onMount } from 'svelte';
+    import { Staircase } from './lib/StaircaseJS/StaircaseModule';
+    import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
 
-  // inter-onset interval in seconds
-  let ioi = 0.5;
-  // deviation in percent of the ioi
-  let percentDeviation = 15;
-  // deviation in seconds
-  $: deviationSeconds = (percentDeviation / 100) * ioi;
+    const audioFile = './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3';
 
-  let noteCount = 6;
-  let wrongNoteIndex = 3;
-  let paddingStart = 0;
+    /*
+     * StaircaseJS example
+     * Matt Jaquiery - 2017
+     */
 
-  // generate rhythmic pattern
-  let pattern = [];
-  $: {
-    pattern = generatePatternSimple(
-      noteCount,
-      ioi,
-      wrongNoteIndex,
-      deviationSeconds,
-      paddingStart
-    );
-    // data = simulate(instrument, pattern)
-    console.log('generated pattern', pattern);
-  }
+    // Runtime variables
+    let currentTrialNumber;
+    let validTrials;
+    let currentTrial;
+    let trials = [];
+    let score;
+    let stair;
+    let trialActive = false;
+    let playerChoice;
 
-  // load audio sample to use for notes
-  let audioSample = null;
-  const audioFile = './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3';
-  const fetchAudio = async () => {
-    const res = await fetch(audioFile);
-    const buffer = await res.arrayBuffer();
-    audioSample = await AudioDecode(buffer);
-    console.log(`Loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
-  };
-  fetchAudio();
+    // stimulus variables
+    let maxDots = 200;
 
-  // render audio data for pattern using sample
-  let audioData = null;
-  let audioEl;
-  const renderAndLoadAudio = (pattern, audioSample) => {
-    if (audioSample && audioEl) {
-      audioData = simulate(audioSample, pattern);
-      audioDataToAudioEl(audioData, audioSample.sampleRate, audioEl);
-      console.log('rendered audio and attached to element');
+    // inter-onset interval in seconds
+    let ioi = 0.5;
+    // deviation in percent of the ioi
+    let percentDeviation = 15;
+    // deviation in seconds
+    $: deviationSeconds = (percentDeviation / 100) * ioi;
+    let noteCount = 6;
+    let wrongNoteIndex = 3;
+    let paddingStart = 0;
+
+    let pattern = [];
+    $: {
+        pattern = generatePatternSimple(
+            noteCount,
+            ioi,
+            wrongNoteIndex,
+            deviationSeconds,
+            paddingStart
+        );
+        console.log('generated pattern', pattern);
     }
-  };
-  $: renderAndLoadAudio(pattern, audioSample);
 
-  const play = () => {
-    audioEl.pause();
-    audioEl.currentTime = 0;
-    audioEl.play();
-  };
+    // results
+    let data = [];
+    let final = 0;
+    let feedback = '';
 
-  // study
-  // see Figure 1 of https://www.speech.kth.se/~sofiad/pdf/SMAC03_DahlGranqvist.pdf
-  // TODO: when to double step?
-  // TODO: when to stop?
-  const initialStep = 2;
-  const minimumStep = 0.1;
-  let currentStep = initialStep;
-  let correctCount = 0;
-  // e.g., when 2: after two correct responses, the deviation is reduced by one step value
-  let requiredCorrect = 2;
-  let tracking = [];
-  const response = (res) => {
-    // check if correct
-    const correctRes = deviationSeconds < 0 ? 'early' : 'late';
-    const correct = res === correctRes;
-    let action;
-    if (!correct && tracking.length > 0) {
-      // go back one step
-      action = 'step back';
-      percentDeviation += currentStep;
-      correctCount = 0;
-    } else {
-      correctCount++;
-      if (correctCount < requiredCorrect) {
-        action = 'wait for more correct';
-      } else {
-        correctCount = 0;
-        action = 'step forward';
-        // half step size after two steps forward one step back
-        if (
-          tracking.length > 2 &&
-          tracking.at(-2).correct === false &&
-          tracking.at(-1).correct === true
-        ) {
-          currentStep = Math.max(currentStep / 2, minimumStep);
+    onMount(setupInstructions);
+
+    async function setupInstructions() {
+        document
+            .querySelector('html')
+            .addEventListener('keyup', (evt) => keyPress(evt.keyCode));
+        stair = new Staircase({
+            ratio: {
+                firstVal: Math.round(maxDots * 0.8),
+                down: 2, // down is the number of correct answers required before we increase the difficulty
+                up: 1, // up is the number of incorrect answers before we decrease the difficulty
+                stepSizeDown: 1, // how much we in/decrease by
+                stepSizeUp: 1 * 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+                limits: [-15, 15], // don't allow equal ratio
+                direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
+                reversalLimit: 5, // How many reversals to do before stopping
+                verbosity: 1, // Enable logging for debugging
+            },
+        });
+        stair.init();
+        startTest();
+    }
+
+    function startTest() {
+        currentTrialNumber = 0;
+        validTrials = 0;
+        score = 0;
+        startTrial();
+    }
+
+    /*
+     * Each trial consists of painting stimuli and obtaining a response from the participant
+     */
+    function startTrial() {
+        console.log('Starting trial ' + currentTrialNumber);
+        currentTrial = {};
+        playerChoice = -1;
+        drawStimuli();
+    }
+
+    function drawStimuli() {
+        trialActive = true;
+        // Trial info
+        const p = Math.round(stair.getLast('ratio'));
+        let deviation = p;
+        deviation = Math.random() < 0.5 ? deviation : -deviation;
+        currentTrial.deviation = deviation;
+        percentDeviation = deviation;
+
+        console.log('generated pattern', pattern);
+    }
+
+    function decisionClick(id) {
+        if (!trialActive) {
+            return;
         }
-        // go one step further
-        percentDeviation -= currentStep;
-      }
+        trialActive = false;
+        currentTrial.decisionChoice = id;
+        currentTrial.errorCode = 0;
+
+        // process trial result
+        const oldScore = score;
+        if (
+            ((currentTrial.decisionChoice == 0 && currentTrial.deviation < 0) ||
+                (currentTrial.decisionChoice == 1 &&
+                    currentTrial.deviation > 0)) &&
+            currentTrial.errorCode == 0
+        ) {
+            score++;
+        }
+        if (currentTrial.errorCode == 0) {
+            // if correct, go to next step
+            stair.next(oldScore != score);
+            // store current trial
+            trials[trials.length] = currentTrial;
+        }
+
+        if (currentTrial.errorCode == 0) {
+            validTrials++;
+        }
+        currentTrialNumber++;
+
+        if (!stair.reversalLimitReached('ratio')) {
+            // next trial
+            startTrial();
+        } else {
+            // show block feedback
+            getFeedbackText();
+            makeGraph();
+        }
     }
 
-    // track response curve
-    const entry = {
-      deviationSeconds,
-      percentDeviation,
-      res,
-      correct,
-      action,
-      currentStep,
-    };
-    tracking = [...tracking, entry];
-    console.log(tracking);
-  };
+    function keyPress(k) {
+        switch (k) {
+            case 37: // Leftarrow
+                decisionClick(0);
+                break;
+            case 39: // Rightarrow
+                decisionClick(1);
+                break;
+        }
+        return;
+    }
+
+    function getFeedbackText() {
+        feedback =
+            'You scored ' +
+            score +
+            '/' +
+            (currentTrialNumber + 1) +
+            ' (' +
+            ((score / (currentTrialNumber + 1)) * 100).toFixed(1) +
+            '%)<br>Your end difficulty was ' +
+            stair.getFinalVal('ratio');
+    }
+
+    function makeGraph() {
+        data = [];
+        var finalDiff = stair.getFinalVal('ratio');
+        for (var i = 0; i < trials.length; i++) {
+            // TODO:
+            data[i] = trials[i].deviation;
+        }
+        final = finalDiff;
+        console.log(data);
+    }
 </script>
 
 <main>
-  <h2>Study</h2>
-  <p>Does the audio/visualization show an error in the musician's timing?</p>
-  <div class="response">
-    <button on:click="{() => response('early')}">too early</button>
-    <button on:click="{() => response('late')}">too late</button>
-  </div>
+    <h2>Study</h2>
+    <section id="StimulusArea">
+        <div id="Canvases" style="width: 750px; margin:auto;">
+            <p>Use the arrow keys, left for too early, right for too late.</p>
+            <PlotTick pattern="{pattern}" />
+        </div>
+    </section>
 
-  <div class="stimuli">
-    <div>
-      <audio bind:this="{audioEl}" controls="{false}"></audio>
-      <button on:click="{play}">play audio</button>
-    </div>
-    <PlotTick pattern="{pattern}" />
-    <PlotBar pattern="{pattern}" />
-    <PlotColor pattern="{pattern}" />
-    {#if audioSample}
-      <PlotWaveform
-        audioData="{audioData}"
-        sampleRate="{audioSample.sampleRate}"
-      />
-    {/if}
-  </div>
-
-  <div class="study-tracking">
-    <PlotStudyResponses tracking="{tracking}" />
-  </div>
+    <section id="BlockFeedback">
+        <div id="Feedback" style="text-align: center;">
+            <p id="FeedbackScore">{feedback}</p>
+        </div>
+        <div id="Graph" style="width: 80%; display: block; margin: auto">
+            <PlotLine data="{data}" final="{final}" />
+        </div>
+        <br />
+        <div id="FeedbackButton" class="button">Start Again</div>
+    </section>
 </main>
 
 <style>
-  .stimuli,
-  .study-tracking {
-    margin: 30px 0;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 10px;
-    justify-items: center;
-    align-items: center;
-  }
 </style>

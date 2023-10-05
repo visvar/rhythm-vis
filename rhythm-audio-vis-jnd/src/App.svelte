@@ -1,8 +1,9 @@
 <script>
   import Playground from './Playground.svelte';
   import Study from './Study.svelte';
+  import StaircaseTest from './lib/StaircaseJS/StaircaseTest.svelte';
 
-  let view = '';
+  let view = 'study';
 </script>
 
 <main>
@@ -24,6 +25,8 @@
   {:else if view === 'study'}
     <Study />
   {/if}
+
+  <!-- <StaircaseTest /> -->
 </main>
 
 <style>

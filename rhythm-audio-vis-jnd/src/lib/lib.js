@@ -25,7 +25,7 @@
 //   return noteTimes.map((d) => d + paddingStart)
 // }
 
-
+import AudioDecode from 'audio-decode'
 import AudioBufferToWav from 'audiobuffer-to-wav'
 
 export function generatePatternSimple(
@@ -47,6 +47,13 @@ export function generatePatternSimple(
   }
   return noteTimes
 }
+
+export async function fetchAudio(audioFile) {
+  const res = await fetch(audioFile)
+  const buffer = await res.arrayBuffer()
+  const audioSample = await AudioDecode(buffer)
+  return audioSample
+};
 
 export function simulate(instrument, noteTimes) {
   // prepare rendering

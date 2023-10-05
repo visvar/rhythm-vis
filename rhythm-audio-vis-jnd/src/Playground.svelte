@@ -1,5 +1,9 @@
 <script>
-  import { audioDataToAudioEl, generatePatternSimple, simulate } from './lib';
+  import {
+    audioDataToAudioEl,
+    generatePatternSimple,
+    simulate,
+  } from './lib/lib.js';
   import AudioDecode from 'audio-decode';
   import PlotTick from './plots/PlotTick.svelte';
   import PlotBar from './plots/PlotBar.svelte';
