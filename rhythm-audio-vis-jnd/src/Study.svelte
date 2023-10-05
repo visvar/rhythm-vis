@@ -11,6 +11,8 @@
   import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
 
   const audioFile = './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3';
+  // const audioFile =
+  // './MailboxBadgerPublicDomainDrumSamples27LiveDrumsHiHat.mp3';
 
   // Runtime variables
   let currentTrialNumber;
@@ -35,7 +37,7 @@
   // deviation in seconds
   $: deviationSeconds = (percentDeviation / 100) * ioi;
   let noteCount = 6;
-  let wrongNoteIndex = 3;
+  let wrongNoteIndex = 4 - 1; // nth note means index n-1
   let paddingStart = 0;
   // vis sizes
   let visWidth = 600;
@@ -60,9 +62,7 @@
   const completeResults = [];
 
   onMount(() => {
-    document
-      .querySelector('html')
-      .addEventListener('keyup', (evt) => keyPress(evt.keyCode));
+    document.querySelector('html').addEventListener('keyup', keyPress);
   });
 
   const setupInstructions = () => {
@@ -73,10 +73,11 @@
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
         stepSizeDown: 1, // how much we in/decrease by
         stepSizeUp: 1 * 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
-        limits: [-initialPercentDeviation, initialPercentDeviation], // don't allow equal ratio
+        limits: [0, initialPercentDeviation], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 5, // How many reversals to do before stopping
         verbosity: 1, // Enable logging for debugging
+        // sameStairMax: , // Maximum number of trials
       },
     });
     stair.init();
@@ -181,16 +182,15 @@
     console.log('results (all)', completeResults);
   }
 
-  function keyPress(k) {
-    switch (k) {
-      case 37: // Leftarrow
+  function keyPress(evt) {
+    switch (evt.key) {
+      case 'ArrowLeft':
         decisionClick(0);
         break;
-      case 39: // Rightarrow
+      case 'ArrowRight':
         decisionClick(1);
         break;
     }
-    return;
   }
 
   function getFeedbackText() {
@@ -241,6 +241,7 @@
       />
       <p>You can play the audio as many times as you like.</p>
     {:else if whiteScreenShowing === false}
+      <!-- white screen helps avoid seeing the change between consecutive stimuli -->
       {#if currentEncoding === 'waveform'}
         <PlotWaveform
           pattern="{pattern}"
@@ -261,10 +262,8 @@
       {/if}
     {/if}
   {:else if data.length > 0}
+    <!-- when test is over and data is there, show it -->
     <p>{feedback}</p>
     <PlotLine data="{data}" final="{final}" />
   {/if}
 </main>
-
-<style>
-</style>
