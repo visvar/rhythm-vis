@@ -3,6 +3,7 @@
 
   export let pattern;
   export let audioFile;
+  export let currentTrialNumber;
 
   // load audio sample to use for notes
   let audioSample = null;
@@ -20,15 +21,22 @@
       audioData = simulate(audioSample, pattern);
       audioDataToAudioEl(audioData, audioSample.sampleRate, audioEl);
       console.log('rendered audio and attached to element');
-      // auto play
-      window.setTimeout(play, 200);
     }
   };
   $: console.log(pattern);
+  // auto play
+  $: {
+    if (currentTrialNumber > -1) {
+      window.setTimeout(play, 200);
+    }
+  }
 
   $: renderAndLoadAudio(pattern, audioSample);
 
   const play = () => {
+    if (!audioEl) {
+      return;
+    }
     console.log('play');
     audioEl.pause();
     audioEl.currentTime = 0;
