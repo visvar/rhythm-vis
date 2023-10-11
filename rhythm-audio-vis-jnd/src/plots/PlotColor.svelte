@@ -14,14 +14,14 @@
       width,
       height,
       marginLeft: 50,
-      x: { axis: false },
+      // x: { axis: false },
       y: { axis: false },
       color: {
         scheme: 'Greys',
       },
       marks: [
         Plot.cell(deltas, {
-          x: (d, i) => i,
+          x: (d, i) => i + 1,
           fill: (d) => d,
         }),
       ],
@@ -32,6 +32,11 @@
   });
 </script>
 
-<main>
+<main style="width: {width}px">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
+  <div>
+    For each note but the first, the rectangles' color shows the distance to the
+    previous note. A brighter recangle followed by a darker one indicates an
+    early note.
+  </div>
 </main>

@@ -28,10 +28,14 @@
     });
 </script>
 
-<main>
+<main style="width: {width}px">
     <div
         bind:this="{plotContainer}"
         width="{width}px"
         height="{height}px"
     ></div>
+    <div>
+        Each note is represented by a tick placed at its onset time from left to
+        right. A smaller gap followed by a larger one indicates an early note.
+    </div>
 </main>

@@ -14,9 +14,9 @@
       width,
       height,
       marginLeft: 50,
-      x: { axis: false },
+      // x: { axis: false },
       y: { axis: false },
-      marks: [Plot.barY(deltas, { x: (d, i) => i, y: (d) => d })],
+      marks: [Plot.barY(deltas, { x: (d, i) => i + 1, y: (d) => d })],
     });
 
     plotContainer.textContent = '';
@@ -24,6 +24,11 @@
   });
 </script>
 
-<main>
+<main style="width: {width}px">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
+  <div>
+    For each note but the first, the bars' height shows the distance to the
+    previous note. A smaller bar followed by a larger one indicates an early
+    note.
+  </div>
 </main>

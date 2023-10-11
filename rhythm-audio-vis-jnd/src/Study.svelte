@@ -10,9 +10,11 @@
     import { Staircase } from './lib/StaircaseJS/StaircaseModule';
     import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
 
-    const audioFile = './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3';
-    // const audioFile =
-    // './MailboxBadgerPublicDomainDrumSamples27LiveDrumsHiHat.mp3';
+    const audioFiles = [
+        './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',
+        './MailboxBadgerPublicDomainDrumSamples27LiveDrumsHiHat.mp3',
+    ];
+    let audioFile = audioFiles[0];
 
     // Runtime variables
     let currentTrialNumber;
@@ -216,6 +218,18 @@
             <select bind:value="{currentEncoding}" disabled="{testActive}">
                 {#each encodings as enc}
                     <option value="{enc}">{enc}</option>
+                {/each}
+            </select>
+        </label>
+        <label>
+            Sample:
+            <select
+                bind:value="{audioFile}"
+                disabled="{currentEncoding !== 'audio' &&
+                    currentEncoding !== 'waveform'}"
+            >
+                {#each audioFiles as af}
+                    <option value="{af}">{af.substring(0, 30)}</option>
                 {/each}
             </select>
         </label>

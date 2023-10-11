@@ -3,7 +3,7 @@
 
   export let pattern;
   export let audioFile;
-  export let currentTrialNumber;
+  export let currentTrialNumber = -1;
 
   // load audio sample to use for notes
   let audioSample = null;

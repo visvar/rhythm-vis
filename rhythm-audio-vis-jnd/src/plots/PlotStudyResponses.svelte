@@ -51,7 +51,7 @@
     });
 </script>
 
-<main>
+<main style="width: {width}px">
     <div
         bind:this="{plotContainer}"
         width="{width}px"
