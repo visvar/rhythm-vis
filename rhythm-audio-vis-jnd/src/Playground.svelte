@@ -22,6 +22,7 @@
 
   let noteCount = 6;
   let wrongNoteIndex = 3;
+  let shiftFollowing = true;
   let paddingStart = 0;
 
   // generate rhythmic pattern
@@ -32,6 +33,7 @@
       ioi,
       wrongNoteIndex,
       deviationSeconds,
+      shiftFollowing,
       paddingStart
     );
     // data = simulate(instrument, pattern)
@@ -49,8 +51,8 @@
       <input
         type="range"
         bind:value="{percentDeviation}"
-        min="-15"
-        max="15"
+        min="-20"
+        max="20"
         step="1"
       />
       {percentDeviation.toFixed(1)}

@@ -17,7 +17,9 @@
       // x: { axis: false },
       y: { axis: false },
       color: {
+        label: 'time since previous note',
         scheme: 'Greys',
+        // legend: true,
       },
       marks: [
         Plot.cell(deltas, {
