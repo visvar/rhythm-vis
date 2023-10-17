@@ -34,7 +34,7 @@
     // inter-onset interval in seconds
     let ioi = 0.5;
     // deviation in percent of the ioi
-    const initialPercentDeviation = 15;
+    const initialPercentDeviation = 20;
     let percentDeviation = initialPercentDeviation;
     // deviation in seconds
     $: deviationSeconds = (percentDeviation / 100) * ioi;
@@ -94,6 +94,7 @@
         validTrials = 0;
         score = 0;
         testActive = true;
+        trials = [];
         startTrial();
     }
 
@@ -175,12 +176,13 @@
         console.log(data);
         completeResults.push({
             encoding: currentEncoding,
+            audioFile,
             final,
             data,
             score,
             trialCount: currentTrialNumber + 1,
             trials,
-            validTrialCount: validTrials,
+            validTrialCount: validTrials + 1,
         });
         console.log('results (all)', completeResults);
     }
@@ -202,8 +204,18 @@
             100
         ).toFixed(1)}%) Your end difficulty was ${stair.getFinalVal('ratio')}`;
     }
+
+    function beforeUnload(event) {
+        // Cancel the event as stated by the standard.
+        event.preventDefault();
+        // Chrome requires returnValue to be set.
+        event.returnValue = '';
+        // more compatibility
+        return '...';
+    }
 </script>
 
+<!-- <svelte:window on:beforeunload="{beforeUnload}" /> -->
 <main>
     <h2>Study</h2>
     <p>
@@ -213,38 +225,46 @@
     </p>
 
     <div>
-        <label>
-            Encoding:
-            <select bind:value="{currentEncoding}" disabled="{testActive}">
-                {#each encodings as enc}
-                    <option value="{enc}">{enc}</option>
-                {/each}
-            </select>
-        </label>
-        <label>
-            Sample:
-            <select
-                bind:value="{audioFile}"
-                disabled="{currentEncoding !== 'audio' &&
-                    currentEncoding !== 'waveform'}"
+        <div>
+            <label>
+                encoding:
+                <select bind:value="{currentEncoding}" disabled="{testActive}">
+                    {#each encodings as enc}
+                        <option value="{enc}">{enc}</option>
+                    {/each}
+                </select>
+            </label>
+        </div>
+        <div>
+            <label>
+                instrument sample:
+                <select
+                    bind:value="{audioFile}"
+                    disabled="{currentEncoding !== 'audio' &&
+                        currentEncoding !== 'waveform'}"
+                >
+                    {#each audioFiles as af}
+                        <option value="{af}">{af.substring(0, 30)}</option>
+                    {/each}
+                </select>
+            </label>
+        </div>
+        <div>
+            <button on:click="{startTest}" disabled="{testActive}">
+                Start
+            </button>
+            <button
+                on:click="{() => {
+                    const json = JSON.stringify(completeResults);
+                    const blob = new Blob([json], {
+                        type: 'text/plain;charset=utf-8',
+                    });
+                    saveAs(blob, 'results.json');
+                }}"
             >
-                {#each audioFiles as af}
-                    <option value="{af}">{af.substring(0, 30)}</option>
-                {/each}
-            </select>
-        </label>
-        <button on:click="{startTest}" disabled="{testActive}"> Start </button>
-        <button
-            on:click="{() => {
-                const json = JSON.stringify(completeResults);
-                const blob = new Blob([json], {
-                    type: 'text/plain;charset=utf-8',
-                });
-                saveAs(blob, 'results.json');
-            }}"
-        >
-            Download results
-        </button>
+                Download results
+            </button>
+        </div>
     </div>
 
     {#if testActive}

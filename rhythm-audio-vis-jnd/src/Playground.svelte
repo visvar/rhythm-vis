@@ -12,6 +12,10 @@
   ];
   let audioFile = audioFiles[0];
 
+  // vis sizes
+  let visWidth = 600;
+  let visHeight = 100;
+
   // inter-onset interval in seconds
   let ioi = 0.5;
   $: bpm = (1 / ioi) * 60;
@@ -41,9 +45,13 @@
 
 <main>
   <h2>Playground</h2>
-  <p>All stimuli (audio and visualizations) and configurable deviation.</p>
+  <p>
+    All stimuli (audio and visualizations) and configurable deviation. Play
+    around with different values to compare how stimuli look and how small
+    deviations can be
+  </p>
   <div>
-    IOI = {(ioi * 1000).toFixed(0)} milliseconds ({bpm} bpm)
+    inter-onset interval (IOI): {(ioi * 1000).toFixed(0)} milliseconds ({bpm} bpm)
     <label>
       deviation as percent of IOI
       <input
@@ -57,7 +65,7 @@
       ({(deviationSeconds * 1000).toFixed(1)} milliseconds)
     </label>
     <label>
-      Sample:
+      instrument sample:
       <select bind:value="{audioFile}">
         {#each audioFiles as af}
           <option value="{af}">{af.substring(0, 30)}</option>
@@ -68,10 +76,15 @@
 
   <div class="stimuli">
     <Audio pattern="{pattern}" audioFile="{audioFile}" />
-    <PlotWaveform pattern="{pattern}" audioFile="{audioFile}" height="{100}" />
-    <PlotTick pattern="{pattern}" />
-    <PlotBar pattern="{pattern}" />
-    <PlotColor pattern="{pattern}" />
+    <PlotWaveform
+      pattern="{pattern}"
+      audioFile="{audioFile}"
+      width="{visWidth}"
+      height="{visHeight}"
+    />
+    <PlotTick pattern="{pattern}" width="{visWidth}" height="{visHeight}" />
+    <PlotBar pattern="{pattern}" width="{visWidth}" height="{visHeight}" />
+    <PlotColor pattern="{pattern}" width="{visWidth}" height="{visHeight}" />
   </div>
 </main>
 

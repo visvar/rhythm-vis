@@ -6,9 +6,9 @@
   export let final = 0;
   export let width = 800;
   export let height = 150;
+  export let showAbsolute = false;
 
   let plotContainer;
-  let absolute = false;
 
   afterUpdate(() => {
     const plot = Plot.plot({
@@ -21,7 +21,7 @@
       },
       y: { axis: true },
       marks: [
-        Plot.lineY(absolute ? data.map((d) => Math.abs(d)) : data, {
+        Plot.lineY(showAbsolute ? data.map((d) => Math.abs(d)) : data, {
           x: (d, i) => i,
           y: (d) => d,
         }),
@@ -37,11 +37,4 @@
 
 <main>
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
-  <button
-    on:click="{() => {
-      absolute = !absolute;
-    }}"
-  >
-    toogle absolute
-  </button>
 </main>

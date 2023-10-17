@@ -55,9 +55,16 @@ export async function fetchAudio(audioFile) {
   return audioSample
 };
 
-export function simulate(instrument, noteTimes) {
+/**
+ * Simulates the note pattern as audio
+ * @param {AudioBuffer} instrument
+ * @param {number[]} noteTimes
+ * @param {number} paddingEnd how much time to render after the last note onset
+ * @returns
+ */
+export function simulate(instrument, noteTimes, paddingEnd = 1) {
   // prepare rendering
-  const duration = noteTimes.at(-1) + 1
+  const duration = noteTimes.at(-1) + paddingEnd
   const data = instrument.getChannelData(0)
   const result = new Float32Array(Math.ceil(duration * instrument.sampleRate))
 

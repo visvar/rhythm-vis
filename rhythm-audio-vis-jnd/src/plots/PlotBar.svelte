@@ -13,10 +13,14 @@
     const plot = Plot.plot({
       width,
       height,
-      marginLeft: 50,
+      marginLeft: 0,
+      marginRight: 1,
       // x: { axis: false },
       y: { axis: false },
-      marks: [Plot.barY(deltas, { x: (d, i) => i + 1, y: (d) => d })],
+      marks: [
+        Plot.barY(deltas, { x: (d, i) => i + 1, y: (d) => d }),
+        // Plot.frame(),
+      ],
     });
 
     plotContainer.textContent = '';

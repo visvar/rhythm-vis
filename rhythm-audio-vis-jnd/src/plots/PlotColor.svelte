@@ -13,7 +13,8 @@
     const plot = Plot.plot({
       width,
       height,
-      marginLeft: 50,
+      marginLeft: 0,
+      marginRight: 1,
       // x: { axis: false },
       y: { axis: false },
       color: {
@@ -24,6 +25,7 @@
           x: (d, i) => i + 1,
           fill: (d) => d,
         }),
+        // Plot.frame(),
       ],
     });
 

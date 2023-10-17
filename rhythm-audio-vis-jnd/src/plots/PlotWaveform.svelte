@@ -24,7 +24,7 @@
   let audioData = null;
   const renderAndLoadAudio = (pattern, audioSample) => {
     if (audioSample) {
-      audioData = simulate(audioSample, pattern);
+      audioData = simulate(audioSample, pattern, 0.5);
     }
   };
   $: renderAndLoadAudio(pattern, audioSample);
@@ -38,6 +38,7 @@
       width,
       height,
       marginLeft: 0,
+      marginRight: 1,
       x: {
         axis: false,
         label: 'time in seconds',
@@ -48,6 +49,7 @@
           x: (d, i) => i / sampleRate,
           y: (d) => d,
         }),
+        // Plot.frame(),
       ],
     });
 

@@ -12,7 +12,8 @@
         const plot = Plot.plot({
             width,
             height,
-            marginLeft: 50,
+            marginLeft: 0,
+            marginRight: 1,
             x: {
                 axis: false,
                 // domain: [0, Math.max(...pattern) + 1],
@@ -20,7 +21,10 @@
             y: {
                 axis: false,
             },
-            marks: [Plot.tickX(pattern, { x: (d) => d })],
+            marks: [
+                Plot.tickX(pattern, { x: (d) => d }),
+                // Plot.frame()
+            ],
         });
 
         plotContainer.textContent = '';
