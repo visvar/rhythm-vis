@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import { audioDataToAudioEl, fetchAudio, simulate } from './lib/lib.js';
 
   export let pattern;
@@ -42,9 +43,17 @@
     audioEl.currentTime = 0;
     audioEl.play();
   };
+
+  onMount(() => {
+    document.querySelector('html').addEventListener('keyup', (evt) => {
+      if (evt.key === 'p') {
+        play();
+      }
+    });
+  });
 </script>
 
 <main>
   <audio bind:this="{audioEl}" controls="{false}"></audio>
-  <button on:click="{play}">play audio</button>
+  <button on:click="{play}">play audio (p)</button>
 </main>

@@ -28,6 +28,17 @@
 import AudioDecode from 'audio-decode'
 import AudioBufferToWav from 'audiobuffer-to-wav'
 
+/**
+ * Shifts a note while keeping others in regular pattern or also shifting the
+ * following notes
+ * @param {*} notes
+ * @param {*} ioi
+ * @param {*} wrongNoteIndex
+ * @param {*} noteDeviation
+ * @param {boolean} shiftFollowing
+ * @param {*} paddingStart
+ * @returns
+ */
 export function generatePatternSimple(
   // number of notes to generate
   notes = 16,
@@ -37,12 +48,19 @@ export function generatePatternSimple(
   wrongNoteIndex = 0,
   // value in seconds the note should be shifted
   noteDeviation = 0,
+  // also shift the following notes by the same offset?
+  shiftFollowing = false,
   // to allow the first note to be shifted, there will be a bit of silence added to the start
   paddingStart = 0
 ) {
   const noteTimes = []
   for (let note = 0; note < notes; ++note) {
-    const dev = note === wrongNoteIndex ? noteDeviation : 0
+    let dev
+    if (shiftFollowing) {
+      dev = note >= wrongNoteIndex ? noteDeviation : 0
+    } else {
+      dev = note === wrongNoteIndex ? noteDeviation : 0
+    }
     noteTimes.push(note * ioi + paddingStart + dev)
   }
   return noteTimes
