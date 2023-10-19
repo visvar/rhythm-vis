@@ -50,7 +50,7 @@
   let currentTestNumber = 0;
 
   // participant data
-  let partName = '';
+  let partID = '';
   let partAge = '20-24';
   let partGender = 'm';
   let partEduation = 'master';
@@ -277,7 +277,7 @@
   function endStudy() {
     const data = {
       demographics: {
-        partName,
+        partID,
         partAge,
         partGender,
         partEduation,
@@ -315,12 +315,8 @@
   {#if studyStep === 'demo'}
     <div class="demo-form">
       <label>
-        Name:
-        <input
-          type="text"
-          bind:value="{partName}"
-          placeholder="Firstname Lastname"
-        />
+        ID:
+        <input type="text" bind:value="{partID}" placeholder="ID" />
       </label>
       <label>
         Age:
@@ -386,40 +382,13 @@
   {#if studyStep === 'tests'}
     <p>
       You will be presented with a sequence of six notes which should have equal
-      distances. The <b>fourth note</b> might be played too early or too late.
+      distances. The <b>fourth note</b> might be played too early or too late, also
+      affecting the ones after.
     </p>
-
-    <!-- <div>
-      <div>
-        <label>
-          encoding:
-          <select bind:value="{currentEncoding}" disabled="{testActive}">
-            {#each encodings as enc}
-              <option value="{enc}">{enc}</option>
-            {/each}
-          </select>
-        </label>
-      </div>
-      <div>
-        <label>
-          instrument sample:
-          <select
-            bind:value="{audioFile}"
-            disabled="{currentEncoding !== 'audio' &&
-              currentEncoding !== 'waveform'}"
-          >
-            {#each audioFiles as af}
-              <option value="{af}">{af.substring(0, 30)}</option>
-            {/each}
-          </select>
-        </label>
-      </div>
-      <button on:click="{startTest}" disabled="{testActive}"> Start </button>
-    </div> -->
 
     {#if testActive}
       <p>Use the arrow keys: left for too early, right for too late.</p>
-      <p>Test number {currentTestNumber + 1}</p>
+      <p>Test number {currentTestNumber + 1} / 7</p>
       <p>Trial number {currentTrialNumber + 1}</p>
       {#if currentEncoding === 'audio'}
         <Audio
@@ -469,10 +438,12 @@
 
   <!-- Feedback -->
   {#if studyStep === 'feedback'}
-    <label>
-      Any final feedback?
-      <textarea bind:value="{partFeedback}"></textarea>
-    </label>
+    <div>
+      <label>
+        Any final feedback?
+        <textarea bind:value="{partFeedback}"></textarea>
+      </label>
+    </div>
   {/if}
 
   <!-- Study done -->

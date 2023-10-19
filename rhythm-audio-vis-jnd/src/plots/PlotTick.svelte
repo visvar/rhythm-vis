@@ -40,6 +40,6 @@
     ></div>
     <div>
         Each note is represented by a tick placed at its onset time from left to
-        right. A smaller gap followed by a larger one indicates an early note.
+        right. A smaller gap indicates an early note.
     </div>
 </main>

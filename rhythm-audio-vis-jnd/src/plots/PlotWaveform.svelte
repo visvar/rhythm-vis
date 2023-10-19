@@ -61,7 +61,7 @@
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
   <div>
     The waveform of the audio showing the loudness over time time from left to
-    right. Note onsets show up as peaks. A smaller gap between peaks followed by
-    a larger one indicates an early note.
+    right. Note onsets show up as peaks. A smaller gap between peaks indicates
+    an early note.
   </div>
 </main>

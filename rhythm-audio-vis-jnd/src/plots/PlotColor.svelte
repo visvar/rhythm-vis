@@ -40,7 +40,6 @@
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
   <div>
     For each note but the first, the rectangles' color shows the distance to the
-    previous note. A brighter recangle followed by a darker one indicates an
-    early note.
+    previous note. A brighter recangle indicates an early note.
   </div>
 </main>
