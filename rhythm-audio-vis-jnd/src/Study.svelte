@@ -72,7 +72,7 @@
   let whiteScreenShowing = false;
 
   // stimulus variables
-  let encodings = ['audio', 'waveform', 'tick', 'bar', 'color'];
+  // let encodings = ['audio', 'waveform', 'tick', 'bar', 'color'];
   let currentEncoding = 'tick';
   // inter-onset interval in seconds
   let ioi = 0.5;
@@ -139,6 +139,7 @@
       studyStep = 'demo';
     } else if (studyStep === 'demo') {
       studyStep = 'tests';
+      currentTestNumber = 0;
     } else if (studyStep === 'tests') {
       if (currentTestNumber < tests.length) {
         currentEncoding = tests[currentTestNumber].stimulus;
@@ -156,12 +157,13 @@
    * The test consists of multiple trials
    */
   function startTest() {
-    currentTestNumber++;
     setupInstructions();
     currentTrialNumber = 0;
     validTrials = 0;
     score = 0;
     testActive = true;
+    data = [];
+    trials = [];
     startTrial();
   }
 
@@ -245,11 +247,13 @@
       final,
       data,
       score,
+      testNumber: currentTestNumber,
       trialCount: currentTrialNumber + 1,
       trials,
       validTrialCount: validTrials + 1,
     });
-    console.log('results (all)', completeResults);
+    // console.log('results (all)', completeResults);
+    currentTestNumber++;
   }
 
   function keyPress(evt) {
@@ -270,26 +274,42 @@
     ).toFixed(1)}%) Your end difficulty was ${stair.getFinalVal('ratio')}`;
   }
 
-  function beforeUnload(event) {
-    // Cancel the event as stated by the standard.
-    event.preventDefault();
-    // Chrome requires returnValue to be set.
-    event.returnValue = '';
-    // more compatibility
-    return '...';
+  function endStudy() {
+    const data = {
+      demographics: {
+        partName,
+        partAge,
+        partGender,
+        partEduation,
+        partMusicInstr,
+        partMusicInstrYears,
+        partVisExperienceYears,
+        partFeedback,
+      },
+      date: new Date().toISOString(),
+      tests: completeResults,
+    };
+    console.log(data);
+    const json = JSON.stringify(data);
+    const blob = new Blob([json], {
+      type: 'text/plain;charset=utf-8',
+    });
+    saveAs(blob, 'results.json');
   }
+
+  // function beforeUnload(event) {
+  //   // Cancel the event as stated by the standard.
+  //   event.preventDefault();
+  //   // Chrome requires returnValue to be set.
+  //   event.returnValue = '';
+  //   // more compatibility
+  //   return '...';
+  // }
 </script>
 
 <!-- <svelte:window on:beforeunload="{beforeUnload}" /> -->
 <main>
   <h2>Study</h2>
-  <div>
-    step: {studyStep}<br />
-    test: {currentTestNumber + 1} / 7<br />
-    trial: {currentTrialNumber + 1}
-  </div>
-
-  <button on:click="{nextStudyStep}">next step</button>
 
   <!-- Demographics form -->
   {#if studyStep === 'demo'}
@@ -399,6 +419,7 @@
 
     {#if testActive}
       <p>Use the arrow keys: left for too early, right for too late.</p>
+      <p>Test number {currentTestNumber + 1}</p>
       <p>Trial number {currentTrialNumber + 1}</p>
       {#if currentEncoding === 'audio'}
         <Audio
@@ -458,32 +479,12 @@
   {#if studyStep === 'done'}
     <div>Thanks for participating!</div>
     <div>
-      <button
-        on:click="{() => {
-          const data = {
-            demographics: {
-              partName,
-              partAge,
-              partGender,
-              partEduation,
-              partMusicInstr,
-              partMusicInstrYears,
-              partVisExperienceYears,
-              partFeedback,
-            },
-            tests: completeResults,
-          };
-          console.log(data);
-          const json = JSON.stringify(data);
-          const blob = new Blob([json], {
-            type: 'text/plain;charset=utf-8',
-          });
-          saveAs(blob, 'results.json');
-        }}"
-      >
-        Download results
-      </button>
+      <button on:click="{endStudy}"> Download results </button>
     </div>
+  {/if}
+
+  {#if !trialActive && !(studyStep === 'done')}
+    <button on:click="{nextStudyStep}">next step</button>
   {/if}
 </main>
 
