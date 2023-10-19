@@ -104,3 +104,15 @@ export function audioDataToAudioEl(audioData, sampleRate, audioEl) {
   })
   audioEl.src = window.URL.createObjectURL(blob)
 }
+
+/**
+ * Shuffles the given array (not in-place) and return the shuffled version
+ * @param {Array} array an Array
+ * @returns {Array} shuffled
+ */
+export function shuffleArray(array) {
+  return array
+    .map(value => ({ value, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ value }) => value)
+}

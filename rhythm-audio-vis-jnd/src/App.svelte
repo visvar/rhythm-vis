@@ -3,8 +3,8 @@
   import Study from './Study.svelte';
   import Analysis from './Analysis.svelte';
 
-  // let view = 'study';
-  let view = 'analysis';
+  let view = 'study';
+  // let view = 'analysis';
 </script>
 
 <main>

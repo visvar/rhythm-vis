@@ -1,5 +1,5 @@
 <script>
-  import { generatePatternSimple } from './lib/lib.js';
+  import { generatePatternSimple, shuffleArray } from './lib/lib.js';
   import saveAs from 'file-saver';
   import Audio from './Audio.svelte';
   import PlotWaveform from './plots/PlotWaveform.svelte';
@@ -16,16 +16,59 @@
   ];
   let audioFile = audioFiles[0];
 
+  let tests = [
+    {
+      stimulus: 'audio',
+      audioFile: audioFiles[0],
+    },
+    {
+      stimulus: 'audio',
+      audioFile: audioFiles[1],
+    },
+    {
+      stimulus: 'waveform',
+      audioFile: audioFiles[0],
+    },
+    {
+      stimulus: 'waveform',
+      audioFile: audioFiles[1],
+    },
+    {
+      stimulus: 'tick',
+    },
+    {
+      stimulus: 'bar',
+    },
+    {
+      stimulus: 'color',
+    },
+  ];
+
+  // study progress
+  // start, demo, tests, feedback, done
+  let studyStep = 'start';
+  let currentTestNumber = 0;
+
+  // participant data
+  let partName = '';
+  let partAge = '20-24';
+  let partGender = 'm';
+  let partEduation = 'master';
+  let partMusicInstr = '';
+  let partMusicInstrYears = 0;
+  let partVisExperienceYears = 0;
+  // final feedback
+  let partFeedback = '';
+
   // Runtime variables
-  let currentTrialNumber;
+  let currentTrialNumber = 0;
   let validTrials;
-  let currentTrial;
+  let currentTrial = {};
   let trials = [];
   let score;
   let stair;
   let testActive = false;
   let trialActive = false;
-  let playerChoice;
   let whiteScreenShowing = false;
 
   // stimulus variables
@@ -88,9 +131,32 @@
   };
 
   /**
+   * Continue the study
+   */
+  function nextStudyStep() {
+    if (studyStep === 'start') {
+      tests = shuffleArray(tests);
+      studyStep = 'demo';
+    } else if (studyStep === 'demo') {
+      studyStep = 'tests';
+    } else if (studyStep === 'tests') {
+      if (currentTestNumber < tests.length) {
+        currentEncoding = tests[currentTestNumber].stimulus;
+        audioFile = tests[currentTestNumber].audioFile;
+        startTest();
+      } else {
+        studyStep = 'feedback';
+      }
+    } else if (studyStep === 'feedback') {
+      studyStep = 'done';
+    }
+  }
+
+  /**
    * The test consists of multiple trials
    */
   function startTest() {
+    currentTestNumber++;
     setupInstructions();
     currentTrialNumber = 0;
     validTrials = 0;
@@ -105,7 +171,6 @@
   function startTrial() {
     console.log('Starting trial ' + currentTrialNumber);
     currentTrial = {};
-    playerChoice = -1;
     trialActive = true;
     drawStimuli();
   }
@@ -218,41 +283,198 @@
 <!-- <svelte:window on:beforeunload="{beforeUnload}" /> -->
 <main>
   <h2>Study</h2>
-  <p>
-    You will be presented with a sequence of six notes which should have equal
-    distances. The <b>fourth note</b> might be played too early or too late.
-  </p>
-
   <div>
-    <div>
+    step: {studyStep}<br />
+    test: {currentTestNumber + 1} / 7<br />
+    trial: {currentTrialNumber + 1}
+  </div>
+
+  <button on:click="{nextStudyStep}">next step</button>
+
+  <!-- Demographics form -->
+  {#if studyStep === 'demo'}
+    <div class="demo-form">
       <label>
-        encoding:
-        <select bind:value="{currentEncoding}" disabled="{testActive}">
-          {#each encodings as enc}
-            <option value="{enc}">{enc}</option>
-          {/each}
+        Name:
+        <input
+          type="text"
+          bind:value="{partName}"
+          placeholder="Firstname Lastname"
+        />
+      </label>
+      <label>
+        Age:
+        <select bind:value="{partAge}">
+          <option value="20-24">20-24</option>
+          <option value="25-29">25-29</option>
+          <option value="30-34">30-34</option>
+          <option value="35-39">35-39</option>
+          <option value="40-44">40-44</option>
+          <option value="45-49">45-49</option>
+          <option value="50-54">50-54</option>
+          <option value="55-60">55-60</option>
         </select>
       </label>
-    </div>
-    <div>
       <label>
-        instrument sample:
-        <select
-          bind:value="{audioFile}"
-          disabled="{currentEncoding !== 'audio' &&
-            currentEncoding !== 'waveform'}"
-        >
-          {#each audioFiles as af}
-            <option value="{af}">{af.substring(0, 30)}</option>
-          {/each}
+        Gender:
+        <input
+          type="text"
+          bind:value="{partGender}"
+          placeholder="m, f, d, or self-describe"
+        />
+      </label>
+      <label>
+        Highest finished education (select the best fitting one):
+        <select bind:value="{partEduation}">
+          <option value="none">none</option>
+          <option value="highs">high school</option>
+          <option value="bachelor">bachelor</option>
+          <option value="master">master</option>
+          <option value="phd">phd</option>
         </select>
       </label>
+      <label>
+        Which music instruments do you play?
+        <input
+          type="text"
+          bind:value="{partMusicInstr}"
+          placeholder="free text"
+        />
+      </label>
+      <label>
+        For how many years do you roughly play it/them?
+        <input
+          type="number"
+          bind:value="{partMusicInstrYears}"
+          min="0"
+          step="1"
+        />
+      </label>
+      <label>
+        How many years of experience do you have with visualization?
+        <input
+          type="number"
+          bind:value="{partVisExperienceYears}"
+          min="0"
+          step="1"
+        />
+      </label>
     </div>
-    <div>
+  {/if}
+
+  <!-- Test -->
+  {#if studyStep === 'tests'}
+    <p>
+      You will be presented with a sequence of six notes which should have equal
+      distances. The <b>fourth note</b> might be played too early or too late.
+    </p>
+
+    <!-- <div>
+      <div>
+        <label>
+          encoding:
+          <select bind:value="{currentEncoding}" disabled="{testActive}">
+            {#each encodings as enc}
+              <option value="{enc}">{enc}</option>
+            {/each}
+          </select>
+        </label>
+      </div>
+      <div>
+        <label>
+          instrument sample:
+          <select
+            bind:value="{audioFile}"
+            disabled="{currentEncoding !== 'audio' &&
+              currentEncoding !== 'waveform'}"
+          >
+            {#each audioFiles as af}
+              <option value="{af}">{af.substring(0, 30)}</option>
+            {/each}
+          </select>
+        </label>
+      </div>
       <button on:click="{startTest}" disabled="{testActive}"> Start </button>
+    </div> -->
+
+    {#if testActive}
+      <p>Use the arrow keys: left for too early, right for too late.</p>
+      <p>Trial number {currentTrialNumber + 1}</p>
+      {#if currentEncoding === 'audio'}
+        <Audio
+          pattern="{[
+            ...pattern.slice(0, pattern.length - 1),
+            pattern.at(-1) + Math.random() * 0.0001,
+          ]}"
+          audioFile="{audioFile}"
+          currentTrialNumber="{currentTrialNumber}"
+        />
+        <p>You can play the audio as many times as you like.</p>
+      {:else if whiteScreenShowing === false}
+        <!-- white screen helps avoid seeing the change between consecutive stimuli -->
+        {#if currentEncoding === 'waveform'}
+          <PlotWaveform
+            pattern="{pattern}"
+            audioFile="{audioFile}"
+            width="{visWidth}"
+            height="{visHeight}"
+          />
+        {:else if currentEncoding === 'tick'}
+          <PlotTick
+            pattern="{pattern}"
+            width="{visWidth}"
+            height="{visHeight}"
+          />
+        {:else if currentEncoding === 'bar'}
+          <PlotBar
+            pattern="{pattern}"
+            width="{visWidth}"
+            height="{visHeight}"
+          />
+        {:else if currentEncoding === 'color'}
+          <PlotColor
+            pattern="{pattern}"
+            width="{visWidth}"
+            height="{visHeight}"
+          />
+        {/if}
+      {/if}
+    {:else if data.length > 0}
+      <!-- when test is over and data is there, show it -->
+      <p>{feedback}</p>
+      <PlotLine data="{data}" final="{final}" />
+    {/if}
+  {/if}
+
+  <!-- Feedback -->
+  {#if studyStep === 'feedback'}
+    <label>
+      Any final feedback?
+      <textarea bind:value="{partFeedback}"></textarea>
+    </label>
+  {/if}
+
+  <!-- Study done -->
+  {#if studyStep === 'done'}
+    <div>Thanks for participating!</div>
+    <div>
       <button
         on:click="{() => {
-          const json = JSON.stringify(completeResults);
+          const data = {
+            demographics: {
+              partName,
+              partAge,
+              partGender,
+              partEduation,
+              partMusicInstr,
+              partMusicInstrYears,
+              partVisExperienceYears,
+              partFeedback,
+            },
+            tests: completeResults,
+          };
+          console.log(data);
+          const json = JSON.stringify(data);
           const blob = new Blob([json], {
             type: 'text/plain;charset=utf-8',
           });
@@ -262,45 +484,11 @@
         Download results
       </button>
     </div>
-  </div>
-
-  {#if testActive}
-    <p>Use the arrow keys: left for too early, right for too late.</p>
-    <p>Trial number {currentTrialNumber + 1}</p>
-    {#if currentEncoding === 'audio'}
-      <Audio
-        pattern="{[
-          ...pattern.slice(0, pattern.length - 1),
-          pattern.at(-1) + Math.random() * 0.0001,
-        ]}"
-        audioFile="{audioFile}"
-        currentTrialNumber="{currentTrialNumber}"
-      />
-      <p>You can play the audio as many times as you like.</p>
-    {:else if whiteScreenShowing === false}
-      <!-- white screen helps avoid seeing the change between consecutive stimuli -->
-      {#if currentEncoding === 'waveform'}
-        <PlotWaveform
-          pattern="{pattern}"
-          audioFile="{audioFile}"
-          width="{visWidth}"
-          height="{visHeight}"
-        />
-      {:else if currentEncoding === 'tick'}
-        <PlotTick pattern="{pattern}" width="{visWidth}" height="{visHeight}" />
-      {:else if currentEncoding === 'bar'}
-        <PlotBar pattern="{pattern}" width="{visWidth}" height="{visHeight}" />
-      {:else if currentEncoding === 'color'}
-        <PlotColor
-          pattern="{pattern}"
-          width="{visWidth}"
-          height="{visHeight}"
-        />
-      {/if}
-    {/if}
-  {:else if data.length > 0}
-    <!-- when test is over and data is there, show it -->
-    <p>{feedback}</p>
-    <PlotLine data="{data}" final="{final}" />
   {/if}
 </main>
+
+<style>
+  .demo-form label {
+    display: block;
+  }
+</style>
