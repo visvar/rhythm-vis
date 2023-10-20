@@ -1,5 +1,6 @@
 <script>
   import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
+  import * as d3 from 'd3';
 
   let data = [];
   let fileNames = [];
@@ -15,7 +16,44 @@
     }
     data = data2;
     fileNames = fileNames2;
+    console.log(data);
   };
+
+  /**
+   * One row per test, tidy data
+   * @param data
+   */
+  const makeTidy = (data) => {
+    if (data.lenght === 0) {
+      return [];
+    }
+    const tests = [];
+    for (const participant of data) {
+      for (const test of participant.tests) {
+        tests.push([...participant.demographics, ...test, participant.date]);
+      }
+    }
+    return tests;
+  };
+  $: tests = makeTidy(data);
+
+  const perStimulus = (tests) => {
+    d3.groups(tests, (d) => {
+      if (d.encoding === 'audio' || d.encoding === 'waveform') {
+        return `${d.encoding} + ${
+          d.audioFile.startsWith('./Fluid') ? 'piano' : 'drums'
+        }`;
+      }
+      return d.encoding;
+    }).map(([enc, ts]) => {
+      return {
+        meanFinal: d3.mean(ts, (d) => d.final),
+        meanTrials: d3.mean(ts, (d) => d.final),
+        meanScore: d3.mean(ts, (d) => d.final),
+      };
+    });
+  };
+  $: stimuli = perStimulus(tests);
 </script>
 
 <main>
@@ -32,7 +70,9 @@
     toggle absolute values {showAbsolute}
   </button>
 
-  {#each data as d, index}
+  <div></div>
+
+  <!-- {#each data as d, index}
     <div>
       <h4>{fileNames[index]}</h4>
       {#each d as test}
@@ -49,7 +89,7 @@
         />
       {/each}
     </div>
-  {/each}
+  {/each} -->
 </main>
 
 <style>
