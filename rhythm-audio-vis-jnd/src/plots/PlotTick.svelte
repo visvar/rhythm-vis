@@ -12,7 +12,7 @@
         const plot = Plot.plot({
             width,
             height,
-            marginLeft: 0,
+            marginLeft: 1,
             marginRight: 1,
             x: {
                 axis: false,

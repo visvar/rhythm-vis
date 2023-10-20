@@ -21,7 +21,7 @@
     if (audioSample && audioEl) {
       audioData = simulate(audioSample, pattern);
       audioDataToAudioEl(audioData, audioSample.sampleRate, audioEl);
-      console.log('rendered audio and attached to element');
+      // console.log('rendered audio and attached to element');
     }
   };
   $: console.log(pattern);
@@ -38,7 +38,7 @@
     if (!audioEl) {
       return;
     }
-    console.log('play');
+    // console.log('play');
     audioEl.pause();
     audioEl.currentTime = 0;
     audioEl.play();

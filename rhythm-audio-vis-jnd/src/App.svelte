@@ -2,6 +2,7 @@
   import Playground from './Playground.svelte';
   import Study from './Study.svelte';
   import Analysis from './Analysis.svelte';
+  import Examples from './Examples.svelte';
 
   let view = 'study';
   // let view = 'analysis';
@@ -12,12 +13,15 @@
 
   <div>
     <button on:click="{() => (view = 'playground')}">Playground</button>
+    <button on:click="{() => (view = 'examples')}">Examples</button>
     <button on:click="{() => (view = 'study')}">Study</button>
     <button on:click="{() => (view = 'analysis')}">Analysis</button>
   </div>
 
   {#if view === 'playground'}
     <Playground />
+  {:else if view === 'examples'}
+    <Examples />
   {:else if view === 'study'}
     <Study />
   {:else if view === 'analysis'}
