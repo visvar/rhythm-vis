@@ -257,6 +257,7 @@
   }
 
   function keyPress(evt) {
+    console.log(evt.key);
     switch (evt.key) {
       case 'ArrowLeft':
         decisionClick(0);
@@ -264,6 +265,10 @@
       case 'ArrowRight':
         decisionClick(1);
         break;
+      case 'PageDown':
+        if (!trialActive && !(studyStep === 'done')) {
+          nextStudyStep();
+        }
     }
   }
 
@@ -429,10 +434,10 @@
           />
         {/if}
       {/if}
-    {:else if data.length > 0}
       <!-- when test is over and data is there, show it -->
+      <!-- {:else if data.length > 0}
       <p>{feedback}</p>
-      <PlotLine data="{data}" final="{final}" />
+      <PlotLine data="{data}" final="{final}" /> -->
     {/if}
   {/if}
 

@@ -1,10 +1,12 @@
 <script>
   import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
   import * as d3 from 'd3';
+  import PlotTickAllFinals from './plotsAnalysis/PlotTickAllFinals.svelte';
+  import PlotTickCI from './plotsAnalysis/PlotTickCI.svelte';
 
   let data = [];
   let fileNames = [];
-  let showAbsolute = false;
+  // let showAbsolute = false;
 
   const handleFileInput = async (evt) => {
     const data2 = [];
@@ -30,30 +32,48 @@
     const tests = [];
     for (const participant of data) {
       for (const test of participant.tests) {
-        tests.push([...participant.demographics, ...test, participant.date]);
+        let testType = test.encoding;
+        if (test.encoding === 'audio' || test.encoding === 'waveform') {
+          testType = `${test.encoding} + ${
+            test.audioFile.startsWith('./Fluid') ? 'piano' : 'drums'
+          }`;
+        }
+        tests.push({
+          ...participant.demographics,
+          ...test,
+          date: participant.date,
+          testType,
+        });
       }
     }
+    console.log(tests);
     return tests;
   };
   $: tests = makeTidy(data);
 
   const perStimulus = (tests) => {
-    d3.groups(tests, (d) => {
-      if (d.encoding === 'audio' || d.encoding === 'waveform') {
-        return `${d.encoding} + ${
-          d.audioFile.startsWith('./Fluid') ? 'piano' : 'drums'
-        }`;
-      }
-      return d.encoding;
-    }).map(([enc, ts]) => {
-      return {
-        meanFinal: d3.mean(ts, (d) => d.final),
-        meanTrials: d3.mean(ts, (d) => d.final),
-        meanScore: d3.mean(ts, (d) => d.final),
-      };
-    });
+    if (tests.length === 0) {
+      return [];
+    }
+    const ps = d3
+      .groups(tests, (d) => d.testType)
+      .map(([enc, ts]) => {
+        const finals = ts.map((d) => d.final);
+        return {
+          encoding: enc,
+          finals,
+          finalMean: d3.mean(finals),
+          finalVar: d3.variance(finals),
+          // finals: ts.map((d) => d.final),
+          // meanTrials: d3.mean(ts, (d) => d.trials),
+          // meanScore: d3.mean(ts, (d) => d.score),
+        };
+      });
+    console.log(ps);
+    return ps;
   };
   $: stimuli = perStimulus(tests);
+  $: maxFinal = d3.max(tests.map((d) => Math.abs(d.final)));
 </script>
 
 <main>
@@ -66,11 +86,26 @@
 
   <input type="file" on:input="{handleFileInput}" accept=".json" multiple />
 
-  <button on:click="{() => (showAbsolute = !showAbsolute)}">
+  <!-- <button on:click="{() => (showAbsolute = !showAbsolute)}">
     toggle absolute values {showAbsolute}
-  </button>
+  </button> -->
 
-  <div></div>
+  <div>
+    <h3>Final Values for Each Stimulus and All Participants</h3>
+    {#each stimuli as stimulus}
+      <b>{stimulus.encoding}</b>
+      <PlotTickAllFinals
+        data="{stimulus.finals}"
+        title="{stimulus.encoding}"
+        domain="{[0, maxFinal]}"
+      />
+    {/each}
+  </div>
+
+  <div>
+    <h3>Mean and CI of Final Values</h3>
+    <PlotTickCI stimuli="{stimuli}" />
+  </div>
 
   <!-- {#each data as d, index}
     <div>
