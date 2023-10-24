@@ -48,6 +48,7 @@
   // start, demo, tests, feedback, done
   let studyStep = 'start';
   let currentTestNumber = 0;
+  let testStartTime;
 
   // participant data
   let partID = '';
@@ -164,6 +165,7 @@
     testActive = true;
     data = [];
     trials = [];
+    testStartTime = new Date();
     startTrial();
   }
 
@@ -241,6 +243,7 @@
       data[i] = trials[i].deviation;
     }
     console.log(data);
+    const testEndTime = new Date();
     completeResults.push({
       encoding: currentEncoding,
       audioFile,
@@ -251,6 +254,7 @@
       trialCount: currentTrialNumber + 1,
       trials,
       validTrialCount: validTrials + 1,
+      testTimeSeconds: (testEndTime - testStartTime) / 1000,
     });
     // console.log('results (all)', completeResults);
     currentTestNumber++;
@@ -460,11 +464,14 @@
   {/if}
 
   {#if !trialActive && !(studyStep === 'done')}
-    <button on:click="{nextStudyStep}">next step</button>
+    <button on:click="{nextStudyStep}">next step (PageDown)</button>
   {/if}
 </main>
 
 <style>
+  main {
+    text-align: center;
+  }
   .demo-form label {
     display: block;
   }

@@ -32,7 +32,7 @@
     });
 </script>
 
-<main style="width: {width}px">
+<main style="width: {width}px; margin: auto">
     <div
         bind:this="{plotContainer}"
         width="{width}px"

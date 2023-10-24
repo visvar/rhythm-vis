@@ -3,6 +3,7 @@
   import * as d3 from 'd3';
   import PlotTickAllFinals from './plotsAnalysis/PlotTickAllFinals.svelte';
   import PlotTickCI from './plotsAnalysis/PlotTickCI.svelte';
+  import PlotTickCiTrials from './plotsAnalysis/PlotTickCITrials.svelte';
 
   let data = [];
   let fileNames = [];
@@ -64,7 +65,7 @@
           finals,
           finalMean: d3.mean(finals),
           finalVar: d3.variance(finals),
-          // finals: ts.map((d) => d.final),
+          trialCounts: ts.map((d) => d.trialCount),
           // meanTrials: d3.mean(ts, (d) => d.trials),
           // meanScore: d3.mean(ts, (d) => d.score),
         };
@@ -86,9 +87,15 @@
 
   <input type="file" on:input="{handleFileInput}" accept=".json" multiple />
 
-  <!-- <button on:click="{() => (showAbsolute = !showAbsolute)}">
-    toggle absolute values {showAbsolute}
-  </button> -->
+  <div>
+    <h3>Mean and CI of Final Values</h3>
+    <PlotTickCI stimuli="{stimuli}" />
+  </div>
+
+  <div>
+    <h3>Mean and CI of Trial Counts</h3>
+    <PlotTickCiTrials stimuli="{stimuli}" />
+  </div>
 
   <div>
     <h3>Final Values for Each Stimulus and All Participants</h3>
@@ -100,11 +107,6 @@
         domain="{[0, maxFinal]}"
       />
     {/each}
-  </div>
-
-  <div>
-    <h3>Mean and CI of Final Values</h3>
-    <PlotTickCI stimuli="{stimuli}" />
   </div>
 
   <!-- {#each data as d, index}
@@ -125,6 +127,16 @@
       {/each}
     </div>
   {/each} -->
+
+  <div>
+    <h3>Feedback</h3>
+    {#each data as participant}
+      <div style="text-align: left;">
+        <b>P{participant.demographics.partID}:</b>
+        {@html participant.demographics.partFeedback.split('\n').join('<br/>')}
+      </div>
+    {/each}
+  </div>
 </main>
 
 <style>

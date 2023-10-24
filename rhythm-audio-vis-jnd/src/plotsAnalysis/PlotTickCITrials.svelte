@@ -13,7 +13,7 @@
         const cis = stimuli.map((d) => {
             return {
                 encoding: d.encoding,
-                ...confidenceInterval(d.finals),
+                ...confidenceInterval(d.trialCounts),
             };
         });
         const plot = Plot.plot({
@@ -22,7 +22,7 @@
             marginLeft: 100,
             marginRight: 10,
             x: {
-                label: 'absolute deviation in percent of the IOI',
+                label: 'trial count',
             },
             y: {
                 label: '',
