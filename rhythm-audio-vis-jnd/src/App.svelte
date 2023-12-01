@@ -1,6 +1,6 @@
 <script>
   import Playground from './Playground.svelte';
-  import Study from './Study.svelte';
+  import Study from './StudyPilot1.svelte';
   import Analysis from './Analysis.svelte';
   import Examples from './Examples.svelte';
 
@@ -9,7 +9,7 @@
 </script>
 
 <main>
-  <h1>Rhythm Error Perception Study</h1>
+  <h1>Rhythm Error Sensitivity Study</h1>
 
   <div>
     <button on:click="{() => (view = 'playground')}">Playground</button>

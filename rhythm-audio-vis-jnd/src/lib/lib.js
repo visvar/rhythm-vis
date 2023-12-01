@@ -89,8 +89,16 @@ export function simulate(instrument, noteTimes, paddingEnd = 1) {
   // render audio
   for (const noteStart of noteTimes) {
     const frameIndex = Math.round(noteStart * instrument.sampleRate)
+    let decayFactor = 1
     for (let i = 0; i < data.length; ++i) {
-      result[frameIndex + i] = data[i]
+      // result[frameIndex + i] = data[i]
+      // const current = result[frameIndex + i]
+      // if (Math.abs(current) > Math.abs(data[i])) {
+      //   result[frameIndex + i] = current
+      // } else {
+      decayFactor = Math.max(0, decayFactor - 2 / 40_100)
+      result[frameIndex + i] = data[i] * decayFactor
+      // }
     }
   }
   return result

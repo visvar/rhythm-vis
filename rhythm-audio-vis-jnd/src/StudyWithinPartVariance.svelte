@@ -7,8 +7,7 @@
   import PlotBar from './plots/PlotBar.svelte';
   import PlotColor from './plots/PlotColor.svelte';
   import { onMount } from 'svelte';
-  import { Staircase } from './lib/StaircaseJS/StaircaseModule';
-  import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
+  import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
 
   const audioFiles = [
     './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',
@@ -22,25 +21,24 @@
       audioFile: audioFiles[0],
     },
     {
+      stimulus: 'waveform',
+      audioFile: audioFiles[0],
+    },
+    {
       stimulus: 'audio',
-      audioFile: audioFiles[1],
+      audioFile: audioFiles[0],
     },
     {
       stimulus: 'waveform',
       audioFile: audioFiles[0],
     },
     {
+      stimulus: 'audio',
+      audioFile: audioFiles[0],
+    },
+    {
       stimulus: 'waveform',
-      audioFile: audioFiles[1],
-    },
-    {
-      stimulus: 'tick',
-    },
-    {
-      stimulus: 'bar',
-    },
-    {
-      stimulus: 'color',
+      audioFile: audioFiles[0],
     },
   ];
 
@@ -98,7 +96,7 @@
       wrongNoteIndex,
       deviationSeconds,
       shiftFollowing,
-      paddingStart
+      paddingStart,
     );
     console.log('generated pattern', pattern);
   }
@@ -405,37 +403,25 @@
             ...pattern.slice(0, pattern.length - 1),
             pattern.at(-1) + Math.random() * 0.0001,
           ]}"
-          audioFile="{audioFile}"
-          currentTrialNumber="{currentTrialNumber}"
+          {audioFile}
+          {currentTrialNumber}
         />
         <p>You can play the audio as many times as you like.</p>
       {:else if whiteScreenShowing === false}
         <!-- white screen helps avoid seeing the change between consecutive stimuli -->
         {#if currentEncoding === 'waveform'}
           <PlotWaveform
-            pattern="{pattern}"
-            audioFile="{audioFile}"
+            {pattern}
+            {audioFile}
             width="{visWidth}"
             height="{visHeight}"
           />
         {:else if currentEncoding === 'tick'}
-          <PlotTick
-            pattern="{pattern}"
-            width="{visWidth}"
-            height="{visHeight}"
-          />
+          <PlotTick {pattern} width="{visWidth}" height="{visHeight}" />
         {:else if currentEncoding === 'bar'}
-          <PlotBar
-            pattern="{pattern}"
-            width="{visWidth}"
-            height="{visHeight}"
-          />
+          <PlotBar {pattern} width="{visWidth}" height="{visHeight}" />
         {:else if currentEncoding === 'color'}
-          <PlotColor
-            pattern="{pattern}"
-            width="{visWidth}"
-            height="{visHeight}"
-          />
+          <PlotColor {pattern} width="{visWidth}" height="{visHeight}" />
         {/if}
       {/if}
       <!-- when test is over and data is there, show it -->
