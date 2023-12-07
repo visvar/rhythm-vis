@@ -1,6 +1,7 @@
 <script>
   import Playground from './Playground.svelte';
-  import Study from './StudyPilot1.svelte';
+  // import Study from './StudyPilot1.svelte';
+  import Study from './StudyWithinPartVariance.svelte';
   import Analysis from './Analysis.svelte';
   import Examples from './Examples.svelte';
 

@@ -16,20 +16,9 @@
   let audioFile = audioFiles[0];
 
   let tests = [
+    // 3 audio
     {
       stimulus: 'audio',
-      audioFile: audioFiles[0],
-    },
-    {
-      stimulus: 'waveform',
-      audioFile: audioFiles[0],
-    },
-    {
-      stimulus: 'audio',
-      audioFile: audioFiles[0],
-    },
-    {
-      stimulus: 'waveform',
       audioFile: audioFiles[0],
     },
     {
@@ -37,8 +26,31 @@
       audioFile: audioFiles[0],
     },
     {
+      stimulus: 'audio',
+      audioFile: audioFiles[0],
+    },
+    // 3 waveform
+    {
       stimulus: 'waveform',
       audioFile: audioFiles[0],
+    },
+    {
+      stimulus: 'waveform',
+      audioFile: audioFiles[0],
+    },
+    {
+      stimulus: 'waveform',
+      audioFile: audioFiles[0],
+    },
+    // 3 color
+    {
+      stimulus: 'color',
+    },
+    {
+      stimulus: 'color',
+    },
+    {
+      stimulus: 'color',
     },
   ];
 
@@ -297,7 +309,7 @@
       tests: completeResults,
     };
     console.log(data);
-    const json = JSON.stringify(data);
+    const json = JSON.stringify(data, undefined, 2);
     const blob = new Blob([json], {
       type: 'text/plain;charset=utf-8',
     });
@@ -395,7 +407,7 @@
 
     {#if testActive}
       <p>Use the arrow keys: left for too early, right for too late.</p>
-      <p>Test number {currentTestNumber + 1} / 7</p>
+      <p>Test number {currentTestNumber + 1} / {tests.length}</p>
       <p>Trial number {currentTrialNumber + 1}</p>
       {#if currentEncoding === 'audio'}
         <Audio

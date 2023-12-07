@@ -1,14 +1,14 @@
 <script>
   import { generatePatternSimple, shuffleArray } from './lib/lib.js';
   import saveAs from 'file-saver';
-  import Audio from './Audio.svelte.js';
-  import PlotWaveform from './plots/PlotWaveform.svelte.js';
-  import PlotTick from './plots/PlotTick.svelte.js';
-  import PlotBar from './plots/PlotBar.svelte.js';
-  import PlotColor from './plots/PlotColor.svelte.js';
+  import Audio from './Audio.svelte';
+  import PlotWaveform from './plots/PlotWaveform.svelte';
+  import PlotTick from './plots/PlotTick.svelte';
+  import PlotBar from './plots/PlotBar.svelte';
+  import PlotColor from './plots/PlotColor.svelte';
   import { onMount } from 'svelte';
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
-  import PlotLine from './lib/StaircaseJS/PlotLine.svelte.js';
+  // import PlotLine from './lib/StaircaseJS/PlotLine.svelte.js';
 
   const audioFiles = [
     './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',
@@ -299,7 +299,7 @@
       tests: completeResults,
     };
     console.log(data);
-    const json = JSON.stringify(data);
+    const json = JSON.stringify(data, undefined, 2);
     const blob = new Blob([json], {
       type: 'text/plain;charset=utf-8',
     });

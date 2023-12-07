@@ -14,14 +14,14 @@
   },
   "devDependencies": {
     "@observablehq/plot": "^0.6.11",
-    "@sveltejs/vite-plugin-svelte": "^2.4.6",
-    "npm-check-updates": "^16.14.4",
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "npm-check-updates": "^16.14.11",
     "standard": "^17.1.0",
-    "svelte": "^4.2.1",
-    "vite": "^4.4.9"
+    "svelte": "^4.2.8",
+    "vite": "^5.0.6"
   },
   "dependencies": {
-    "audio-decode": "^2.1.5",
+    "audio-decode": "^2.2.0",
     "audiobuffer-to-wav": "^1.0.0",
     "d3": "^7.8.5",
     "file-saver": "^2.0.5",
