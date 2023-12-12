@@ -8,7 +8,7 @@
   import PlotColor from './plots/PlotColor.svelte';
   import { onMount } from 'svelte';
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
-  // import PlotLine from './lib/StaircaseJS/PlotLine.svelte.js';
+  // import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
 
   const audioFiles = [
     './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',
@@ -22,16 +22,8 @@
       audioFile: audioFiles[0],
     },
     {
-      stimulus: 'audio',
-      audioFile: audioFiles[1],
-    },
-    {
       stimulus: 'waveform',
       audioFile: audioFiles[0],
-    },
-    {
-      stimulus: 'waveform',
-      audioFile: audioFiles[1],
     },
     {
       stimulus: 'tick',
@@ -52,9 +44,9 @@
 
   // participant data
   let partID = '';
-  let partAge = '20-24';
-  let partGender = 'm';
-  let partEduation = 'master';
+  let partAge = '';
+  let partGender = '';
+  let partEduation = '';
   let partMusicInstr = '';
   let partMusicInstrYears = 0;
   let partVisExperienceYears = 0;
@@ -318,7 +310,18 @@
 
 <!-- <svelte:window on:beforeunload="{beforeUnload}" /> -->
 <main>
-  <h2>Study</h2>
+  <h2>Study (Prolific)</h2>
+
+  <div>
+    <p>
+      <a href="./?p=examples" target="_blank"
+        >Click here for explanation and examples</a
+      >.
+    </p>
+    <p>
+      You can open this page in a new tab and look at it when ever you need it.
+    </p>
+  </div>
 
   <!-- Demographics form -->
   {#if studyStep === 'demo'}
