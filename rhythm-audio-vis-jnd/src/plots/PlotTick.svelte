@@ -38,8 +38,8 @@
         width="{width}px"
         height="{height}px"
     ></div>
-    <div>
+    <!-- <div>
         Each note is represented by a tick placed at its onset time from left to
         right. A smaller gap indicates an early note.
-    </div>
+    </div> -->
 </main>

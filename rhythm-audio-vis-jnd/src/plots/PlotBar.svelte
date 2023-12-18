@@ -30,8 +30,8 @@
 
 <main style="width: {width}px; margin: auto">
   <div bind:this="{plotContainer}" width="{width}px" height="{height}px"></div>
-  <div>
+  <!-- <div>
     For each note but the first, the bars' height shows the distance to the
     previous note. A smaller bar indicates an early note.
-  </div>
+  </div> -->
 </main>

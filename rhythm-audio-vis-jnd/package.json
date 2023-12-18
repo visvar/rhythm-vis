@@ -13,7 +13,7 @@
     "upd": "ncu -u"
   },
   "devDependencies": {
-    "@observablehq/plot": "^0.6.11",
+    "@observablehq/plot": "^0.6.13",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
     "npm-check-updates": "^16.14.11",
     "standard": "^17.1.0",

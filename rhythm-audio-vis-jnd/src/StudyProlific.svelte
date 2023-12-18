@@ -1,6 +1,5 @@
 <script>
   import { generatePatternSimple, shuffleArray } from './lib/lib.js';
-  import saveAs from 'file-saver';
   import Audio from './Audio.svelte';
   import PlotWaveform from './plots/PlotWaveform.svelte';
   import PlotTick from './plots/PlotTick.svelte';
@@ -8,7 +7,15 @@
   import PlotColor from './plots/PlotColor.svelte';
   import { onMount } from 'svelte';
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
-  // import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
+  import { getUrlParam } from './lib/url.js';
+
+  const serverUrl = 'http://193.196.55.123:8080/store';
+
+  // prolific params
+  let partID = getUrlParam(window, 'PROLIFIC_PID');
+  let studyID = getUrlParam(window, 'STUDY_ID');
+  let sessionID = getUrlParam(window, 'SESSION_ID');
+  console.log({ partID, studyID, sessionID });
 
   const audioFiles = [
     './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',
@@ -36,6 +43,9 @@
     },
   ];
 
+  const examplePatternEarly = [0, 0.5, 1, 1.4, 1.9, 2.4];
+  const examplePatternLate = [0, 0.5, 1, 1.6, 2.1, 2.6];
+
   // study progress
   // start, demo, tests, feedback, done
   let studyStep = 'start';
@@ -43,7 +53,7 @@
   let testStartTime;
 
   // participant data
-  let partID = '';
+  // let partID = '';
   let partAge = '';
   let partGender = '';
   let partEduation = '';
@@ -80,7 +90,7 @@
   let paddingStart = 0;
   // vis sizes
   let visWidth = 600;
-  let visHeight = 100;
+  $: visHeight = visWidth / 6;
 
   let pattern = [];
   $: {
@@ -131,9 +141,21 @@
       tests = shuffleArray(tests);
       studyStep = 'demo';
     } else if (studyStep === 'demo') {
-      studyStep = 'tests';
-      currentTestNumber = 0;
+      // check if filled
+      if (
+        partAge == '' ||
+        partGender == '' ||
+        partEduation == '' ||
+        partMusicInstr == ''
+      ) {
+        alert('please fill the form first');
+      } else {
+        studyStep = 'tests';
+        currentTestNumber = 0;
+      }
     } else if (studyStep === 'tests') {
+      // save data already after each test
+      saveData();
       if (currentTestNumber < tests.length) {
         currentEncoding = tests[currentTestNumber].stimulus;
         audioFile = tests[currentTestNumber].audioFile;
@@ -142,6 +164,8 @@
         studyStep = 'feedback';
       }
     } else if (studyStep === 'feedback') {
+      // save data after feedback
+      saveData();
       studyStep = 'done';
     }
   }
@@ -253,13 +277,17 @@
   }
 
   function keyPress(evt) {
-    console.log(evt.key);
+    // console.log(evt.key);
     switch (evt.key) {
       case 'ArrowLeft':
-        decisionClick(0);
+        if (trialActive) {
+          decisionClick(0);
+        }
         break;
       case 'ArrowRight':
-        decisionClick(1);
+        if (trialActive) {
+          decisionClick(1);
+        }
         break;
       case 'PageDown':
         if (!trialActive && !(studyStep === 'done')) {
@@ -275,10 +303,13 @@
     ).toFixed(1)}%) Your end difficulty was ${stair.getFinalVal('ratio')}`;
   }
 
-  function endStudy() {
+  function saveData() {
     const data = {
+      studyStep,
       demographics: {
         partID,
+        studyID,
+        sessionID,
         partAge,
         partGender,
         partEduation,
@@ -286,16 +317,30 @@
         partMusicInstrYears,
         partVisExperienceYears,
         partFeedback,
+        visWidth,
       },
       date: new Date().toISOString(),
       tests: completeResults,
     };
-    console.log(data);
+    console.log('saving data', data);
     const json = JSON.stringify(data, undefined, 2);
-    const blob = new Blob([json], {
-      type: 'text/plain;charset=utf-8',
+    // const blob = new Blob([json], {
+    //   type: 'text/plain;charset=utf-8',
+    // });
+    // saveAs(blob, 'results.json');
+    // post to server
+    fetch(serverUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: json,
+    }).then((res) => {
+      console.log('Data saved:', res);
     });
-    saveAs(blob, 'results.json');
+    // var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance
+    // var url = serverUrl;
+    // xmlhttp.open('POST', url);
+    // xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    // xmlhttp.send(json);
   }
 
   // function beforeUnload(event) {
@@ -312,26 +357,51 @@
 <main>
   <h2>Study (Prolific)</h2>
 
-  <div>
-    <p>
+  {#if studyStep === 'start'}
+    <div>
+      <!-- <p>
       <a href="./?p=examples" target="_blank"
         >Click here for explanation and examples</a
       >.
     </p>
     <p>
       You can open this page in a new tab and look at it when ever you need it.
-    </p>
-  </div>
+    </p> -->
+      <div>
+        <p>
+          Please click + or - until this rectangle has the size of a credit
+          card.
+        </p>
+        <p>
+          <button on:click="{() => (visWidth *= 1.05)}">+</button>
+          <button on:click="{() => (visWidth *= 0.95)}">-</button>
+        </p>
+        <svg width="{visWidth * 0.52}px" height="{visHeight * 2}px">
+          <rect
+            width="{visWidth * 0.52}"
+            height="{visHeight * 2}"
+            fill="#ccc"
+            rx="8"
+          ></rect>
+        </svg>
+      </div>
+      <div>
+        Please also set your screen brightness and audio volume to comfortable
+        levels and avoid sunlight or artificial light reflecting from your
+        screen.
+      </div>
+    </div>
+  {/if}
 
   <!-- Demographics form -->
   {#if studyStep === 'demo'}
     <div class="demo-form">
-      <label>
+      <!-- <label>
         ID:
         <input type="text" bind:value="{partID}" placeholder="ID" />
-      </label>
+      </label> -->
       <label>
-        Age:
+        Age in years:
         <select bind:value="{partAge}">
           <option value="20-24">20-24</option>
           <option value="25-29">25-29</option>
@@ -362,7 +432,8 @@
         </select>
       </label>
       <label>
-        Which music instruments do you play?
+        Which music instruments do you play? Please separate by comma, if you do
+        not play any, write 'none'.
         <input
           type="text"
           bind:value="{partMusicInstr}"
@@ -379,7 +450,7 @@
         />
       </label>
       <label>
-        How many years of experience do you have with visualization?
+        How many years of experience do you have with information visualization?
         <input
           type="number"
           bind:value="{partVisExperienceYears}"
@@ -393,13 +464,19 @@
   <!-- Test -->
   {#if studyStep === 'tests'}
     <p>
-      You will be presented with a sequence of six notes which should have equal
-      distances. The <b>fourth note</b> might be played too early or too late, also
+      You will be presented with a sequence of six piano notes which should have
+      equal distances in time.
+    </p>
+    <p>
+      The <b>fourth note</b> might be played <b>too early or too late</b>, also
       affecting the ones after.
     </p>
 
     {#if testActive}
-      <p>Use the arrow keys: left for too early, right for too late.</p>
+      <p>
+        Use the arrow keys on your keyboard: left for too early, right for too
+        late.
+      </p>
       <p>Test number {currentTestNumber + 1} / {tests.length}</p>
       <p>Trial number {currentTrialNumber + 1}</p>
       {#if currentEncoding === 'audio'}
@@ -415,6 +492,22 @@
       {:else if whiteScreenShowing === false}
         <!-- white screen helps avoid seeing the change between consecutive stimuli -->
         {#if currentEncoding === 'waveform'}
+          <div class="vis-example">
+            <PlotWaveform
+              pattern="{examplePatternEarly}"
+              {audioFile}
+              width="{visWidth / 2}"
+              height="{visHeight / 2}"
+            />
+            <PlotWaveform
+              pattern="{examplePatternLate}"
+              {audioFile}
+              width="{visWidth / 2}"
+              height="{visHeight / 2}"
+            />
+            <div>Example for early</div>
+            <div>Example for late</div>
+          </div>
           <PlotWaveform
             {pattern}
             {audioFile}
@@ -422,17 +515,55 @@
             height="{visHeight}"
           />
         {:else if currentEncoding === 'tick'}
+          <div class="vis-example">
+            <PlotTick
+              pattern="{examplePatternEarly}"
+              width="{visWidth / 2}"
+              height="{visHeight / 2}"
+            />
+            <PlotTick
+              pattern="{examplePatternLate}"
+              width="{visWidth / 2}"
+              height="{visHeight / 2}"
+            />
+            <div>Example for early</div>
+            <div>Example for late</div>
+          </div>
           <PlotTick {pattern} width="{visWidth}" height="{visHeight}" />
         {:else if currentEncoding === 'bar'}
+          <div class="vis-example">
+            <PlotBar
+              pattern="{examplePatternEarly}"
+              width="{visWidth / 2}"
+              height="{visHeight / 2}"
+            />
+            <PlotBar
+              pattern="{examplePatternLate}"
+              width="{visWidth / 2}"
+              height="{visHeight / 2}"
+            />
+            <div>Example for early</div>
+            <div>Example for late</div>
+          </div>
           <PlotBar {pattern} width="{visWidth}" height="{visHeight}" />
         {:else if currentEncoding === 'color'}
+          <div class="vis-example">
+            <PlotColor
+              pattern="{examplePatternEarly}"
+              width="{visWidth / 2}"
+              height="{visHeight / 2}"
+            />
+            <PlotColor
+              pattern="{examplePatternLate}"
+              width="{visWidth / 2}"
+              height="{visHeight / 2}"
+            />
+            <div>Example for early</div>
+            <div>Example for late</div>
+          </div>
           <PlotColor {pattern} width="{visWidth}" height="{visHeight}" />
         {/if}
       {/if}
-      <!-- when test is over and data is there, show it -->
-      <!-- {:else if data.length > 0}
-      <p>{feedback}</p>
-      <PlotLine data="{data}" final="{final}" /> -->
     {/if}
   {/if}
 
@@ -440,7 +571,7 @@
   {#if studyStep === 'feedback'}
     <div>
       <label>
-        Any final feedback?
+        Do you have any final feedback/comments?
         <textarea bind:value="{partFeedback}"></textarea>
       </label>
     </div>
@@ -449,21 +580,39 @@
   <!-- Study done -->
   {#if studyStep === 'done'}
     <div>Thanks for participating!</div>
-    <div>
-      <button on:click="{endStudy}"> Download results </button>
-    </div>
+    <a href="https://app.prolific.com/submissions/complete?cc=CQ9EMXZQ">
+      click here to get your compensation
+    </a>
   {/if}
 
+  <!-- show next step button -->
   {#if !trialActive && !(studyStep === 'done')}
-    <button on:click="{nextStudyStep}">next step (PageDown)</button>
+    <!-- <button on:click="{nextStudyStep}">next step (PageDown)</button> -->
+    <button on:click="{nextStudyStep}" class="next-btn">next step</button>
   {/if}
+
+  <button on:click="{saveData}">asdasdsa</button>
 </main>
 
 <style>
   main {
     text-align: center;
   }
+
   .demo-form label {
     display: block;
+  }
+
+  .vis-example {
+    margin: 20px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background: #eee;
+    border-radius: 10px;
+  }
+
+  .next-btn {
+    margin-top: 30px;
   }
 </style>

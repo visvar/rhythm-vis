@@ -328,7 +328,7 @@
 
 <!-- <svelte:window on:beforeunload="{beforeUnload}" /> -->
 <main>
-  <h2>Study</h2>
+  <h2>Study (Within-Participant Variance)</h2>
 
   <!-- Demographics form -->
   {#if studyStep === 'demo'}

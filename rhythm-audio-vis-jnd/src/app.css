@@ -36,6 +36,11 @@ h1 {
   line-height: 1.1;
 }
 
+p,
+label {
+  user-select: none;
+}
+
 #app {
   max-width: 1280px;
   margin: 0 auto;
