@@ -1,5 +1,9 @@
 <script>
-  import { generatePatternSimple, shuffleArray } from './lib/lib.js';
+  import {
+    fetchAudio,
+    generatePatternSimple,
+    shuffleArray,
+  } from './lib/lib.js';
   import Audio from './Audio.svelte';
   import PlotWaveform from './plots/PlotWaveform.svelte';
   import PlotTick from './plots/PlotTick.svelte';
@@ -15,13 +19,15 @@
   let partID = getUrlParam(window, 'PROLIFIC_PID');
   let studyID = getUrlParam(window, 'STUDY_ID');
   let sessionID = getUrlParam(window, 'SESSION_ID');
-  console.log({ partID, studyID, sessionID });
+  // console.log({ partID, studyID, sessionID });
 
   const audioFiles = [
     './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',
     './MailboxBadgerPublicDomainDrumSamples27LiveDrumsHiHat.mp3',
   ];
   let audioFile = audioFiles[0];
+  let cachedAudio;
+  fetchAudio(audioFile).then((d) => (cachedAudio = d));
 
   let tests = [
     {
@@ -201,6 +207,7 @@
     deviation = Math.random() < 0.5 ? deviation : -deviation;
     currentTrial.deviation = deviation;
     percentDeviation = deviation;
+    currentTrial.startTime = new Date();
 
     console.log('generated pattern', pattern);
     // avoid showing a visualization directly after the previous to prevent participants from seeing the change
@@ -217,6 +224,7 @@
     trialActive = false;
     currentTrial.decisionChoice = id;
     currentTrial.errorCode = 0;
+    currentTrial.timeTaken = (new Date() - currentTrial.startTime) / 1000;
 
     // process trial result
     const oldScore = score;
@@ -244,7 +252,6 @@
       startTrial();
     } else {
       // test complete
-      // show block feedback
       endTest();
     }
   }
@@ -278,6 +285,10 @@
 
   function keyPress(evt) {
     // console.log(evt.key);
+    // prevent skipping whitescreen
+    if (whiteScreenShowing) {
+      return;
+    }
     switch (evt.key) {
       case 'ArrowLeft':
         if (trialActive) {
@@ -307,9 +318,11 @@
     const data = {
       studyStep,
       demographics: {
+        // prolific parameters
         partID,
         studyID,
         sessionID,
+        // demographics
         partAge,
         partGender,
         partEduation,
@@ -317,6 +330,7 @@
         partMusicInstrYears,
         partVisExperienceYears,
         partFeedback,
+        // corresponds to zoom set by participant
         visWidth,
       },
       date: new Date().toISOString(),
@@ -336,37 +350,14 @@
     }).then((res) => {
       console.log('Data saved:', res);
     });
-    // var xmlhttp = new XMLHttpRequest(); // new HttpRequest instance
-    // var url = serverUrl;
-    // xmlhttp.open('POST', url);
-    // xmlhttp.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    // xmlhttp.send(json);
   }
-
-  // function beforeUnload(event) {
-  //   // Cancel the event as stated by the standard.
-  //   event.preventDefault();
-  //   // Chrome requires returnValue to be set.
-  //   event.returnValue = '';
-  //   // more compatibility
-  //   return '...';
-  // }
 </script>
 
-<!-- <svelte:window on:beforeunload="{beforeUnload}" /> -->
 <main>
-  <h2>Study (Prolific)</h2>
+  <!-- <h2>Study (Prolific)</h2> -->
 
   {#if studyStep === 'start'}
     <div>
-      <!-- <p>
-      <a href="./?p=examples" target="_blank"
-        >Click here for explanation and examples</a
-      >.
-    </p>
-    <p>
-      You can open this page in a new tab and look at it when ever you need it.
-    </p> -->
       <div>
         <p>
           Please click + or - until this rectangle has the size of a credit
@@ -396,12 +387,8 @@
   <!-- Demographics form -->
   {#if studyStep === 'demo'}
     <div class="demo-form">
-      <!-- <label>
-        ID:
-        <input type="text" bind:value="{partID}" placeholder="ID" />
-      </label> -->
       <label>
-        Age in years:
+        Your age in years:
         <select bind:value="{partAge}">
           <option value="20-24">20-24</option>
           <option value="25-29">25-29</option>
@@ -465,17 +452,16 @@
   {#if studyStep === 'tests'}
     <p>
       You will be presented with a sequence of six piano notes which should have
-      equal distances in time.
-    </p>
-    <p>
-      The <b>fourth note</b> might be played <b>too early or too late</b>, also
-      affecting the ones after.
+      equal distances in time. The <b>fourth note</b> might be played
+      <b>too early or too late</b>, also affecting the ones after. This
+      deviation will get smaller, but you always have to anwser "early" or
+      "late".
     </p>
 
     {#if testActive}
       <p>
-        Use the arrow keys on your keyboard: left for too early, right for too
-        late.
+        Use the arrow keys on your keyboard: <b>left for early</b>,
+        <b>right for late</b>.
       </p>
       <p>Test number {currentTestNumber + 1} / {tests.length}</p>
       <p>Trial number {currentTrialNumber + 1}</p>
@@ -486,6 +472,7 @@
             pattern.at(-1) + Math.random() * 0.0001,
           ]}"
           {audioFile}
+          {cachedAudio}
           {currentTrialNumber}
         />
         <p>You can play the audio as many times as you like.</p>
@@ -496,12 +483,14 @@
             <PlotWaveform
               pattern="{examplePatternEarly}"
               {audioFile}
+              {cachedAudio}
               width="{visWidth / 2}"
               height="{visHeight / 2}"
             />
             <PlotWaveform
               pattern="{examplePatternLate}"
               {audioFile}
+              {cachedAudio}
               width="{visWidth / 2}"
               height="{visHeight / 2}"
             />
@@ -511,6 +500,7 @@
           <PlotWaveform
             {pattern}
             {audioFile}
+            {cachedAudio}
             width="{visWidth}"
             height="{visHeight}"
           />
@@ -590,8 +580,6 @@
     <!-- <button on:click="{nextStudyStep}">next step (PageDown)</button> -->
     <button on:click="{nextStudyStep}" class="next-btn">next step</button>
   {/if}
-
-  <button on:click="{saveData}">asdasdsa</button>
 </main>
 
 <style>

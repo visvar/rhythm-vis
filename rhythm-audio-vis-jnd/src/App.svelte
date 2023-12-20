@@ -15,21 +15,23 @@
 <main>
   <h1>Rhythm Error Sensitivity Study</h1>
 
-  <div>
-    <button on:click="{() => (view = 'playground')}">Playground</button>
-    <button on:click="{() => (view = 'examples')}">Examples</button>
-    <button on:click="{() => (view = 'study')}">Study</button>
-    <button on:click="{() => (view = 'analysis')}">Analysis</button>
-    <button on:click="{() => (view = 'study_variance')}"
-      >Study (variance)</button
-    >
-    <button on:click="{() => (view = 'analysis_variance')}"
-      >Analysis (variance)</button
-    >
-    <button on:click="{() => (view = 'study_prolific')}">
-      Study (Prolific)
-    </button>
-  </div>
+  {#if view !== 'study_prolific'}
+    <div>
+      <button on:click="{() => (view = 'playground')}">Playground</button>
+      <button on:click="{() => (view = 'examples')}">Examples</button>
+      <button on:click="{() => (view = 'study')}">Study</button>
+      <button on:click="{() => (view = 'analysis')}">Analysis</button>
+      <button on:click="{() => (view = 'study_variance')}"
+        >Study (variance)</button
+      >
+      <button on:click="{() => (view = 'analysis_variance')}"
+        >Analysis (variance)</button
+      >
+      <button on:click="{() => (view = 'study_prolific')}">
+        Study (Prolific)
+      </button>
+    </div>
+  {/if}
 
   {#if view === 'playground'}
     <Playground />
@@ -46,9 +48,4 @@
   {:else if view === 'study_prolific'}
     <StudyProlific />
   {/if}
-
-  <!-- <StaircaseTest /> -->
 </main>
-
-<style>
-</style>

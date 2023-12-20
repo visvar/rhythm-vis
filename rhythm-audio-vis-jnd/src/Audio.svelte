@@ -4,13 +4,19 @@
 
   export let pattern;
   export let audioFile;
+  export let cachedAudio = null;
   export let currentTrialNumber = -1;
 
   // load audio sample to use for notes
   let audioSample = null;
   const getSample = async (audioFile) => {
-    audioSample = await fetchAudio(audioFile);
-    console.log(`Loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
+    // use cached if available
+    if (cachedAudio) {
+      audioSample = cachedAudio;
+    } else {
+      audioSample = await fetchAudio(audioFile);
+      console.log(`Loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
+    }
   };
   $: getSample(audioFile);
 

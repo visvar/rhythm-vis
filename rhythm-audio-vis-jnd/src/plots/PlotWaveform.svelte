@@ -5,6 +5,7 @@
 
   export let pattern;
   export let audioFile;
+  export let cachedAudio = null;
   export let width = 800;
   export let height = 50;
 
@@ -14,8 +15,13 @@
   let audioSample = null;
   let sampleRate;
   const getSample = async (audioFile) => {
-    audioSample = await fetchAudio(audioFile);
-    console.log(`Loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
+    // use cached if available
+    if (cachedAudio) {
+      audioSample = cachedAudio;
+    } else {
+      audioSample = await fetchAudio(audioFile);
+      console.log(`Loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
+    }
     sampleRate = audioSample.sampleRate;
   };
   $: getSample(audioFile);
