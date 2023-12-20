@@ -454,7 +454,7 @@
       You will be presented with a sequence of six piano notes which should have
       equal distances in time. The <b>fourth note</b> might be played
       <b>too early or too late</b>, also affecting the ones after. This
-      deviation will get smaller, but you always have to anwser "early" or
+      deviation will get smaller, but you always have to answer "early" or
       "late".
     </p>
 
@@ -466,6 +466,12 @@
       <p>Test number {currentTestNumber + 1} / {tests.length}</p>
       <p>Trial number {currentTrialNumber + 1}</p>
       {#if currentEncoding === 'audio'}
+        <div class="vis-example">
+          <div>
+            Listen to the audio, the forth note comes either too soon or too
+            late.
+          </div>
+        </div>
         <Audio
           pattern="{[
             ...pattern.slice(0, pattern.length - 1),
@@ -480,6 +486,11 @@
         <!-- white screen helps avoid seeing the change between consecutive stimuli -->
         {#if currentEncoding === 'waveform'}
           <div class="vis-example">
+            <div>
+              This is a waveform of the audio, showing loudness over time. Look
+              at the peaks, the gap between the third and forth peaks is either
+              smaller (early) or larger (late) than the other gaps.
+            </div>
             <PlotWaveform
               pattern="{examplePatternEarly}"
               {audioFile}
@@ -506,6 +517,10 @@
           />
         {:else if currentEncoding === 'tick'}
           <div class="vis-example">
+            <div>
+              Look at the peaks, the gap between the third and forth tick is
+              either smaller (early) or larger (late) than the other gaps.
+            </div>
             <PlotTick
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -522,6 +537,12 @@
           <PlotTick {pattern} width="{visWidth}" height="{visHeight}" />
         {:else if currentEncoding === 'bar'}
           <div class="vis-example">
+            <div>
+              The bar chart shows the size of the gaps between notes in the
+              bars' height (example: the bar at 2 shows the gap between the
+              first and second note). Look at the third bar, it is either lower
+              (early) or higher (late) than the others.
+            </div>
             <PlotBar
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -538,6 +559,12 @@
           <PlotBar {pattern} width="{visWidth}" height="{visHeight}" />
         {:else if currentEncoding === 'color'}
           <div class="vis-example">
+            <div>
+              The color chart shows the size of the gaps between notes in the
+              rectangles darkness (example: color at 2 shows the gap between the
+              first and second note). Look at the third bar, it is either
+              brigher (early) or darker (late) than the others.
+            </div>
             <PlotColor
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
