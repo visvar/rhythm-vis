@@ -9,7 +9,7 @@
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
   import { getUrlParam } from './lib/url.js';
 
-  const serverUrl = 'http://193.196.55.123:8080/store';
+  const serverUrl = '/store';
 
   // prolific params
   let partID = getUrlParam(window, 'PROLIFIC_PID');
@@ -32,12 +32,12 @@
       stimulus: 'waveform',
       audioFile: audioFiles[0],
     },
-    {
-      stimulus: 'tick',
-    },
-    {
-      stimulus: 'bar',
-    },
+    // {
+    //   stimulus: 'tick',
+    // },
+    // {
+    //   stimulus: 'bar',
+    // },
     {
       stimulus: 'color',
     },

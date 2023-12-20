@@ -15,10 +15,10 @@
   "devDependencies": {
     "@observablehq/plot": "^0.6.13",
     "@sveltejs/vite-plugin-svelte": "^3.0.1",
-    "npm-check-updates": "^16.14.11",
+    "npm-check-updates": "^16.14.12",
     "standard": "^17.1.0",
     "svelte": "^4.2.8",
-    "vite": "^5.0.6"
+    "vite": "^5.0.10"
   },
   "dependencies": {
     "audio-decode": "^2.2.0",

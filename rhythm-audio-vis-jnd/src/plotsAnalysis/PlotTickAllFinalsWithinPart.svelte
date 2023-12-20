@@ -7,7 +7,7 @@
     export let domain;
     export let title = '';
     export let width = 800;
-    export let height = 100;
+    export let height = 300;
 
     let plotContainer;
 
@@ -29,14 +29,16 @@
                 // domain: d3.range(0, data.lenght),
             },
             marks: [
-                Plot.tickX(data, { x: (d) => d }),
+                Plot.tickX(data, { x: (d) => d, strokeWidth: 0.5 }),
                 Plot.text(data, {
                     x: (d) => d,
                     dx: 7,
                     y: (d, i) => i,
                     text: (d, i) => {
-                        return `P${i + 1}`;
+                        return `P${Math.floor(i / 3) + 1}-${(i % 3) + 1}`;
                     },
+                    fill: 'black',
+                    stroke: 'white',
                 }),
                 // Plot.frame()
             ],
