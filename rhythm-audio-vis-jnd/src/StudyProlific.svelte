@@ -627,6 +627,10 @@
     border-radius: 10px;
   }
 
+  .vis-example div {
+    column-span: all;
+  }
+
   .next-btn {
     margin-top: 30px;
   }
