@@ -460,17 +460,12 @@
 
     {#if testActive}
       <p>
-        Use the arrow keys on your keyboard: <b>left for early</b>,
-        <b>right for late</b>.
+        Test number {currentTestNumber + 1} / {tests.length}, trial number {currentTrialNumber +
+          1}
       </p>
-      <p>Test number {currentTestNumber + 1} / {tests.length}</p>
-      <p>Trial number {currentTrialNumber + 1}</p>
       {#if currentEncoding === 'audio'}
-        <div class="vis-example">
-          <div>
-            Listen to the audio, the forth note comes either too soon or too
-            late.
-          </div>
+        <div>
+          Listen to the audio, the forth note comes either too soon or too late.
         </div>
         <Audio
           pattern="{[
@@ -485,12 +480,12 @@
       {:else if whiteScreenShowing === false}
         <!-- white screen helps avoid seeing the change between consecutive stimuli -->
         {#if currentEncoding === 'waveform'}
+          <div>
+            This is a waveform of the audio, showing loudness over time. Look at
+            the peaks, the gap between the third and forth peaks is either
+            smaller (early) or larger (late) than the other gaps.
+          </div>
           <div class="vis-example">
-            <div>
-              This is a waveform of the audio, showing loudness over time. Look
-              at the peaks, the gap between the third and forth peaks is either
-              smaller (early) or larger (late) than the other gaps.
-            </div>
             <PlotWaveform
               pattern="{examplePatternEarly}"
               {audioFile}
@@ -516,11 +511,11 @@
             height="{visHeight}"
           />
         {:else if currentEncoding === 'tick'}
+          <div>
+            Look at the peaks, the gap between the third and forth tick is
+            either smaller (early) or larger (late) than the other gaps.
+          </div>
           <div class="vis-example">
-            <div>
-              Look at the peaks, the gap between the third and forth tick is
-              either smaller (early) or larger (late) than the other gaps.
-            </div>
             <PlotTick
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -536,13 +531,13 @@
           </div>
           <PlotTick {pattern} width="{visWidth}" height="{visHeight}" />
         {:else if currentEncoding === 'bar'}
+          <div>
+            The bar chart shows the size of the gaps between notes in the bars'
+            height (example: the bar at 2 shows the gap between the first and
+            second note). Look at the third bar, it is either lower (early) or
+            higher (late) than the others.
+          </div>
           <div class="vis-example">
-            <div>
-              The bar chart shows the size of the gaps between notes in the
-              bars' height (example: the bar at 2 shows the gap between the
-              first and second note). Look at the third bar, it is either lower
-              (early) or higher (late) than the others.
-            </div>
             <PlotBar
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -558,13 +553,13 @@
           </div>
           <PlotBar {pattern} width="{visWidth}" height="{visHeight}" />
         {:else if currentEncoding === 'color'}
+          <div>
+            The color chart shows the size of the gaps between notes in the
+            rectangles darkness (example: color at 2 shows the gap between the
+            first and second note). Look at the third bar, it is either brigher
+            (early) or darker (late) than the others.
+          </div>
           <div class="vis-example">
-            <div>
-              The color chart shows the size of the gaps between notes in the
-              rectangles darkness (example: color at 2 shows the gap between the
-              first and second note). Look at the third bar, it is either
-              brigher (early) or darker (late) than the others.
-            </div>
             <PlotColor
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -580,6 +575,10 @@
           </div>
           <PlotColor {pattern} width="{visWidth}" height="{visHeight}" />
         {/if}
+        <p>
+          Use the arrow keys on your keyboard: <b>left for early</b>,
+          <b>right for late</b>.
+        </p>
       {/if}
     {/if}
   {/if}
