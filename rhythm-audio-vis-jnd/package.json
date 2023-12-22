@@ -24,6 +24,7 @@
     "audio-decode": "^2.2.0",
     "audiobuffer-to-wav": "^1.0.0",
     "d3": "^7.8.5",
+    "fast-kde": "^0.2.1",
     "file-saver": "^2.0.5",
     "musicvis-lib": "^0.57.1"
   }

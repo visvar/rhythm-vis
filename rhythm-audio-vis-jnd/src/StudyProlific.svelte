@@ -12,6 +12,7 @@
   import { onMount } from 'svelte';
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
   import { getUrlParam } from './lib/url.js';
+  import AudioExample from './AudioExample.svelte';
 
   const serverUrl = '/store';
 
@@ -53,8 +54,8 @@
   const examplePatternLate = [0, 0.5, 1, 1.6, 2.1, 2.6];
 
   // study progress
-  // start, demo, tests, feedback, done
-  let studyStep = 'start';
+  // consent, start1, start2, demo, tests, feedback, done
+  let studyStep = 'consent';
   let currentTestNumber = 0;
   let testStartTime;
 
@@ -132,7 +133,8 @@
         limits: [0, initialPercentDeviation], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 5, // How many reversals to do before stopping
-        verbosity: 1, // Enable logging for debugging
+        // verbosity: 1, // Enable logging for debugging
+        verbosity: 0, // Enable logging for debugging
         // sameStairMax: , // Maximum number of trials
       },
     });
@@ -143,14 +145,18 @@
    * Continue the study
    */
   function nextStudyStep() {
-    if (studyStep === 'start') {
+    if (studyStep === 'consent') {
+      studyStep = 'start1';
+    } else if (studyStep === 'start1') {
+      studyStep = 'start2';
+    } else if (studyStep === 'start2') {
       tests = shuffleArray(tests);
       studyStep = 'demo';
     } else if (studyStep === 'demo') {
       // check if filled
       if (
-        partAge == '' ||
-        partGender == '' ||
+        // partAge == '' ||
+        // partGender == '' ||
         partEduation == '' ||
         partMusicInstr == ''
       ) {
@@ -209,7 +215,7 @@
     percentDeviation = deviation;
     currentTrial.startTime = new Date();
 
-    console.log('generated pattern', pattern);
+    // console.log('generated pattern', pattern);
     // avoid showing a visualization directly after the previous to prevent participants from seeing the change
     whiteScreenShowing = true;
     window.setTimeout(() => {
@@ -323,8 +329,8 @@
         studyID,
         sessionID,
         // demographics
-        partAge,
-        partGender,
+        // partAge,
+        // partGender,
         partEduation,
         partMusicInstr,
         partMusicInstrYears,
@@ -356,39 +362,75 @@
 <main>
   <!-- <h2>Study (Prolific)</h2> -->
 
-  {#if studyStep === 'start'}
+  {#if studyStep === 'consent'}
     <div>
-      <div>
-        <p>
-          Please click + or - until this rectangle has the size of a credit
-          card.
-        </p>
-        <p>
-          <button on:click="{() => (visWidth *= 1.05)}">+</button>
-          <button on:click="{() => (visWidth *= 0.95)}">-</button>
-        </p>
-        <svg width="{visWidth * 0.52}px" height="{visHeight * 2}px">
-          <rect
-            width="{visWidth * 0.52}"
-            height="{visHeight * 2}"
-            fill="#ccc"
-            rx="8"
-          ></rect>
-        </svg>
-      </div>
-      <div>
-        Please also set your screen brightness and audio volume to comfortable
-        levels and avoid sunlight or artificial light reflecting from your
-        screen.
-      </div>
+      <p>
+        In this study, we will present you with audio and visual representations
+        of rhythmic patterns and record how precisely people can perceive them.
+        We will also ask for your level of education and experience with music
+        and visualization. This data will be analyzed and published in
+        summarized, anonymized form.
+      </p>
+      <p>
+        By clicking <i>next step</i> you consent to participating in this study and
+        data collection.
+      </p>
+      <p>
+        If you do not consent, click <i>I do not consent</i> below, you then cannot
+        participate in this study.
+      </p>
+      <a href="https://app.prolific.com/submissions/complete?cc=CSHH1IPL">
+        <button>I do not consent and will not participate</button>
+      </a>
+    </div>
+  {/if}
+
+  {#if studyStep === 'start1'}
+    <div>
+      <p>
+        To make sure that the audio works for you, please click play. Please set
+        the audio volume to a comfortable level that allows you to hear this
+        pattern clearly.
+      </p>
+      <AudioExample pattern="{[0.5, 1, 1.5]}" {cachedAudio} />
+      <p>If you cannot hear anything, you cannot participate in this study.</p>
+      <a href="https://app.prolific.com/submissions/complete?cc=CH9I2X6E">
+        <button>
+          I cannot hear the audio and will not participate in this study
+        </button>
+      </a>
+    </div>
+  {/if}
+
+  {#if studyStep === 'start2'}
+    <div>
+      <p>
+        Please click + or - until this rectangle has the size of a credit card.
+      </p>
+      <p>
+        <button on:click="{() => (visWidth *= 1.05)}">+</button>
+        <button on:click="{() => (visWidth *= 0.95)}">-</button>
+      </p>
+      <svg width="{visWidth * 0.52}px" height="{visHeight * 2}px">
+        <rect
+          width="{visWidth * 0.52}"
+          height="{visHeight * 2}"
+          fill="#ccc"
+          rx="8"
+        ></rect>
+      </svg>
+      <p>
+        Please also set your screen brightness to comfortable levels and avoid
+        sunlight or artificial light reflecting from your screen.
+      </p>
     </div>
   {/if}
 
   <!-- Demographics form -->
   {#if studyStep === 'demo'}
     <div class="demo-form">
-      <label>
-        Your age in years:
+      <!-- <label>
+        <span>Your age in years:</span>
         <select bind:value="{partAge}">
           <option value="20-24">20-24</option>
           <option value="25-29">25-29</option>
@@ -397,19 +439,21 @@
           <option value="40-44">40-44</option>
           <option value="45-49">45-49</option>
           <option value="50-54">50-54</option>
-          <option value="55-60">55-60</option>
+          <option value="55-59">55-59</option>
+          <option value="60-64">60-64</option>
+          <option value="65-70">65-70</option>
         </select>
       </label>
       <label>
-        Gender:
+        <span>Gender:</span>
         <input
           type="text"
           bind:value="{partGender}"
           placeholder="m, f, d, or self-describe"
         />
-      </label>
+      </label> -->
       <label>
-        Highest finished education (select the best fitting one):
+        <span>Highest finished education (select the best fitting one):</span>
         <select bind:value="{partEduation}">
           <option value="none">none</option>
           <option value="highs">high school</option>
@@ -419,8 +463,10 @@
         </select>
       </label>
       <label>
-        Which music instruments do you play? Please separate by comma, if you do
-        not play any, write 'none'.
+        <span>
+          Which music instruments do you play? Please separate by comma, if you
+          do not play any, write 'none'.
+        </span>
         <input
           type="text"
           bind:value="{partMusicInstr}"
@@ -428,7 +474,7 @@
         />
       </label>
       <label>
-        For how many years do you roughly play it/them?
+        <span>For how many years do you roughly play it/them?</span>
         <input
           type="number"
           bind:value="{partMusicInstrYears}"
@@ -437,7 +483,10 @@
         />
       </label>
       <label>
-        How many years of experience do you have with information visualization?
+        <span>
+          How many years of experience do you have with information
+          visualization?
+        </span>
         <input
           type="number"
           bind:value="{partVisExperienceYears}"
@@ -466,6 +515,8 @@
       {#if currentEncoding === 'audio'}
         <div>
           Listen to the audio, the forth note comes either too soon or too late.
+          Press <i>p</i> or click <i>play</i> to replay the audio, you can do this
+          is often as you like.
         </div>
         <Audio
           pattern="{[
@@ -476,7 +527,6 @@
           {cachedAudio}
           {currentTrialNumber}
         />
-        <p>You can play the audio as many times as you like.</p>
       {:else if whiteScreenShowing === false}
         <!-- white screen helps avoid seeing the change between consecutive stimuli -->
         {#if currentEncoding === 'waveform'}
@@ -613,8 +663,16 @@
     text-align: center;
   }
 
+  .demo-form {
+    margin: auto;
+    width: 500px;
+    display: grid;
+    gap: 30px;
+  }
+
   .demo-form label {
-    display: block;
+    display: grid;
+    grid-template-columns: auto;
   }
 
   .vis-example {

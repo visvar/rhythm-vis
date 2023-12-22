@@ -12,8 +12,8 @@
     let plotContainer;
 
     afterUpdate(() => {
-        console.log(title);
-        console.log(data);
+        // console.log(title);
+        // console.log(data);
         const plot = Plot.plot({
             width,
             height,
