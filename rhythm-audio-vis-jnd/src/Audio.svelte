@@ -13,9 +13,10 @@
     // use cached if available
     if (cachedAudio) {
       audioSample = cachedAudio;
+      console.log('used cached audio');
     } else {
       audioSample = await fetchAudio(audioFile);
-      console.log(`Loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
+      console.log(`loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
     }
   };
   $: getSample(audioFile);

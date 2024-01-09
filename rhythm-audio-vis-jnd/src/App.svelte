@@ -10,7 +10,7 @@
   import { getUrlParam } from './lib/url';
 
   let view = getUrlParam(window, 'p') ?? 'study_prolific';
-  view = 'analysis_prolific';
+  // view = 'analysis_prolific';
 </script>
 
 <main>

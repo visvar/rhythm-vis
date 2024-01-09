@@ -4,7 +4,7 @@
     generatePatternSimple,
     shuffleArray,
   } from './lib/lib.js';
-  import Audio from './Audio.svelte';
+  import Audio from './AudioCached.svelte';
   import PlotWaveform from './plots/PlotWaveform.svelte';
   import PlotTick from './plots/PlotTick.svelte';
   import PlotBar from './plots/PlotBar.svelte';
@@ -28,7 +28,10 @@
   ];
   let audioFile = audioFiles[0];
   let cachedAudio;
-  fetchAudio(audioFile).then((d) => (cachedAudio = d));
+  fetchAudio(audioFile).then((d) => {
+    cachedAudio = d;
+    console.log('Audio fetched', d);
+  });
 
   let tests = [
     {
@@ -39,15 +42,15 @@
       stimulus: 'waveform',
       audioFile: audioFiles[0],
     },
+    {
+      stimulus: 'color',
+    },
     // {
     //   stimulus: 'tick',
     // },
     // {
     //   stimulus: 'bar',
     // },
-    {
-      stimulus: 'color',
-    },
   ];
 
   const examplePatternEarly = [0, 0.5, 1, 1.4, 1.9, 2.4];
@@ -392,7 +395,7 @@
         the audio volume to a comfortable level that allows you to hear this
         pattern clearly.
       </p>
-      <AudioExample pattern="{[0.5, 1, 1.5]}" {cachedAudio} />
+      <AudioExample pattern="{[0.1, 0.6, 1.1]}" {cachedAudio} />
       <p>If you cannot hear anything, you cannot participate in this study.</p>
       <a href="https://app.prolific.com/submissions/complete?cc=CH9I2X6E">
         <button>
@@ -523,7 +526,6 @@
             ...pattern.slice(0, pattern.length - 1),
             pattern.at(-1) + Math.random() * 0.0001,
           ]}"
-          {audioFile}
           {cachedAudio}
           {currentTrialNumber}
         />
@@ -625,11 +627,11 @@
           </div>
           <PlotColor {pattern} width="{visWidth}" height="{visHeight}" />
         {/if}
-        <p>
-          Use the arrow keys on your keyboard: <b>left for early</b>,
-          <b>right for late</b>.
-        </p>
       {/if}
+      <p>
+        Use the arrow keys on your keyboard: <b>left for early</b>,
+        <b>right for late</b>.
+      </p>
     {/if}
   {/if}
 
