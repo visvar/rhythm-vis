@@ -375,6 +375,11 @@
         summarized, anonymized form.
       </p>
       <p>
+        For more details, you can read the following documents:
+        <a href="consent.pdf">consent.pdf</a>,
+        <a href="privacy.pdf">privacy.pdf</a>.
+      </p>
+      <p>
         By clicking <i>next step</i> you consent to participating in this study and
         data collection.
       </p>
