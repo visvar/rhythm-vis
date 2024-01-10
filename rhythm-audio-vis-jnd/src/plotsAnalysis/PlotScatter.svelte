@@ -1,6 +1,6 @@
 <script>
-    import * as Plot from '@observablehq/plot';
-    import { afterUpdate } from 'svelte';
+  import * as Plot from '@observablehq/plot';
+  import { afterUpdate } from 'svelte';
 
     export let title = '';
     export let data;
@@ -15,7 +15,7 @@
     export let width = 300;
     export let height = 300;
 
-    let plotContainer;
+  let plotContainer;
 
     afterUpdate(() => {
         console.log(data, x, y);
@@ -69,6 +69,8 @@
         });
         plotContainer.appendChild(plot);
     });
+    plotContainer.appendChild(plot);
+  });
 </script>
 
 <main>
