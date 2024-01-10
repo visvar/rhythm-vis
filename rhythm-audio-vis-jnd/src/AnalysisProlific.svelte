@@ -10,18 +10,26 @@
   let participants = [];
   let prolificDemographics = null;
 
-  const handleFileInputDemo = async (evt) => {
-    const file = evt.target.files[0];
-    const content = await file.text();
-    const csv = d3.csvParse(content);
-    prolificDemographics = csv;
-  };
+  // const handleFileInputDemo = async (evt) => {
+  //   const file = evt.target.files[0];
+  //   const content = await file.text();
+  //   const csv = d3.csvParse(content);
+  //   prolificDemographics = csv;
+  // };
 
   const handleFileInput = async (evt) => {
     const data2 = [];
     for (const file of evt.target.files) {
-      const content = await file.text();
-      data2.push(JSON.parse(content));
+      if (file.name.endsWith('.csv')) {
+        // Prolific demographics
+        const content = await file.text();
+        const csv = d3.csvParse(content);
+        prolificDemographics = csv;
+      } else {
+        // participant results
+        const content = await file.text();
+        data2.push(JSON.parse(content));
+      }
     }
     // log participant plus stimulus
     console.log(data2.map((d) => `${d.demographics.partID} ${d.studyStep}`));
@@ -51,6 +59,8 @@
           finalWaveform: d.tests.filter((t) =>
             t.encoding.startsWith('waveform'),
           )[0].final,
+          // representation order
+          encodingOrder: d.tests.map((t) => t.encoding).join(', '),
         };
       });
     console.log('participants', participants);
@@ -134,18 +144,17 @@
     final values.
   </p>
 
-  <label>
+  <!-- <label>
     Prolifc demographics CSV
     <input type="file" on:input="{handleFileInputDemo}" accept=".csv" />
-  </label>
+  </label> -->
   <label>
-    Results JSONs
+    Results JSONs and Prolific demographics CSV
     <input
       type="file"
       on:input="{handleFileInput}"
-      accept=".json"
+      accept=".json,.csv"
       multiple
-      disabled="{prolificDemographics === null}"
     />
   </label>
 
@@ -153,6 +162,15 @@
     {participants.length} participants completed -
     {tests.length} tests -
     {testsFiltered.length} filtered tests
+  </div>
+
+  <div>
+    <h3>Encoding order</h3>
+    {#each d3
+      .groups(participants, (d) => d.encodingOrder)
+      .sort((a, b) => a[1].lenght - b[1].length) as [order, parts]}
+      <p>{order}: {parts.length} times</p>
+    {/each}
   </div>
 
   <div>
@@ -228,12 +246,12 @@
 
   <div>
     <h3>Feedback</h3>
-    {#each participants as participant}
+    {#each participants.filter((d) => d.demographics.partFeedback.trim().length > 0) as participant}
       <div style="text-align: left;">
-        <b
-          >P{participant.demographics.internalPID}
-          {participant.demographics.partID}:</b
-        >
+        <b>
+          P{participant.demographics.internalPID}
+        </b>
+        {participant.demographics.partID}:
         {#each participant.demographics.partFeedback.split('\n') as line}
           <p>{line}</p>
         {/each}

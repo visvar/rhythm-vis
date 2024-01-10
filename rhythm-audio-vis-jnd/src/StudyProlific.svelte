@@ -64,8 +64,8 @@
 
   // participant data
   // let partID = '';
-  let partAge = '';
-  let partGender = '';
+  // let partAge = '';
+  // let partGender = '';
   let partEduation = '';
   let partMusicInstr = '';
   let partMusicInstrYears = 0;
@@ -387,7 +387,7 @@
         If you do not consent, click <i>I do not consent</i> below, you then cannot
         participate in this study.
       </p>
-      <a href="https://app.prolific.com/submissions/complete?cc=CSHH1IPL">
+      <a href="https://app.prolific.com/submissions/complete?cc=CLB832WS">
         <button>I do not consent and will not participate</button>
       </a>
     </div>
