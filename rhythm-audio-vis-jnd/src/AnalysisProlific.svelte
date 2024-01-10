@@ -1,5 +1,6 @@
 <script>
-  import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
+  // import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
+  import saveAs from 'file-saver';
   import * as d3 from 'd3';
   import PlotTickAllFinals from './plotsAnalysis/PlotTickAllFinals.svelte';
   import PlotTickCI from './plotsAnalysis/PlotTickCI.svelte';
@@ -74,9 +75,19 @@
     if (participants.lenght === 0) {
       return [];
     }
+    /**
+     * Converts age in years to something like '20-24'
+     * @param {number} age age in years
+     * @param {number} step size of the age brackets
+     * @returns {string} age bracket in steps of `step`
+     */
+    const ageTo5YearBracked = (age, step = 5) => {
+      const lower = Math.floor(age / step) * step;
+      return `${lower}-${lower + step - 1}`;
+    };
     const tests = [];
     for (const participant of participants) {
-      for (const test of participant.tests) {
+      for (const [index, test] of participant.tests.entries()) {
         let testType = test.encoding;
         if (test.encoding === 'audio' || test.encoding === 'waveform') {
           testType = `${test.encoding} + ${
@@ -85,12 +96,16 @@
         }
         tests.push({
           ...participant.demographics,
+          partAge: participant.demographics.partAge
+            ? participant.demographics.partAge
+            : ageTo5YearBracked(participant.prolificDemographics.Age),
           countryBirth: participant.prolificDemogr['Country of birth'],
           countryResidence: participant.prolificDemogr['Country of residence'],
           prolificApprovals: participant.prolificDemogr['Total approvals'],
           ...test,
           date: participant.date,
           testType,
+          testOrder: index,
         });
       }
     }
@@ -134,29 +149,38 @@
     'tests by enc',
     d3.groups(tests, (d) => d.testType),
   );
+
+  const exportJSON = () => {
+    // participants
+    const jsonP = JSON.stringify(participants, undefined, 2);
+    const blobP = new Blob([jsonP], {
+      type: 'text/plain;charset=utf-8',
+    });
+    saveAs(blobP, 'participants.json');
+    // tests
+    const jsonT = JSON.stringify(tests, undefined, 2);
+    const blobT = new Blob([jsonT], {
+      type: 'text/plain;charset=utf-8',
+    });
+    saveAs(blobT, 'tests.json');
+  };
 </script>
 
 <main>
   <h2>Analysis</h2>
 
-  <p>
-    Open a file that you saved after a study here to see the staircases and
-    final values.
-  </p>
-
-  <!-- <label>
-    Prolifc demographics CSV
-    <input type="file" on:input="{handleFileInputDemo}" accept=".csv" />
-  </label> -->
-  <label>
-    Results JSONs and Prolific demographics CSV
-    <input
-      type="file"
-      on:input="{handleFileInput}"
-      accept=".json,.csv"
-      multiple
-    />
-  </label>
+  <div>
+    <label>
+      Results JSONs and Prolific demographics CSV
+      <input
+        type="file"
+        on:input="{handleFileInput}"
+        accept=".json,.csv"
+        multiple
+      />
+    </label>
+    <button on:click="{exportJSON}">export JSON</button>
+  </div>
 
   <div>
     {participants.length} participants completed -

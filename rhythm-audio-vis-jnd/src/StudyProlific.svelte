@@ -440,6 +440,7 @@
       <!-- <label>
         <span>Your age in years:</span>
         <select bind:value="{partAge}">
+          <option value="15-20">15-20</option>
           <option value="20-24">20-24</option>
           <option value="25-29">25-29</option>
           <option value="30-34">30-34</option>
@@ -450,6 +451,8 @@
           <option value="55-59">55-59</option>
           <option value="60-64">60-64</option>
           <option value="65-70">65-70</option>
+          <option value="70-74">70-74</option>
+          <option value="75-80">75-80</option>
         </select>
       </label>
       <label>
