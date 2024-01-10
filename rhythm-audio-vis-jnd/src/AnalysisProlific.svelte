@@ -43,6 +43,14 @@
           prolificDemogr: prolificDemographics.filter(
             (pd) => pd['Participant id'] === d.demographics.partID,
           )[0],
+          // shorthand for final values of all encodings
+          finalAudio: d.tests.filter((t) => t.encoding.startsWith('audio'))[0]
+            .final,
+          finalColor: d.tests.filter((t) => t.encoding.startsWith('color'))[0]
+            .final,
+          finalWaveform: d.tests.filter((t) =>
+            t.encoding.startsWith('waveform'),
+          )[0].final,
         };
       });
     console.log('participants', participants);
@@ -162,41 +170,19 @@
     title="Audio vs. Waveform"
     x="finalAudio"
     y="finalWaveform"
+    tipTitle="partID"
     xDomain="{[0, 20]}"
     yDomain="{[0, 20]}"
-    data="{participants.map((d) => {
-      console.log(d.tests);
-
-      return {
-        ...d.demographics,
-        finalAudio: d.tests.filter((t) => t.encoding.startsWith('audio'))[0]
-          .final,
-        finalColor: d.tests.filter((t) => t.encoding.startsWith('color'))[0]
-          .final,
-        finalWaveform: d.tests.filter((t) =>
-          t.encoding.startsWith('waveform'),
-        )[0].final,
-      };
-    })}"
+    data="{participants}"
   />
   <PlotScatter
     title="Audio vs. Color"
     x="finalAudio"
     y="finalColor"
+    tipTitle="partID"
     xDomain="{[0, 20]}"
     yDomain="{[0, 20]}"
-    data="{participants.map((d) => {
-      return {
-        ...d.demographics,
-        finalAudio: d.tests.filter((t) => t.encoding.startsWith('audio'))[0]
-          .final,
-        finalColor: d.tests.filter((t) => t.encoding.startsWith('color'))[0]
-          .final,
-        finalWaveform: d.tests.filter((t) =>
-          t.encoding.startsWith('waveform'),
-        )[0].final,
-      };
-    })}"
+    data="{participants}"
   />
 
   <div>

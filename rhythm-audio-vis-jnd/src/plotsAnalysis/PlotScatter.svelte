@@ -6,6 +6,7 @@
     export let data;
     export let x = 'x';
     export let y = 'y';
+    export let tipTitle = null;
     export let xLabel = null;
     export let yLabel = null;
     export let xDomain = undefined;
@@ -23,6 +24,7 @@
             width,
             height,
             title,
+            grid,
             style: {
                 background: 'none',
             },
@@ -41,6 +43,24 @@
                     y,
                     // fill: '#ccc',
                 }),
+                Plot.tip(
+                    data,
+                    Plot.pointer({
+                        x,
+                        y,
+                        title: tipTitle,
+                    }),
+                ),
+                Plot.link(
+                    { length: 1 },
+                    {
+                        x1: xDomain[0],
+                        x2: xDomain[1],
+                        y1: yDomain[0],
+                        y2: yDomain[1],
+                        stroke: '#ccc',
+                    },
+                ),
                 // Plot.linearRegressionX(data, {
                 //     x,
                 //     y,
