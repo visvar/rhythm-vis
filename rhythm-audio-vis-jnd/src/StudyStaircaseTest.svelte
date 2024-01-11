@@ -28,29 +28,21 @@
   ];
   let audioFile = audioFiles[0];
   let cachedAudio;
-  fetchAudio(audioFile).then((d) => {
-    cachedAudio = d;
-    console.log('Audio fetched', d);
-  });
+  // fetchAudio(audioFile).then((d) => {
+  //   cachedAudio = d;
+  //   console.log('Audio fetched', d);
+  // });
 
   let tests = [
     {
-      stimulus: 'audio',
-      audioFile: audioFiles[0],
+      stimulus: 'bar',
     },
     {
-      stimulus: 'waveform',
-      audioFile: audioFiles[0],
+      stimulus: 'bar',
     },
     {
-      stimulus: 'color',
+      stimulus: 'bar',
     },
-    // {
-    //   stimulus: 'tick',
-    // },
-    // {
-    //   stimulus: 'bar',
-    // },
   ];
 
   const examplePatternEarly = [0, 0.5, 1, 1.4, 1.9, 2.4];
@@ -58,7 +50,7 @@
 
   // study progress
   // consent, start1, start2, demo, tests, feedback, done
-  let studyStep = 'consent';
+  let studyStep = 'tests';
   let currentTestNumber = 0;
   let testStartTime;
 
@@ -93,7 +85,7 @@
   const initialPercentDeviation = 20;
   let percentDeviation = initialPercentDeviation;
   // deviation in seconds
-  $: deviationSeconds = (percentDeviation / 100) * ioi;
+  $: deviationSeconds = (percentDeviation / 100.0) * ioi;
   let noteCount = 6;
   let wrongNoteIndex = 4 - 1; // nth note means index n-1
   let shiftFollowing = true;
@@ -125,6 +117,24 @@
     document.querySelector('html').addEventListener('keyup', keyPress);
   });
 
+  // const setupInstructions = () => {
+  //   stair = new Staircase({
+  //     ratio: {
+  //       operation: 'multiply',
+  //       firstVal: initialPercentDeviation,
+  //       down: 2, // down is the number of correct answers required before we increase the difficulty
+  //       // up: 1, // up is the number of incorrect answers before we decrease the difficulty
+  //       stepSizeDown: 1.5, // how much we in/decrease by
+  //       stepSizeUp: 1.5, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+  //       limits: [0, initialPercentDeviation], // don't allow equal ratio
+  //       direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
+  //       reversalLimit: 8, // How many reversals to do before stopping
+  //       verbosity: 1, // Enable logging for debugging
+  //       // sameStairMax: , // Maximum number of trials
+  //     },
+  //   });
+  //   stair.init();
+  // };
   const setupInstructions = () => {
     stair = new Staircase({
       ratio: {
@@ -132,7 +142,7 @@
         down: 2, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
         stepSizeDown: 1, // how much we in/decrease by
-        stepSizeUp: 1 * 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+        stepSizeUp: 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
         limits: [0, initialPercentDeviation], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 5, // How many reversals to do before stopping
@@ -170,7 +180,7 @@
       }
     } else if (studyStep === 'tests') {
       // save data already after each test
-      saveData();
+      // saveData();
       if (currentTestNumber < tests.length) {
         currentEncoding = tests[currentTestNumber].stimulus;
         audioFile = tests[currentTestNumber].audioFile;
@@ -180,7 +190,7 @@
       }
     } else if (studyStep === 'feedback') {
       // save data after feedback
-      saveData();
+      // saveData();
       studyStep = 'done';
     }
   }
@@ -211,7 +221,11 @@
   }
 
   function drawStimuli() {
-    const p = Math.round(stair.getLast('ratio'));
+    console.log(stair);
+
+    const p = stair.getLast('ratio');
+    console.log('current value', p);
+
     let deviation = p;
     deviation = Math.random() < 0.5 ? deviation : -deviation;
     currentTrial.deviation = deviation;
@@ -267,7 +281,6 @@
 
   function endTest() {
     testActive = false;
-    trialActive = false;
     getFeedbackText();
     // store result
     data = [];
@@ -296,9 +309,9 @@
   function keyPress(evt) {
     // console.log(evt.key);
     // prevent skipping whitescreen
-    if (whiteScreenShowing) {
-      return;
-    }
+    // if (whiteScreenShowing) {
+    //   return;
+    // }
     switch (evt.key) {
       case 'ArrowLeft':
         if (trialActive) {
@@ -364,151 +377,6 @@
 </script>
 
 <main>
-  <!-- <h2>Study (Prolific)</h2> -->
-
-  {#if studyStep === 'consent'}
-    <div>
-      <p>
-        In this study, we will present you with audio and visual representations
-        of rhythmic patterns and record how precisely people can perceive them.
-        We will also ask for your level of education and experience with music
-        and visualization. This data will be analyzed and published in
-        summarized, anonymized form.
-      </p>
-      <p>
-        For more details, you can read the following documents:
-        <a href="consent.pdf">consent.pdf</a>,
-        <a href="privacy.pdf">privacy.pdf</a>.
-      </p>
-      <p>
-        By clicking <i>next step</i> you consent to participating in this study and
-        data collection.
-      </p>
-      <p>
-        If you do not consent, click <i>I do not consent</i> below, you then cannot
-        participate in this study.
-      </p>
-      <a href="https://app.prolific.com/submissions/complete?cc=CLB832WS">
-        <button>I do not consent and will not participate</button>
-      </a>
-    </div>
-  {/if}
-
-  {#if studyStep === 'start1'}
-    <div>
-      <p>
-        To make sure that the audio works for you, please click play. Please set
-        the audio volume to a comfortable level that allows you to hear this
-        pattern clearly.
-      </p>
-      <AudioExample pattern="{[0.1, 0.6, 1.1]}" {cachedAudio} />
-      <p>If you cannot hear anything, you cannot participate in this study.</p>
-      <a href="https://app.prolific.com/submissions/complete?cc=CH9I2X6E">
-        <button>
-          I cannot hear the audio and will not participate in this study
-        </button>
-      </a>
-    </div>
-  {/if}
-
-  {#if studyStep === 'start2'}
-    <div>
-      <p>
-        Please click + or - until this rectangle has the size of a credit card.
-      </p>
-      <p>
-        <button on:click="{() => (visWidth *= 1.05)}">+</button>
-        <button on:click="{() => (visWidth *= 0.95)}">-</button>
-      </p>
-      <svg width="{visWidth * 0.52}px" height="{visHeight * 2}px">
-        <rect
-          width="{visWidth * 0.52}"
-          height="{visHeight * 2}"
-          fill="#ccc"
-          rx="8"
-        ></rect>
-      </svg>
-      <p>
-        Please also set your screen brightness to comfortable levels and avoid
-        sunlight or artificial light reflecting from your screen.
-      </p>
-    </div>
-  {/if}
-
-  <!-- Demographics form -->
-  {#if studyStep === 'demo'}
-    <div class="demo-form">
-      <!-- <label>
-        <span>Your age in years:</span>
-        <select bind:value="{partAge}">
-          <option value="15-20">15-20</option>
-          <option value="20-24">20-24</option>
-          <option value="25-29">25-29</option>
-          <option value="30-34">30-34</option>
-          <option value="35-39">35-39</option>
-          <option value="40-44">40-44</option>
-          <option value="45-49">45-49</option>
-          <option value="50-54">50-54</option>
-          <option value="55-59">55-59</option>
-          <option value="60-64">60-64</option>
-          <option value="65-70">65-70</option>
-          <option value="70-74">70-74</option>
-          <option value="75-80">75-80</option>
-        </select>
-      </label>
-      <label>
-        <span>Gender:</span>
-        <input
-          type="text"
-          bind:value="{partGender}"
-          placeholder="m, f, d, or self-describe"
-        />
-      </label> -->
-      <label>
-        <span>Highest finished education (select the best fitting one):</span>
-        <select bind:value="{partEduation}">
-          <option value="none">none</option>
-          <option value="highs">high school</option>
-          <option value="bachelor">bachelor</option>
-          <option value="master">master</option>
-          <option value="phd">phd</option>
-        </select>
-      </label>
-      <label>
-        <span>
-          Which music instruments do you play? Please separate by comma, if you
-          do not play any, write 'none'.
-        </span>
-        <input
-          type="text"
-          bind:value="{partMusicInstr}"
-          placeholder="free text"
-        />
-      </label>
-      <label>
-        <span>For how many years do you roughly play it/them?</span>
-        <input
-          type="number"
-          bind:value="{partMusicInstrYears}"
-          min="0"
-          step="1"
-        />
-      </label>
-      <label>
-        <span>
-          How many years of experience do you have with information
-          visualization?
-        </span>
-        <input
-          type="number"
-          bind:value="{partVisExperienceYears}"
-          min="0"
-          step="1"
-        />
-      </label>
-    </div>
-  {/if}
-
   <!-- Test -->
   {#if studyStep === 'tests'}
     <p>
@@ -524,123 +392,7 @@
         Test number {currentTestNumber + 1} / {tests.length}, trial number {currentTrialNumber +
           1}
       </p>
-      {#if currentEncoding === 'audio'}
-        <div>
-          Listen to the audio, the forth note comes either too soon or too late.
-          Press <i>p</i> or click <i>play</i> to replay the audio, you can do this
-          is often as you like.
-        </div>
-        <Audio
-          pattern="{[
-            ...pattern.slice(0, pattern.length - 1),
-            pattern.at(-1) + Math.random() * 0.0001,
-          ]}"
-          {cachedAudio}
-          {currentTrialNumber}
-        />
-      {:else if whiteScreenShowing === false}
-        <!-- white screen helps avoid seeing the change between consecutive stimuli -->
-        {#if currentEncoding === 'waveform'}
-          <div>
-            This is a waveform of the audio, showing loudness over time. Look at
-            the peaks, the gap between the third and forth peaks is either
-            smaller (early) or larger (late) than the other gaps.
-          </div>
-          <div class="vis-example">
-            <PlotWaveform
-              pattern="{examplePatternEarly}"
-              {audioFile}
-              {cachedAudio}
-              width="{visWidth / 2}"
-              height="{visHeight / 2}"
-            />
-            <PlotWaveform
-              pattern="{examplePatternLate}"
-              {audioFile}
-              {cachedAudio}
-              width="{visWidth / 2}"
-              height="{visHeight / 2}"
-            />
-            <div>Example for early</div>
-            <div>Example for late</div>
-          </div>
-          <PlotWaveform
-            {pattern}
-            {audioFile}
-            {cachedAudio}
-            width="{visWidth}"
-            height="{visHeight}"
-          />
-        {:else if currentEncoding === 'tick'}
-          <div>
-            Look at the peaks, the gap between the third and forth tick is
-            either smaller (early) or larger (late) than the other gaps.
-          </div>
-          <div class="vis-example">
-            <PlotTick
-              pattern="{examplePatternEarly}"
-              width="{visWidth / 2}"
-              height="{visHeight / 2}"
-            />
-            <PlotTick
-              pattern="{examplePatternLate}"
-              width="{visWidth / 2}"
-              height="{visHeight / 2}"
-            />
-            <div>Example for early</div>
-            <div>Example for late</div>
-          </div>
-          <PlotTick {pattern} width="{visWidth}" height="{visHeight}" />
-        {:else if currentEncoding === 'bar'}
-          <div>
-            The bar chart shows the size of the gaps between notes in the bars'
-            height (example: the bar at 2 shows the gap between the first and
-            second note). Look at the third bar, it is either lower (early) or
-            higher (late) than the others.
-          </div>
-          <div class="vis-example">
-            <PlotBar
-              pattern="{examplePatternEarly}"
-              width="{visWidth / 2}"
-              height="{visHeight / 2}"
-            />
-            <PlotBar
-              pattern="{examplePatternLate}"
-              width="{visWidth / 2}"
-              height="{visHeight / 2}"
-            />
-            <div>Example for early</div>
-            <div>Example for late</div>
-          </div>
-          <PlotBar {pattern} width="{visWidth}" height="{visHeight}" />
-        {:else if currentEncoding === 'color'}
-          <div>
-            The color chart shows the size of the gaps between notes in the
-            rectangles darkness (example: color at 2 shows the gap between the
-            first and second note). Look at the third bar, it is either brigher
-            (early) or darker (late) than the others.
-          </div>
-          <div class="vis-example">
-            <PlotColor
-              pattern="{examplePatternEarly}"
-              width="{visWidth / 2}"
-              height="{visHeight / 2}"
-            />
-            <PlotColor
-              pattern="{examplePatternLate}"
-              width="{visWidth / 2}"
-              height="{visHeight / 2}"
-            />
-            <div>Example for early</div>
-            <div>Example for late</div>
-          </div>
-          <PlotColor {pattern} width="{visWidth}" height="{visHeight}" />
-        {/if}
-      {/if}
-      <p>
-        Use the arrow keys on your keyboard: <b>left for early</b>,
-        <b>right for late</b>.
-      </p>
+      <PlotBar {pattern} width="{visWidth}" height="{visHeight}" />
     {/if}
   {/if}
 
@@ -667,6 +419,8 @@
     <!-- <button on:click="{nextStudyStep}">next step (PageDown)</button> -->
     <button on:click="{nextStudyStep}" class="next-btn">next step</button>
   {/if}
+
+  <button on:click="{saveData}" class="next-btn">save data</button>
 </main>
 
 <style>

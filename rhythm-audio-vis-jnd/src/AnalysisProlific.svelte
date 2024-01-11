@@ -1,5 +1,5 @@
 <script>
-  // import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
+  import PlotLine from './plotsAnalysis/PlotLine.svelte';
   import saveAs from 'file-saver';
   import * as d3 from 'd3';
   import PlotTickAllFinals from './plotsAnalysis/PlotTickAllFinals.svelte';
@@ -10,6 +10,8 @@
 
   let participants = [];
   let prolificDemographics = null;
+  const visWidth = 800;
+  let kdeBandwidth = 1;
 
   // const handleFileInputDemo = async (evt) => {
   //   const file = evt.target.files[0];
@@ -26,6 +28,7 @@
         const content = await file.text();
         const csv = d3.csvParse(content);
         prolificDemographics = csv;
+        console.log('p demo', prolificDemographics);
       } else {
         // participant results
         const content = await file.text();
@@ -33,7 +36,6 @@
       }
     }
     // log participant plus stimulus
-    console.log(data2.map((d) => `${d.demographics.partID} ${d.studyStep}`));
     // take newest data of each participant
     const grouped = d3.groups(data2, (d) => d.demographics.partID);
     console.log(`${grouped.length} participants`, grouped);
@@ -98,7 +100,7 @@
           ...participant.demographics,
           partAge: participant.demographics.partAge
             ? participant.demographics.partAge
-            : ageTo5YearBracked(participant.prolificDemographics.Age),
+            : ageTo5YearBracked(participant.prolificDemogr.Age),
           countryBirth: participant.prolificDemogr['Country of birth'],
           countryResidence: participant.prolificDemogr['Country of residence'],
           prolificApprovals: participant.prolificDemogr['Total approvals'],
@@ -139,7 +141,7 @@
           // meanScore: d3.mean(ts, (d) => d.score),
         };
       });
-    console.log(ps);
+    // console.log(ps);
     return ps;
   };
   $: stimuli = perStimulus(tests);
@@ -204,6 +206,7 @@
         values="{testEnc[1].map((d) => d.final)}"
         xLabel="final values"
         xDomain="{[-1, 20]}"
+        bandwidth="{kdeBandwidth}"
       />
     {/each}
   </div>
@@ -280,6 +283,19 @@
           <p>{line}</p>
         {/each}
       </div>
+    {/each}
+  </div>
+
+  <div>
+    {#each tests as test}
+      <PlotLine
+        title="{test.encoding}"
+        width="{visWidth}"
+        height="{150}"
+        data="{test.data}"
+        x="{(d, i) => i}"
+        y="{(d) => Math.abs(d)}"
+      />
     {/each}
   </div>
 </main>

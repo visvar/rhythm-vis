@@ -8,9 +8,11 @@
   import Examples from './Examples.svelte';
   import StudyProlific from './StudyProlific.svelte';
   import { getUrlParam } from './lib/url';
+  import StudyStaircaseTest from './StudyStaircaseTest.svelte';
 
   let view = getUrlParam(window, 'p') ?? 'study_prolific';
   // view = 'analysis_prolific';
+  view = 'none';
 </script>
 
 <main>
@@ -54,4 +56,6 @@
   {:else if view === 'analysis_prolific'}
     <AnalysisProlific />
   {/if}
+
+  <StudyStaircaseTest />
 </main>
