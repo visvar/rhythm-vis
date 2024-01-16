@@ -101,6 +101,9 @@
           partAge: participant.demographics.partAge
             ? participant.demographics.partAge
             : ageTo5YearBracked(participant.prolificDemogr.Age),
+          partSex: participant.demographics.partGender
+            ? participant.demographics.partGender
+            : participant.prolificDemogr.Sex,
           countryBirth: participant.prolificDemogr['Country of birth'],
           countryResidence: participant.prolificDemogr['Country of residence'],
           prolificApprovals: participant.prolificDemogr['Total approvals'],

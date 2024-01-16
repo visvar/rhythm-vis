@@ -12,7 +12,7 @@
 
   let view = getUrlParam(window, 'p') ?? 'study_prolific';
   // view = 'analysis_prolific';
-  view = 'none';
+  // view = 'none';
 </script>
 
 <main>

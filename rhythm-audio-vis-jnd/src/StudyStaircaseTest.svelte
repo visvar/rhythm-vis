@@ -428,31 +428,6 @@
     text-align: center;
   }
 
-  .demo-form {
-    margin: auto;
-    width: 500px;
-    display: grid;
-    gap: 30px;
-  }
-
-  .demo-form label {
-    display: grid;
-    grid-template-columns: auto;
-  }
-
-  .vis-example {
-    margin: 20px;
-    padding: 10px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    background: #eee;
-    border-radius: 10px;
-  }
-
-  .vis-example div {
-    column-span: all;
-  }
-
   .next-btn {
     margin-top: 30px;
   }

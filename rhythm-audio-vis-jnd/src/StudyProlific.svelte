@@ -211,7 +211,7 @@
   }
 
   function drawStimuli() {
-    const p = Math.round(stair.getLast('ratio'));
+    const p = stair.getLast('ratio');
     let deviation = p;
     deviation = Math.random() < 0.5 ? deviation : -deviation;
     currentTrial.deviation = deviation;
