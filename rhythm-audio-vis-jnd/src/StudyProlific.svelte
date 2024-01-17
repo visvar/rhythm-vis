@@ -389,7 +389,7 @@
         participate in this study.
       </p>
       <a href="https://app.prolific.com/submissions/complete?cc=CLB832WS">
-        <button>I do not consent and will not participate</button>
+        <button>I do NOT consent and will not participate</button>
       </a>
     </div>
   {/if}
