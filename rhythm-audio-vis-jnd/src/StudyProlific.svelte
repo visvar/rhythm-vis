@@ -170,7 +170,7 @@
       }
     } else if (studyStep === 'tests') {
       // save data already after each test
-      saveData();
+      // saveData();
       if (currentTestNumber < tests.length) {
         currentEncoding = tests[currentTestNumber].stimulus;
         audioFile = tests[currentTestNumber].audioFile;
