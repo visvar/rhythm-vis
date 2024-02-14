@@ -1,0 +1,31 @@
+{
+  "name": "rhythm-vis",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "vite build",
+    "deploy": "npx gh-pages -d dist",
+    "upd": "ncu -u"
+  },
+  "devDependencies": {
+    "@observablehq/plot": "^0.6.13",
+    "@sveltejs/vite-plugin-svelte": "^3.0.1",
+    "npm-check-updates": "^16.14.12",
+    "standard": "^17.1.0",
+    "svelte": "^4.2.9",
+    "vite": "^5.0.11"
+  },
+  "dependencies": {
+    "audio-decode": "^2.2.0",
+    "audiobuffer-to-wav": "^1.0.0",
+    "d3": "^7.8.5",
+    "fast-kde": "^0.2.1",
+    "file-saver": "^2.0.5",
+    "musicvis-lib": "^0.57.1"
+  }
+}
