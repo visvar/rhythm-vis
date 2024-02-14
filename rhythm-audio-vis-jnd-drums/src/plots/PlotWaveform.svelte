@@ -1,39 +1,13 @@
 <script>
   import * as Plot from '@observablehq/plot';
   import { afterUpdate } from 'svelte';
-  import { fetchAudio, simulate } from '../lib/lib';
 
-  export let pattern;
-  export let audioFile;
-  export let cachedAudio = null;
+  export let audioData = [];
+  export let sampleRate = 1;
   export let width = 800;
   export let height = 50;
 
   let plotContainer;
-
-  // load audio sample to use for notes
-  let audioSample = null;
-  let sampleRate;
-  const getSample = async (audioFile) => {
-    // use cached if available
-    if (cachedAudio) {
-      audioSample = cachedAudio;
-    } else {
-      audioSample = await fetchAudio(audioFile);
-      console.log(`Loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
-    }
-    sampleRate = audioSample.sampleRate;
-  };
-  $: getSample(audioFile);
-
-  // render audio data for pattern using sample
-  let audioData = null;
-  const renderAndLoadAudio = (pattern, audioSample) => {
-    if (audioSample) {
-      audioData = simulate(audioSample, pattern, 0.5);
-    }
-  };
-  $: renderAndLoadAudio(pattern, audioSample);
 
   afterUpdate(() => {
     plotContainer.textContent = '';

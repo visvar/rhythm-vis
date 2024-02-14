@@ -1,37 +1,19 @@
 <script>
   import { onMount } from 'svelte';
-  import { audioDataToAudioEl, fetchAudio, simulate } from './lib/lib.js';
+  import { audioDataToAudioEl } from './lib/lib.js';
 
-  export let pattern;
-  export let audioFile;
-  export let cachedAudio = null;
+  export let audioData = null;
+  export let sampleRate = null;
   export let currentTrialNumber = -1;
 
-  // load audio sample to use for notes
-  let audioSample = null;
-  const getSample = async (audioFile) => {
-    // use cached if available
-    if (cachedAudio) {
-      audioSample = cachedAudio;
-      console.log('used cached audio');
-    } else {
-      audioSample = await fetchAudio(audioFile);
-      console.log(`loaded ${audioFile}, sr= ${audioSample.sampleRate}`);
-    }
-  };
-  $: getSample(audioFile);
-
   // render audio data for pattern using sample
-  let audioData = null;
   let audioEl;
-  const renderAndLoadAudio = (pattern, audioSample) => {
-    if (audioSample && audioEl) {
-      audioData = simulate(audioSample, pattern);
-      audioDataToAudioEl(audioData, audioSample.sampleRate, audioEl);
+  const renderAndLoadAudio = (audioData) => {
+    if (audioData && audioEl) {
+      audioDataToAudioEl(audioData, sampleRate, audioEl);
       // console.log('rendered audio and attached to element');
     }
   };
-  $: console.log(pattern);
   // auto play
   $: {
     if (currentTrialNumber > -1) {
@@ -39,7 +21,7 @@
     }
   }
 
-  $: renderAndLoadAudio(pattern, audioSample);
+  $: renderAndLoadAudio(audioData);
 
   const play = () => {
     if (!audioEl) {
@@ -61,6 +43,6 @@
 </script>
 
 <main>
-  <audio bind:this="{audioEl}" controls="{false}"></audio>
+  <audio bind:this="{audioEl}" controls="{true}"></audio>
   <button on:click="{play}">play audio (p)</button>
 </main>

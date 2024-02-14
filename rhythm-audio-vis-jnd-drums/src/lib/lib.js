@@ -68,8 +68,13 @@ export function generatePatternSimple (
   return noteTimes
 }
 
-export async function fetchAudio (audioFile) {
-  const res = await fetch(audioFile)
+/**
+ * Fetches an audio file and decodes it to a buffer
+ * @param {string} audioFileUrl
+ * @returns
+ */
+export async function fetchAudio (audioFileUrl) {
+  const res = await fetch(audioFileUrl)
   const buffer = await res.arrayBuffer()
   const audioSample = await AudioDecode(buffer)
   return audioSample
@@ -127,34 +132,28 @@ export function shuffleArray (array) {
     .map(({ value }) => value)
 }
 
+
+export function distortDrumPattern (drumPattern, drumIndices,) {
+
+}
+
+
 /**
  * Simulates the note pattern as audio
- * @param {AudioBuffer[]} instruments array of audio buffers
- * @param {number[][]} noteTimes times for each instrument
- * @param {number} paddingEnd how much time to render after the last note onset
+ * @param {object[]} drumPattern contains audioBuffer and times for each drum part
+ * @param {number} duration duration in seconds
+ * @param {number} sampleRate sample rate
  * @returns
  */
-export function simulateDrum (instruments, noteTimes, paddingEnd) {
-  // prepare rendering
-  const duration = d3.max(noteTimes.flat()) + paddingEnd
-
-  const result = new Float32Array(Math.ceil(duration * instruments[0].sampleRate))
-
-  const data = instrument.getChannelData(0)
-
-  // render audio
-  for (const noteStart of noteTimes) {
-    const frameIndex = Math.round(noteStart * instrument.sampleRate)
-    let decayFactor = 1
-    for (let i = 0; i < data.length; ++i) {
-      // result[frameIndex + i] = data[i]
-      // const current = result[frameIndex + i]
-      // if (Math.abs(current) > Math.abs(data[i])) {
-      //   result[frameIndex + i] = current
-      // } else {
-      decayFactor = Math.max(0, decayFactor - 2 / 40_100)
-      result[frameIndex + i] = data[i] * decayFactor
-      // }
+export function simulateDrum (drumPattern, duration, sampleRate) {
+  const result = new Float32Array(Math.ceil(duration * drumPattern[0].audioBuffer.sampleRate))
+  for (const instrument of drumPattern) {
+    const data = instrument.audioBuffer.getChannelData(0)
+    for (const noteStart of instrument.times) {
+      const frameIndex = Math.round(noteStart * sampleRate)
+      for (let i = 0; i < data.length; ++i) {
+        result[frameIndex + i] += data[i]
+      }
     }
   }
   return result
