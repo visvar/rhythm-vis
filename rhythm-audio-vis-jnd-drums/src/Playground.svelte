@@ -169,7 +169,7 @@
     <label>
       error mode:
       <select bind:value="{errorMode}">
-        {#each ['single note', 'only snare', 'single beat'] as af}
+        {#each ['single note', 'single beat', 'only snare'] as af}
           <option value="{af}">{af.substring(0, 30)}</option>
         {/each}
       </select>
