@@ -1,7 +1,6 @@
 <script>
   import Playground from './Playground.svelte';
   import AnalysisProlific from './AnalysisProlific.svelte';
-  import Examples from './Examples.svelte';
   import StudyDrums from './StudyDrums.svelte';
   import { getUrlParam } from './lib/url';
 
@@ -16,7 +15,6 @@
   <!-- {#if view !== 'study_drums'} -->
   <div>
     <button on:click="{() => (view = 'playground')}">Playground</button>
-    <button on:click="{() => (view = 'examples')}">Examples</button>
     <button on:click="{() => (view = 'study_drums')}"> Study </button>
     <button on:click="{() => (view = 'analysis')}"> Analysis </button>
   </div>
@@ -24,8 +22,6 @@
 
   {#if view === 'playground'}
     <Playground />
-  {:else if view === 'examples'}
-    <Examples />
   {:else if view === 'study_drums'}
     <StudyDrums />
   {:else if view === 'analysis'}

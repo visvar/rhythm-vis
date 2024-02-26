@@ -242,6 +242,11 @@
       height="{visHeight}"
     />
   </div>
+
+  <div class="examples">
+    <div>early</div>
+    <div>late</div>
+  </div>
 </main>
 
 <style>
