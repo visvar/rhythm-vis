@@ -132,8 +132,6 @@
       // save data already after each test
       // saveData();
       if (currentTestNumber < tests.length) {
-        currentEncoding = tests[currentTestNumber].encoding;
-        currentPattern = tests[currentTestNumber].pattern;
         startTest();
       } else {
         studyStep = 'feedback';
@@ -150,6 +148,17 @@
    */
   function startTest() {
     setupInstructions();
+    // set variables
+    currentEncoding = tests[currentTestNumber].encoding;
+    currentPattern = tests[currentTestNumber].pattern;
+    // generate examples
+    const early = createDrumPattern(currentPattern, -initialErrorSeverity);
+    const late = createDrumPattern(currentPattern, initialErrorSeverity);
+    noteTimesExampleEarly = early.noteTimes;
+    noteTimesExampleLate = late.noteTimes;
+    renderedAudioExampleEarly = early.renderedAudio;
+    renderedAudioExampleLate = late.renderedAudio;
+    // keep track of trials
     currentTrialNumber = 0;
     validTrials = 0;
     score = 0;
@@ -175,7 +184,12 @@
     let severity = p;
     severity = Math.random() < 0.5 ? severity : -severity;
     currentTrial.deviation = severity;
-    createDrumPattern(currentPattern, severity);
+    // get pattern
+    const result = createDrumPattern(currentPattern, severity);
+    noteTimes = result.noteTimes;
+    noteTimesSeparate = result.noteTimesSeparate;
+    sampleRate = result.sampleRate;
+    renderedAudio = result.renderedAudio;
     console.log('generated pattern');
     // avoid showing a visualization directly after the previous to prevent participants from seeing the change
     whiteScreenShowing = true;
@@ -361,8 +375,12 @@
   const duration = beats * spb;
 
   let renderedAudio = null;
+  let renderedAudioExampleEarly = null;
+  let renderedAudioExampleLate = null;
   let sampleRate;
   let noteTimes = [];
+  let noteTimesExampleEarly = [];
+  let noteTimesExampleLate = [];
   let noteTimesSeparate = [];
 
   const fetchDrumAudios = async () => {
@@ -377,10 +395,7 @@
       }),
     );
   };
-  onMount(async () => {
-    await fetchDrumAudios();
-    createDrumPattern();
-  });
+  fetchDrumAudios();
 
   /**
    * Adds errors based on mode and severity
@@ -452,7 +467,7 @@
    * @param errorMode
    * @param errorSeverity
    */
-  const createDrumPattern = async (errorMode, errorSeverity) => {
+  const createDrumPattern = (errorMode, errorSeverity) => {
     if (!correctPattern[0].audioBuffer) {
       return;
     }
@@ -464,11 +479,11 @@
     const patterns = [correctPattern, wrongPattern];
     const combinedPattern = concat(patterns);
     // get times for visualizations
-    noteTimes = combinedPattern
+    const noteTimes = combinedPattern
       .map((d) => d.times)
       .flat()
       .sort();
-    noteTimesSeparate = combinedPattern
+    const noteTimesSeparate = combinedPattern
       .map((d) =>
         d.times.map((t) => {
           return { time: t, instr: d.instrument };
@@ -479,13 +494,14 @@
         a.time - b.time;
       });
     // set global sample rate
-    sampleRate = combinedPattern[0].audioBuffer.sampleRate;
+    const sampleRate = combinedPattern[0].audioBuffer.sampleRate;
     // render audio
-    renderedAudio = simulateDrum(
+    const renderedAudio = simulateDrum(
       combinedPattern,
       duration * patterns.length + 0.1,
       sampleRate,
     );
+    return { noteTimes, noteTimesSeparate, sampleRate, renderedAudio };
   };
 </script>
 
@@ -679,22 +695,20 @@
             the peaks, the gap between the third and forth peaks is either
             smaller (early) or larger (late) than the other gaps.
           </div>
-          <!-- <div class="vis-example">
+          <div class="vis-example">
             <PlotWaveform
-              audioData="{renderedAudio}"
+              audioData="{renderedAudioExampleEarly}"
               width="{visWidth / 2}"
               height="{visHeight / 2}"
             />
             <PlotWaveform
-              pattern="{examplePatternLate}"
-              {audioFile}
-              {cachedAudio}
+              audioData="{renderedAudioExampleLate}"
               width="{visWidth / 2}"
               height="{visHeight / 2}"
             />
             <div>Example for early</div>
             <div>Example for late</div>
-          </div> -->
+          </div>
           <PlotWaveform
             audioData="{renderedAudio}"
             width="{visWidth}"
@@ -731,20 +745,20 @@
             second note). Look at the third bar, it is either lower (early) or
             higher (late) than the others.
           </div>
-          <!-- <div class="vis-example">
+          <div class="vis-example">
             <PlotBar
-              pattern="{examplePatternEarly}"
+              pattern="{noteTimesExampleEarly}"
               width="{visWidth / 2}"
               height="{visHeight / 2}"
             />
             <PlotBar
-              pattern="{examplePatternLate}"
+              pattern="{noteTimesExampleLate}"
               width="{visWidth / 2}"
               height="{visHeight / 2}"
             />
             <div>Example for early</div>
             <div>Example for late</div>
-          </div> -->
+          </div>
           <PlotBar
             pattern="{noteTimes}"
             width="{visWidth}"
@@ -757,20 +771,20 @@
             first and second note). Look at the third bar, it is either brigher
             (early) or darker (late) than the others.
           </div>
-          <!-- <div class="vis-example">
+          <div class="vis-example">
             <PlotColor
-              pattern="{examplePatternEarly}"
+              pattern="{noteTimesExampleEarly}"
               width="{visWidth / 2}"
-              height="{visHeight / 2}"
+              height="{visHeight * 0.7}"
             />
             <PlotColor
-              pattern="{examplePatternLate}"
+              pattern="{noteTimesExampleLate}"
               width="{visWidth / 2}"
               height="{visHeight / 2}"
             />
             <div>Example for early</div>
             <div>Example for late</div>
-          </div> -->
+          </div>
           <PlotColor
             pattern="{noteTimes}"
             width="{visWidth}"

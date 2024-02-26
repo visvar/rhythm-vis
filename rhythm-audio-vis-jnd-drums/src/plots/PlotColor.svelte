@@ -13,8 +13,13 @@
     const plot = Plot.plot({
       width,
       height,
+      marginTop: 4,
       marginLeft: 0,
       marginRight: 1,
+      style: {
+        backgroundColor: 'white',
+        borderRadius: '5px',
+      },
       // x: { axis: false },
       y: { axis: false },
       color: {
