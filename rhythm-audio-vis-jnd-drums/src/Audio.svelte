@@ -28,7 +28,7 @@
       return;
     }
     // console.log('play');
-    audioEl.pause();
+    // audioEl.pause();
     audioEl.currentTime = 0;
     audioEl.play();
   };
@@ -43,6 +43,6 @@
 </script>
 
 <main>
-  <audio bind:this="{audioEl}" controls="{true}"></audio>
+  <audio bind:this="{audioEl}" controls="{false}"></audio>
   <button on:click="{play}">play audio (p)</button>
 </main>

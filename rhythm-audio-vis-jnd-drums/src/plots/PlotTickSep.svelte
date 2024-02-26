@@ -9,7 +9,6 @@
     let plotContainer;
 
     afterUpdate(() => {
-        console.log(pattern);
         const plot = Plot.plot({
             width,
             height,

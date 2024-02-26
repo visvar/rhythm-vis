@@ -1,10 +1,6 @@
 <script>
-  import {
-    fetchAudio,
-    generatePatternSimple,
-    shuffleArray,
-  } from './lib/lib.js';
-  import Audio from './AudioCached.svelte';
+  import { fetchAudio, shuffleArray, simulateDrum } from './lib/lib.js';
+  import Audio from './Audio.svelte';
   import PlotWaveform from './plots/PlotWaveform.svelte';
   import PlotTick from './plots/PlotTick.svelte';
   import PlotBar from './plots/PlotBar.svelte';
@@ -13,8 +9,15 @@
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
   import { getUrlParam } from './lib/url.js';
   import AudioExample from './AudioExample.svelte';
+  import { Utils } from 'musicvis-lib';
+  import * as d3 from 'd3';
+  import PlotTickSep from './plots/PlotTickSep.svelte';
 
-  const serverUrl = '/store';
+  const SERVER_URL = '/store';
+  const BPM = 120;
+  // deviation in seconds, start with less than 0.25 because 0.25 is an eighth note
+  const initialErrorSeverity = 0.2;
+  const stairStep = 0.05;
 
   // prolific params
   let partID = getUrlParam(window, 'PROLIFIC_PID');
@@ -22,39 +25,15 @@
   let sessionID = getUrlParam(window, 'SESSION_ID');
   // console.log({ partID, studyID, sessionID });
 
-  const audioFiles = [
-    './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',
-    './MailboxBadgerPublicDomainDrumSamples27LiveDrumsHiHat.mp3',
-  ];
-  let audioFile = audioFiles[0];
-  let cachedAudio;
-  fetchAudio(audioFile).then((d) => {
-    cachedAudio = d;
-    console.log('Audio fetched', d);
+  let encodings = ['audio', 'waveform', 'color'];
+  let patterns = ['only-hihat', 'hihat-snare', 'hihat-bass'];
+  let tests = d3.cross(encodings, patterns).map(([encoding, pattern]) => {
+    return { encoding, pattern };
   });
+  console.log({ tests });
 
-  let tests = [
-    {
-      stimulus: 'audio',
-      audioFile: audioFiles[0],
-    },
-    {
-      stimulus: 'waveform',
-      audioFile: audioFiles[0],
-    },
-    {
-      stimulus: 'color',
-    },
-    // {
-    //   stimulus: 'tick',
-    // },
-    // {
-    //   stimulus: 'bar',
-    // },
-  ];
-
-  const examplePatternEarly = [0, 0.5, 1, 1.4, 1.9, 2.4];
-  const examplePatternLate = [0, 0.5, 1, 1.6, 2.1, 2.6];
+  // const examplePatternEarly;
+  // const examplePatternLate;
 
   // study progress
   // consent, start1, start2, demo, tests, feedback, done
@@ -85,35 +64,12 @@
   let whiteScreenShowing = false;
 
   // stimulus variables
-  // let encodings = ['audio', 'waveform', 'tick', 'bar', 'color'];
   let currentEncoding = 'tick';
-  // inter-onset interval in seconds
-  let ioi = 0.5;
-  // deviation in percent of the ioi
-  const initialPercentDeviation = 20;
-  let percentDeviation = initialPercentDeviation;
-  // deviation in seconds
-  $: deviationSeconds = (percentDeviation / 100) * ioi;
-  let noteCount = 6;
-  let wrongNoteIndex = 4 - 1; // nth note means index n-1
-  let shiftFollowing = true;
-  let paddingStart = 0;
+  let currentPattern = 'only-hihat';
+
   // vis sizes
   let visWidth = 600;
   $: visHeight = visWidth / 6;
-
-  let pattern = [];
-  $: {
-    pattern = generatePatternSimple(
-      noteCount,
-      ioi,
-      wrongNoteIndex,
-      deviationSeconds,
-      shiftFollowing,
-      paddingStart,
-    );
-    console.log('generated pattern', pattern);
-  }
 
   // results
   let data = [];
@@ -128,12 +84,12 @@
   const setupInstructions = () => {
     stair = new Staircase({
       ratio: {
-        firstVal: initialPercentDeviation,
+        firstVal: initialErrorSeverity,
         down: 2, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
-        stepSizeDown: 1, // how much we in/decrease by
-        stepSizeUp: 1 * 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
-        limits: [0, initialPercentDeviation], // don't allow equal ratio
+        stepSizeDown: stairStep, // how much we in/decrease by
+        stepSizeUp: stairStep * 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+        limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 5, // How many reversals to do before stopping
         // verbosity: 1, // Enable logging for debugging
@@ -163,7 +119,11 @@
         partEduation == '' ||
         partMusicInstr == ''
       ) {
-        alert('please fill the form first');
+        // TODO: comment in
+        // alert('please fill the form first');
+        // TODO: comment out 2 lines
+        studyStep = 'tests';
+        currentTestNumber = 0;
       } else {
         studyStep = 'tests';
         currentTestNumber = 0;
@@ -172,8 +132,8 @@
       // save data already after each test
       // saveData();
       if (currentTestNumber < tests.length) {
-        currentEncoding = tests[currentTestNumber].stimulus;
-        audioFile = tests[currentTestNumber].audioFile;
+        currentEncoding = tests[currentTestNumber].encoding;
+        currentPattern = tests[currentTestNumber].pattern;
         startTest();
       } else {
         studyStep = 'feedback';
@@ -212,17 +172,16 @@
 
   function drawStimuli() {
     const p = stair.getLast('ratio');
-    let deviation = p;
-    deviation = Math.random() < 0.5 ? deviation : -deviation;
-    currentTrial.deviation = deviation;
-    percentDeviation = deviation;
-    currentTrial.startTime = new Date();
-
-    // console.log('generated pattern', pattern);
+    let severity = p;
+    severity = Math.random() < 0.5 ? severity : -severity;
+    currentTrial.deviation = severity;
+    createDrumPattern(currentPattern, severity);
+    console.log('generated pattern');
     // avoid showing a visualization directly after the previous to prevent participants from seeing the change
     whiteScreenShowing = true;
     window.setTimeout(() => {
       whiteScreenShowing = false;
+      currentTrial.startTime = new Date();
     }, 1000);
   }
 
@@ -279,7 +238,7 @@
     const testEndTime = new Date();
     completeResults.push({
       encoding: currentEncoding,
-      audioFile,
+      pattern: currentPattern,
       final,
       data,
       score,
@@ -353,7 +312,7 @@
     // });
     // saveAs(blob, 'results.json');
     // post to server
-    fetch(serverUrl, {
+    fetch(SERVER_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: json,
@@ -361,6 +320,173 @@
       console.log('Data saved:', res);
     });
   }
+
+  /**
+   *
+   *
+   *
+   *
+   *
+   *
+   * DRUM STUFF BELOW
+   *
+   *
+   *
+   *
+   *
+   *
+   */
+
+  // @ts-ignore
+
+  let correctPattern = [
+    {
+      instrument: 'hihat',
+      sample: './hihat.mp3',
+      beats: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
+    },
+    {
+      instrument: 'snare',
+      sample: './snare.mp3',
+      beats: [2, 4],
+    },
+    {
+      instrument: 'bass',
+      sample: './bass.mp3',
+      beats: [1, 3],
+    },
+  ];
+  const beats = 4;
+  let spb = Utils.bpmToSecondsPerBeat(BPM);
+  const duration = beats * spb;
+
+  let renderedAudio = null;
+  let sampleRate;
+  let noteTimes = [];
+  let noteTimesSeparate = [];
+
+  const fetchDrumAudios = async () => {
+    correctPattern = await Promise.all(
+      correctPattern.map(async (d) => {
+        return {
+          ...d,
+          times: d.beats.map((b) => spb * (b - 1)),
+          timesOriginal: d.beats.map((b) => spb * (b - 1)),
+          audioBuffer: await fetchAudio(d.sample),
+        };
+      }),
+    );
+  };
+  onMount(async () => {
+    await fetchDrumAudios();
+    createDrumPattern();
+  });
+
+  /**
+   * Adds errors based on mode and severity
+   * @param {'only-hihat'|'hihat-snare'|'hihat-bass'} errorMode
+   * @param {number} errorSeverity
+   */
+  const addErrors = (errorMode, errorSeverity = 0) => {
+    if (errorSeverity === 0) {
+      return correctPattern;
+    }
+    console.log(`Adding error ${errorMode} ${errorSeverity}`);
+    const copy = concat([correctPattern]);
+
+    const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
+    const snare = copy.filter((d) => d.instrument === 'snare')[0];
+    const bass = copy.filter((d) => d.instrument === 'bass')[0];
+    if (errorMode === 'only-hihat') {
+      // take the 6th snare
+      hihat.times[6 - 1] = hihat.timesOriginal[6 - 1] + errorSeverity;
+    } else if (errorMode === 'hihat-snare') {
+      // take the second snare and 7th hihat
+      snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
+      hihat.times[7 - 1] = hihat.timesOriginal[7 - 1] + errorSeverity;
+    } else if (errorMode === 'hihat-bass') {
+      // take the second bass and 5th hihat
+      bass.times[2 - 1] = bass.timesOriginal[2 - 1] + errorSeverity;
+      hihat.times[5 - 1] = hihat.timesOriginal[5 - 1] + errorSeverity;
+    } else {
+      alert('wrong error mode');
+    }
+    // console.log(drumPattern);
+    return copy;
+  };
+
+  /**
+   * Concats multiple drum patterns
+   * @param object[] patterns
+   */
+  const concat = (patterns) => {
+    console.log(`concat ${patterns.length} patterns`);
+    const result = patterns[0].map((d) => {
+      return {
+        ...d,
+        beats: [...d.beats],
+        times: [...d.times],
+        timesOriginal: [...d.timesOriginal],
+      };
+    });
+    for (let i = 1; i < patterns.length; i++) {
+      const pattern = patterns[i];
+      for (const inst of pattern) {
+        const instr = result.filter((d) => d.instrument === inst.instrument)[0];
+        instr.beats = [...instr.beats, ...inst.beats.map((b) => b + i * beats)];
+        instr.times = [
+          ...instr.times,
+          ...inst.times.map((b) => b + i * duration),
+        ];
+        instr.timesOriginal = [
+          ...instr.timesOriginal,
+          ...inst.timesOriginal.map((b) => b + i * duration),
+        ];
+      }
+    }
+    return result;
+  };
+
+  /**
+   * Creates the pattern with errors and repetitions
+   * @param errorMode
+   * @param errorSeverity
+   */
+  const createDrumPattern = async (errorMode, errorSeverity) => {
+    if (!correctPattern[0].audioBuffer) {
+      return;
+    }
+    // add errors
+    const wrongPattern = addErrors(errorMode, errorSeverity);
+    // concat correct and the one with errors
+    // const patterns = [correctPattern, wrongPattern];
+    // const patterns = [correctPattern, wrongPattern, correctPattern];
+    const patterns = [correctPattern, wrongPattern];
+    const combinedPattern = concat(patterns);
+    // get times for visualizations
+    noteTimes = combinedPattern
+      .map((d) => d.times)
+      .flat()
+      .sort();
+    noteTimesSeparate = combinedPattern
+      .map((d) =>
+        d.times.map((t) => {
+          return { time: t, instr: d.instrument };
+        }),
+      )
+      .flat(Infinity)
+      .sort((a, b) => {
+        a.time - b.time;
+      });
+    // set global sample rate
+    sampleRate = combinedPattern[0].audioBuffer.sampleRate;
+    // render audio
+    renderedAudio = simulateDrum(
+      combinedPattern,
+      duration * patterns.length + 0.1,
+      sampleRate,
+    );
+  };
 </script>
 
 <main>
@@ -401,7 +527,10 @@
         the audio volume to a comfortable level that allows you to hear this
         pattern clearly.
       </p>
-      <AudioExample pattern="{[0.1, 0.6, 1.1]}" {cachedAudio} />
+      <AudioExample
+        pattern="{[0.1, 0.6, 1.1]}"
+        cachedAudio="{correctPattern[0].audioBuffer}"
+      />
       <p>If you cannot hear anything, you cannot participate in this study.</p>
       <a href="https://app.prolific.com/submissions/complete?cc=CH9I2X6E">
         <button>
@@ -512,11 +641,9 @@
   <!-- Test -->
   {#if studyStep === 'tests'}
     <p>
-      You will be presented with a sequence of six piano notes which should have
-      equal distances in time. The <b>fourth note</b> might be played
-      <b>too early or too late</b>, also affecting the ones after. This
-      deviation will get smaller, but you always have to answer "early" or
-      "late".
+      You will be presented with a simple drum pattern where one beat is played
+      too early too late.<br />
+      This deviation will get smaller, but you always have to answer "early" or "late".
     </p>
 
     {#if testActive}
@@ -524,20 +651,26 @@
         Test number {currentTestNumber + 1} / {tests.length}, trial number {currentTrialNumber +
           1}
       </p>
+      {#if currentPattern === 'only-hihat'}
+        <p>Only a <b>single hi-hat</b> note is shifted</p>
+      {:else if currentPattern === 'hihat-snare'}
+        <p>A beat with a <b>hi-hat and a snare</b> note is shifted</p>
+      {:else if currentPattern === 'hihat-bass'}
+        <p>A beat with a <b>hi-hat and a kick</b> note is shifted</p>
+      {/if}
+
+      <p>
+        Use the arrow keys on your keyboard: <b>left for early</b>,
+        <b>right for late</b>.
+      </p>
+
       {#if currentEncoding === 'audio'}
         <div>
           Listen to the audio, the forth note comes either too soon or too late.
           Press <i>p</i> or click <i>play</i> to replay the audio, you can do this
           is often as you like.
         </div>
-        <Audio
-          pattern="{[
-            ...pattern.slice(0, pattern.length - 1),
-            pattern.at(-1) + Math.random() * 0.0001,
-          ]}"
-          {cachedAudio}
-          {currentTrialNumber}
-        />
+        <Audio audioData="{renderedAudio}" {sampleRate} {currentTrialNumber} />
       {:else if whiteScreenShowing === false}
         <!-- white screen helps avoid seeing the change between consecutive stimuli -->
         {#if currentEncoding === 'waveform'}
@@ -546,11 +679,9 @@
             the peaks, the gap between the third and forth peaks is either
             smaller (early) or larger (late) than the other gaps.
           </div>
-          <div class="vis-example">
+          <!-- <div class="vis-example">
             <PlotWaveform
-              pattern="{examplePatternEarly}"
-              {audioFile}
-              {cachedAudio}
+              audioData="{renderedAudio}"
               width="{visWidth / 2}"
               height="{visHeight / 2}"
             />
@@ -563,11 +694,9 @@
             />
             <div>Example for early</div>
             <div>Example for late</div>
-          </div>
+          </div> -->
           <PlotWaveform
-            {pattern}
-            {audioFile}
-            {cachedAudio}
+            audioData="{renderedAudio}"
             width="{visWidth}"
             height="{visHeight}"
           />
@@ -576,7 +705,7 @@
             Look at the peaks, the gap between the third and forth tick is
             either smaller (early) or larger (late) than the other gaps.
           </div>
-          <div class="vis-example">
+          <!-- <div class="vis-example">
             <PlotTick
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -589,8 +718,12 @@
             />
             <div>Example for early</div>
             <div>Example for late</div>
-          </div>
-          <PlotTick {pattern} width="{visWidth}" height="{visHeight}" />
+          </div> -->
+          <PlotTick
+            pattern="{noteTimes}"
+            width="{visWidth}"
+            height="{visHeight}"
+          />
         {:else if currentEncoding === 'bar'}
           <div>
             The bar chart shows the size of the gaps between notes in the bars'
@@ -598,7 +731,7 @@
             second note). Look at the third bar, it is either lower (early) or
             higher (late) than the others.
           </div>
-          <div class="vis-example">
+          <!-- <div class="vis-example">
             <PlotBar
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -611,8 +744,12 @@
             />
             <div>Example for early</div>
             <div>Example for late</div>
-          </div>
-          <PlotBar {pattern} width="{visWidth}" height="{visHeight}" />
+          </div> -->
+          <PlotBar
+            pattern="{noteTimes}"
+            width="{visWidth}"
+            height="{visHeight}"
+          />
         {:else if currentEncoding === 'color'}
           <div>
             The color chart shows the size of the gaps between notes in the
@@ -620,7 +757,7 @@
             first and second note). Look at the third bar, it is either brigher
             (early) or darker (late) than the others.
           </div>
-          <div class="vis-example">
+          <!-- <div class="vis-example">
             <PlotColor
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -633,14 +770,20 @@
             />
             <div>Example for early</div>
             <div>Example for late</div>
-          </div>
-          <PlotColor {pattern} width="{visWidth}" height="{visHeight}" />
+          </div> -->
+          <PlotColor
+            pattern="{noteTimes}"
+            width="{visWidth}"
+            height="{visHeight}"
+          />
         {/if}
+        <!-- TODO: remove -->
+        <PlotTickSep
+          pattern="{noteTimesSeparate}"
+          width="{visWidth}"
+          height="{visHeight}"
+        />
       {/if}
-      <p>
-        Use the arrow keys on your keyboard: <b>left for early</b>,
-        <b>right for late</b>.
-      </p>
     {/if}
   {/if}
 

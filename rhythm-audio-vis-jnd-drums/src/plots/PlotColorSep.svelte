@@ -14,7 +14,6 @@
       .groups(pattern, (d) => d.instr)
       .map(([instr, times]) =>
         times.map((t, i) => {
-          console.log(t, i, times);
           return {
             index: i,
             instr,
@@ -36,6 +35,7 @@
         // legend: true,
       },
       fy: {
+        label: null,
         domain: ['hihat', 'snare', 'bass'],
       },
       marks: [

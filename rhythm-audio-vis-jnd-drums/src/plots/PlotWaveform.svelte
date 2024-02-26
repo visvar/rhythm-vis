@@ -23,7 +23,7 @@
         axis: false,
         label: 'time in seconds',
       },
-      y: { axis: false },
+      y: { axis: false, domain: [-1, 1] },
       marks: [
         Plot.lineY(audioData, {
           x: (d, i) => i / sampleRate,

@@ -158,7 +158,6 @@
       .sort((a, b) => {
         a.time - b.time;
       });
-    console.log(noteTimesSeparate);
     // set global sample rate
     sampleRate = combinedPattern[0].audioBuffer.sampleRate;
     // render audio
