@@ -7,6 +7,10 @@
   import Audio from './Audio.svelte';
   import { Utils } from 'musicvis-lib';
   import { onMount } from 'svelte';
+  import PlotTickSep from './plots/PlotTickSep.svelte';
+  import PlotBarSep from './plots/PlotBarSep.svelte';
+  import PlotColorSep from './plots/PlotColorSep.svelte';
+  import PlotWaveformSep from './plots/PlotWaveformSep.svelte';
 
   // vis sizes
   let visWidth = 600;
@@ -25,9 +29,9 @@
 
   let correctPattern = [
     {
-      instrument: 'bass',
-      sample: './bass.mp3',
-      beats: [1, 3],
+      instrument: 'hihat',
+      sample: './hihat.mp3',
+      beats: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
     },
     {
       instrument: 'snare',
@@ -35,17 +39,19 @@
       beats: [2, 4],
     },
     {
-      instrument: 'hihat',
-      sample: './hihat.mp3',
-      beats: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
+      instrument: 'bass',
+      sample: './bass.mp3',
+      beats: [1, 3],
     },
   ];
   const beats = 4;
   const duration = beats * spb;
 
   let renderedAudio = null;
+  let renderedAudioSep = [];
   let sampleRate;
   let noteTimes = [];
+  let noteTimesSeparate = [];
 
   const fetchDrumAudios = async () => {
     correctPattern = await Promise.all(
@@ -134,13 +140,25 @@
     // add errors
     const wrongPattern = addErrors(errorMode, errorSeverity);
     // concat correct and the one with errors
-    const patterns = [correctPattern, wrongPattern];
+    // const patterns = [correctPattern, wrongPattern];
+    const patterns = [correctPattern, wrongPattern, correctPattern];
     const combinedPattern = concat(patterns);
     // get times for visualizations
     noteTimes = combinedPattern
       .map((d) => d.times)
       .flat()
       .sort();
+    noteTimesSeparate = combinedPattern
+      .map((d) =>
+        d.times.map((t) => {
+          return { time: t, instr: d.instrument };
+        }),
+      )
+      .flat(Infinity)
+      .sort((a, b) => {
+        a.time - b.time;
+      });
+    console.log(noteTimesSeparate);
     // set global sample rate
     sampleRate = combinedPattern[0].audioBuffer.sampleRate;
     // render audio
@@ -149,6 +167,14 @@
       duration * patterns.length + 0.1,
       sampleRate,
     );
+    renderedAudioSep = combinedPattern.map((instr) => {
+      const audio = simulateDrum(
+        [instr],
+        duration * patterns.length + 0.1,
+        sampleRate,
+      );
+      return { instr: instr.instrument, audio };
+    });
   };
 
   // do in the beginning
@@ -193,9 +219,29 @@
       width="{visWidth}"
       height="{visHeight}"
     />
+    <PlotWaveformSep
+      audioData="{renderedAudioSep}"
+      width="{visWidth}"
+      height="{visHeight / 3}"
+    />
     <PlotTick pattern="{noteTimes}" width="{visWidth}" height="{visHeight}" />
+    <PlotTickSep
+      pattern="{noteTimesSeparate}"
+      width="{visWidth}"
+      height="{visHeight}"
+    />
     <PlotBar pattern="{noteTimes}" width="{visWidth}" height="{visHeight}" />
+    <PlotBarSep
+      pattern="{noteTimesSeparate}"
+      width="{visWidth}"
+      height="{visHeight * 2}"
+    />
     <PlotColor pattern="{noteTimes}" width="{visWidth}" height="{visHeight}" />
+    <PlotColorSep
+      pattern="{noteTimesSeparate}"
+      width="{visWidth}"
+      height="{visHeight}"
+    />
   </div>
 </main>
 
