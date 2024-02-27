@@ -854,7 +854,7 @@
             <PlotColor
               pattern="{noteTimesExampleLate}"
               width="{visWidth / 2}"
-              height="{visHeight / 2}"
+              height="{visHeight * 0.7}"
             />
             <div>Example for early</div>
             <div>Example for late</div>
