@@ -2,8 +2,8 @@
   import { fetchAudio, shuffleArray, simulateDrum } from './lib/lib.js';
   import Audio from './Audio.svelte';
   import PlotWaveform from './plots/PlotWaveform.svelte';
-  import PlotTick from './plots/PlotTick.svelte';
-  import PlotBar from './plots/PlotBar.svelte';
+  // import PlotTick from './plots/PlotTick.svelte';
+  // import PlotBar from './plots/PlotBar.svelte';
   import PlotColor from './plots/PlotColor.svelte';
   import { onMount } from 'svelte';
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
@@ -11,8 +11,7 @@
   import AudioExample from './AudioExample.svelte';
   import { Utils } from 'musicvis-lib';
   import * as d3 from 'd3';
-  import PlotTickSep from './plots/PlotTickSep.svelte';
-  import sr from 'seedrandom';
+  // import PlotTickSep from './plots/PlotTickSep.svelte';
   import AudioExampleInTrials from './AudioExampleInTrials.svelte';
 
   const SERVER_URL = '/store';
