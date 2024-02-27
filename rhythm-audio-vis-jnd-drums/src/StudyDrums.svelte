@@ -27,8 +27,8 @@
   let sessionID = getUrlParam(window, 'SESSION_ID');
   // console.log({ partID, studyID, sessionID });
 
-  // let encodings = ['audio', 'waveform', 'color'];
-  let encodings = ['audio'];
+  let encodings = ['audio', 'waveform', 'color'];
+  // let encodings = ['audio'];
   let patterns = ['only-hihat', 'hihat-snare', 'hihat-bass'];
   let tests = d3.cross(encodings, patterns).map(([encoding, pattern]) => {
     return { encoding, pattern };
@@ -125,10 +125,10 @@
         partMusicInstr == ''
       ) {
         // TODO: comment in
-        // alert('please fill the form first');
+        alert('please fill the form first');
         // TODO: comment out 2 lines
-        studyStep = 'tests';
-        currentTestNumber = 0;
+        // studyStep = 'tests';
+        // currentTestNumber = 0;
       } else {
         studyStep = 'tests';
         currentTestNumber = 0;
@@ -726,11 +726,15 @@
         Test number {currentTestNumber + 1} of {tests.length}
       </p>
       {#if currentPattern === 'only-hihat'}
-        <p>Only a <b>single hi-hat</b> note is shifted.</p>
+        <p>In this test, only a <b>single hi-hat</b> note is shifted.</p>
       {:else if currentPattern === 'hihat-snare'}
-        <p>A beat with a <b>hi-hat and a snare</b> note is shifted.</p>
+        <p>
+          In this test, a beat with a <b>hi-hat and a snare</b> note is shifted.
+        </p>
       {:else if currentPattern === 'hihat-bass'}
-        <p>A beat with a <b>hi-hat and a bass</b> note is shifted.</p>
+        <p>
+          In this test, a beat with a <b>hi-hat and a bass</b> note is shifted.
+        </p>
       {/if}
 
       <p>
