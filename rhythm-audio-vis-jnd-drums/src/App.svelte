@@ -12,13 +12,13 @@
 <main>
   <h1>Rhythm Error Sensitivity Study</h1>
 
-  <!-- {#if view !== 'study_drums'} -->
-  <div>
-    <button on:click="{() => (view = 'playground')}">Playground</button>
-    <button on:click="{() => (view = 'study_drums')}"> Study </button>
-    <button on:click="{() => (view = 'analysis')}"> Analysis </button>
-  </div>
-  <!-- {/if} -->
+  {#if view !== 'study_drums'}
+    <div>
+      <button on:click="{() => (view = 'playground')}">Playground</button>
+      <button on:click="{() => (view = 'study_drums')}"> Study </button>
+      <button on:click="{() => (view = 'analysis')}"> Analysis </button>
+    </div>
+  {/if}
 
   {#if view === 'playground'}
     <Playground />
