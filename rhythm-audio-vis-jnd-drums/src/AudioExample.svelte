@@ -1,9 +1,10 @@
 <script>
-  import { afterUpdate, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { audioDataToAudioEl, simulate } from './lib/lib.js';
 
   export let pattern;
   export let cachedAudio = null;
+  export let label = 'play audio';
 
   // render audio data for pattern using sample
   let audioData = null;
@@ -28,5 +29,5 @@
 
 <main>
   <audio bind:this="{audioEl}" controls="{false}"></audio>
-  <button on:click="{play}">play audio</button>
+  <button on:click="{play}">{label}</button>
 </main>

@@ -1,5 +1,5 @@
 <script>
-  import { onMount } from 'svelte';
+  import { onDestroy, onMount } from 'svelte';
   import { audioDataToAudioEl } from './lib/lib.js';
 
   export let audioData = null;
@@ -11,13 +11,12 @@
   const renderAndLoadAudio = (audioData) => {
     if (audioData && audioEl) {
       audioDataToAudioEl(audioData, sampleRate, audioEl);
-      // console.log('rendered audio and attached to element');
     }
   };
   // auto play
   $: {
     if (currentTrialNumber > -1) {
-      window.setTimeout(play, 200);
+      window.setTimeout(play, 250);
     }
   }
 
@@ -27,18 +26,23 @@
     if (!audioEl) {
       return;
     }
-    // console.log('play');
-    // audioEl.pause();
     audioEl.currentTime = 0;
     audioEl.play();
   };
 
+  const handleKeyUp = (evt) => {
+    if (evt.key === 'p') {
+      play();
+    }
+  };
+
   onMount(() => {
-    document.querySelector('html').addEventListener('keyup', (evt) => {
-      if (evt.key === 'p') {
-        play();
-      }
-    });
+    document.querySelector('html').addEventListener('keyup', handleKeyUp);
+    renderAndLoadAudio(audioData);
+  });
+
+  onDestroy(() => {
+    document.querySelector('html').removeEventListener('keyup', handleKeyUp);
   });
 </script>
 

@@ -35,12 +35,12 @@
     },
     {
       instrument: 'snare',
-      sample: './snare.mp3',
+      sample: './snare2.mp3',
       beats: [2, 4],
     },
     {
       instrument: 'bass',
-      sample: './bass.mp3',
+      sample: './bass2.mp3',
       beats: [1, 3],
     },
   ];
@@ -141,7 +141,8 @@
     const wrongPattern = addErrors(errorMode, errorSeverity);
     // concat correct and the one with errors
     // const patterns = [correctPattern, wrongPattern];
-    const patterns = [correctPattern, wrongPattern, correctPattern];
+    // const patterns = [correctPattern, wrongPattern, correctPattern];
+    const patterns = [wrongPattern];
     const combinedPattern = concat(patterns);
     // get times for visualizations
     noteTimes = combinedPattern

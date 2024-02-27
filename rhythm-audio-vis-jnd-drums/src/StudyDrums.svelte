@@ -12,6 +12,8 @@
   import { Utils } from 'musicvis-lib';
   import * as d3 from 'd3';
   import PlotTickSep from './plots/PlotTickSep.svelte';
+  import sr from 'seedrandom';
+  import AudioExampleInTrials from './AudioExampleInTrials.svelte';
 
   const SERVER_URL = '/store';
   const BPM = 120;
@@ -25,7 +27,8 @@
   let sessionID = getUrlParam(window, 'SESSION_ID');
   // console.log({ partID, studyID, sessionID });
 
-  let encodings = ['audio', 'waveform', 'color'];
+  // let encodings = ['audio', 'waveform', 'color'];
+  let encodings = ['audio'];
   let patterns = ['only-hihat', 'hihat-snare', 'hihat-bass'];
   let tests = d3.cross(encodings, patterns).map(([encoding, pattern]) => {
     return { encoding, pattern };
@@ -109,6 +112,8 @@
     } else if (studyStep === 'start1') {
       studyStep = 'start2';
     } else if (studyStep === 'start2') {
+      studyStep = 'start3';
+    } else if (studyStep === 'start3') {
       tests = shuffleArray(tests);
       studyStep = 'demo';
     } else if (studyStep === 'demo') {
@@ -361,12 +366,12 @@
     },
     {
       instrument: 'snare',
-      sample: './snare.mp3',
+      sample: './snare2.mp3',
       beats: [2, 4],
     },
     {
       instrument: 'bass',
-      sample: './bass.mp3',
+      sample: './bass2.mp3',
       beats: [1, 3],
     },
   ];
@@ -406,7 +411,7 @@
     if (errorSeverity === 0) {
       return correctPattern;
     }
-    console.log(`Adding error ${errorMode} ${errorSeverity}`);
+    // console.log(`Adding error ${errorMode} ${errorSeverity}`);
     const copy = concat([correctPattern]);
 
     const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
@@ -435,7 +440,7 @@
    * @param object[] patterns
    */
   const concat = (patterns) => {
-    console.log(`concat ${patterns.length} patterns`);
+    // console.log(`concat ${patterns.length} patterns`);
     const result = patterns[0].map((d) => {
       return {
         ...d,
@@ -476,7 +481,8 @@
     // concat correct and the one with errors
     // const patterns = [correctPattern, wrongPattern];
     // const patterns = [correctPattern, wrongPattern, correctPattern];
-    const patterns = [correctPattern, wrongPattern];
+    // const patterns = [correctPattern, wrongPattern];
+    const patterns = [wrongPattern];
     const combinedPattern = concat(patterns);
     // get times for visualizations
     const noteTimes = combinedPattern
@@ -545,12 +551,12 @@
       </p>
       <AudioExample
         pattern="{[0.1, 0.6, 1.1]}"
-        cachedAudio="{correctPattern[0].audioBuffer}"
+        cachedAudio="{correctPattern[2].audioBuffer}"
       />
       <p>If you cannot hear anything, you cannot participate in this study.</p>
       <a href="https://app.prolific.com/submissions/complete?cc=CH9I2X6E">
         <button>
-          I cannot hear the audio and will not participate in this study
+          I can NOT hear the audio and will NOT participate in this study
         </button>
       </a>
     </div>
@@ -561,10 +567,10 @@
       <p>
         Please click + or - until this rectangle has the size of a credit card.
       </p>
-      <p>
+      <div>
         <button on:click="{() => (visWidth *= 1.05)}">+</button>
         <button on:click="{() => (visWidth *= 0.95)}">-</button>
-      </p>
+      </div>
       <svg width="{visWidth * 0.52}px" height="{visHeight * 2}px">
         <rect
           width="{visWidth * 0.52}"
@@ -577,6 +583,61 @@
         Please also set your screen brightness to comfortable levels and avoid
         sunlight or artificial light reflecting from your screen.
       </p>
+    </div>
+  {/if}
+  {#if studyStep === 'start3'}
+    <div>
+      <div>
+        <p>
+          Imagine you are a music teacher and want to give feedback to your
+          students. As listening to all they play takes too much time, you try
+          different visualizations that show you their note timing.
+        </p>
+        <p>
+          In this study, the goal is to learn how these visualizations compare
+          to each other and to listening. We want to know, how small of a timing
+          error is still clear to see/hear as either <i>too early</i> or
+          <i>too late</i>.
+        </p>
+        <p>
+          This study uses a simple drum pattern that you can see and listen to
+          below. The timing error is made will always affect a single <i>beat</i
+          >: notes that are supposed to played togehter will still be played at
+          the same time, but this time will be either too early or too late.
+        </p>
+      </div>
+      This is what the pattern looks like in sheet music:
+      <div>
+        <img
+          width="{visWidth}px"
+          src="drum-pattern-labels2.png"
+          alt="drum pattern as sheet music"
+        />
+      </div>
+      <div
+        style="display: grid; grid-template-columns: repeat(4,max-content); gap: 10px; align-items: center"
+      >
+        <span>Click to hear the different sounds:</span>
+        <AudioExample
+          pattern="{[0.1]}"
+          cachedAudio="{correctPattern[0].audioBuffer}"
+          label="hi-hat"
+        />
+        <AudioExample
+          pattern="{[0.1]}"
+          cachedAudio="{correctPattern[1].audioBuffer}"
+          label="snare drum"
+        />
+        <AudioExample
+          pattern="{[0.1]}"
+          cachedAudio="{correctPattern[2].audioBuffer}"
+          label="bass drum"
+        />
+      </div>
+      This is what the full, correctly played pattern sounds like:
+      <div>
+        <audio src="drum-pattern-correct-once.wav" controls> </audio>
+      </div>
     </div>
   {/if}
 
@@ -609,8 +670,12 @@
           placeholder="m, f, d, or self-describe"
         />
       </label> -->
+      <p>Please answer the following questions about yourself:</p>
       <label>
-        <span>Highest finished education (select the best fitting one):</span>
+        <span
+          >What is your highest finished degree of education? (select the best
+          fitting one)</span
+        >
         <select bind:value="{partEduation}">
           <option value="none">none</option>
           <option value="highs">high school</option>
@@ -656,45 +721,51 @@
 
   <!-- Test -->
   {#if studyStep === 'tests'}
-    <p>
-      You will be presented with a simple drum pattern where one beat is played
-      too early too late.<br />
-      This deviation will get smaller, but you always have to answer "early" or "late".
-    </p>
-
     {#if testActive}
       <p>
-        Test number {currentTestNumber + 1} / {tests.length}, trial number {currentTrialNumber +
-          1}
+        Test number {currentTestNumber + 1} of {tests.length}
       </p>
       {#if currentPattern === 'only-hihat'}
-        <p>Only a <b>single hi-hat</b> note is shifted</p>
+        <p>Only a <b>single hi-hat</b> note is shifted.</p>
       {:else if currentPattern === 'hihat-snare'}
-        <p>A beat with a <b>hi-hat and a snare</b> note is shifted</p>
+        <p>A beat with a <b>hi-hat and a snare</b> note is shifted.</p>
       {:else if currentPattern === 'hihat-bass'}
-        <p>A beat with a <b>hi-hat and a kick</b> note is shifted</p>
+        <p>A beat with a <b>hi-hat and a bass</b> note is shifted.</p>
       {/if}
 
       <p>
         Use the arrow keys on your keyboard: <b>left for early</b>,
         <b>right for late</b>.
       </p>
+      <p>
+        Trial number {currentTrialNumber + 1}
+      </p>
 
       {#if currentEncoding === 'audio'}
-        <div>
-          Listen to the audio, the forth note comes either too soon or too late.
+        <p>
           Press <i>p</i> or click <i>play</i> to replay the audio, you can do this
           is often as you like.
+        </p>
+        <div class="vis-example">
+          <AudioExampleInTrials
+            audioData="{renderedAudioExampleEarly}"
+            {sampleRate}
+          />
+          <AudioExampleInTrials
+            audioData="{renderedAudioExampleLate}"
+            {sampleRate}
+          />
+          <div>Example for early</div>
+          <div>Example for late</div>
         </div>
         <Audio audioData="{renderedAudio}" {sampleRate} {currentTrialNumber} />
       {:else if whiteScreenShowing === false}
         <!-- white screen helps avoid seeing the change between consecutive stimuli -->
         {#if currentEncoding === 'waveform'}
-          <div>
+          <p>
             This is a waveform of the audio, showing loudness over time. Look at
-            the peaks, the gap between the third and forth peaks is either
-            smaller (early) or larger (late) than the other gaps.
-          </div>
+            the gaps between peaks.
+          </p>
           <div class="vis-example">
             <PlotWaveform
               audioData="{renderedAudioExampleEarly}"
@@ -714,12 +785,12 @@
             width="{visWidth}"
             height="{visHeight}"
           />
-        {:else if currentEncoding === 'tick'}
-          <div>
+          <!-- {:else if currentEncoding === 'tick'}
+          <p>
             Look at the peaks, the gap between the third and forth tick is
             either smaller (early) or larger (late) than the other gaps.
-          </div>
-          <!-- <div class="vis-example">
+          </p>
+          <div class="vis-example">
             <PlotTick
               pattern="{examplePatternEarly}"
               width="{visWidth / 2}"
@@ -732,19 +803,19 @@
             />
             <div>Example for early</div>
             <div>Example for late</div>
-          </div> -->
+          </div>
           <PlotTick
             pattern="{noteTimes}"
             width="{visWidth}"
             height="{visHeight}"
-          />
-        {:else if currentEncoding === 'bar'}
-          <div>
+          /> -->
+          <!-- {:else if currentEncoding === 'bar'}
+          <p>
             The bar chart shows the size of the gaps between notes in the bars'
             height (example: the bar at 2 shows the gap between the first and
             second note). Look at the third bar, it is either lower (early) or
             higher (late) than the others.
-          </div>
+          </p>
           <div class="vis-example">
             <PlotBar
               pattern="{noteTimesExampleEarly}"
@@ -763,14 +834,14 @@
             pattern="{noteTimes}"
             width="{visWidth}"
             height="{visHeight}"
-          />
+          /> -->
         {:else if currentEncoding === 'color'}
-          <div>
+          <p>
             The color chart shows the size of the gaps between notes in the
             rectangles darkness (example: color at 2 shows the gap between the
-            first and second note). Look at the third bar, it is either brigher
-            (early) or darker (late) than the others.
-          </div>
+            first and second note). Brighter bars show smaller gaps (early),
+            darker bars show wider gaps (late).
+          </p>
           <div class="vis-example">
             <PlotColor
               pattern="{noteTimesExampleEarly}"
@@ -792,11 +863,11 @@
           />
         {/if}
         <!-- TODO: remove -->
-        <PlotTickSep
+        <!-- <PlotTickSep
           pattern="{noteTimesSeparate}"
           width="{visWidth}"
           height="{visHeight}"
-        />
+        /> -->
       {/if}
     {/if}
   {/if}
@@ -804,10 +875,9 @@
   <!-- Feedback -->
   {#if studyStep === 'feedback'}
     <div>
-      <label>
-        Do you have any final feedback/comments?
-        <textarea bind:value="{partFeedback}"></textarea>
-      </label>
+      Almost done!
+      <p>Do you have any final feedback/comments?</p>
+      <textarea bind:value="{partFeedback}"></textarea>
     </div>
   {/if}
 
@@ -828,7 +898,14 @@
 
 <style>
   main {
+    max-width: 1000px;
     text-align: center;
+  }
+
+  p {
+    max-width: 600px;
+    margin: 10px auto;
+    text-align: justify;
   }
 
   .demo-form {
@@ -858,5 +935,9 @@
 
   .next-btn {
     margin-top: 30px;
+  }
+
+  label {
+    text-align: left;
   }
 </style>

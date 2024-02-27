@@ -41,7 +41,7 @@ import AudioBufferToWav from 'audiobuffer-to-wav'
  * @param {*} paddingStart
  * @returns
  */
-export function generatePatternSimple (
+export function generatePatternSimple(
   // number of notes to generate
   notes = 16,
   // time between two notes in seconds
@@ -73,7 +73,7 @@ export function generatePatternSimple (
  * @param {string} audioFileUrl
  * @returns
  */
-export async function fetchAudio (audioFileUrl) {
+export async function fetchAudio(audioFileUrl) {
   const res = await fetch(audioFileUrl)
   const buffer = await res.arrayBuffer()
   const audioSample = await AudioDecode(buffer)
@@ -87,7 +87,7 @@ export async function fetchAudio (audioFileUrl) {
  * @param {number} paddingEnd how much time to render after the last note onset
  * @returns
  */
-export function simulate (instrument, noteTimes, paddingEnd = 1) {
+export function simulate(instrument, noteTimes, paddingEnd = 1) {
   // prepare rendering
   const duration = noteTimes.at(-1) + paddingEnd
   const data = instrument.getChannelData(0)
@@ -111,7 +111,7 @@ export function simulate (instrument, noteTimes, paddingEnd = 1) {
   return result
 }
 
-export function audioDataToAudioEl (audioData, sampleRate, audioEl) {
+export function audioDataToAudioEl(audioData, sampleRate, audioEl) {
   const buffer = new AudioBuffer({ sampleRate, length: audioData.length })
   buffer.copyToChannel(audioData, 0)
   const blob = new Blob([AudioBufferToWav(buffer)], {
@@ -125,7 +125,7 @@ export function audioDataToAudioEl (audioData, sampleRate, audioEl) {
  * @param {Array} array an Array
  * @returns {Array} shuffled
  */
-export function shuffleArray (array) {
+export function shuffleArray(array) {
   return array
     .map(value => ({ value, sort: Math.random() }))
     .sort((a, b) => a.sort - b.sort)
@@ -133,7 +133,7 @@ export function shuffleArray (array) {
 }
 
 
-export function distortDrumPattern (drumPattern, drumIndices,) {
+export function distortDrumPattern(drumPattern, drumIndices,) {
 
 }
 
@@ -145,14 +145,14 @@ export function distortDrumPattern (drumPattern, drumIndices,) {
  * @param {number} sampleRate sample rate
  * @returns
  */
-export function simulateDrum (drumPattern, duration, sampleRate) {
+export function simulateDrum(drumPattern, duration, sampleRate) {
   const result = new Float32Array(Math.ceil(duration * drumPattern[0].audioBuffer.sampleRate))
   for (const instrument of drumPattern) {
     const data = instrument.audioBuffer.getChannelData(0)
     for (const noteStart of instrument.times) {
       const frameIndex = Math.round(noteStart * sampleRate)
       for (let i = 0; i < data.length; ++i) {
-        result[frameIndex + i] += data[i]
+        result[frameIndex + i] = Math.min(result[frameIndex + i] + data[i], 1)
       }
     }
   }
