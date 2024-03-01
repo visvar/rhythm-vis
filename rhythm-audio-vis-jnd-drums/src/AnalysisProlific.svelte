@@ -11,7 +11,7 @@
   let participants = [];
   let prolificDemographics = null;
   const visWidth = 800;
-  let kdeBandwidth = 0.1;
+  let kdeBandwidth = 0.005;
 
   // const handleFileInputDemo = async (evt) => {
   //   const file = evt.target.files[0];
@@ -205,7 +205,7 @@
         title="{`Density of final values for ${testEnc[0]}`}"
         values="{testEnc[1].map((d) => d.final)}"
         xLabel="final values"
-        xDomain="{[-1, 1]}"
+        xDomain="{[-0.2, 0.2]}"
         bandwidth="{kdeBandwidth}"
       />
     {/each}
@@ -216,8 +216,8 @@
     x="finalAudio"
     y="finalWaveform"
     tipTitle="partID"
-    xDomain="{[0, 0.5]}"
-    yDomain="{[0, 0.5]}"
+    xDomain="{[0, 0.1]}"
+    yDomain="{[0, 0.1]}"
     data="{participants}"
   />
   <PlotScatter
@@ -225,8 +225,8 @@
     x="finalAudio"
     y="finalColor"
     tipTitle="partID"
-    xDomain="{[0, 0.5]}"
-    yDomain="{[0, 0.5]}"
+    xDomain="{[0, 0.1]}"
+    yDomain="{[0, 0.1]}"
     data="{participants}"
   />
 

@@ -6,7 +6,7 @@
 
   let view = getUrlParam(window, 'p') ?? 'study_drums';
   // view = 'playground';
-  view = 'study_drums';
+  // view = 'study_drums';
 </script>
 
 <main>
