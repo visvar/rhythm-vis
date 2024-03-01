@@ -1,17 +1,16 @@
 <script>
   import { fetchAudio, simulateDrum } from './lib/lib.js';
-  import PlotTick from './plots/PlotTick.svelte';
-  import PlotBar from './plots/PlotBar.svelte';
-  import PlotColor from './plots/PlotColor.svelte';
-  import PlotWaveform from './plots/PlotWaveform.svelte';
-  import Audio from './Audio.svelte';
+  import PlotTick from './plots/PlotTick.svelte.js';
+  import PlotBar from './plots/PlotBar.svelte.js';
+  import PlotColor from './plots/PlotColor.svelte.js';
+  import PlotWaveform from './plots/PlotWaveform.svelte.js';
+  import Audio from './Audio.svelte.js';
   import { Utils } from 'musicvis-lib';
   import { onMount } from 'svelte';
-  import PlotTickSep from './plots/PlotTickSep.svelte';
-  import PlotBarSep from './plots/PlotBarSep.svelte';
-  import PlotColorSep from './plots/PlotColorSep.svelte';
-  import PlotColorBeats from './plots/PlotColorBeats.svelte';
-  import PlotWaveformSep from './plots/PlotWaveformSep.svelte';
+  import PlotTickSep from './plots/PlotTickSep.svelte.js';
+  import PlotBarSep from './plots/PlotBarSep.svelte.js';
+  import PlotColorSep from './plots/PlotColorSep.svelte.js';
+  import PlotWaveformSep from './plots/PlotWaveformSep.svelte.js';
 
   // vis sizes
   let visWidth = 600;
@@ -20,10 +19,9 @@
   let BPM = 120;
 
   /**
-   * @type {'single note'|'only snare'|'single beat'|'beat 5'}
+   * @type {'single note'|'only snare'|'single beat'}
    */
-  // let errorMode = 'single beat';
-  let errorMode = 'beat 5';
+  let errorMode = 'single note';
   let errorSeverity = 0;
 
   // @ts-ignore
@@ -82,7 +80,6 @@
 
     const snare = copy.filter((d) => d.instrument === 'snare')[0];
     const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
-    const bass = copy.filter((d) => d.instrument === 'bass')[0];
     if (errorMode === 'single note') {
       // take the second snare
       snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
@@ -94,10 +91,6 @@
       // take first and second snare
       snare.times[1 - 1] = snare.timesOriginal[1 - 1] + errorSeverity;
       snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
-    } else if (errorMode === 'beat 5') {
-      // take 2nd bass and 5th hihat
-      bass.times[2 - 1] = bass.timesOriginal[2 - 1] + errorSeverity;
-      hihat.times[5 - 1] = hihat.timesOriginal[5 - 1] + errorSeverity;
     }
     // console.log(drumPattern);
     return copy;
@@ -149,8 +142,8 @@
     // concat correct and the one with errors
     // const patterns = [correctPattern, wrongPattern];
     // const patterns = [correctPattern, wrongPattern, correctPattern];
-    // const patterns = [wrongPattern, correctPattern];
-    const patterns = [wrongPattern];
+    const patterns = [wrongPattern, correctPattern];
+    // const patterns = [wrongPattern];
     const combinedPattern = concat(patterns);
     // get times for visualizations
     noteTimes = combinedPattern
@@ -203,7 +196,7 @@
     <label>
       error mode:
       <select bind:value="{errorMode}">
-        {#each ['single note', 'single beat', 'only snare', 'beat 5'] as af}
+        {#each ['single note', 'single beat', 'only snare'] as af}
           <option value="{af}">{af.substring(0, 30)}</option>
         {/each}
       </select>
@@ -250,17 +243,12 @@
       width="{visWidth}"
       height="{visHeight}"
     />
-    <PlotColorBeats
-      pattern="{noteTimes}"
-      width="{visWidth}"
-      height="{visHeight}"
-    />
   </div>
 
-  <!-- <div class="examples">
+  <div class="examples">
     <div>early</div>
     <div>late</div>
-  </div> -->
+  </div>
 </main>
 
 <style>

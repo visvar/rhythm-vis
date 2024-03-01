@@ -11,7 +11,7 @@
   let participants = [];
   let prolificDemographics = null;
   const visWidth = 800;
-  let kdeBandwidth = 1;
+  let kdeBandwidth = 0.1;
 
   // const handleFileInputDemo = async (evt) => {
   //   const file = evt.target.files[0];
@@ -65,7 +65,8 @@
           // representation order
           encodingOrder: d.tests.map((t) => t.encoding).join(', '),
         };
-      });
+      })
+      .filter((d) => d.prolificDemogr !== undefined);
     console.log('participants', participants);
   };
 
@@ -83,24 +84,20 @@
      * @param {number} step size of the age brackets
      * @returns {string} age bracket in steps of `step`
      */
-    const ageTo5YearBracked = (age, step = 5) => {
+    const ageToYearBracked = (age, step = 5) => {
       const lower = Math.floor(age / step) * step;
       return `${lower}-${lower + step - 1}`;
     };
     const tests = [];
     for (const participant of participants) {
       for (const [index, test] of participant.tests.entries()) {
+        // let testType = `${test.encoding} + ${test.pattern}`;
         let testType = test.encoding;
-        if (test.encoding === 'audio' || test.encoding === 'waveform') {
-          testType = `${test.encoding} + ${
-            test.audioFile.startsWith('./Fluid') ? 'piano' : 'drums'
-          }`;
-        }
         tests.push({
           ...participant.demographics,
           partAge: participant.demographics.partAge
             ? participant.demographics.partAge
-            : ageTo5YearBracked(participant.prolificDemogr.Age),
+            : ageToYearBracked(participant.prolificDemogr.Age, 10),
           partSex: participant.demographics.partGender
             ? participant.demographics.partGender
             : participant.prolificDemogr.Sex,
@@ -208,7 +205,7 @@
         title="{`Density of final values for ${testEnc[0]}`}"
         values="{testEnc[1].map((d) => d.final)}"
         xLabel="final values"
-        xDomain="{[-1, 20]}"
+        xDomain="{[-1, 1]}"
         bandwidth="{kdeBandwidth}"
       />
     {/each}
@@ -219,8 +216,8 @@
     x="finalAudio"
     y="finalWaveform"
     tipTitle="partID"
-    xDomain="{[0, 20]}"
-    yDomain="{[0, 20]}"
+    xDomain="{[0, 0.5]}"
+    yDomain="{[0, 0.5]}"
     data="{participants}"
   />
   <PlotScatter
@@ -228,8 +225,8 @@
     x="finalAudio"
     y="finalColor"
     tipTitle="partID"
-    xDomain="{[0, 20]}"
-    yDomain="{[0, 20]}"
+    xDomain="{[0, 0.5]}"
+    yDomain="{[0, 0.5]}"
     data="{participants}"
   />
 

@@ -4,8 +4,8 @@
   import StudyDrums from './StudyDrums.svelte';
   import { getUrlParam } from './lib/url';
 
-  let view = getUrlParam(window, 'p') ?? 'study_prolific';
-  view = 'playground';
+  let view = getUrlParam(window, 'p') ?? 'study_drums';
+  // view = 'playground';
   view = 'study_drums';
 </script>
 
