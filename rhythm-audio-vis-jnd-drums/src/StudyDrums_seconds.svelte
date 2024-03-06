@@ -10,6 +10,8 @@
   import { getUrlParam } from './lib/url.js';
   import AudioExample from './AudioExample.svelte';
   import { Utils } from 'musicvis-lib';
+  // import * as d3 from 'd3';
+  // import PlotTickSep from './plots/PlotTickSep.svelte';
   import AudioExampleInTrials from './AudioExampleInTrials.svelte';
 
   const DEBUG = false;
@@ -17,8 +19,7 @@
   const BPM = 120;
   // deviation in seconds, start with less than 0.25 because 0.25 is an eighth note
   const initialErrorSeverity = 0.1;
-  // should be 1/20th of initial to be consistent with first study
-  const stairStep = 0.005;
+  const stairStep = 0.025;
 
   // prolific params
   let partID = getUrlParam(window, 'PROLIFIC_PID');
@@ -26,6 +27,13 @@
   let sessionID = getUrlParam(window, 'SESSION_ID');
   // console.log({ partID, studyID, sessionID });
 
+  // let encodings = ['audio', 'waveform', 'color'];
+  // let encodings = ['audio'];
+  // let patterns = ['only-hihat', 'hihat-snare', 'hihat-bass'];
+  // let patterns = ['only-hihat'];
+  // let tests = d3.cross(encodings, patterns).map(([encoding, pattern]) => {
+  //   return { encoding, pattern };
+  // });
   let tests = ['audio', 'waveform', 'color'].map((d) => {
     return { encoding: d };
   });
@@ -72,6 +80,7 @@
   // results
   let data = [];
   let final = 0;
+  let feedback = '';
   const completeResults = [];
 
   onMount(() => {

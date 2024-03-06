@@ -227,9 +227,29 @@
       width="{visWidth}"
       height="{visHeight}"
     />
+    <PlotWaveformSep
+      audioData="{renderedAudioSep}"
+      width="{visWidth}"
+      height="{visHeight / 3}"
+    />
     <PlotTick pattern="{noteTimes}" width="{visWidth}" height="{visHeight}" />
+    <PlotTickSep
+      pattern="{noteTimesSeparate}"
+      width="{visWidth}"
+      height="{visHeight}"
+    />
     <PlotBar pattern="{noteTimes}" width="{visWidth}" height="{visHeight}" />
+    <PlotBarSep
+      pattern="{noteTimesSeparate}"
+      width="{visWidth}"
+      height="{visHeight * 2}"
+    />
     <PlotColor pattern="{noteTimes}" width="{visWidth}" height="{visHeight}" />
+    <PlotColorSep
+      pattern="{noteTimesSeparate}"
+      width="{visWidth}"
+      height="{visHeight}"
+    />
     <PlotColorBeats
       pattern="{noteTimes}"
       width="{visWidth}"

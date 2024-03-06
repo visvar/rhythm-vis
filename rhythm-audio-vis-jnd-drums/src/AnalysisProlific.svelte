@@ -287,11 +287,12 @@
   </div>
 
   <div>
-    {#each tests as test}
+    {#each [...tests].sort((a, b) => a.final - b.final) as test}
       <PlotLine
-        title="{test.encoding}"
+        title="P{test.internalPID} {test.encoding}"
+        final="{test.final}"
         width="{visWidth}"
-        height="{150}"
+        height="{120}"
         data="{test.data}"
         x="{(d, i) => i}"
         y="{(d) => Math.abs(d)}"
