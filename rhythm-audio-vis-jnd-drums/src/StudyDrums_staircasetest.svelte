@@ -107,7 +107,7 @@
         stepSizeUp: 1.25, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
         limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
-        reversalLimit: 6, // How many reversals to do before stopping
+        reversalLimit: 12, // How many reversals to do before stopping
         verbosity: 1, // Enable logging for debugging
       },
       // START ODD
@@ -897,12 +897,12 @@
       {/if}
     {/if}
     <!-- TODO: for debug -->
-    <!-- <PlotLine
+    <PlotLine
       data="{trials}"
       final="{0}"
       x="{(d, i) => i}"
       y="{(d) => Math.abs(d.deviation)}"
-    /> -->
+    />
   {/if}
 
   <!-- Feedback -->

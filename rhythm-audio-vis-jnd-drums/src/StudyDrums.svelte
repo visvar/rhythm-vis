@@ -101,12 +101,11 @@
         operation: 'multiply',
         down: 2, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
-        // factor: 1.25,
         stepSizeDown: 1.25, // how much we in/decrease by
-        stepSizeUp: 1.25, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+        stepSizeUp: 1.25,
         limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
-        reversalLimit: 6, // How many reversals to do before stopping
+        reversalLimit: 12, // How many reversals to do before stopping
         verbosity: 0, // Enable logging for debugging
       },
     });
