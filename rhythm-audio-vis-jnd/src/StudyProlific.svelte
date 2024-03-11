@@ -13,6 +13,7 @@
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
   import { getUrlParam } from './lib/url.js';
   import AudioExample from './AudioExample.svelte';
+  import PlotLine from './plotsAnalysis/PlotLine2.svelte';
 
   const serverUrl = '/store';
 
@@ -35,15 +36,15 @@
 
   let tests = [
     {
+      stimulus: 'color',
+    },
+    {
       stimulus: 'audio',
-      audioFile: audioFiles[0],
+      audioFile,
     },
     {
       stimulus: 'waveform',
-      audioFile: audioFiles[0],
-    },
-    {
-      stimulus: 'color',
+      audioFile,
     },
     // {
     //   stimulus: 'tick',
@@ -58,7 +59,8 @@
 
   // study progress
   // consent, start1, start2, demo, tests, feedback, done
-  let studyStep = 'consent';
+  let studyStep = 'consent'; // TODO:
+  // let studyStep = 'tests';
   let currentTestNumber = 0;
   let testStartTime;
 
@@ -89,11 +91,9 @@
   let currentEncoding = 'tick';
   // inter-onset interval in seconds
   let ioi = 0.5;
-  // deviation in percent of the ioi
-  const initialPercentDeviation = 20;
-  let percentDeviation = initialPercentDeviation;
   // deviation in seconds
-  $: deviationSeconds = (percentDeviation / 100) * ioi;
+  const initialErrorSeverity = 0.1;
+  // deviation in seconds
   let noteCount = 6;
   let wrongNoteIndex = 4 - 1; // nth note means index n-1
   let shiftFollowing = true;
@@ -103,17 +103,6 @@
   $: visHeight = visWidth / 6;
 
   let pattern = [];
-  $: {
-    pattern = generatePatternSimple(
-      noteCount,
-      ioi,
-      wrongNoteIndex,
-      deviationSeconds,
-      shiftFollowing,
-      paddingStart,
-    );
-    console.log('generated pattern', pattern);
-  }
 
   // results
   let data = [];
@@ -127,18 +116,32 @@
 
   const setupInstructions = () => {
     stair = new Staircase({
+      // ratio: {
+      //   firstVal: initialPercentDeviation,
+      //   down: 2, // down is the number of correct answers required before we increase the difficulty
+      //   up: 1, // up is the number of incorrect answers before we decrease the difficulty
+      //   stepSizeDown: 1, // how much we in/decrease by
+      //   stepSizeUp: 1 * 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+      //   limits: [0, initialPercentDeviation], // don't allow equal ratio
+      //   direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
+      //   reversalLimit: 5, // How many reversals to do before stopping
+      //   // verbosity: 1, // Enable logging for debugging
+      //   verbosity: 0, // Enable logging for debugging
+      //   // sameStairMax: , // Maximum number of trials
+      // },
       ratio: {
-        firstVal: initialPercentDeviation,
+        firstVal: initialErrorSeverity,
+        operation: 'multiply',
         down: 2, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
-        stepSizeDown: 1, // how much we in/decrease by
-        stepSizeUp: 1 * 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
-        limits: [0, initialPercentDeviation], // don't allow equal ratio
+        // factor: 1.25,
+        stepSizeDown: 1.25, // how much we in/decrease by
+        stepSizeUp: 1.25, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+        limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
-        reversalLimit: 5, // How many reversals to do before stopping
-        // verbosity: 1, // Enable logging for debugging
-        verbosity: 0, // Enable logging for debugging
-        // sameStairMax: , // Maximum number of trials
+        reversalLimit: 6, // How many reversals to do before stopping
+        // verbosity: 0, // Enable logging for debugging
+        verbosity: 1, // Enable logging for debugging
       },
     });
     stair.init();
@@ -215,8 +218,17 @@
     let deviation = p;
     deviation = Math.random() < 0.5 ? deviation : -deviation;
     currentTrial.deviation = deviation;
-    percentDeviation = deviation;
     currentTrial.startTime = new Date();
+    console.log({ deviation });
+
+    pattern = generatePatternSimple(
+      noteCount,
+      ioi,
+      wrongNoteIndex,
+      deviation,
+      shiftFollowing,
+      paddingStart,
+    );
 
     // console.log('generated pattern', pattern);
     // avoid showing a visualization directly after the previous to prevent participants from seeing the change
@@ -513,10 +525,10 @@
   {#if studyStep === 'tests'}
     <p>
       You will be presented with a sequence of six piano notes which should have
-      equal distances in time. The <b>fourth note</b> might be played
+      equal distances in time. The <b>fourth note</b> is
       <b>too early or too late</b>, also affecting the ones after. This
-      deviation will get smaller, but you always have to answer "early" or
-      "late".
+      deviation will get smaller and more difficult for you. You always have to
+      answer "early" or "late".
     </p>
 
     {#if testActive}
@@ -529,6 +541,12 @@
           Listen to the audio, the forth note comes either too soon or too late.
           Press <i>p</i> or click <i>play</i> to replay the audio, you can do this
           is often as you like.
+        </div>
+        <div class="vis-example">
+          <AudioExample pattern="{examplePatternEarly}" {cachedAudio} />
+          <AudioExample pattern="{examplePatternLate}" {cachedAudio} />
+          <div>Example for early</div>
+          <div>Example for late</div>
         </div>
         <Audio
           pattern="{[
@@ -642,6 +660,13 @@
         <b>right for late</b>.
       </p>
     {/if}
+    <!-- TODO: for debug -->
+    <!-- <PlotLine
+      data="{trials}"
+      final="{0}"
+      x="{(d, i) => i}"
+      y="{(d) => Math.abs(d.deviation)}"
+    /> -->
   {/if}
 
   <!-- Feedback -->

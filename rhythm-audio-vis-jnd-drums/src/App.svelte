@@ -2,11 +2,13 @@
   import Playground from './Playground.svelte';
   import AnalysisProlific from './AnalysisProlific.svelte';
   import StudyDrums from './StudyDrums.svelte';
+  import StudyDrums_StaircaseTest from './StudyDrums_staircasetest.svelte';
   import { getUrlParam } from './lib/url';
 
   let view = getUrlParam(window, 'p') ?? 'study_drums';
   // view = 'playground';
   // view = 'study_drums';
+  // view = '';
 </script>
 
 <main>
@@ -28,5 +30,5 @@
     <AnalysisProlific />
   {/if}
 
-  <!-- <StudyStaircaseTest /> -->
+  <!-- <StudyDrums_StaircaseTest /> -->
 </main>

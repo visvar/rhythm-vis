@@ -1,5 +1,5 @@
 <script>
-  import { afterUpdate, onMount } from 'svelte';
+  import { onMount } from 'svelte';
   import { audioDataToAudioEl, simulate } from './lib/lib.js';
 
   export let pattern;

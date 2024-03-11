@@ -28,6 +28,7 @@
   // console.log({ partID, studyID, sessionID });
 
   let tests = ['audio', 'waveform', 'color'].map((d) => {
+    // let tests = ['waveform', 'color'].map((d) => {
     return { encoding: d };
   });
   console.log({ tests });
@@ -37,7 +38,7 @@
 
   // study progress
   // consent, start1, start2, demo, tests, feedback, done
-  let studyStep = 'consent';
+  let studyStep = 'tests';
   let currentTestNumber = 0;
   let testStartTime;
 
@@ -107,8 +108,23 @@
         limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 6, // How many reversals to do before stopping
-        verbosity: 0, // Enable logging for debugging
+        verbosity: 1, // Enable logging for debugging
       },
+      // START ODD
+      // ratio: {
+      //   firstVal: initialErrorSeverity + stairStep / 2,
+      //   // wait: true,
+      //   down: 2, // down is the number of correct answers required before we increase the difficulty
+      //   up: 1, // up is the number of incorrect answers before we decrease the difficulty
+      //   stepSizeDown: stairStep, // how much we in/decrease by
+      //   stepSizeUp: stairStep * 0.5488, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+      //   limits: [0, initialErrorSeverity], // don't allow equal ratio
+      //   direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
+      //   reversalLimit: 4, // How many reversals to do before stopping
+      //   // verbosity: 0, // Enable logging for debugging
+      //   verbosity: 1, // Enable logging for debugging
+      //   // sameStairMax: , // Maximum number of trials
+      // },
     });
     stair.init();
   };
@@ -197,6 +213,8 @@
     const p = stair.getLast('ratio');
     let severity = p;
     severity = Math.random() < 0.5 ? severity : -severity;
+    console.log({ severity });
+
     currentTrial.deviation = severity;
     // get pattern
     const result = createDrumPattern(severity);
@@ -275,16 +293,16 @@
       validTrialCount: validTrials + 1,
       testTimeSeconds: (testEndTime - testStartTime) / 1000,
     });
-    // console.log('results (all)', completeResults);
+    console.log('results (all)', completeResults);
     currentTestNumber++;
   }
 
   function keyPress(evt) {
     // console.log(evt.key);
     // prevent skipping whitescreen
-    if (whiteScreenShowing) {
-      return;
-    }
+    // if (whiteScreenShowing) {
+    //   return;
+    // }
     switch (evt.key) {
       case 'ArrowLeft':
         if (trialActive) {
@@ -762,7 +780,7 @@
           <div>Example for late</div>
         </div>
         <Audio audioData="{renderedAudio}" {sampleRate} {currentTrialNumber} />
-      {:else if whiteScreenShowing === false}
+      {:else}
         <!-- white screen helps avoid seeing the change between consecutive stimuli -->
         {#if currentEncoding === 'waveform' || DEBUG}
           <p>
@@ -880,11 +898,11 @@
     {/if}
     <!-- TODO: for debug -->
     <!-- <PlotLine
-          data="{trials}"
-          final="{0}"
-          x="{(d, i) => i}"
-          y="{(d) => Math.abs(d.deviation)}"
-        /> -->
+      data="{trials}"
+      final="{0}"
+      x="{(d, i) => i}"
+      y="{(d) => Math.abs(d.deviation)}"
+    /> -->
   {/if}
 
   <!-- Feedback -->
