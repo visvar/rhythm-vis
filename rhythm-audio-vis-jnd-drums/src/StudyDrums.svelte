@@ -424,20 +424,14 @@
     const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
     const snare = copy.filter((d) => d.instrument === 'snare')[0];
     const bass = copy.filter((d) => d.instrument === 'bass')[0];
-    // if (errorMode === 'only-hihat') {
-    //   // take the 6th snare
-    //   hihat.times[6 - 1] = hihat.timesOriginal[6 - 1] + errorSeverity;
-    // } else if (errorMode === 'hihat-snare') {
-    //   // take the second snare and 7th hihat
-    //   snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
-    //   hihat.times[7 - 1] = hihat.timesOriginal[7 - 1] + errorSeverity;
-    // } else if (errorMode === 'hihat-bass') {
-    //   // take the second bass and 5th hihat
     bass.times[2 - 1] = bass.timesOriginal[2 - 1] + errorSeverity;
     hihat.times[5 - 1] = hihat.timesOriginal[5 - 1] + errorSeverity;
-    // } else {
-    //   alert('wrong error mode');
-    // }
+
+    // also shift all that come later
+    for (const h of [6, 7, 8]) {
+      hihat.times[h - 1] = hihat.timesOriginal[h - 1] + errorSeverity;
+    }
+    snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
 
     // console.log(drumPattern);
     return copy;
@@ -609,8 +603,10 @@
         <p>
           This study uses a simple drum pattern that you can see and listen to
           below. The timing error is made will always affect a single <i>beat</i
-          >: notes that are supposed to played togehter will still be played at
+          >: notes that are supposed to played together will still be played at
           the same time, but this time will be either too early or too late.
+          Notes after the mistake will also be affected and be early/late, such
+          that only one time interval is shorter/longer than supposed.
         </p>
       </div>
       This is what the pattern looks like in sheet music:

@@ -26,8 +26,9 @@
   const audioFiles = [
     './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',
     './MailboxBadgerPublicDomainDrumSamples27LiveDrumsHiHat.mp3',
+    './snare2.mp3',
   ];
-  let audioFile = audioFiles[0];
+  let audioFile = audioFiles[2];
   let cachedAudio;
   fetchAudio(audioFile).then((d) => {
     cachedAudio = d;
@@ -524,7 +525,7 @@
   <!-- Test -->
   {#if studyStep === 'tests'}
     <p>
-      You will be presented with a sequence of six piano notes which should have
+      You will be presented with a sequence of six drum notes which should have
       equal distances in time. The <b>fourth note</b> is
       <b>too early or too late</b>, also affecting the ones after. This
       deviation will get smaller and more difficult for you. You always have to
@@ -561,8 +562,7 @@
         {#if currentEncoding === 'waveform'}
           <div>
             This is a waveform of the audio, showing loudness over time. Look at
-            the peaks, the gap between the third and forth peaks is either
-            smaller (early) or larger (late) than the other gaps.
+            the gaps between peaks.
           </div>
           <div class="vis-example">
             <PlotWaveform
@@ -589,7 +589,7 @@
             width="{visWidth}"
             height="{visHeight}"
           />
-        {:else if currentEncoding === 'tick'}
+          <!-- {:else if currentEncoding === 'tick'}
           <div>
             Look at the peaks, the gap between the third and forth tick is
             either smaller (early) or larger (late) than the other gaps.
@@ -630,7 +630,7 @@
             <div>Example for early</div>
             <div>Example for late</div>
           </div>
-          <PlotBar {pattern} width="{visWidth}" height="{visHeight}" />
+          <PlotBar {pattern} width="{visWidth}" height="{visHeight}" /> -->
         {:else if currentEncoding === 'color'}
           <div>
             The color chart shows the size of the gaps between notes in the
