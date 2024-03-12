@@ -10,8 +10,8 @@
 
   let participants = [];
   let prolificDemographics = null;
-  const visWidth = 800;
-  let kdeBandwidth = 0.005;
+  const visWidth = 1200;
+  let kdeBandwidth = 0.001;
 
   // const handleFileInputDemo = async (evt) => {
   //   const file = evt.target.files[0];
@@ -205,7 +205,7 @@
         title="{`Density of final values for ${testEnc[0]}`}"
         values="{testEnc[1].map((d) => d.final)}"
         xLabel="final values"
-        xDomain="{[-0.2, 0.2]}"
+        xDomain="{[-0.01, 0.2]}"
         bandwidth="{kdeBandwidth}"
       />
     {/each}
@@ -287,15 +287,17 @@
   </div>
 
   <div>
-    {#each [...tests].sort((a, b) => a.final - b.final) as test}
+    <!-- {#each [...tests].sort((a, b) => a.final - b.final) as test} -->
+    {#each tests as test}
       <PlotLine
-        title="P{test.internalPID} {test.encoding}"
+        title="P{test.internalPID} {test.encoding} {test.data.length} trials"
         final="{test.final}"
         width="{visWidth}"
         height="{120}"
         data="{test.data}"
         x="{(d, i) => i}"
         y="{(d) => Math.abs(d)}"
+        xDomain="{[0, 165]}"
       />
     {/each}
   </div>

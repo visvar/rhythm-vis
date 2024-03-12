@@ -1,5 +1,5 @@
 <script>
-  import PlotLine from './plotsAnalysis/PlotLine.svelte';
+  import PlotLine from './plotsAnalysis/PlotLine2.svelte';
   import saveAs from 'file-saver';
   import * as d3 from 'd3';
   import PlotTickAllFinals from './plotsAnalysis/PlotTickAllFinals.svelte';
@@ -10,8 +10,8 @@
 
   let participants = [];
   let prolificDemographics = null;
-  const visWidth = 800;
-  let kdeBandwidth = 1;
+  const visWidth = 1200;
+  let kdeBandwidth = 0.001;
 
   // const handleFileInputDemo = async (evt) => {
   //   const file = evt.target.files[0];
@@ -65,7 +65,8 @@
           // representation order
           encodingOrder: d.tests.map((t) => t.encoding).join(', '),
         };
-      });
+      })
+      .filter((d) => d.prolificDemogr !== undefined);
     console.log('participants', participants);
   };
 
@@ -83,7 +84,7 @@
      * @param {number} step size of the age brackets
      * @returns {string} age bracket in steps of `step`
      */
-    const ageTo5YearBracked = (age, step = 5) => {
+    const ageToYearBracked = (age, step = 5) => {
       const lower = Math.floor(age / step) * step;
       return `${lower}-${lower + step - 1}`;
     };
@@ -91,16 +92,16 @@
     for (const participant of participants) {
       for (const [index, test] of participant.tests.entries()) {
         let testType = test.encoding;
-        if (test.encoding === 'audio' || test.encoding === 'waveform') {
-          testType = `${test.encoding} + ${
-            test.audioFile.startsWith('./Fluid') ? 'piano' : 'drums'
-          }`;
-        }
+        // if (test.encoding === 'audio' || test.encoding === 'waveform') {
+        //   testType = `${test.encoding} + ${
+        //     test.audioFile.startsWith('./Fluid') ? 'piano' : 'drums'
+        //   }`;
+        // }
         tests.push({
           ...participant.demographics,
           partAge: participant.demographics.partAge
             ? participant.demographics.partAge
-            : ageTo5YearBracked(participant.prolificDemogr.Age),
+            : ageToYearBracked(participant.prolificDemogr.Age, 10),
           partSex: participant.demographics.partGender
             ? participant.demographics.partGender
             : participant.prolificDemogr.Sex,
@@ -208,7 +209,7 @@
         title="{`Density of final values for ${testEnc[0]}`}"
         values="{testEnc[1].map((d) => d.final)}"
         xLabel="final values"
-        xDomain="{[-1, 20]}"
+        xDomain="{[-0.01, 0.2]}"
         bandwidth="{kdeBandwidth}"
       />
     {/each}
@@ -219,8 +220,8 @@
     x="finalAudio"
     y="finalWaveform"
     tipTitle="partID"
-    xDomain="{[0, 20]}"
-    yDomain="{[0, 20]}"
+    xDomain="{[0, 0.1]}"
+    yDomain="{[0, 0.1]}"
     data="{participants}"
   />
   <PlotScatter
@@ -228,8 +229,8 @@
     x="finalAudio"
     y="finalColor"
     tipTitle="partID"
-    xDomain="{[0, 20]}"
-    yDomain="{[0, 20]}"
+    xDomain="{[0, 0.1]}"
+    yDomain="{[0, 0.1]}"
     data="{participants}"
   />
 
@@ -290,14 +291,17 @@
   </div>
 
   <div>
+    <!-- {#each [...tests].sort((a, b) => a.final - b.final) as test} -->
     {#each tests as test}
       <PlotLine
-        title="{test.encoding}"
+        title="P{test.internalPID} {test.encoding} {test.data.length} trials"
+        final="{test.final}"
         width="{visWidth}"
-        height="{150}"
+        height="{120}"
         data="{test.data}"
         x="{(d, i) => i}"
         y="{(d) => Math.abs(d)}"
+        xDomain="{[0, 165]}"
       />
     {/each}
   </div>

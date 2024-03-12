@@ -9,6 +9,7 @@
   export let data;
   export let x = (d, i) => i;
   export let y = (d) => d;
+  export let xDomain = [0, 70];
 
   let plotContainer;
 
@@ -20,7 +21,7 @@
       width,
       height,
       x: {
-        domain: [0, 70],
+        domain: xDomain,
       },
       marks: [
         Plot.line(data, {
