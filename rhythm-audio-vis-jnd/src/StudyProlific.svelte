@@ -140,8 +140,7 @@
         limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 12, // How many reversals to do before stopping
-        // verbosity: 0, // Enable logging for debugging
-        verbosity: 1, // Enable logging for debugging
+        verbosity: 0, // Enable logging for debugging
       },
     });
     stair.init();
@@ -671,10 +670,9 @@
   <!-- Feedback -->
   {#if studyStep === 'feedback'}
     <div>
-      <label>
-        Do you have any final feedback/comments?
-        <textarea bind:value="{partFeedback}"></textarea>
-      </label>
+      Almost done!
+      <p>Do you have any final feedback/comments?</p>
+      <textarea bind:value="{partFeedback}"></textarea>
     </div>
   {/if}
 
