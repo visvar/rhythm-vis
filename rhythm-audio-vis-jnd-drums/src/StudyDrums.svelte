@@ -99,10 +99,10 @@
       ratio: {
         firstVal: initialErrorSeverity,
         operation: 'multiply',
-        down: 2, // down is the number of correct answers required before we increase the difficulty
+        down: 1, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
         stepSizeDown: 1.25, // how much we in/decrease by
-        stepSizeUp: 1.25,
+        stepSizeUp: 1.25 * 1.25 * 1.25,
         limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 12, // How many reversals to do before stopping
@@ -277,6 +277,8 @@
     // console.log('results (all)', completeResults);
     currentTestNumber++;
   }
+
+  function training() {}
 
   function keyPress(evt) {
     // console.log(evt.key);
@@ -741,6 +743,7 @@
 
       {#if currentEncoding === 'audio'}
         <p>
+          Listen to the audio, the 5th beat comes either too soon or too late.
           Press <i>p</i> or click <i>play</i> to replay the audio, you can do this
           is often as you like.
         </p>
@@ -842,8 +845,8 @@
           <p>
             The color chart shows the size of the time gaps between <b>beats</b>
             in the rectangles' darkness (example: color at 2 shows the gap between
-            the first and second beat). Brighter bars show smaller gaps (early),
-            darker bars show wider gaps (late).
+            the first and second beat). Look at the rectangle at 5, it is either
+            brigher (early) or darker (late) than the others.
           </p>
           <div class="vis-example">
             <PlotColorBeats

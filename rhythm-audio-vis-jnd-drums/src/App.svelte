@@ -8,7 +8,7 @@
   let view = getUrlParam(window, 'p') ?? 'study_drums';
   // view = 'playground';
   // view = 'study_drums';
-  // view = '';
+  view = '';
 </script>
 
 <main>
@@ -30,5 +30,5 @@
     <AnalysisProlific />
   {/if}
 
-  <!-- <StudyDrums_StaircaseTest /> -->
+  <StudyDrums_StaircaseTest />
 </main>

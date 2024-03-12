@@ -95,8 +95,8 @@
   // deviation in seconds
   const initialErrorSeverity = 0.1;
   // deviation in seconds
-  let noteCount = 6;
-  let wrongNoteIndex = 4 - 1; // nth note means index n-1
+  let noteCount = 8;
+  let wrongNoteIndex = 5 - 1; // nth note means index n-1
   let shiftFollowing = true;
   let paddingStart = 0;
   // vis sizes
@@ -133,10 +133,10 @@
       ratio: {
         firstVal: initialErrorSeverity,
         operation: 'multiply',
-        down: 2, // down is the number of correct answers required before we increase the difficulty
+        down: 1, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
         stepSizeDown: 1.25, // how much we in/decrease by
-        stepSizeUp: 1.25,
+        stepSizeUp: 1.25 * 1.25 * 1.25,
         limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 12, // How many reversals to do before stopping
@@ -523,8 +523,8 @@
   <!-- Test -->
   {#if studyStep === 'tests'}
     <p>
-      You will be presented with a sequence of six drum notes which should have
-      equal distances in time. The <b>fourth note</b> is
+      You will be presented with a sequence of 8 drum notes which should have
+      equal distances in time. The <b>5th note</b> is
       <b>too early or too late</b>, also affecting the ones after. This
       deviation will get smaller and more difficult for you. You always have to
       answer "early" or "late".
@@ -537,7 +537,7 @@
       </p>
       {#if currentEncoding === 'audio'}
         <div>
-          Listen to the audio, the forth note comes either too soon or too late.
+          Listen to the audio, the 5th note comes either too soon or too late.
           Press <i>p</i> or click <i>play</i> to replay the audio, you can do this
           is often as you like.
         </div>
@@ -633,8 +633,8 @@
           <div>
             The color chart shows the size of the gaps between notes in the
             rectangles darkness (example: color at 2 shows the gap between the
-            first and second note). Look at the third bar, it is either brigher
-            (early) or darker (late) than the others.
+            first and second note). Look at the rectangle at 5, it is either
+            brigher (early) or darker (late) than the others.
           </div>
           <div class="vis-example">
             <PlotColor

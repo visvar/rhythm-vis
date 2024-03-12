@@ -27,8 +27,8 @@
   let sessionID = getUrlParam(window, 'SESSION_ID');
   // console.log({ partID, studyID, sessionID });
 
-  let tests = ['audio', 'waveform', 'color'].map((d) => {
-    // let tests = ['waveform', 'color'].map((d) => {
+  // let tests = ['audio', 'waveform', 'color'].map((d) => {
+  let tests = ['waveform', 'color'].map((d) => {
     return { encoding: d };
   });
   console.log({ tests });
@@ -100,11 +100,11 @@
       ratio: {
         firstVal: initialErrorSeverity,
         operation: 'multiply',
-        down: 2, // down is the number of correct answers required before we increase the difficulty
+        down: 1, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
         // factor: 1.25,
         stepSizeDown: 1.25, // how much we in/decrease by
-        stepSizeUp: 1.25, // Converge to 80.35% correct ('downUpRatio' and 'down' affect this)
+        stepSizeUp: 1.25 * 1.25 * 1.25,
         limits: [0, initialErrorSeverity], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 12, // How many reversals to do before stopping
@@ -456,6 +456,11 @@
     // } else {
     //   alert('wrong error mode');
     // }
+    // also shift all that come later
+    for (const h of [6, 7, 8]) {
+      hihat.times[h - 1] = hihat.timesOriginal[h - 1] + errorSeverity;
+    }
+    snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
 
     // console.log(drumPattern);
     return copy;
