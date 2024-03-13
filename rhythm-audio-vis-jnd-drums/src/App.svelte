@@ -8,19 +8,19 @@
   let view = getUrlParam(window, 'p') ?? 'study_drums';
   // view = 'playground';
   // view = 'study_drums';
-  view = '';
+  // view = '';
 </script>
 
 <main>
   <h1>Rhythm Error Sensitivity Study</h1>
 
-  {#if view !== 'study_drums'}
+  <!-- {#if view !== 'study_drums'}
     <div>
       <button on:click="{() => (view = 'playground')}">Playground</button>
       <button on:click="{() => (view = 'study_drums')}"> Study </button>
       <button on:click="{() => (view = 'analysis')}"> Analysis </button>
     </div>
-  {/if}
+  {/if} -->
 
   {#if view === 'playground'}
     <Playground />
@@ -30,5 +30,5 @@
     <AnalysisProlific />
   {/if}
 
-  <StudyDrums_StaircaseTest />
+  <!-- <StudyDrums_StaircaseTest /> -->
 </main>

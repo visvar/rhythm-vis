@@ -1,17 +1,17 @@
 <script>
   import { fetchAudio, shuffleArray, simulateDrum } from './lib/lib.js';
-  import Audio from './Audio.svelte';
-  import PlotWaveform from './plots/PlotWaveform.svelte';
+  import Audio from './Audio.svelte.js';
+  import PlotWaveform from './plots/PlotWaveform.svelte.js';
   // import PlotTick from './plots/PlotTick.svelte';
   // import PlotBar from './plots/PlotBar.svelte';
-  import PlotColorBeats from './plots/PlotColorBeats.svelte';
+  import PlotColorBeats from './plots/PlotColorBeats.svelte.js';
   import { onMount } from 'svelte';
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
   import { getUrlParam } from './lib/url.js';
-  import AudioExample from './AudioExample.svelte';
+  import AudioExample from './AudioExample.svelte.js';
   import { Utils } from 'musicvis-lib';
-  import AudioExampleInTrials from './AudioExampleInTrials.svelte';
-  import PlotLine from './plotsAnalysis/PlotLine.svelte';
+  import AudioExampleInTrials from './AudioExampleInTrials.svelte.js';
+  import PlotLine from './plotsAnalysis/PlotLine.svelte.js';
 
   const DEBUG = false;
   const SERVER_URL = '/store';
@@ -431,16 +431,16 @@
       sample: './hihat.mp3',
       beats: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
     },
-    {
-      instrument: 'snare',
-      sample: './snare2.mp3',
-      beats: [2, 4],
-    },
-    {
-      instrument: 'bass',
-      sample: './bass2.mp3',
-      beats: [1, 3],
-    },
+    // {
+    //   instrument: 'snare',
+    //   sample: './snare2.mp3',
+    //   beats: [2, 4],
+    // },
+    // {
+    //   instrument: 'bass',
+    //   sample: './bass2.mp3',
+    //   beats: [1, 3],
+    // },
   ];
   const beats = 4;
   let spb = Utils.bpmToSecondsPerBeat(BPM);
@@ -488,16 +488,16 @@
     const copy = concat([correctPattern]);
 
     const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
-    const snare = copy.filter((d) => d.instrument === 'snare')[0];
-    const bass = copy.filter((d) => d.instrument === 'bass')[0];
-    bass.times[2 - 1] = bass.timesOriginal[2 - 1] + errorSeverity;
+    // const snare = copy.filter((d) => d.instrument === 'snare')[0];
+    // const bass = copy.filter((d) => d.instrument === 'bass')[0];
+    // bass.times[2 - 1] = bass.timesOriginal[2 - 1] + errorSeverity;
     hihat.times[5 - 1] = hihat.timesOriginal[5 - 1] + errorSeverity;
 
     // also shift all that come later
     for (const h of [6, 7, 8]) {
       hihat.times[h - 1] = hihat.timesOriginal[h - 1] + errorSeverity;
     }
-    snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
+    // snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
 
     // console.log(drumPattern);
     return copy;

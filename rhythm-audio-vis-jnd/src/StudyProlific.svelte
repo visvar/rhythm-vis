@@ -39,14 +39,14 @@
     {
       stimulus: 'color',
     },
-    {
-      stimulus: 'audio',
-      audioFile,
-    },
-    {
-      stimulus: 'waveform',
-      audioFile,
-    },
+    // {
+    //   stimulus: 'audio',
+    //   audioFile,
+    // },
+    // {
+    //   stimulus: 'waveform',
+    //   audioFile,
+    // },
     // {
     //   stimulus: 'tick',
     // },
@@ -55,13 +55,32 @@
     // },
   ];
 
-  const examplePatternEarly = [0, 0.5, 1, 1.4, 1.9, 2.4];
-  const examplePatternLate = [0, 0.5, 1, 1.6, 2.1, 2.6];
+  let ioi = 0.25;
+  // deviation in seconds
+  const initialErrorSeverity = 0.1;
+  // deviation in seconds
+  let noteCount = 8;
+  let wrongNoteIndex = 5 - 1; // nth note means index n-1
+  let shiftFollowing = true;
+  let paddingStart = 0;
+
+  // const examplePatternEarly = [0, 0.5, 1, 1.4, 1.9, 2.4];
+  // const examplePatternLate = [0, 0.5, 1, 1.6, 2.1, 2.6];
+  const examplePatternEarly = new Array(8)
+    .fill()
+    .map((d, i) =>
+      i < wrongNoteIndex ? i * ioi : i * ioi - initialErrorSeverity,
+    );
+  const examplePatternLate = new Array(8)
+    .fill()
+    .map((d, i) =>
+      i < wrongNoteIndex ? i * ioi : i * ioi + initialErrorSeverity,
+    );
 
   // study progress
   // consent, start1, start2, demo, tests, feedback, done
-  let studyStep = 'consent'; // TODO:
-  // let studyStep = 'tests';
+  // let studyStep = 'consent'; // TODO:
+  let studyStep = 'tests';
   let currentTestNumber = 0;
   let testStartTime;
 
@@ -91,14 +110,6 @@
   // let encodings = ['audio', 'waveform', 'tick', 'bar', 'color'];
   let currentEncoding = 'tick';
   // inter-onset interval in seconds
-  let ioi = 0.5;
-  // deviation in seconds
-  const initialErrorSeverity = 0.1;
-  // deviation in seconds
-  let noteCount = 8;
-  let wrongNoteIndex = 5 - 1; // nth note means index n-1
-  let shiftFollowing = true;
-  let paddingStart = 0;
   // vis sizes
   let visWidth = 600;
   $: visHeight = visWidth / 6;
@@ -693,7 +704,14 @@
 
 <style>
   main {
+    max-width: 1000px;
     text-align: center;
+  }
+
+  p {
+    max-width: 600px;
+    margin: 10px auto;
+    text-align: justify;
   }
 
   .demo-form {
@@ -713,6 +731,7 @@
     padding: 10px;
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 20px;
     background: #eee;
     border-radius: 10px;
   }
@@ -723,5 +742,9 @@
 
   .next-btn {
     margin-top: 30px;
+  }
+
+  label {
+    text-align: left;
   }
 </style>

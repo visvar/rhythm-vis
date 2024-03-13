@@ -28,7 +28,8 @@
   // console.log({ partID, studyID, sessionID });
 
   // let tests = ['audio', 'waveform', 'color'].map((d) => {
-  let tests = ['waveform', 'color'].map((d) => {
+  // let tests = ['waveform', 'color'].map((d) => {
+  let tests = ['color'].map((d) => {
     return { encoding: d };
   });
   console.log({ tests });
@@ -39,8 +40,15 @@
   // study progress
   // consent, start1, start2, demo, tests, feedback, done
   let studyStep = 'tests';
-  let currentTestNumber = 0;
   let testStartTime;
+  let currentTestNumber = 0;
+
+  // training before each trial
+  let isTraining = false;
+  let trainingCorrectStreak = 0;
+  let trainingLimit = 8;
+  let traingCurrentSeverity = 0;
+  let trainingFeedback = '';
 
   // participant data
   // let partID = '';
@@ -65,7 +73,7 @@
   let whiteScreenShowing = false;
 
   // stimulus variables
-  let currentEncoding = 'tick';
+  let currentEncoding = '';
 
   // vis sizes
   let visWidth = 600;
@@ -162,10 +170,20 @@
     } else if (studyStep === 'tests') {
       // save data already after each test
       // saveData();
-      if (currentTestNumber < tests.length) {
-        startTest();
-      } else {
+      if (currentTestNumber >= tests.length) {
+        // all tests done
         studyStep = 'feedback';
+      } else {
+        // set variables
+        currentEncoding = tests[currentTestNumber].encoding;
+        // start training
+        if (trainingCorrectStreak === 0) {
+          isTraining = true;
+          showTraining();
+        } else {
+          startTest();
+          trainingCorrectStreak = 0;
+        }
       }
     } else if (studyStep === 'feedback') {
       // save data after feedback
@@ -179,15 +197,6 @@
    */
   function startTest() {
     setupInstructions();
-    // set variables
-    currentEncoding = tests[currentTestNumber].encoding;
-    // generate examples
-    const early = createDrumPattern(-initialErrorSeverity);
-    const late = createDrumPattern(initialErrorSeverity);
-    noteTimesExampleEarly = early.noteTimes;
-    noteTimesExampleLate = late.noteTimes;
-    renderedAudioExampleEarly = early.renderedAudio;
-    renderedAudioExampleLate = late.renderedAudio;
     // keep track of trials
     currentTrialNumber = 0;
     validTrials = 0;
@@ -231,6 +240,25 @@
     }, 1000);
   }
 
+  /**
+   * Show training stimulus
+   */
+  function showTraining() {
+    console.log('show training');
+    // between half and full initial value
+    let severity = (Math.random() * 0.5 + 0.5) * initialErrorSeverity;
+    severity = Math.random() < 0.5 ? severity : -severity;
+    traingCurrentSeverity = severity;
+    console.log('training severity', severity);
+    // get pattern
+    const result = createDrumPattern(severity);
+    noteTimes = result.noteTimes;
+    noteTimesSeparate = result.noteTimesSeparate;
+    sampleRate = result.sampleRate;
+    renderedAudio = result.renderedAudio;
+    console.log('generated training', result);
+  }
+
   function decisionClick(id) {
     if (!trialActive) {
       return;
@@ -268,6 +296,26 @@
       // test complete
       endTest();
     }
+  }
+
+  /**
+   *
+   * @param {'early'|'late'} id
+   */
+  function trainingClick(id) {
+    if (
+      (id === 'early' && traingCurrentSeverity < 0) ||
+      (id === 'late' && traingCurrentSeverity > 0)
+    ) {
+      // correct
+      trainingCorrectStreak++;
+      if (trainingCorrectStreak >= trainingLimit) {
+        isTraining = false;
+      }
+    } else {
+      trainingCorrectStreak = 0;
+    }
+    showTraining();
   }
 
   function endTest() {
@@ -308,10 +356,16 @@
         if (trialActive) {
           decisionClick(0);
         }
+        if (isTraining) {
+          trainingClick('early');
+        }
         break;
       case 'ArrowRight':
         if (trialActive) {
           decisionClick(1);
+        }
+        if (isTraining) {
+          trainingClick('late');
         }
         break;
       case 'PageDown':
@@ -425,6 +479,13 @@
         };
       }),
     );
+    // generate examples
+    const early = createDrumPattern(-initialErrorSeverity);
+    const late = createDrumPattern(initialErrorSeverity);
+    noteTimesExampleEarly = early.noteTimes;
+    noteTimesExampleLate = late.noteTimes;
+    renderedAudioExampleEarly = early.renderedAudio;
+    renderedAudioExampleLate = late.renderedAudio;
   };
   fetchDrumAudios();
 
@@ -542,8 +603,6 @@
 </script>
 
 <main>
-  <!-- <h2>Study (Prolific)</h2> -->
-
   {#if studyStep === 'consent'}
     <div>
       <p>
@@ -751,20 +810,26 @@
 
   <!-- Test -->
   {#if studyStep === 'tests'}
-    {#if testActive}
+    {#if testActive || isTraining}
       <p>
         Test number {currentTestNumber + 1} of {tests.length}
       </p>
-      <p>
-        The <b>5th beat</b> with a <b>hi-hat and a bass</b> note is shifted.
-      </p>
+
+      {#if isTraining}
+        <p class="training">
+          <b>Training:</b> the training will end when you got {trainingLimit} correct
+          in a streak.<br />
+          Current streak: {trainingCorrectStreak}.
+        </p>
+      {:else}
+        <p>
+          Trial number {currentTrialNumber + 1}
+        </p>
+      {/if}
 
       <p>
         Use the arrow keys on your keyboard: <b>left for early</b>,
         <b>right for late</b>.
-      </p>
-      <p>
-        Trial number {currentTrialNumber + 1}
       </p>
 
       {#if currentEncoding === 'audio'}
@@ -928,7 +993,7 @@
   {/if}
 
   <!-- show next step button -->
-  {#if !trialActive && !(studyStep === 'done')}
+  {#if !trialActive && !(studyStep === 'done') && !isTraining}
     <!-- <button on:click="{nextStudyStep}">next step (PageDown)</button> -->
     <button on:click="{nextStudyStep}" class="next-btn">next step</button>
   {/if}
