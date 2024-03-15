@@ -1,16 +1,16 @@
 <script>
   import { fetchAudio, simulateDrum } from './lib/lib.js';
-  import PlotTick from './plots/PlotTick.svelte.js';
-  import PlotBar from './plots/PlotBar.svelte.js';
-  import PlotColor from './plots/PlotColor.svelte.js';
-  import PlotWaveform from './plots/PlotWaveform.svelte.js';
-  import Audio from './Audio.svelte.js';
+  import PlotTick from './plots/PlotTick.svelte';
+  import PlotBar from './plots/PlotBar.svelte';
+  import PlotColor from './plots/PlotColor.svelte';
+  import PlotWaveform from './plots/PlotWaveform.svelte';
+  import Audio from './audioPlayback/Audio.svelte';
   import { Utils } from 'musicvis-lib';
   import { onMount } from 'svelte';
-  import PlotTickSep from './plots/PlotTickSep.svelte.js';
-  import PlotBarSep from './plots/PlotBarSep.svelte.js';
-  import PlotColorSep from './plots/PlotColorSep.svelte.js';
-  import PlotWaveformSep from './plots/PlotWaveformSep.svelte.js';
+  import PlotTickSep from './plots/PlotTickSep.svelte';
+  import PlotBarSep from './plots/PlotBarSep.svelte';
+  import PlotColorSep from './plots/PlotColorSep.svelte';
+  import PlotWaveformSep from './plots/PlotWaveformSep.svelte';
 
   // vis sizes
   let visWidth = 600;

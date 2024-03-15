@@ -4,7 +4,7 @@
   import PlotBar from './plots/PlotBar.svelte';
   import PlotColor from './plots/PlotColor.svelte';
   import PlotWaveform from './plots/PlotWaveform.svelte';
-  import Audio from './Audio.svelte';
+  import Audio from './audioPlayback/Audio.svelte';
   import { Utils } from 'musicvis-lib';
   import { onMount } from 'svelte';
   import PlotTickSep from './plots/PlotTickSep.svelte';

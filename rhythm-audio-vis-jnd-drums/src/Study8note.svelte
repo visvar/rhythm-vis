@@ -1,25 +1,24 @@
 <script>
   import { fetchAudio, shuffleArray, simulateDrum } from './lib/lib.js';
-  import Audio from './Audio.svelte.js';
-  import PlotWaveform from './plots/PlotWaveform.svelte.js';
+  import PlotWaveform from './plots/PlotWaveform.svelte';
   // import PlotTick from './plots/PlotTick.svelte';
   // import PlotBar from './plots/PlotBar.svelte';
-  import PlotColorBeats from './plots/PlotColorBeats.svelte.js';
+  import PlotColorBeats from './plots/PlotColorBeats.svelte';
   import { onMount } from 'svelte';
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
   import { getUrlParam } from './lib/url.js';
-  import AudioExample from './AudioExample.svelte.js';
   import { Utils } from 'musicvis-lib';
-  import AudioExampleInTrials from './AudioExampleInTrials.svelte.js';
-  import PlotLine from './plotsAnalysis/PlotLine.svelte.js';
+  import Audio from './audioPlayback/Audio.svelte';
+  import AudioExample from './audioPlayback/AudioExample.svelte';
+  import AudioExampleInTrials from './audioPlayback/AudioExampleInTrials.svelte';
+  import PlotLine from './plotsAnalysis/PlotLine.svelte';
 
+  const STUDY_NAME = '8beat_hihat_8ths_120bpm';
   const DEBUG = false;
   const SERVER_URL = '/store';
   const BPM = 120;
   // deviation in seconds, start with less than 0.25 because 0.25 is an eighth note
   const initialErrorSeverity = 0.1;
-  // should be 1/20th of initial to be consistent with first study
-  const stairStep = 0.005;
 
   // prolific params
   let partID = getUrlParam(window, 'PROLIFIC_PID');
@@ -27,17 +26,54 @@
   let sessionID = getUrlParam(window, 'SESSION_ID');
   // console.log({ partID, studyID, sessionID });
 
+  let correctPattern = [
+    {
+      instrument: 'hihat',
+      sample: './hihat.mp3',
+      beats: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
+    },
+    // {
+    //   instrument: 'snare',
+    //   sample: './snare2.mp3',
+    //   beats: [2, 4],
+    // },
+    // {
+    //   instrument: 'bass',
+    //   sample: './bass2.mp3',
+    //   beats: [1, 3],
+    // },
+  ];
+  const beats = 4;
+
+  /**
+   * Adds errors based on mode and severity
+   * @param {number} errorSeverity
+   */
+  const addErrors = (errorSeverity = 0) => {
+    if (errorSeverity === 0) {
+      return correctPattern;
+    }
+    const copy = concat([correctPattern]);
+    const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
+
+    // shift beat 5, also shift all that come later
+    for (const h of [5, 6, 7, 8]) {
+      hihat.times[h - 1] = hihat.timesOriginal[h - 1] + errorSeverity;
+    }
+    // console.log(drumPattern);
+    return copy;
+  };
+
   let tests = ['audio', 'waveform', 'color'].map((d) => {
     return { encoding: d };
   });
-  console.log({ tests });
 
   // const examplePatternEarly;
   // const examplePatternLate;
 
   // study progress
   // consent, start1, start2, demo, tests, feedback, done
-  let studyStep = 'consent';
+  let studyStep = 'consent'; // TODO: change to tests for testing
   let currentTestNumber = 0;
   let testStartTime;
 
@@ -140,11 +176,7 @@
         partEduation == '' ||
         partMusicInstr == ''
       ) {
-        // TODO: comment in
         alert('please fill the form first');
-        // TODO: comment out 2 lines
-        // studyStep = 'tests';
-        // currentTestNumber = 0;
       } else {
         studyStep = 'tests';
         currentTestNumber = 0;
@@ -371,6 +403,7 @@
 
   function saveData() {
     const data = {
+      studyName: STUDY_NAME,
       studyStep,
       demographics: {
         // prolific parameters
@@ -423,34 +456,16 @@
    *
    */
 
-  // @ts-ignore
-
-  let correctPattern = [
-    {
-      instrument: 'hihat',
-      sample: './hihat.mp3',
-      beats: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
-    },
-    // {
-    //   instrument: 'snare',
-    //   sample: './snare2.mp3',
-    //   beats: [2, 4],
-    // },
-    // {
-    //   instrument: 'bass',
-    //   sample: './bass2.mp3',
-    //   beats: [1, 3],
-    // },
-  ];
-  const beats = 4;
   let spb = Utils.bpmToSecondsPerBeat(BPM);
   const duration = beats * spb;
 
+  let sampleRate;
   let renderedAudio = null;
+  let renderedAudioExampleCorrect = null;
   let renderedAudioExampleEarly = null;
   let renderedAudioExampleLate = null;
-  let sampleRate;
   let noteTimes = [];
+  let noteTimesExampleCorrect = [];
   let noteTimesExampleEarly = [];
   let noteTimesExampleLate = [];
   let noteTimesSeparate = [];
@@ -467,41 +482,18 @@
       }),
     );
     // generate examples
+    const correct = createDrumPattern(0);
     const early = createDrumPattern(-initialErrorSeverity);
     const late = createDrumPattern(initialErrorSeverity);
+    noteTimesExampleCorrect = correct.noteTimes;
     noteTimesExampleEarly = early.noteTimes;
     noteTimesExampleLate = late.noteTimes;
+    renderedAudioExampleCorrect = correct.renderedAudio;
     renderedAudioExampleEarly = early.renderedAudio;
     renderedAudioExampleLate = late.renderedAudio;
+    sampleRate = correctPattern[0].audioBuffer.sampleRate;
   };
   fetchDrumAudios();
-
-  /**
-   * Adds errors based on mode and severity
-   * @param {number} errorSeverity
-   */
-  const addErrors = (errorSeverity = 0) => {
-    if (errorSeverity === 0) {
-      return correctPattern;
-    }
-    // console.log(`Adding error ${errorMode} ${errorSeverity}`);
-    const copy = concat([correctPattern]);
-
-    const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
-    // const snare = copy.filter((d) => d.instrument === 'snare')[0];
-    // const bass = copy.filter((d) => d.instrument === 'bass')[0];
-    // bass.times[2 - 1] = bass.timesOriginal[2 - 1] + errorSeverity;
-    hihat.times[5 - 1] = hihat.timesOriginal[5 - 1] + errorSeverity;
-
-    // also shift all that come later
-    for (const h of [6, 7, 8]) {
-      hihat.times[h - 1] = hihat.timesOriginal[h - 1] + errorSeverity;
-    }
-    // snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
-
-    // console.log(drumPattern);
-    return copy;
-  };
 
   /**
    * Concats multiple drum patterns
@@ -614,9 +606,9 @@
         the audio volume to a comfortable level that allows you to hear this
         pattern clearly.
       </p>
-      <AudioExample
-        pattern="{[0.1, 0.6, 1.1]}"
-        cachedAudio="{correctPattern[2].audioBuffer}"
+      <AudioExampleInTrials
+        audioData="{renderedAudioExampleCorrect}"
+        {sampleRate}
       />
       <p>If you cannot hear anything, you cannot participate in this study.</p>
       <a href="https://app.prolific.com/submissions/complete?cc=CH9I2X6E">
@@ -677,33 +669,16 @@
       <div>
         <img
           width="{visWidth}px"
-          src="drum-pattern-labels3.png"
+          src="8note-pattern-hihat.png"
           alt="drum pattern as sheet music"
-        />
-      </div>
-      <div
-        style="display: grid; grid-template-columns: repeat(4,max-content); gap: 10px; align-items: center"
-      >
-        <span>Click to hear the different sounds:</span>
-        <AudioExample
-          pattern="{[0.1]}"
-          cachedAudio="{correctPattern[0].audioBuffer}"
-          label="hi-hat"
-        />
-        <AudioExample
-          pattern="{[0.1]}"
-          cachedAudio="{correctPattern[1].audioBuffer}"
-          label="snare drum"
-        />
-        <AudioExample
-          pattern="{[0.1]}"
-          cachedAudio="{correctPattern[2].audioBuffer}"
-          label="bass drum"
         />
       </div>
       This is what the full, correctly played pattern sounds like:
       <div>
-        <audio src="drum-pattern-correct-once.wav" controls> </audio>
+        <AudioExampleInTrials
+          audioData="{renderedAudioExampleCorrect}"
+          {sampleRate}
+        />
       </div>
     </div>
   {/if}

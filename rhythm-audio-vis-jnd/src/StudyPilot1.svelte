@@ -8,7 +8,7 @@
   import PlotColor from './plots/PlotColor.svelte';
   import { onMount } from 'svelte';
   import { Staircase } from './lib/StaircaseJS/StaircaseModule.js';
-  // import PlotLine from './lib/StaircaseJS/PlotLine.svelte.js';
+  // import PlotLine from './lib/StaircaseJS/PlotLine.svelte';
 
   const audioFiles = [
     './FluidR3_GM_acoustic_grand_piano-mp3_A4.mp3',

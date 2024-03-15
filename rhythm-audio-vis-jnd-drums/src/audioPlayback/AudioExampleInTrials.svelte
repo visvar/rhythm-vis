@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { audioDataToAudioEl } from './lib/lib.js';
+  import { audioDataToAudioEl } from '../lib/lib.js';
 
   export let audioData = null;
   export let sampleRate = null;
