@@ -18,7 +18,9 @@
   const SERVER_URL = '/store';
   const BPM = 120;
   // deviation in seconds, start with less than 0.25 because 0.25 is an eighth note
-  const initialErrorSeverity = 0.1;
+  const INITIAL_SEVERITY = 0.1;
+
+  console.log(STUDY_NAME, BPM, INITIAL_SEVERITY);
 
   // prolific params
   let partID = getUrlParam(window, 'PROLIFIC_PID');
@@ -145,13 +147,13 @@
       // },
       // MULTIPLICATIVE
       ratio: {
-        firstVal: initialErrorSeverity,
+        firstVal: INITIAL_SEVERITY,
         operation: 'multiply',
         down: 1, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
         stepSizeDown: 1.25, // how much we in/decrease by
         stepSizeUp: 1.25 * 1.25 * 1.25,
-        limits: [0, initialErrorSeverity], // don't allow equal ratio
+        limits: [0, INITIAL_SEVERITY], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 12, // How many reversals to do before stopping
         verbosity: 0, // Enable logging for debugging
@@ -263,7 +265,7 @@
   function showTraining() {
     console.log('show training');
     // between half and full initial value
-    let severity = (Math.random() * 0.5 + 0.5) * initialErrorSeverity;
+    let severity = (Math.random() * 0.5 + 0.5) * INITIAL_SEVERITY;
     severity = Math.random() < 0.5 ? severity : -severity;
     traingCurrentSeverity = severity;
     console.log('training severity', severity);
@@ -488,8 +490,8 @@
     );
     // generate examples
     const correct = createDrumPattern(0);
-    const early = createDrumPattern(-initialErrorSeverity);
-    const late = createDrumPattern(initialErrorSeverity);
+    const early = createDrumPattern(-INITIAL_SEVERITY);
+    const late = createDrumPattern(INITIAL_SEVERITY);
     noteTimesExampleCorrect = correct.noteTimes;
     noteTimesExampleEarly = early.noteTimes;
     noteTimesExampleLate = late.noteTimes;

@@ -5,7 +5,8 @@
   import Study8Note from './Study8Note.svelte';
   import { getUrlParam } from './lib/url';
 
-  let view = getUrlParam(window, 'p') ?? 'study_drums';
+  // let view = getUrlParam(window, 'p') ?? 'study_drums';
+  let view = getUrlParam(window, 'p') ?? 'study_8note';
   // view = 'playground';
   // view = 'study_drums';
   // view = '';

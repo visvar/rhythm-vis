@@ -18,7 +18,9 @@
   const SERVER_URL = '/store';
   const BPM = 120;
   // deviation in seconds, start with less than 0.25 because 0.25 is an eighth note
-  const initialErrorSeverity = 0.1;
+  const INITIAL_SEVERITY = 0.1;
+
+  console.log(STUDY_NAME, BPM, INITIAL_SEVERITY);
 
   // prolific params
   let partID = getUrlParam(window, 'PROLIFIC_PID');
@@ -32,16 +34,6 @@
       sample: './hihat.mp3',
       beats: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
     },
-    // {
-    //   instrument: 'snare',
-    //   sample: './snare2.mp3',
-    //   beats: [2, 4],
-    // },
-    // {
-    //   instrument: 'bass',
-    //   sample: './bass2.mp3',
-    //   beats: [1, 3],
-    // },
   ];
   const beats = 4;
 
@@ -140,13 +132,13 @@
       // },
       // MULTIPLICATIVE
       ratio: {
-        firstVal: initialErrorSeverity,
+        firstVal: INITIAL_SEVERITY,
         operation: 'multiply',
         down: 1, // down is the number of correct answers required before we increase the difficulty
         up: 1, // up is the number of incorrect answers before we decrease the difficulty
         stepSizeDown: 1.25, // how much we in/decrease by
         stepSizeUp: 1.25 * 1.25 * 1.25,
-        limits: [0, initialErrorSeverity], // don't allow equal ratio
+        limits: [0, INITIAL_SEVERITY], // don't allow equal ratio
         direction: -1, // -1 indicates that easier = greater values; 1 would indicate easier = lower values
         reversalLimit: 12, // How many reversals to do before stopping
         verbosity: 0, // Enable logging for debugging
@@ -258,7 +250,7 @@
   function showTraining() {
     console.log('show training');
     // between half and full initial value
-    let severity = (Math.random() * 0.5 + 0.5) * initialErrorSeverity;
+    let severity = (Math.random() * 0.5 + 0.5) * INITIAL_SEVERITY;
     severity = Math.random() < 0.5 ? severity : -severity;
     traingCurrentSeverity = severity;
     console.log('training severity', severity);
@@ -483,8 +475,8 @@
     );
     // generate examples
     const correct = createDrumPattern(0);
-    const early = createDrumPattern(-initialErrorSeverity);
-    const late = createDrumPattern(initialErrorSeverity);
+    const early = createDrumPattern(-INITIAL_SEVERITY);
+    const late = createDrumPattern(INITIAL_SEVERITY);
     noteTimesExampleCorrect = correct.noteTimes;
     noteTimesExampleEarly = early.noteTimes;
     noteTimesExampleLate = late.noteTimes;
@@ -658,11 +650,9 @@
         </p>
         <p>
           This study uses a simple drum pattern that you can see and listen to
-          below. The timing error is made will always affect a single <i>beat</i
-          >: notes that are supposed to played together will still be played at
-          the same time, but this time will be either too early or too late.
-          Notes after the mistake will also be affected and be early/late, such
-          that only one time interval is shorter/longer than supposed.
+          below. Notes after the mistake will also be affected and be
+          early/late, such that only one time interval is shorter/longer than
+          supposed.
         </p>
       </div>
       This is what the pattern looks like in sheet music:
