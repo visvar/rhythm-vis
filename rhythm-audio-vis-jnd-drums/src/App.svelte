@@ -6,10 +6,11 @@
   import { getUrlParam } from './lib/url';
 
   // let view = getUrlParam(window, 'p') ?? 'study_drums';
-  let view = getUrlParam(window, 'p') ?? 'study_8note';
+  let view = getUrlParam(window, 'p');
   // view = 'playground';
   // view = 'study_drums';
   // view = '';
+  console.log(view);
 </script>
 
 <main>
