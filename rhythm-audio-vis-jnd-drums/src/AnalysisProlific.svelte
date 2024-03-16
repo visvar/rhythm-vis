@@ -22,12 +22,13 @@
 
   const handleFileInput = async (evt) => {
     const data2 = [];
+    prolificDemographics = [];
     for (const file of evt.target.files) {
       if (file.name.endsWith('.csv')) {
         // Prolific demographics
         const content = await file.text();
         const csv = d3.csvParse(content);
-        prolificDemographics = csv;
+        prolificDemographics = [...prolificDemographics, ...csv];
         console.log('p demo', prolificDemographics);
       } else {
         // participant results
@@ -94,6 +95,7 @@
         // let testType = `${test.encoding} + ${test.pattern}`;
         let testType = test.encoding;
         tests.push({
+          studyName: participant.studyName,
           ...participant.demographics,
           partAge: participant.demographics.partAge
             ? participant.demographics.partAge
@@ -290,7 +292,8 @@
     <!-- {#each [...tests].sort((a, b) => a.final - b.final) as test} -->
     {#each tests as test}
       <PlotLine
-        title="P{test.internalPID} {test.encoding} {test.data.length} trials"
+        title="{test.studyName} P{test.internalPID} {test.encoding} {test.data
+          .length} trials"
         final="{test.final}"
         width="{visWidth}"
         height="{120}"

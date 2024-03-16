@@ -14,7 +14,7 @@
   let plotContainer;
 
   afterUpdate(() => {
-    console.log({ final });
+    // console.log({ final });
     plotContainer.textContent = '';
     const plot = Plot.plot({
       title,
