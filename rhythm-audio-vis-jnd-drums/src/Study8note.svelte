@@ -28,6 +28,11 @@
   let sessionID = getUrlParam(window, 'SESSION_ID');
   // console.log({ partID, studyID, sessionID });
 
+  // completion codes
+  const PROLIFIC_DEFAULT = 'C11VVLWN';
+  const PROLIFIC_NO_CONSENT = 'COYRYK1U';
+  const PROLIFIC_INCOMPATIBLE_DEVICE = 'CILRS92A';
+
   let correctPattern = [
     {
       instrument: 'hihat',
@@ -585,7 +590,9 @@
         If you do not consent, click <i>I do not consent</i> below, you then cannot
         participate in this study.
       </p>
-      <a href="https://app.prolific.com/submissions/complete?cc=CLB832WS">
+      <a
+        href="https://app.prolific.com/submissions/complete?cc={PROLIFIC_NO_CONSENT}"
+      >
         <button>I do NOT consent and will not participate</button>
       </a>
     </div>
@@ -603,7 +610,9 @@
         {sampleRate}
       />
       <p>If you cannot hear anything, you cannot participate in this study.</p>
-      <a href="https://app.prolific.com/submissions/complete?cc=CH9I2X6E">
+      <a
+        href="https://app.prolific.com/submissions/complete?cc={PROLIFIC_INCOMPATIBLE_DEVICE}"
+      >
         <button>
           I can NOT hear the audio and will NOT participate in this study
         </button>
@@ -931,8 +940,10 @@
   <!-- Study done -->
   {#if studyStep === 'done'}
     <div>Thanks for participating!</div>
-    <a href="https://app.prolific.com/submissions/complete?cc=CQ9EMXZQ">
-      click here to get your compensation
+    <a
+      href="https://app.prolific.com/submissions/complete?cc={PROLIFIC_DEFAULT}"
+    >
+      <b>Click here to get your compensation</b>
     </a>
   {/if}
 
