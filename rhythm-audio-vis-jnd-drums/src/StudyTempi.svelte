@@ -13,14 +13,20 @@
   import AudioExampleInTrials from './audioPlayback/AudioExampleInTrials.svelte';
   import PlotLine from './plotsAnalysis/PlotLine.svelte';
 
-  const STUDY_NAME = '8beat_backbeat_120bpm';
+  const STUDY_NAME = '8beat_tempi';
   const DEBUG = false;
   const SERVER_URL = '/store';
-  const BPM = 120;
+  let BPM = 120;
   // deviation in seconds, start with less than 0.25 because 0.25 is an eighth note
-  const INITIAL_SEVERITY = 0.1;
+  let INITIAL_SEVERITY = 0.1;
 
   console.log(STUDY_NAME, BPM, INITIAL_SEVERITY);
+
+  // TODO: either audio or waveform
+  let encoding = getUrlParam(window, 'e');
+  if (!encoding || !['audio', 'waveform'].includes(encoding)) {
+    alert(`Invalid encoding ${encoding}`);
+  }
 
   // prolific params
   let partID = getUrlParam(window, 'PROLIFIC_PID');
@@ -39,16 +45,6 @@
       sample: './hihat.mp3',
       beats: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
     },
-    {
-      instrument: 'snare',
-      sample: './snare2.mp3',
-      beats: [2, 4],
-    },
-    {
-      instrument: 'bass',
-      sample: './bass2.mp3',
-      beats: [1, 3],
-    },
   ];
   const beats = 4;
 
@@ -61,23 +57,19 @@
       return correctPattern;
     }
     const copy = concat([correctPattern]);
-    const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
-    const snare = copy.filter((d) => d.instrument === 'snare')[0];
-    const bass = copy.filter((d) => d.instrument === 'bass')[0];
-    bass.times[2 - 1] = bass.timesOriginal[2 - 1] + errorSeverity;
-    hihat.times[5 - 1] = hihat.timesOriginal[5 - 1] + errorSeverity;
 
-    // also shift all that come later
-    for (const h of [6, 7, 8]) {
+    const hihat = copy.filter((d) => d.instrument === 'hihat')[0];
+
+    // shift beat 5, also shift all that come later
+    for (const h of [5, 6, 7, 8]) {
       hihat.times[h - 1] = hihat.timesOriginal[h - 1] + errorSeverity;
     }
-    snare.times[2 - 1] = snare.timesOriginal[2 - 1] + errorSeverity;
     // console.log(drumPattern);
     return copy;
   };
 
-  let tests = ['audio', 'waveform', 'color'].map((d) => {
-    return { encoding: d };
+  let tests = [60, 90, 120].map((d) => {
+    return { bpm: d };
   });
 
   // const examplePatternEarly;
@@ -169,7 +161,7 @@
   /**
    * Continue the study
    */
-  function nextStudyStep() {
+  async function nextStudyStep() {
     if (studyStep === 'consent') {
       studyStep = 'start1';
     } else if (studyStep === 'start1') {
@@ -200,12 +192,18 @@
         studyStep = 'feedback';
       } else {
         // set variables
-        currentEncoding = tests[currentTestNumber].encoding;
+        currentEncoding = encoding;
+        BPM = tests[currentTestNumber].bpm;
+        spb = Utils.bpmToSecondsPerBeat(BPM);
+        duration = beats * spb;
+
+        await fetchDrumAudios();
         // start training
         if (trainingCorrectStreak === 0) {
           isTraining = true;
           showTraining();
         } else {
+          isTraining = false;
           startTest();
           trainingCorrectStreak = 0;
         }
@@ -247,6 +245,7 @@
     const p = stair.getLast('ratio');
     let severity = p;
     severity = Math.random() < 0.5 ? severity : -severity;
+    // console.log({ severity });
     currentTrial.deviation = severity;
     // get pattern
     const result = createDrumPattern(severity);
@@ -468,7 +467,7 @@
    */
 
   let spb = Utils.bpmToSecondsPerBeat(BPM);
-  const duration = beats * spb;
+  let duration = beats * spb;
 
   let sampleRate;
   let renderedAudio = null;
@@ -488,7 +487,7 @@
           ...d,
           times: d.beats.map((b) => spb * (b - 1)),
           timesOriginal: d.beats.map((b) => spb * (b - 1)),
-          audioBuffer: await fetchAudio(d.sample),
+          audioBuffer: d.audioBuffer ?? (await fetchAudio(d.sample)),
         };
       }),
     );
@@ -577,6 +576,7 @@
       duration * patterns.length + 0.1,
       sampleRate,
     );
+    console.log('creating drum pattern', { BPM, duration });
     return { noteTimes, noteTimesSeparate, sampleRate, renderedAudio };
   };
 </script>
@@ -661,51 +661,23 @@
     <div>
       <div>
         <p>
-          Imagine you are a music teacher and want to give feedback to your
-          students. As listening to all they play takes too much time, you try
-          different visualizations that show you their note timing.
-        </p>
-        <p>
-          In this study, the goal is to learn how these visualizations compare
-          to each other and to listening. We want to know, how small of a timing
-          error is still clear to see/hear as either <i>too early</i> or
+          We want to know, how small of a timing error is still clear to detect
+          as either <i>too early</i> or
           <i>too late</i>.
         </p>
         <p>
           This study uses a simple drum pattern that you can see and listen to
-          below. The timing error is made will always affect a single <i>beat</i
-          >: notes that are supposed to played together will still be played at
-          the same time, but this time will be either too early or too late.
-          Notes after the mistake will also be affected and be early/late, such
-          that only one time interval is shorter/longer than supposed.
+          below. Notes after the mistake will also be affected and be
+          early/late, such that only one time interval is shorter/longer than
+          supposed.
         </p>
       </div>
       This is what the pattern looks like in sheet music:
       <div>
         <img
           width="{visWidth}px"
-          src="drum-pattern-labels3.png"
+          src="8note-pattern-hihat.png"
           alt="drum pattern as sheet music"
-        />
-      </div>
-      <div
-        style="display: grid; grid-template-columns: repeat(4,max-content); gap: 10px; align-items: center"
-      >
-        <span>Click to hear the different sounds:</span>
-        <AudioExample
-          pattern="{[0.1]}"
-          cachedAudio="{correctPattern[0].audioBuffer}"
-          label="hi-hat"
-        />
-        <AudioExample
-          pattern="{[0.1]}"
-          cachedAudio="{correctPattern[1].audioBuffer}"
-          label="snare drum"
-        />
-        <AudioExample
-          pattern="{[0.1]}"
-          cachedAudio="{correctPattern[2].audioBuffer}"
-          label="bass drum"
         />
       </div>
       This is what the full, correctly played pattern sounds like:

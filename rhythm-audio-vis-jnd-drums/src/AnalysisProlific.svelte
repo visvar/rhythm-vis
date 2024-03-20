@@ -110,6 +110,8 @@
           date: participant.date,
           testType,
           testOrder: index,
+          // outlier?
+          isOutlier: isOutlier(test, 10, 0.1, 2),
         });
       }
     }
@@ -154,6 +156,25 @@
     d3.groups(tests, (d) => d.testType),
   );
 
+  const isOutlier = (
+    test,
+    startIndex = 10,
+    valueLimit = 0.1,
+    toleranceCount = 2,
+  ) => {
+    const staircase = test.data.map(Math.abs);
+    let count = 0;
+    for (let index = startIndex; index < staircase.length; index++) {
+      if (staircase[index] >= valueLimit) {
+        count++;
+        if (count >= toleranceCount) {
+          return true;
+        }
+      }
+    }
+    return false;
+  };
+
   const exportJSON = () => {
     // participants
     const jsonP = JSON.stringify(participants, undefined, 2);
@@ -193,6 +214,15 @@
   </div>
 
   <div>
+    <h3>Studies</h3>
+    {#each d3
+      .groups(participants, (d) => d.studyName)
+      .map(([study, parts]) => `${study} had ${parts.length} parts`) as row}
+      <div>{row}</div>
+    {/each}
+  </div>
+
+  <div>
     <h3>Encoding order</h3>
     {#each d3
       .groups(participants, (d) => d.encodingOrder)
@@ -213,11 +243,29 @@
     {/each}
   </div>
 
+  <div>
+    <!-- {#each [...tests].sort((a, b) => a.final - b.final) as test} -->
+    {#each tests as test}
+      <PlotLine
+        title="{test.studyName} P{test.internalPID} {test.encoding} {test.data
+          .length} trials {test.isOutlier ? 'OUTLIER' : ''}"
+        final="{test.final}"
+        width="{visWidth}"
+        height="{120}"
+        data="{test.data}"
+        x="{(d, i) => i}"
+        y="{(d) => Math.abs(d)}"
+        xDomain="{[0, 165]}"
+      />
+    {/each}
+  </div>
+
   <PlotScatter
     title="Audio vs. Waveform"
     x="finalAudio"
     y="finalWaveform"
     tipTitle="partID"
+    fill="studyName"
     xDomain="{[0, 0.1]}"
     yDomain="{[0, 0.1]}"
     data="{participants}"
@@ -226,6 +274,7 @@
     title="Audio vs. Color"
     x="finalAudio"
     y="finalColor"
+    fill="studyName"
     tipTitle="partID"
     xDomain="{[0, 0.1]}"
     yDomain="{[0, 0.1]}"
@@ -237,10 +286,10 @@
     <PlotTickCI {stimuli} />
   </div>
 
-  <div>
+  <!-- <div>
     <h3>Mean and CI of Trial Counts</h3>
     <PlotTickCiTrials {stimuli} />
-  </div>
+  </div> -->
 
   <div>
     <h3>Final Values for Each Stimulus and All Participants</h3>
@@ -285,23 +334,6 @@
           <p>{line}</p>
         {/each}
       </div>
-    {/each}
-  </div>
-
-  <div>
-    <!-- {#each [...tests].sort((a, b) => a.final - b.final) as test} -->
-    {#each tests as test}
-      <PlotLine
-        title="{test.studyName} P{test.internalPID} {test.encoding} {test.data
-          .length} trials"
-        final="{test.final}"
-        width="{visWidth}"
-        height="{120}"
-        data="{test.data}"
-        x="{(d, i) => i}"
-        y="{(d) => Math.abs(d)}"
-        xDomain="{[0, 165]}"
-      />
     {/each}
   </div>
 </main>

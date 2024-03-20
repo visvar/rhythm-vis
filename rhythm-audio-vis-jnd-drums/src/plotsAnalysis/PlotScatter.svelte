@@ -6,6 +6,7 @@
     export let data;
     export let x = 'x';
     export let y = 'y';
+    export let fill = null;
     export let tipTitle = null;
     export let xLabel = null;
     export let yLabel = null;
@@ -28,6 +29,9 @@
             style: {
                 background: 'none',
             },
+            color: {
+                legend: true,
+            },
             // grid,
             x: {
                 label: xLabel ? xLabel : typeof x === 'string' ? x : 'x',
@@ -41,16 +45,18 @@
                 Plot.dot(data, {
                     x,
                     y,
+                    stroke: fill,
                     // fill: '#ccc',
+                    tip: true,
                 }),
-                Plot.tip(
-                    data,
-                    Plot.pointer({
-                        x,
-                        y,
-                        title: tipTitle,
-                    }),
-                ),
+                // Plot.tip(
+                //     data,
+                //     Plot.pointer({
+                //         x,
+                //         y,
+                //         title: tipTitle,
+                //     }),
+                // ),
                 Plot.link(
                     { length: 1 },
                     {

@@ -3,6 +3,7 @@
   import AnalysisProlific from './AnalysisProlific.svelte';
   import StudyDrums from './StudyDrums.svelte';
   import Study8Note from './Study8Note.svelte';
+  import StudyTempi from './StudyTempi.svelte';
   import { getUrlParam } from './lib/url';
 
   // let view = getUrlParam(window, 'p') ?? 'study_drums';
@@ -30,6 +31,8 @@
     <Study8Note />
   {:else if view === 'study_drums'}
     <StudyDrums />
+  {:else if view === 'study_tempi'}
+    <StudyTempi />
   {:else if view === 'analysis'}
     <AnalysisProlific />
   {/if}
