@@ -361,6 +361,7 @@
     const testEndTime = new Date();
     completeResults.push({
       encoding: currentEncoding,
+      bpm: BPM,
       final,
       data,
       score,

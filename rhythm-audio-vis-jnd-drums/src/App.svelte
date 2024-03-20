@@ -1,9 +1,10 @@
 <script>
   import Playground from './Playground.svelte';
-  import AnalysisProlific from './AnalysisProlific.svelte';
   import StudyDrums from './StudyDrums.svelte';
   import Study8Note from './Study8Note.svelte';
   import StudyTempi from './StudyTempi.svelte';
+  import AnalysisProlific from './AnalysisProlific.svelte';
+  import AnalysisProlificTempi from './AnalysisProlificTempi.svelte';
   import { getUrlParam } from './lib/url';
 
   // let view = getUrlParam(window, 'p') ?? 'study_drums';
@@ -35,6 +36,8 @@
     <StudyTempi />
   {:else if view === 'analysis'}
     <AnalysisProlific />
+  {:else if view === 'analysis2'}
+    <AnalysisProlificTempi />
   {/if}
 
   <!-- <StudyDrums_StaircaseTest /> -->
