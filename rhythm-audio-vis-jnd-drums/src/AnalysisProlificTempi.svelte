@@ -56,20 +56,29 @@
             (pd) => pd['Participant id'] === d.demographics.partID,
           )[0],
           // shorthand for final values of all encodings
-          finalAudio:
-            d.tests.filter((t) => t.encoding.startsWith('audio'))[0]?.final ??
-            null,
-          finalColor:
-            d.tests.filter((t) => t.encoding.startsWith('color'))[0]?.final ??
-            null,
-          finalWaveform:
-            d.tests.filter((t) => t.encoding.startsWith('waveform'))[0]
-              ?.final ?? null,
+          // finalAudio:
+          //   d.tests.filter((t) => t.encoding.startsWith('audio'))[0]?.final ??
+          //   null,
+          // finalColor:
+          //   d.tests.filter((t) => t.encoding.startsWith('color'))[0]?.final ??
+          //   null,
+          // finalWaveform:
+          //   d.tests.filter((t) => t.encoding.startsWith('waveform'))[0]
+          //     ?.final ?? null,
+          // finals for bpm
+          final60: d.tests.filter((t) => t.bpm === 60)[0]?.final ?? null,
+          final90: d.tests.filter((t) => t.bpm === 90)[0]?.final ?? null,
+          final120: d.tests.filter((t) => t.bpm === 120)[0]?.final ?? null,
           // representation order
           encodingOrder: d.tests.map((t) => t.encoding).join(', '),
+          tempoOrder: d.tests.map((t) => t.bpm).join(', '),
         };
       })
-      .filter((d) => d.prolificDemogr !== undefined);
+      .filter(
+        (d) =>
+          d.prolificDemogr !== undefined &&
+          d.prolificDemogr.Age !== 'CONSENT_REVOKED',
+      );
     console.log('participants', participants);
   };
 
@@ -96,6 +105,11 @@
       for (const [index, test] of participant.tests.entries()) {
         // let testType = `${test.encoding} + ${test.pattern}`;
         let testType = test.encoding;
+        // outlier?
+        const isOutlier = isOutlierFn(test, 15, 0.1, 3);
+        if (isOutlier) {
+          participant.isOutlier = true;
+        }
         tests.push({
           studyName: participant.studyName,
           ...participant.demographics,
@@ -113,7 +127,7 @@
           testType,
           testOrder: index,
           // outlier?
-          isOutlier: isOutlier(test, 10, 0.1, 2),
+          isOutlier,
         });
       }
     }
@@ -158,7 +172,7 @@
     d3.groups(tests, (d) => d.testType),
   );
 
-  const isOutlier = (
+  const isOutlierFn = (
     test,
     startIndex = 10,
     valueLimit = 0.1,
@@ -229,7 +243,21 @@
     {#each d3
       .groups(participants, (d) => d.encodingOrder)
       .sort((a, b) => a[1].lenght - b[1].length) as [order, parts]}
-      <p>{order}: {parts.length} times</p>
+      <p>
+        {order}: {parts.length} times ({parts.filter((d) => d.isOutlier).length}
+        outliers)
+      </p>
+    {/each}
+  </div>
+  <div>
+    <h3>Tempo order</h3>
+    {#each d3
+      .groups(participants, (d) => d.tempoOrder)
+      .sort((a, b) => a[1].lenght - b[1].length) as [order, parts]}
+      <p>
+        {order}: {parts.length} times ({parts.filter((d) => d.isOutlier).length}
+        outliers)
+      </p>
     {/each}
   </div>
 

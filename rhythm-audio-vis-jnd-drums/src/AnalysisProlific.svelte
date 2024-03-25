@@ -67,7 +67,11 @@
           encodingOrder: d.tests.map((t) => t.encoding).join(', '),
         };
       })
-      .filter((d) => d.prolificDemogr !== undefined);
+      .filter(
+        (d) =>
+          d.prolificDemogr !== undefined &&
+          d.prolificDemogr.Age !== 'CONSENT_REVOKED',
+      );
     console.log('participants', participants);
   };
 
