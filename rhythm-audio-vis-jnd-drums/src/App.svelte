@@ -6,6 +6,7 @@
   import AnalysisProlific from './AnalysisProlific.svelte';
   import AnalysisProlificTempi from './AnalysisProlificTempi.svelte';
   import { getUrlParam } from './lib/url';
+  import PlaygroundAllPatterns from './PlaygroundAllPatterns.svelte';
 
   // let view = getUrlParam(window, 'p') ?? 'study_drums';
   let view = getUrlParam(window, 'p');
@@ -27,7 +28,8 @@
   {/if} -->
 
   {#if view === 'playground'}
-    <Playground />
+    <!-- <Playground /> -->
+    <PlaygroundAllPatterns />
   {:else if view === 'study_8note'}
     <Study8Note />
   {:else if view === 'study_drums'}

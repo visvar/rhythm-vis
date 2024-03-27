@@ -254,12 +254,12 @@
         title="{test.studyName} P{test.internalPID} {test.encoding} {test.data
           .length} trials {test.isOutlier ? 'OUTLIER' : ''}"
         final="{test.final}"
-        width="{visWidth}"
+        width="{visWidth / 2}"
         height="{120}"
         data="{test.data}"
         x="{(d, i) => i}"
         y="{(d) => Math.abs(d)}"
-        xDomain="{[0, 165]}"
+        xDomain="{[0, 50]}"
       />
     {/each}
   </div>

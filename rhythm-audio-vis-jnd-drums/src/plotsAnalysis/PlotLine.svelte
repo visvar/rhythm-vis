@@ -39,8 +39,9 @@
         Plot.ruleY([0]),
         Plot.ruleY([final], { stroke: '#88888888' }),
         Plot.text([final], {
-          x: 65,
+          x: xDomain[1],
           y: final,
+          dx: -10,
           dy: -7,
           text: (d) => `final: ${d.toFixed(3)}`,
         }),
