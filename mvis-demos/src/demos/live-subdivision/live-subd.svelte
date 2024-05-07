@@ -1,0 +1,325 @@
+<script>
+    import { onDestroy, onMount } from 'svelte';
+    import { WebMidi } from 'webmidi';
+    import { Canvas, Utils } from 'musicvis-lib';
+    import saveAs from 'file-saver';
+    import * as d3 from 'd3';
+    import Metronome from '../../lib/Metronome.js';
+
+    const GRIDS = ['4:2', '4:3', '4:4', '4:5', '3:2', '3:3', '3:4', '3:5'];
+    const TWO_PI = Math.PI * 2;
+
+    let canvas;
+    let width = 1000;
+    let height = 1000;
+    let metro = new Metronome();
+    // settings
+    let tempo = 120;
+    let grid = GRIDS[0];
+    let binNote = 64;
+    let adjustTime = 0;
+    let noteTickLimit = 12;
+    // data
+    let firstTimeStamp = 0;
+    let noteOnTimes = [];
+
+    const onMidiEnabled = () => {
+        if (WebMidi.inputs.length < 1) {
+            console.warn('No MIDI device detected');
+        } else {
+            WebMidi.inputs.forEach((device, index) => {
+                console.log(`MIDI device ${index}: ${device.name}`);
+                device.addListener('noteon', noteOn);
+            });
+        }
+    };
+
+    const noteOn = (e) => {
+        if (noteOnTimes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
+        noteOnTimes.push(noteInSeconds);
+        draw();
+    };
+
+    const draw = () => {
+        console.log('draw');
+        const cx = width / 2;
+        const cy = height / 2;
+        const r = width * 0.4;
+        const r2 = r * 0.8;
+        const r3 = r * 0.9;
+        const r4 = r * 1.1;
+        const r5 = r * 0.95;
+        // offset in radians for 0 on top
+        const topOffs = Math.PI / 2;
+        const ctx = canvas.getContext('2d');
+        // scale to DPR
+        // Get the DPR and size of the canvas
+        const dpr = window.devicePixelRatio;
+        const rect = canvas.getBoundingClientRect();
+        // Set the "actual" size of the canvas
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        // Scale the context to ensure correct drawing operations
+        ctx.scale(dpr, dpr);
+        // Set the "drawn" size of the canvas
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+        // fade-out old data
+        ctx.clearRect(0, 0, width, height);
+        // ctx.fillRect(0, 0, width, height);
+
+        const [grid1, grid2] = grid.split(':').map((d) => +d);
+
+        // number of seconds for a fill circle rotation
+        const circleSeconds = Utils.bpmToSecondsPerBeat(tempo) * grid1;
+
+        const notes = noteOnTimes.map((d) => d + adjustTime);
+
+        // draw histogram
+        // for 3/4 bars there are less bins
+        ctx.fillStyle = '#f8f8f8';
+        ctx.strokeStyle = '#aaa';
+        const binCount = (binNote * grid1) / 4;
+        const bin = d3
+            .bin()
+            .domain([0, TWO_PI])
+            .thresholds(d3.range(binCount).map((d) => (d / binCount) * TWO_PI));
+        const clamped = notes.map((d) => d % circleSeconds);
+        const noteAngles = clamped.map((d) => (d / circleSeconds) * TWO_PI);
+        const binned = bin(noteAngles);
+        const maxBin = d3.max(binned, (d) => d.length);
+        const maxBinHeight = width * 0.08;
+        for (const b of binned) {
+            if (b.length === 0) {
+                continue;
+            }
+            const binHeight = (b.length / maxBin) * maxBinHeight;
+            const binR = r + binHeight;
+
+            const angle1 = b.x0 - topOffs;
+            const dx = Math.cos(angle1);
+            const dy = Math.sin(angle1);
+            const angle2 = b.x1 - topOffs;
+            const dx2 = Math.cos(angle2);
+            const dy2 = Math.sin(angle2);
+            ctx.beginPath();
+            ctx.moveTo(cx + dx * r, cy + dy * r);
+            ctx.lineTo(cx + dx * binR, cy + dy * binR);
+            ctx.arc(cx, cy, binR, angle1, angle2);
+            ctx.lineTo(cx + dx2 * r, cy + dy2 * r);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        // draw notes
+        ctx.lineWidth = 3;
+        const color = d3.interpolate('#00000044', 'black');
+        const lastNotes = notes.slice(-noteTickLimit);
+        for (const [i, n] of lastNotes.entries()) {
+            const angle = (n / circleSeconds) * TWO_PI - topOffs;
+            const dx = Math.cos(angle);
+            const dy = Math.sin(angle);
+            ctx.strokeStyle = color(i / lastNotes.length);
+            ctx.beginPath();
+            ctx.moveTo(cx + dx * r, cy + dy * r);
+            ctx.lineTo(cx + dx * r4, cy + dy * r4);
+            ctx.stroke();
+        }
+
+        // grid
+        Canvas.drawCircle(ctx, cx, cy, r);
+        ctx.lineWidth = 2;
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.strokeStyle = '#aaa';
+        ctx.stroke();
+        // grid angles
+        const coarseGridAngles = d3
+            .range(grid1)
+            .map((d) => (TWO_PI / grid1) * d - topOffs);
+        const fineGridAngles = d3
+            .range(grid1 * grid2)
+            .map((d) => (TWO_PI / (grid1 * grid2)) * d - topOffs);
+        // draw grid ticks
+        ctx.beginPath();
+        ctx.lineWidth = 2;
+        for (const g of coarseGridAngles) {
+            const dx = Math.cos(g);
+            const dy = Math.sin(g);
+            ctx.moveTo(cx + dx * r2, cy + dy * r2);
+            ctx.lineTo(cx + dx * r5, cy + dy * r5);
+        }
+        ctx.stroke();
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (const g of fineGridAngles) {
+            const dx = Math.cos(g);
+            const dy = Math.sin(g);
+            ctx.moveTo(cx + dx * r3, cy + dy * r3);
+            ctx.lineTo(cx + dx * r5, cy + dy * r5);
+        }
+        ctx.stroke();
+    };
+
+    const exportData = () => {
+        const data = {
+            tempo,
+            grid,
+            binNote,
+            adjustTime,
+            noteTickLimit,
+            noteOnTimes,
+        };
+        const json = JSON.stringify(data, undefined, 2);
+        const blob = new Blob([json], {
+            type: 'text/plain;charset=utf-8',
+        });
+        saveAs(blob, 'live-subdivision.json');
+    };
+
+    const importData = async (e) => {
+        const file = e.target.files[0];
+        const text = await file.text();
+        const json = JSON.parse(text);
+        if (
+            noteOnTimes.length === 0 ||
+            confirm('Import data and overwrite currently unsaved data?')
+        ) {
+            tempo = json.tempo;
+            grid = json.grid;
+            binNote = json.binNote;
+            adjustTime = json.adjustTime;
+            noteTickLimit = json.noteTickLimit;
+            noteOnTimes = json.noteOnTimes;
+            draw();
+        }
+    };
+
+    onMount(() => {
+        WebMidi.enable()
+            .then(onMidiEnabled)
+            .catch((err) => alert(err));
+        draw();
+    });
+
+    onDestroy(() => {
+        // remove MIDI listeners to avoid duplicate calls and improve performance
+        for (const input of WebMidi.inputs) {
+            input.removeListener();
+        }
+    });
+</script>
+
+<main class="demo">
+    <h2>Live-Subdivision</h2>
+    <p>
+        Connect a MIDI instrument (currently {WebMidi.inputs.length} connected),
+        choose your tempo and subdivision, and start playing. The bar chart will
+        show you how often you hit each time bin and the last {noteTickLimit} notes
+        will be shown as ticks that fade out one new notes come in.
+    </p>
+    <div class="control">
+        <label title="The tempo in beats per minute (bpm)">
+            tempo
+            <input
+                type="number"
+                bind:value="{tempo}"
+                on:change="{draw}"
+                step="1"
+                min="10"
+                max="400"
+                style="width: 55px"
+            />
+        </label>
+        <label
+            title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+        >
+            grid
+            <select bind:value="{grid}" on:change="{draw}">
+                {#each GRIDS as g}
+                    <option value="{g}">{g}</option>
+                {/each}
+            </select>
+        </label>
+        <label
+            title="The width of each bar in rhythmic units. For example, each bin could be a 32nd note wide."
+        >
+            binning
+            <select bind:value="{binNote}" on:change="{draw}">
+                {#each [16, 32, 64, 128] as g}
+                    <option value="{g}">1/{g} note</option>
+                {/each}
+            </select>
+        </label>
+        <label title="Shift all notes by an amount in seconds">
+            adjust
+            <input
+                type="number"
+                bind:value="{adjustTime}"
+                on:change="{draw}"
+                step="0.01"
+                min="-2"
+                max="2"
+                style="width: 55px"
+            />
+        </label>
+        <label title="Number of notes that are shown as ticks">
+            note limit
+            <input
+                type="number"
+                bind:value="{noteTickLimit}"
+                on:change="{draw}"
+                step="1"
+                min="0"
+                max="100"
+                style="width: 55px"
+            />
+        </label>
+    </div>
+    <div class="visualization">
+        <canvas
+            bind:this="{canvas}"
+            style="width: {width}px; height: {height}px"
+        ></canvas>
+    </div>
+    <div class="control">
+        <button
+            title="Clear all played notes"
+            on:click="{() => {
+                if (confirm('Reset played notes?')) {
+                    noteOnTimes = [];
+                    draw();
+                }
+            }}"
+        >
+            reset
+        </button>
+        <button title="Export all data and settings" on:click="{exportData}">
+            export
+        </button>
+        <button
+            title="Export all data and settings"
+            on:click="{() => document.querySelector('#file-input').click()}"
+        >
+            import
+        </button>
+        <input
+            type="file"
+            on:input="{importData}"
+            id="file-input"
+            style="display: none"
+        />
+        <button
+            title="Toggle metronome (click)"
+            on:click="{() => {
+                metro.toggle(tempo, +grid.split(':')[0]);
+            }}"
+        >
+            metronome
+        </button>
+    </div>
+</main>

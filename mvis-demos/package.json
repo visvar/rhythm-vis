@@ -1,0 +1,32 @@
+{
+  "name": "mvis-demos",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "predeploy": "vite build",
+    "deploy": "npx gh-pages -d dist",
+    "upd": "ncu -u"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^3.1.0",
+    "svelte": "^4.2.15",
+    "vite": "^5.2.11"
+  },
+  "dependencies": {
+    "@observablehq/plot": "^0.6.14",
+    "@stdlib/stdlib": "^0.2.0",
+    "d3": "^7.9.0",
+    "fast-kde": "^0.2.2",
+    "file-saver": "^2.0.5",
+    "gh-pages": "^6.1.1",
+    "musicvis-lib": "^0.57.1",
+    "npm-check-updates": "^16.14.20",
+    "wavesurfer.js": "^7.7.13",
+    "webmidi": "^3.1.9"
+  }
+}
