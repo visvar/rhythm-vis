@@ -3,8 +3,9 @@
     import { WebMidi } from 'webmidi';
     import { Canvas, Utils } from 'musicvis-lib';
     import saveAs from 'file-saver';
+    import * as kde from 'fast-kde';
     import * as d3 from 'd3';
-    import Metronome from '../../lib/Metronome.js';
+    import Metronome from '../lib/Metronome.js';
 
     const GRIDS = ['4:2', '4:3', '4:4', '4:5', '3:2', '3:3', '3:4', '3:5'];
     const TWO_PI = Math.PI * 2;
@@ -13,17 +14,19 @@
     let width = 1000;
     let height = 1000;
     let metro = new Metronome();
+    let midiDevices = [];
     // settings
     let tempo = 120;
     let grid = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
-    let noteTickLimit = 12;
+    let noteTickLimit = 1;
     // data
     let firstTimeStamp = 0;
     let noteOnTimes = [];
 
     const onMidiEnabled = () => {
+        midiDevices = [];
         if (WebMidi.inputs.length < 1) {
             console.warn('No MIDI device detected');
         } else {
@@ -31,6 +34,7 @@
                 console.log(`MIDI device ${index}: ${device.name}`);
                 device.addListener('noteon', noteOn);
             });
+            midiDevices = [...WebMidi.inputs];
         }
     };
 
@@ -44,7 +48,7 @@
     };
 
     const draw = () => {
-        console.log('draw');
+        // console.log('draw');
         const cx = width / 2;
         const cy = height / 2;
         const r = width * 0.4;
@@ -98,7 +102,6 @@
             }
             const binHeight = (b.length / maxBin) * maxBinHeight;
             const binR = r + binHeight;
-
             const angle1 = b.x0 - topOffs;
             const dx = Math.cos(angle1);
             const dy = Math.sin(angle1);
@@ -115,27 +118,56 @@
             ctx.stroke();
         }
 
-        // draw notes
-        ctx.lineWidth = 3;
-        const color = d3.interpolate('#00000044', 'black');
-        const lastNotes = notes.slice(-noteTickLimit);
-        for (const [i, n] of lastNotes.entries()) {
-            const angle = (n / circleSeconds) * TWO_PI - topOffs;
-            const dx = Math.cos(angle);
-            const dy = Math.sin(angle);
-            ctx.strokeStyle = color(i / lastNotes.length);
+        // draw KDE
+        if (noteAngles.length > 0) {
+            let bandwidth = 4 / binNote;
+            let pad = 0.1;
+            let bins = 360;
+            const density1d = kde.density1d(noteAngles, {
+                bandwidth,
+                pad,
+                bins,
+            });
+            const points = density1d.bandwidth(bandwidth);
+            const maxValue = d3.max([...points], (d) => d.y);
             ctx.beginPath();
-            ctx.moveTo(cx + dx * r, cy + dy * r);
-            ctx.lineTo(cx + dx * r4, cy + dy * r4);
+            for (const p of points) {
+                const angle = p.x - topOffs;
+                const rp = r + (p.y / maxValue) * maxBinHeight;
+                const dx = Math.cos(angle);
+                const dy = Math.sin(angle);
+                ctx.lineTo(cx + dx * rp, cy + dy * rp);
+            }
+            ctx.closePath();
+            // ctx.fillStyle = 'steelblue';
+            // ctx.fill();
             ctx.stroke();
         }
 
+        // draw notes
+        if (noteTickLimit > 0) {
+            ctx.lineWidth = 3;
+            // const color = d3.interpolate('#00000044', 'black');
+            const color = (d) => d3.interpolateRdYlBu(1 - d);
+            const lastNotes = notes.slice(-noteTickLimit);
+            for (const [i, n] of lastNotes.entries()) {
+                const angle = (n / circleSeconds) * TWO_PI - topOffs;
+                const dx = Math.cos(angle);
+                const dy = Math.sin(angle);
+                ctx.strokeStyle = color(i / lastNotes.length);
+                ctx.beginPath();
+                ctx.moveTo(cx + dx * r, cy + dy * r);
+                ctx.lineTo(cx + dx * r4, cy + dy * r4);
+                ctx.stroke();
+            }
+        }
+
         // grid
+        ctx.strokeStyle = '#aaa';
+        ctx.fillStyle = 'white';
         Canvas.drawCircle(ctx, cx, cy, r);
         ctx.lineWidth = 2;
-        ctx.fillStyle = 'white';
         ctx.fill();
-        ctx.strokeStyle = '#aaa';
         ctx.stroke();
         // grid angles
         const coarseGridAngles = d3
@@ -216,11 +248,18 @@
 
 <main class="demo">
     <h2>Live-Subdivision</h2>
+    <p class="explanation">
+        Connect a MIDI instrument (currently {midiDevices.length} connected), choose
+        your tempo and subdivision, and start playing. The bar chart will show you
+        how often you hit each time bin and the last {noteTickLimit} notes will be
+        shown as ticks that fade out one new notes come in (from red for new to blue
+        for old).
+    </p>
     <p>
-        Connect a MIDI instrument (currently {WebMidi.inputs.length} connected),
-        choose your tempo and subdivision, and start playing. The bar chart will
-        show you how often you hit each time bin and the last {noteTickLimit} notes
-        will be shown as ticks that fade out one new notes come in.
+        You can play freely, use the integrated metronome, or play a song in the
+        background (in another tab). All notes will be timed relative to the
+        first one, but you can adjust all notes to make them earlier or later in
+        case you messed up the first one.
     </p>
     <div class="control">
         <label title="The tempo in beats per minute (bpm)">
@@ -267,8 +306,8 @@
                 style="width: 55px"
             />
         </label>
-        <label title="Number of notes that are shown as ticks">
-            note limit
+        <label title="The number of most recent notes that are shown as ticks.">
+            note ticks
             <input
                 type="number"
                 bind:value="{noteTickLimit}"

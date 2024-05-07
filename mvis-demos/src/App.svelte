@@ -1,24 +1,32 @@
 <script>
   import { getUrlParam, setUrlParam } from './lib/url';
   // demos
-  import LiveSubDivision from './demos/live-subdivision/live-subd.svelte';
-  import LiveSubDivisionIcon from './demos/live-subdivision/icon.png';
+  import SubDivision from './demos/sub-division.svelte';
+  import TempoDrift from './demos/tempo-drift.svelte';
+  import Dynamics from './demos/dynamics.svelte';
 
   const DEMOS = [
     {
-      id: 'live-subdivision',
-      title: 'Live Sub-Division',
-      description:
-        'Learn rhythmic playing in different sub-divisions in real-time',
-      component: LiveSubDivision,
-      icon: LiveSubDivisionIcon,
+      id: 'sub-division',
+      title: 'Sub-Division',
+      description: 'Learn rhythmic playing in different sub-divisions',
+      component: SubDivision,
+    },
+    {
+      id: 'tempo-drift',
+      title: 'Tempo Drift',
+      description: 'Keep your tempo constant over a longer stretch of playing',
+      component: TempoDrift,
+    },
+    {
+      id: 'dynamics',
+      title: 'Dynamics',
+      description: 'Check how well you control the loudness of notes',
+      component: Dynamics,
     },
   ];
-  // let currentDemo = null;
-  // let currentDemo = DEMOS[0];
   let currentDemo = null;
   const param = getUrlParam(window, 'd');
-  console.log({ param });
   if (param && param !== '') {
     currentDemo = DEMOS.filter((d) => d.id === param)[0];
   }
@@ -29,6 +37,13 @@
   $: {
     localStorage.setItem('pwd', password);
   }
+
+  // allow to go back to main page with history
+  window.onpopstate = (e) => {
+    if (currentDemo !== null) {
+      currentDemo = null;
+    }
+  };
 </script>
 
 <main>
@@ -37,6 +52,11 @@
   {#if password !== corrP}
     <input type="password" placeholder="password" bind:value="{password}" />
   {:else if !currentDemo}
+    <p class="explanation">
+      This page contains a collection of small tools (demos) that are each
+      tailored to a specific musical skill and sometimes also specific kind of
+      musical data.
+    </p>
     <div class="grid">
       {#each DEMOS as demo}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -73,16 +93,20 @@
 
 <style>
   div.grid {
+    margin-top: 20px;
     display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 20px;
   }
 
   div.card {
-    width: 320px;
+    width: 256px;
     background-color: #fefefe;
     border: 1px solid #ddd;
     border-radius: 12px;
     box-shadow: #ccc 0 0 8px;
     cursor: pointer;
+    transition: all 250ms;
   }
 
   div.card:hover {
