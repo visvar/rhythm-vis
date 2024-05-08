@@ -104,3 +104,7 @@ p.explanation {
   margin: auto;
   text-align: justify;
 }
+
+svg text {
+  font-size: 12px;
+}

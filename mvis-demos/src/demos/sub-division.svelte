@@ -7,6 +7,13 @@
     import * as d3 from 'd3';
     import Metronome from '../lib/Metronome.js';
 
+    /**
+     * TODO:
+     * - metric for spread
+     * - metric for mistake
+     * - metric for trend to early/late
+     */
+
     const GRIDS = ['4:2', '4:3', '4:4', '4:5', '3:2', '3:3', '3:4', '3:5'];
     const TWO_PI = Math.PI * 2;
 
@@ -21,6 +28,7 @@
     let binNote = 64;
     let adjustTime = 0;
     let noteTickLimit = 1;
+    let showKde = false;
     // data
     let firstTimeStamp = 0;
     let noteOnTimes = [];
@@ -82,44 +90,49 @@
 
         const notes = noteOnTimes.map((d) => d + adjustTime);
 
-        // draw histogram
-        // for 3/4 bars there are less bins
-        ctx.fillStyle = '#f8f8f8';
-        ctx.strokeStyle = '#aaa';
-        const binCount = (binNote * grid1) / 4;
-        const bin = d3
-            .bin()
-            .domain([0, TWO_PI])
-            .thresholds(d3.range(binCount).map((d) => (d / binCount) * TWO_PI));
         const clamped = notes.map((d) => d % circleSeconds);
         const noteAngles = clamped.map((d) => (d / circleSeconds) * TWO_PI);
-        const binned = bin(noteAngles);
-        const maxBin = d3.max(binned, (d) => d.length);
         const maxBinHeight = width * 0.08;
-        for (const b of binned) {
-            if (b.length === 0) {
-                continue;
+
+        // draw histogram
+        if (!showKde) {
+            // for 3/4 bars there are less bins
+            ctx.fillStyle = '#f8f8f8';
+            ctx.strokeStyle = '#aaa';
+            const binCount = (binNote * grid1) / 4;
+            const bin = d3
+                .bin()
+                .domain([0, TWO_PI])
+                .thresholds(
+                    d3.range(binCount).map((d) => (d / binCount) * TWO_PI),
+                );
+            const binned = bin(noteAngles);
+            const maxBin = d3.max(binned, (d) => d.length);
+            for (const b of binned) {
+                if (b.length === 0) {
+                    continue;
+                }
+                const binHeight = (b.length / maxBin) * maxBinHeight;
+                const binR = r + binHeight;
+                const angle1 = b.x0 - topOffs;
+                const dx = Math.cos(angle1);
+                const dy = Math.sin(angle1);
+                const angle2 = b.x1 - topOffs;
+                const dx2 = Math.cos(angle2);
+                const dy2 = Math.sin(angle2);
+                ctx.beginPath();
+                ctx.moveTo(cx + dx * r, cy + dy * r);
+                ctx.lineTo(cx + dx * binR, cy + dy * binR);
+                ctx.arc(cx, cy, binR, angle1, angle2);
+                ctx.lineTo(cx + dx2 * r, cy + dy2 * r);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
             }
-            const binHeight = (b.length / maxBin) * maxBinHeight;
-            const binR = r + binHeight;
-            const angle1 = b.x0 - topOffs;
-            const dx = Math.cos(angle1);
-            const dy = Math.sin(angle1);
-            const angle2 = b.x1 - topOffs;
-            const dx2 = Math.cos(angle2);
-            const dy2 = Math.sin(angle2);
-            ctx.beginPath();
-            ctx.moveTo(cx + dx * r, cy + dy * r);
-            ctx.lineTo(cx + dx * binR, cy + dy * binR);
-            ctx.arc(cx, cy, binR, angle1, angle2);
-            ctx.lineTo(cx + dx2 * r, cy + dy2 * r);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
         }
 
         // draw KDE
-        if (noteAngles.length > 0) {
+        if (showKde && noteAngles.length > 0) {
             let bandwidth = 4 / binNote;
             let pad = 0.1;
             let bins = 360;
@@ -130,8 +143,12 @@
             });
             const points = density1d.bandwidth(bandwidth);
             const maxValue = d3.max([...points], (d) => d.y);
+            // smooth around first and last point
+            console.log([...points]);
             ctx.beginPath();
+            let i = 0;
             for (const p of points) {
+                console.log(i++, p);
                 const angle = p.x - topOffs;
                 const rp = r + (p.y / maxValue) * maxBinHeight;
                 const dx = Math.cos(angle);
@@ -139,8 +156,9 @@
                 ctx.lineTo(cx + dx * rp, cy + dy * rp);
             }
             ctx.closePath();
-            // ctx.fillStyle = 'steelblue';
-            // ctx.fill();
+            ctx.fillStyle = '#e4f0fa';
+            ctx.fill();
+            ctx.strokeStyle = '#aaa';
             ctx.stroke();
         }
 
@@ -205,6 +223,7 @@
             adjustTime,
             noteTickLimit,
             noteOnTimes,
+            showKde,
         };
         const json = JSON.stringify(data, undefined, 2);
         const blob = new Blob([json], {
@@ -227,6 +246,7 @@
             adjustTime = json.adjustTime;
             noteTickLimit = json.noteTickLimit;
             noteOnTimes = json.noteOnTimes;
+            showKde = json.showKde ?? false;
             draw();
         }
     };
@@ -253,11 +273,8 @@
         your tempo and subdivision, and start playing. The bar chart will show you
         how often you hit each time bin and the last {noteTickLimit} notes will be
         shown as ticks that fade out one new notes come in (from red for new to blue
-        for old).
-    </p>
-    <p>
-        You can play freely, use the integrated metronome, or play a song in the
-        background (in another tab). All notes will be timed relative to the
+        for old). You can play freely, use the integrated metronome, or play a song
+        in the background (in another tab). All notes will be timed relative to the
         first one, but you can adjust all notes to make them earlier or later in
         case you messed up the first one.
     </p>
@@ -318,6 +335,15 @@
                 style="width: 55px"
             />
         </label>
+        <button
+            title="Toggle between bars and area"
+            on:click="{() => {
+                showKde = !showKde;
+                draw();
+            }}"
+        >
+            {showKde ? 'area' : 'bars'}
+        </button>
     </div>
     <div class="visualization">
         <canvas
