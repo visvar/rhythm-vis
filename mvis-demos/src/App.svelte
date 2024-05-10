@@ -5,6 +5,8 @@
   import TempoDrift from './demos/tempo-drift.svelte';
   import Dynamics from './demos/dynamics.svelte';
   import ImprovisationIntervals from './demos/improvisation-intervals.svelte';
+  import Tools from './tools/_tools.svelte';
+  import ImprovisationScaleDegrees from './demos/improvisation-scale-degrees.svelte';
 
   /**
    * All demos defined here
@@ -48,9 +50,21 @@
       instruments: ['drum', 'guitar/bass', 'keyboard'],
       component: ImprovisationIntervals,
     },
+    {
+      id: 'improvisation-scale-degrees',
+      title: 'Improvisation Scale Degrees',
+      description:
+        'See how often you use different scale degrees in improvisation',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      component: ImprovisationScaleDegrees,
+    },
   ];
 
   let currentDemo = null;
+
+  // handle URL parameters
   const param = getUrlParam(window, 'd');
   if (param && param !== '') {
     currentDemo = DEMOS.filter((d) => d.id === param)[0];
@@ -110,6 +124,7 @@
       </label>
     </div>
 
+    <!-- demo overview grid -->
     <div class="grid">
       {#each DEMOS as demo}
         <!-- svelte-ignore a11y-click-events-have-key-events -->
@@ -126,6 +141,15 @@
         </div>
       {/each}
     </div>
+    <!-- Tools page button -->
+    <button
+      on:click="{() => {
+        currentDemo = 'tools';
+        setUrlParam(window, 'd', 'tools');
+      }}"
+    >
+      Tools
+    </button>
   {:else}
     <!-- back button -->
     <button
@@ -136,8 +160,10 @@
     >
       &lt; back
     </button>
-    <!-- show demo by importing dynamically -->
-    {#if currentDemo}
+    {#if currentDemo === 'tools'}
+      <Tools />
+    {:else}
+      <!-- show demo by importing dynamically -->
       <!-- <svelte:component this="{currentDemo.component}" someprop="{42}" /> -->
       <svelte:component this="{currentDemo.component}" />
     {/if}
@@ -145,28 +171,4 @@
 </main>
 
 <style>
-  div.grid {
-    margin-top: 20px;
-    display: grid;
-    grid-template-columns: repeat(3, auto);
-    gap: 20px;
-  }
-
-  div.card {
-    width: 256px;
-    background-color: #fefefe;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    box-shadow: #ccc 0 0 8px;
-    cursor: pointer;
-    transition: all 250ms;
-  }
-
-  div.card:hover {
-    box-shadow: steelblue 0 0 8px;
-  }
-
-  div.card h2 {
-    margin-top: 0;
-  }
 </style>

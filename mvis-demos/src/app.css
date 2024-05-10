@@ -81,15 +81,38 @@ button {
 
 /* main page */
 
-.card {
-  padding: 2em;
-}
 
 #app {
   max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+}
+
+div.grid {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 20px;
+}
+
+div.card {
+  padding: 2em;
+  width: 256px;
+  background-color: #fefefe;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: #ccc 0 0 8px;
+  cursor: pointer;
+  transition: all 250ms;
+}
+
+div.card:hover {
+  box-shadow: steelblue 0 0 8px;
+}
+
+div.card h2 {
+  margin-top: 0;
 }
 
 /* demo */

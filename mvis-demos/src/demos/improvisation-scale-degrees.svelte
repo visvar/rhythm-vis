@@ -4,12 +4,14 @@
     import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
+    import { Scale } from '@tonaljs/tonal';
 
     let width = 1000;
     let height = 650;
     let container;
     let midiDevices = [];
     // settings
+    let scale = null;
     let filterUnison = true;
     let useColors = false;
     let useSemitones = false;
@@ -17,23 +19,12 @@
     let notes = [];
 
     // domain knowledge
+    const noteNames =
     // see https://muted.io/intervals-chart/
     // TODO: go up to 24?
-    const intervalNames = [
-        { semitones: 0, name: 'Unison', short: 'P1', type: 'perfect' },
-        { semitones: 1, name: 'Minor 2nd', short: 'm2', type: 'minor' },
-        { semitones: 2, name: 'Major 2nd', short: 'M2', type: 'major' },
-        { semitones: 3, name: 'Minor 3rd', short: 'm3', type: 'minor' },
-        { semitones: 4, name: 'Major 3rd', short: 'M3', type: 'major' },
-        { semitones: 5, name: 'Perfect 4th', short: 'P4', type: 'perfect' },
-        { semitones: 6, name: 'Augmented 4th', short: 'A4', type: 'tritone' },
-        { semitones: 7, name: 'Perfect 5th', short: 'P5', type: 'perfect' },
-        { semitones: 8, name: 'Minor 6th', short: 'm6', type: 'minor' },
-        { semitones: 9, name: 'Major 6th', short: 'M6', type: 'major' },
-        { semitones: 10, name: 'Minor 7th', short: 'm7', type: 'minor' },
-        { semitones: 11, name: 'Major 7th', short: 'M7', type: 'major' },
-        { semitones: 12, name: 'Perfect 8ve', short: 'P8', type: 'perfect' },
-    ];
+    const intervalNames = [];
+
+    const scales = Scale.names();
 
     const onMidiEnabled = () => {
         midiDevices = [];
@@ -63,71 +54,70 @@
     const draw = () => {
         // TODO: filter notes which are too close together
         // TODO: filter notes with low velocity
-        let intervals = notes.map((d, i) =>
-            i === 0 ? 0 : d.number - notes[i - 1].number,
-        );
-        if (filterUnison) {
-            intervals = intervals.filter((d) => d !== 0);
-        }
-        intervals = intervals.map((d) => {
-            if (Math.abs(d) <= 12) {
-                return d;
-            } else {
-                const sub = d > 0 ? 12 : -12;
-                while (Math.abs(d) > 12) {
-                    d -= sub;
-                }
-                return d;
-            }
-        });
-        const grouped = d3
-            .groups(intervals, (d) => d)
-            .map(([int, grp]) => {
-                return { interval: int, count: grp.length };
-            });
-
-        const plot = Plot.plot({
-            width,
-            height,
-            marginLeft: 120,
-            marginRight: 10,
-            color: {
-                legend: useColors,
-                domain: ['minor', 'major', 'perfect', 'tritone'],
-                range: ['#7da2e8', '#ed796a', 'gold', '#ccc'],
-            },
-            x: {
-                // axis: false,
-            },
-            y: {
-                // ticks: rules,
-                tickFormat: useSemitones
-                    ? (d) => d
-                    : (d) =>
-                          d >= 0
-                              ? intervalNames[d].name
-                              : intervalNames[-d].name,
-                domain: d3.range(-12, 13, 1),
-                label: `🡸 going down ${' '.repeat(75)} going up 🡺     `,
-                reverse: true,
-                // type: 'ordinal',
-            },
-            marks: [
-                Plot.ruleY([-12, 0, 12], { stroke: '#888', strokeWidth: 1.5 }),
-                Plot.barX(grouped, {
-                    x: 'count',
-                    y: 'interval',
-                    // fill: '#ddd',
-                    fill: useColors
-                        ? (d) => intervalNames[Math.abs(d.interval)].type
-                        : '#ddd',
-                    dx: 0.5,
-                    rx: 4,
-                }),
-            ],
-        });
-        container.textContent = '';
-        container.appendChild(plot);
+        // let intervals = notes.map((d, i) =>
+        //     i === 0 ? 0 : d.number - notes[i - 1].number,
+        // );
+        // if (filterUnison) {
+        //     intervals = intervals.filter((d) => d !== 0);
+        // }
+        // intervals = intervals.map((d) => {
+        //     if (Math.abs(d) <= 12) {
+        //         return d;
+        //     } else {
+        //         const sub = d > 0 ? 12 : -12;
+        //         while (Math.abs(d) > 12) {
+        //             d -= sub;
+        //         }
+        //         return d;
+        //     }
+        // });
+        // const grouped = d3
+        //     .groups(intervals, (d) => d)
+        //     .map(([int, grp]) => {
+        //         return { interval: int, count: grp.length };
+        //     });
+        // const plot = Plot.plot({
+        //     width,
+        //     height,
+        //     marginLeft: 120,
+        //     marginRight: 10,
+        //     color: {
+        //         legend: useColors,
+        //         domain: ['minor', 'major', 'perfect', 'tritone'],
+        //         range: ['#7da2e8', '#ed796a', 'gold', '#ccc'],
+        //     },
+        //     x: {
+        //         // axis: false,
+        //     },
+        //     y: {
+        //         // ticks: rules,
+        //         tickFormat: useSemitones
+        //             ? (d) => d
+        //             : (d) =>
+        //                   d >= 0
+        //                       ? intervalNames[d].name
+        //                       : intervalNames[-d].name,
+        //         domain: d3.range(-12, 13, 1),
+        //         label: `🡸 going down ${' '.repeat(75)} going up 🡺     `,
+        //         reverse: true,
+        //         // type: 'ordinal',
+        //     },
+        //     marks: [
+        //         Plot.ruleY([-12, 0, 12], { stroke: '#888', strokeWidth: 1.5 }),
+        //         Plot.barX(grouped, {
+        //             x: 'count',
+        //             y: 'interval',
+        //             // fill: '#ddd',
+        //             fill: useColors
+        //                 ? (d) => intervalNames[Math.abs(d.interval)].type
+        //                 : '#ddd',
+        //             dx: 0.5,
+        //             rx: 4,
+        //         }),
+        //     ],
+        // });
+        // container.textContent = '';
+        // container.appendChild(plot);
     };
 
     const exportData = () => {
@@ -186,6 +176,11 @@
         major or minor intervals.
     </p>
     <div class="control">
+        <select>
+            {#each scales as s}
+                <option value="{s}">{s}</option>
+            {/each}
+        </select>
         <button
             title="Toggle filtering unison intervals"
             on:click="{() => {

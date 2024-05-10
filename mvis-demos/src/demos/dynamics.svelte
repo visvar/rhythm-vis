@@ -2,10 +2,7 @@
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
     import saveAs from 'file-saver';
-    import { Utils } from 'musicvis-lib';
-    import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
-    import { secondsPerBeatToBpm } from '../lib/lib';
 
     let width = 1000;
     let height = 600;
@@ -124,7 +121,7 @@
         const data = {
             isBinning,
             barLimit,
-            noteOnTimes: noteVelocities,
+            noteVelocities,
         };
         const json = JSON.stringify(data, undefined, 2);
         const blob = new Blob([json], {
@@ -143,7 +140,7 @@
         ) {
             isBinning = json.isBinning;
             barLimit = json.barLimit;
-            noteVelocities = json.noteOnTimes;
+            noteVelocities = json.noteVelocities;
             draw();
         }
     };

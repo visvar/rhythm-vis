@@ -12,6 +12,8 @@
      * - metric for spread
      * - metric for mistake
      * - metric for trend to early/late
+     * - interpolate first and last point (pad and add?)
+     * - fill up x of KDE to fill whole circle
      */
 
     const GRIDS = ['4:2', '4:3', '4:4', '4:5', '3:2', '3:3', '3:4', '3:5'];
