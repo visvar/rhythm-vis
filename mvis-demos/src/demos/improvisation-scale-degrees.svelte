@@ -4,22 +4,23 @@
     import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
-    import { Scale } from '@tonaljs/tonal';
+    import { Note, Scale } from '@tonaljs/tonal';
+    import { Midi } from 'musicvis-lib';
 
     let width = 1000;
     let height = 650;
     let container;
     let midiDevices = [];
     // settings
-    let scale = null;
-    let filterUnison = true;
-    let useColors = false;
-    let useSemitones = false;
+    let root = 'A';
+    let scale = 'minor pentatonic';
+    let useColors = true;
+    let showOutsideScale = true;
     // data
     let notes = [];
 
     // domain knowledge
-    const noteNames =
+    const noteNames = Midi.NOTE_NAMES_FLAT;
     // see https://muted.io/intervals-chart/
     // TODO: go up to 24?
     const intervalNames = [];
@@ -40,6 +41,7 @@
     };
 
     const noteOn = (e) => {
+        // console.log(e.note);
         const note = {
             // ...e.note,
             number: e.note.number,
@@ -54,77 +56,85 @@
     const draw = () => {
         // TODO: filter notes which are too close together
         // TODO: filter notes with low velocity
-        // let intervals = notes.map((d, i) =>
-        //     i === 0 ? 0 : d.number - notes[i - 1].number,
-        // );
-        // if (filterUnison) {
-        //     intervals = intervals.filter((d) => d !== 0);
-        // }
-        // intervals = intervals.map((d) => {
-        //     if (Math.abs(d) <= 12) {
-        //         return d;
-        //     } else {
-        //         const sub = d > 0 ? 12 : -12;
-        //         while (Math.abs(d) > 12) {
-        //             d -= sub;
-        //         }
-        //         return d;
-        //     }
-        // });
-        // const grouped = d3
-        //     .groups(intervals, (d) => d)
-        //     .map(([int, grp]) => {
-        //         return { interval: int, count: grp.length };
-        //     });
-        // const plot = Plot.plot({
-        //     width,
-        //     height,
-        //     marginLeft: 120,
-        //     marginRight: 10,
-        //     color: {
-        //         legend: useColors,
-        //         domain: ['minor', 'major', 'perfect', 'tritone'],
-        //         range: ['#7da2e8', '#ed796a', 'gold', '#ccc'],
-        //     },
-        //     x: {
-        //         // axis: false,
-        //     },
-        //     y: {
-        //         // ticks: rules,
-        //         tickFormat: useSemitones
-        //             ? (d) => d
-        //             : (d) =>
-        //                   d >= 0
-        //                       ? intervalNames[d].name
-        //                       : intervalNames[-d].name,
-        //         domain: d3.range(-12, 13, 1),
-        //         label: `🡸 going down ${' '.repeat(75)} going up 🡺     `,
-        //         reverse: true,
-        //         // type: 'ordinal',
-        //     },
-        //     marks: [
-        //         Plot.ruleY([-12, 0, 12], { stroke: '#888', strokeWidth: 1.5 }),
-        //         Plot.barX(grouped, {
-        //             x: 'count',
-        //             y: 'interval',
-        //             // fill: '#ddd',
-        //             fill: useColors
-        //                 ? (d) => intervalNames[Math.abs(d.interval)].type
-        //                 : '#ddd',
-        //             dx: 0.5,
-        //             rx: 4,
-        //         }),
-        //     ],
-        // });
-        // container.textContent = '';
-        // container.appendChild(plot);
+        // MIDI nr (0 to 11) of the scale root
+        const rootNr = noteNames.indexOf(root);
+        const scaleInfo = Scale.get(`${root} ${scale}`);
+        const scaleNotes = scaleInfo.notes.map((note, i) => {
+            // note chroma from 0 to 11 (C to B)
+            const chroma = noteNames.indexOf(note);
+            let offset = chroma - rootNr;
+            offset = offset >= 0 ? offset : offset + 12;
+            return {
+                name: note,
+                chroma,
+                interval: scaleInfo.intervals[i],
+                degree: i,
+                offset,
+            };
+        });
+        const scaleOffsets = new Set(scaleNotes.map((d) => d.offset));
+        // note chroma from 0 to 11 (C to B)
+        const chroma = notes.map((d) => d.number % 12);
+        // steps from root to note
+        const rootOffsets = chroma.map((d) => {
+            const offset = d - rootNr;
+            return offset >= 0 ? offset : offset + 12;
+        });
+        const grouped = d3
+            .groups(rootOffsets, (d) => d)
+            .map(([key, grp]) => {
+                return { value: key, count: grp.length };
+            });
+        const plot = Plot.plot({
+            width,
+            height,
+            marginLeft: 120,
+            marginRight: 10,
+            color: {
+                legend: useColors,
+                domain: ['root', 'scale', 'outside scale'],
+                range: ['#666', '#aaa', '#eee'],
+            },
+            y: {
+                tickFormat: (d) => noteNames[(d + rootNr) % 12],
+                domain: showOutsideScale
+                    ? d3.range(0, 12, 1)
+                    : [...scaleOffsets],
+                reverse: true,
+                label: 'semitones from root',
+            },
+            marks: [
+                Plot.barX(grouped, {
+                    x: 'count',
+                    y: 'value',
+                    fill: (d) => {
+                        // colors off?
+                        if (!useColors) {
+                            return '#ddd';
+                        }
+                        // root?
+                        if (d.value === 0) {
+                            return '#666';
+                        }
+                        //  in scale?
+                        if (scaleOffsets.has(d.value)) {
+                            return '#aaa';
+                        }
+                        // out of scale
+                        return '#eee';
+                    },
+                    dx: 0.5,
+                    rx: 4,
+                }),
+            ],
+        });
+        container.textContent = '';
+        container.appendChild(plot);
     };
 
     const exportData = () => {
         const data = {
-            filterUnison,
             useColors,
-            useSemitones,
             notes,
         };
         const json = JSON.stringify(data, undefined, 2);
@@ -142,9 +152,7 @@
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            filterUnison = json.filterUnison;
             useColors = json.useColors;
-            useSemitones = json.useSemitones;
             notes = json.notes;
             draw();
         }
@@ -169,29 +177,28 @@
     <h2>Improvisation Intervals</h2>
     <p class="explanation">
         Connect a MIDI instrument (currently {midiDevices.length} connected) and
-        start playing. The bar chart below shows how often you played each interval:
-        when you go up in pitch, the bar of the played interval in the top half will
-        increase. If you go down, it will show up in the bottom half. Colors denote
-        the type of interval, so you can quickly see if you play, for example, more
-        major or minor intervals.
+        start playing. The bar chart below shows how often you played each scale
+        degree.
     </p>
     <div class="control">
-        <select>
-            {#each scales as s}
-                <option value="{s}">{s}</option>
-            {/each}
-        </select>
+        <label>
+            scale
+            <select bind:value="{root}" on:change="{draw}">
+                {#each noteNames as n}
+                    <option value="{n}">{n}</option>
+                {/each}
+            </select>
+            <select bind:value="{scale}" on:change="{draw}">
+                {#each scales as s}
+                    <option value="{s}">{s}</option>
+                {/each}
+            </select>
+        </label>
+    </div>
+
+    <div class="control">
         <button
-            title="Toggle filtering unison intervals"
-            on:click="{() => {
-                filterUnison = !filterUnison;
-                draw();
-            }}"
-        >
-            unison {filterUnison ? 'hidden' : 'shown'}
-        </button>
-        <button
-            title="Use colors for interval types"
+            title="Use colors for root, in-scale, outside-scale"
             on:click="{() => {
                 useColors = !useColors;
                 draw();
@@ -200,13 +207,13 @@
             colors {useColors ? 'on' : 'off'}
         </button>
         <button
-            title="Show number of semitones instead of musical names for intervals on the y axis"
+            title="Show notes outside the scale"
             on:click="{() => {
-                useSemitones = !useSemitones;
+                showOutsideScale = !showOutsideScale;
                 draw();
             }}"
         >
-            semitones {useSemitones ? 'on' : 'off'}
+            non-scale notes {showOutsideScale ? 'shown' : 'hidden'}
         </button>
         <!-- <label
             title="You can filter out bars that are shorter than a given note duration."
