@@ -14,7 +14,7 @@
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.0",
-    "svelte": "^4.2.15",
+    "svelte": "^4.2.17",
     "vite": "^5.2.11"
   },
   "dependencies": {
@@ -27,7 +27,7 @@
     "gh-pages": "^6.1.1",
     "musicvis-lib": "^0.57.1",
     "npm-check-updates": "^16.14.20",
-    "wavesurfer.js": "^7.7.13",
+    "wavesurfer.js": "^7.7.14",
     "webmidi": "^3.1.9"
   }
 }

@@ -1,22 +1,23 @@
 <script>
   import { getUrlParam, setUrlParam } from './lib/url';
+  import Tools from './tools/_tools.svelte';
   // demos
   import SubDivision from './demos/sub-division.svelte';
   import TempoDrift from './demos/tempo-drift.svelte';
   import Dynamics from './demos/dynamics.svelte';
   import ImprovisationIntervals from './demos/improvisation-intervals.svelte';
-  import Tools from './tools/_tools.svelte';
   import ImprovisationScaleDegrees from './demos/improvisation-scale-degrees.svelte';
+  import FretboardHeatmap from './demos/fretboard-heatmap.svelte';
+  import ChordArpeggioTiming from './demos/chord-arpeggio-timing.svelte';
 
   /**
    * All demos defined here
-   * TODO: add tags for filtering, eg instrument and task?
    */
   const DEMOS = [
     {
       id: 'sub-division',
       title: 'Sub-Division',
-      description: 'Learn rhythmic playing in different sub-divisions',
+      description: 'Learn rhythmic playing in different sub-divisions.',
       task: 'timing',
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
@@ -25,7 +26,7 @@
     {
       id: 'tempo-drift',
       title: 'Tempo Drift',
-      description: 'Keep your tempo constant over a longer stretch of playing',
+      description: 'Keep your tempo constant over a longer stretch of playing.',
       task: 'timing',
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
@@ -34,7 +35,7 @@
     {
       id: 'dynamics',
       title: 'Dynamics',
-      description: 'Check how well you control the loudness of notes',
+      description: 'Check how well you control the loudness of notes.',
       tags: ['task:dynamics', 'input:MIDI', 'encoding:bars'],
       task: 'dynamics',
       input: 'MIDI',
@@ -44,7 +45,8 @@
     {
       id: 'improvisation-intervals',
       title: 'Improvisation Intervals',
-      description: 'See how often you use different intervals in improvisation',
+      description:
+        'See how often you use different intervals in improvisation.',
       task: 'pitch',
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
@@ -54,11 +56,30 @@
       id: 'improvisation-scale-degrees',
       title: 'Improvisation Scale Degrees',
       description:
-        'See how often you use different scale degrees in improvisation',
+        'See how often you use different scale degrees in improvisation.',
       task: 'pitch',
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
       component: ImprovisationScaleDegrees,
+    },
+    {
+      id: 'fretboard-heatmap',
+      title: 'Fretboard Heatmap',
+      description: 'See how often you play different fretboard positions.',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['guitar/bass'],
+      component: FretboardHeatmap,
+    },
+    {
+      id: 'chord-arpeggio-timing',
+      title: 'Chord and Arpeggio Timing',
+      description:
+        'See how spaced out the notes in a chord or arpeggio are, and how consistent the timing between consecutive chords/arpeggios is.',
+      task: 'timing',
+      input: 'MIDI',
+      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      component: ChordArpeggioTiming,
     },
   ];
 
@@ -86,10 +107,11 @@
 
   // tags
   const allTasks = new Set(DEMOS.flatMap((d) => d.task).sort());
-  const allInstruments = new Set(DEMOS.flatMap((d) => d.task).sort());
+  const allInstruments = new Set(DEMOS.flatMap((d) => d.instruments).sort());
   // filter
-  let currentTasks = new Set(...allTasks);
-  let currentInstruments = new Set(...allInstruments);
+  let currentTasks = new Set(allTasks);
+  let currentInstruments = new Set(allInstruments);
+  $: console.log(currentInstruments);
 
   const updSet = (set, item) => {
     if (set.has(item)) {
@@ -97,7 +119,16 @@
     } else {
       set.add(item);
     }
-    set = new Set(set);
+    return new Set(set);
+  };
+
+  const setHasAny = (set, values) => {
+    for (const v of values) {
+      if (set.has(v)) {
+        return true;
+      }
+    }
+    return false;
   };
 </script>
 
@@ -114,31 +145,68 @@
     </p>
 
     <div>
-      <label>
-        task
-        {#each allTasks.values() as d}
-          <button on:click="{() => updSet(currentTasks, d)}">
-            {d}
-          </button>
-        {/each}
-      </label>
+      <p class="explanation">
+        You can filter demos with the bottuns below. Click a button to toggle
+        it, double click it to turn it on and all others of the same kind off. A
+        demo will only be shown if it supports at least one of the active
+        attributes.
+      </p>
+      task
+      <button
+        on:click="{() => {
+          currentTasks = new Set(allTasks);
+        }}"
+      >
+        all
+      </button>
+      {#each allTasks.values() as d}
+        <button
+          on:click="{() => (currentTasks = updSet(currentTasks, d))}"
+          on:dblclick="{() => (currentTasks = new Set([d]))}"
+          class="{currentTasks.has(d) ? 'active' : 'hidden'}"
+        >
+          {d}
+        </button>
+      {/each}
+    </div>
+    <div>
+      instrument
+      <button
+        on:click="{() => {
+          currentInstruments = new Set(allInstruments);
+        }}"
+      >
+        all
+      </button>
+      {#each allInstruments.values() as d}
+        <button
+          on:click="{() =>
+            (currentInstruments = updSet(currentInstruments, d))}"
+          on:dblclick="{() => (currentInstruments = new Set([d]))}"
+          class="{currentInstruments.has(d) ? 'active' : 'hidden'}"
+        >
+          {d}
+        </button>
+      {/each}
     </div>
 
     <!-- demo overview grid -->
     <div class="grid">
       {#each DEMOS as demo}
-        <!-- svelte-ignore a11y-click-events-have-key-events -->
-        <!-- svelte-ignore a11y-no-static-element-interactions -->
-        <div
-          class="card"
-          on:click="{() => {
-            currentDemo = demo;
-            setUrlParam(window, 'd', demo.id);
-          }}"
-        >
-          <h2>{demo.title}</h2>
-          {demo.description}
-        </div>
+        {#if currentTasks.has(demo.task) && setHasAny(currentInstruments, demo.instruments)}
+          <!-- svelte-ignore a11y-click-events-have-key-events -->
+          <!-- svelte-ignore a11y-no-static-element-interactions -->
+          <div
+            class="card"
+            on:click="{() => {
+              currentDemo = demo;
+              setUrlParam(window, 'd', demo.id);
+            }}"
+          >
+            <h2>{demo.title}</h2>
+            {demo.description}
+          </div>
+        {/if}
       {/each}
     </div>
     <!-- Tools page button -->
@@ -164,11 +232,13 @@
       <Tools />
     {:else}
       <!-- show demo by importing dynamically -->
-      <!-- <svelte:component this="{currentDemo.component}" someprop="{42}" /> -->
       <svelte:component this="{currentDemo.component}" />
     {/if}
   {/if}
 </main>
 
 <style>
+  button.active {
+    background-color: rgb(218, 236, 251);
+  }
 </style>

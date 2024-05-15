@@ -1,7 +1,21 @@
 <script>
+    import GuitarTab from './guitar-tab.svelte';
     import GuitarTunings from './guitar-tunings.svelte';
+    import PianoRoll from './piano-roll.svelte';
 
     let TOOLS = [
+        {
+            id: 'piano-roll',
+            title: 'Piano Roll',
+            description: 'Shows MIDI input as a piano roll.',
+            component: PianoRoll,
+        },
+        {
+            id: 'guitar-tab',
+            title: 'Guitar Tab',
+            description: 'Shows MIDI input as guitar tab.',
+            component: GuitarTab,
+        },
         {
             id: 'guitar-tunings',
             title: 'Guitar Tunings',

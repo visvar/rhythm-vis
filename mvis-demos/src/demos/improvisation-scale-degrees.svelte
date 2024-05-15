@@ -21,9 +21,6 @@
 
     // domain knowledge
     const noteNames = Midi.NOTE_NAMES_FLAT;
-    // see https://muted.io/intervals-chart/
-    // TODO: go up to 24?
-    const intervalNames = [];
 
     const scales = Scale.names();
 
@@ -88,7 +85,7 @@
         const plot = Plot.plot({
             width,
             height,
-            marginLeft: 120,
+            marginLeft: 70,
             marginRight: 10,
             color: {
                 legend: useColors,
@@ -101,7 +98,7 @@
                     ? d3.range(0, 12, 1)
                     : [...scaleOffsets],
                 reverse: true,
-                label: 'semitones from root',
+                label: 'notes, increasing semitones from root 🡺',
             },
             marks: [
                 Plot.barX(grouped, {
@@ -134,7 +131,10 @@
 
     const exportData = () => {
         const data = {
+            root,
+            scale,
             useColors,
+            showOutsideScale,
             notes,
         };
         const json = JSON.stringify(data, undefined, 2);
@@ -152,7 +152,10 @@
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            root = json.root;
+            scale = json.scale;
             useColors = json.useColors;
+            showOutsideScale = json.showOutsideScale;
             notes = json.notes;
             draw();
         }

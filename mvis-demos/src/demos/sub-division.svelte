@@ -261,6 +261,8 @@
     });
 
     onDestroy(() => {
+        // turn off metronome
+        metro.stop();
         // remove MIDI listeners to avoid duplicate calls and improve performance
         for (const input of WebMidi.inputs) {
             input.removeListener();

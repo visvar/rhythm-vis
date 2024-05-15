@@ -91,9 +91,11 @@ button {
 
 div.grid {
   margin-top: 20px;
+  margin-bottom: 20px;
   display: grid;
   grid-template-columns: repeat(3, auto);
   gap: 20px;
+  /* grid-auto-rows: max-content; */
 }
 
 div.card {
