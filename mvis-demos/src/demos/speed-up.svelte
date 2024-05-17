@@ -3,19 +3,31 @@
     import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
-    import { Midi } from 'musicvis-lib';
+    import { Midi, Utils } from 'musicvis-lib';
+    import Metronome from '../lib/Metronome.js';
+    import { delay } from '../lib/lib';
 
     let width = 1000;
-    let height = 400;
+    let height = 60;
     let container;
     let midiDevices = [];
+    let metro = new Metronome();
     // settings
-    let pastSeconds = 10;
-    let maxNoteDistance = 0.2;
+    let initialTempo = 60;
+    let targetTempo = 120;
+    let tempoIncrease = 10;
+    let quantize = 'off';
 
     // data
+    let currentStep = '';
+    let currentTempo = targetTempo;
     let firstTimeStamp = 0;
-    let notes = [];
+    let exerciseNotes = [];
+    let exerciseBeatCount;
+    // Map bpm->notes
+    let practiceRecordings = new Map();
+    let ready = true;
+    let tempoStepWatcher;
 
     const onMidiEnabled = () => {
         midiDevices = [];
@@ -30,164 +42,177 @@
         }
     };
 
-    const noteOn = (e) => {
+    const noteOn = async (e) => {
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        const note = {
-            // ...e.note,
-            number: e.note.number,
-            velocity: e.rawVelocity,
-            time: noteInSeconds,
-            channel: e.message.channel,
-        };
-        notes.push(note);
+        const note = noteInSeconds;
+        if (currentStep === 'input exercise') {
+            // currently inputting the exercise
+            exerciseNotes = [...exerciseNotes, note];
+        } else if (currentStep === 'practice') {
+            // currently practicing
+            if (!practiceRecordings.has(currentTempo)) {
+                practiceRecordings.set(currentTempo, []);
+            }
+            const notes = practiceRecordings.get(currentTempo);
+            // only save note if recorder is ready (short delay after metronome stop)
+            if (ready) {
+                notes.push(note);
+            }
+        }
         draw();
     };
 
-    const draw = () => {
-        const maxTime = d3.max(notes, (d) => d.time) + 0.5;
-        const minTime = maxTime - pastSeconds;
-        // only handle recent notes
-        const filtered = notes.filter(
-            (d) => d.end > minTime || d.end === undefined,
-        );
-        // clustering to chords
-        // TODO: move to mvlib
-        const chords = [];
-        let currentChord = [];
-        for (const note of filtered) {
-            if (currentChord.length === 0) {
-                // empty chord?
-                currentChord.push(note);
-            } else if (note.time - currentChord.at(-1).time < maxNoteDistance) {
-                // add to current chord
-                currentChord.push(note);
+    /**
+     * Regularly check if the tempo should be increased now
+     *
+     */
+    const checkIfTempoIncrease = async () => {
+        // check if current tempo is complete
+        const notes = practiceRecordings.get(currentTempo);
+        if (!notes) {
+            return;
+        }
+        const currentDuration = d3.max(notes) - d3.min(notes);
+        let quarter = Utils.bpmToSecondsPerBeat(currentTempo);
+        const currentBeats = currentDuration / quarter;
+        console.log(`${currentBeats} of ${exerciseBeatCount}`);
+        if (currentBeats >= exerciseBeatCount) {
+            console.log(`increasing bpm`);
+            // go to next step
+            metro.stop();
+            if (currentTempo <= targetTempo) {
+                currentTempo += tempoIncrease;
+                ready = false;
+                await delay(2);
+                metro.start(currentTempo, 4);
+                // make sure we have a clean start, ie reset current recording
+                if (practiceRecordings.has(currentTempo)) {
+                    practiceRecordings.set(currentTempo, []);
+                }
+                ready = true;
             } else {
-                // start new chord
-                chords.push(currentChord);
-                currentChord = [note];
+                currentStep = '';
             }
         }
-        chords.push(currentChord);
-        const chordExtents = chords.map((c) => d3.extent(c, (d) => d.time));
-        const chordGaps = chordExtents
-            .slice(1)
-            .map((d, i) => [chordExtents[i][0], d[0]]);
+    };
 
+    const inputExercise = () => {
+        currentStep = 'input exercise';
+        // reset practice
+        exerciseNotes = [];
+        practiceRecordings = new Map();
+        metro.start(initialTempo, 4);
+        draw();
+    };
+
+    const saveExercise = () => {
+        currentStep = '';
+        metro.stop();
+        if (exerciseNotes.length > 0) {
+            // get exercise duration in beats
+            const exerciseDuration =
+                d3.max(exerciseNotes) - d3.min(exerciseNotes);
+            let quarter = Utils.bpmToSecondsPerBeat(initialTempo);
+            exerciseBeatCount = Math.ceil(exerciseDuration / quarter);
+        }
+    };
+
+    const startPractice = async () => {
+        if (exerciseNotes.length === 0) {
+            alert('You need to input an exercise first');
+            return;
+        }
+        currentStep = 'practice';
+        currentTempo = initialTempo;
+        practiceRecordings = new Map();
+        metro.start(currentTempo, 4);
+        tempoStepWatcher = setInterval(checkIfTempoIncrease, 100);
+    };
+
+    const stopPractice = () => {
+        currentStep = '';
+        currentTempo = targetTempo;
+        clearInterval(tempoStepWatcher);
+        metro.stop();
+    };
+
+    /**
+     * Draw visualization
+     */
+    const draw = () => {
+        container.textContent = '';
+        if (exerciseNotes.length === 0) {
+            return;
+        }
+        // qunatize exercise notes and convert time to beats
+        let quarter = Utils.bpmToSecondsPerBeat(initialTempo);
+        const quantized = quantizeAndScaleNotes(
+            exerciseNotes,
+            quantize,
+            quarter,
+        );
+        let maxBeat = Math.ceil((d3.max(quantized) / 4) * 4) + 0.5;
+        console.log(quantized, maxBeat);
         // plot
         const plot = Plot.plot({
-            insetRight: 10,
             width,
             height,
-            marginLeft: 60,
-            marginBottom: 40,
-            padding: 0,
+            marginLeft: 40,
             x: {
-                label: 'Time in seconds',
-                domain: [minTime, maxTime],
+                label: 'Time in beats',
+                domain: [0, maxBeat],
             },
-            y: {
-                label: 'MIDI Pitch',
-                grid: true,
-                reverse: true,
-                // domain: d3.range(pitchExtent[0] - 1, pitchExtent[1] + 2),
-                // type: 'linear',
-                tickFormat: (d) => Midi.MIDI_NOTES[d].label,
-            },
+            y: {},
             marks: [
-                // Plot.ruleY(
-                //     d3.range(
-                //         Math.ceil((pitchExtent[0] - 1) / 12) * 12,
-                //         pitchExtent[1] + 2,
-                //         12,
-                //     ),
-                // ),
-                Plot.tickX(filtered, {
-                    clip: true,
-                    x: 'time',
-                    y: 'number',
-                    fill: '#ddd',
-                    stroke: '#ccc',
+                // beat marks
+                Plot.ruleX(d3.range(0, maxBeat, 1), {
+                    stroke: '#ddd',
+                }),
+                // bar marks
+                Plot.ruleX(d3.range(0, maxBeat, 4)),
+                Plot.dot(quantized, {
+                    symbol: 'times',
+                    stroke: '#333',
+                    x: (d) => d,
+                    r: 5,
                 }),
             ],
         });
-        // chord durations
-        const plot2 = Plot.plot({
-            insetRight: 10,
-            width,
-            height: 100,
-            marginLeft: 60,
-            marginTop: 0,
-            marginBottom: 0,
-            padding: 0,
-            x: {
-                label: null,
-                domain: [minTime, maxTime],
-                axis: false,
-            },
-            y: {
-                ticks: [],
-                label: 'durations (s)',
-            },
-            marks: [
-                Plot.link(chordExtents, {
-                    clip: true,
-                    x1: (d) => d[0],
-                    x2: (d) => d[1],
-                    y: 0,
-                }),
-                Plot.text(chordExtents, {
-                    clip: true,
-                    x: (d) => d[0],
-                    y: 0,
-                    text: (d, i) => (d[1] - d[0]).toFixed(2),
-                    dy: 10,
-                    textAnchor: 'start',
-                }),
-            ],
-        });
-        // chord gaps
-        const plot3 = Plot.plot({
-            insetRight: 10,
-            width,
-            height: 100,
-            marginLeft: 60,
-            // marginRight: -10,
-            marginBottom: 40,
-            padding: 0,
-            x: {
-                label: 'Time in seconds',
-                domain: [minTime, maxTime],
-            },
-            y: {
-                ticks: [],
-                label: 'gaps (s)',
-            },
-            marks: [
-                Plot.link(chordGaps, {
-                    clip: true,
-                    x1: (d) => d[0],
-                    x2: (d) => d[1],
-                    y: 0,
-                }),
-                Plot.tickX(chordGaps, {
-                    clip: true,
-                    x: (d) => d[0],
-                }),
-                Plot.text(chordGaps, {
-                    clip: true,
-                    x: (d) => d[0],
-                    y: 0,
-                    text: (d, i) => (d[1] - d[0]).toFixed(2),
-                    dx: 2,
-                    dy: 10,
-                    textAnchor: 'start',
-                }),
-            ],
-        });
-        container.textContent = '';
         container.appendChild(plot);
-        container.appendChild(plot2);
-        container.appendChild(plot3);
+
+        // plot practice notes, one plot per tempo
+        for (const [tempo, notes] of practiceRecordings) {
+            const firstNoteTime = notes[0];
+            quarter = Utils.bpmToSecondsPerBeat(tempo);
+            const inBeats = notes.map((d) => (d - firstNoteTime) / quarter);
+            const plot = Plot.plot({
+                width,
+                height,
+                marginLeft: 40,
+                x: {
+                    label: 'Time in beats',
+                    domain: [0, maxBeat],
+                },
+                y: {
+                    label: `practice with ${tempo} BPM`,
+                },
+                marks: [
+                    // beat marks
+                    Plot.ruleX(d3.range(0, maxBeat, 1), {
+                        stroke: '#ddd',
+                    }),
+                    // bar marks
+                    Plot.ruleX(d3.range(0, maxBeat, 4)),
+                    Plot.dot(inBeats, {
+                        symbol: 'times',
+                        stroke: '#333',
+                        x: (d) => d,
+                        r: 5,
+                    }),
+                ],
+            });
+            container.appendChild(plot);
+        }
     };
 
     onMount(() => {
@@ -203,52 +228,163 @@
         for (const input of WebMidi.inputs) {
             input.removeListener();
         }
+        metro.stop();
     });
+
+    function quantizeAndScaleNotes(notes, quantize, quarter) {
+        const firstNoteTime = notes[0];
+        const quantized = notes.map((d) => {
+            // time relative to first note
+            let time = d - firstNoteTime;
+            // quantize to 16th note or so
+            if (quantize !== 'off') {
+                let q;
+                if (quantize === '8th') {
+                    q = quarter / 2;
+                }
+                if (quantize === '16th') {
+                    q = quarter / 4;
+                }
+                if (quantize === '32nd') {
+                    q = quarter / 8;
+                }
+                time = Math.round(time / q) * q;
+            }
+            return time / quarter;
+        });
+        return quantized;
+    }
+
+    const predefinedExercise = (e) => {
+        const ex = e.target.value;
+        const exercises = new Map([
+            ['quarter', d3.range(0, 8, 1)],
+            ['eighth', d3.range(0, 8, 0.5)],
+            ['quarter-triplets', d3.range(0, 8, 0.3)],
+            [
+                'swing',
+                d3.range(0, 8, 0.5).map((d, i) => (i % 2 === 0 ? i : i + 0.2)),
+            ],
+        ]);
+        const quarter = Utils.bpmToSecondsPerBeat(initialTempo);
+        quantize = 'off';
+        const beats = exercises.get(ex);
+        exerciseNotes = beats.map((d) => d * quarter);
+        exerciseBeatCount = Math.ceil(d3.max(beats) + 1);
+        console.log(ex, exerciseNotes);
+        draw();
+    };
 </script>
 
 <main class="demo">
-    <h2>Chord and Arpeggio Timing</h2>
+    <h2>Speed-Up</h2>
     <p class="explanation">
-        <!-- TODO: -->
+        Adjust the initial and target tempo, record an exercise at the inital
+        tempo, and then practice it with increasing speed until you reach your
+        target tempo (or higher).
     </p>
     <div class="control">
         <label
-            title="maximum distance between notes such that they still count as beloning to the same chord/arpeggio"
+            title="Set a tempo at which you are able to input the exercise precisely (in BPM)"
         >
-            max. note distance
+            initial tempo
             <input
                 type="number"
-                bind:value="{maxNoteDistance}"
+                bind:value="{initialTempo}"
                 on:change="{draw}"
-                min="0.05"
-                max="5"
-                step="0.05"
+                min="30"
+                max="100"
+                step="5"
             />
         </label>
-        <label title="time in seconds for past notes to be shown">
-            time
+        <label
+            title="Set the tempo you want to be able to play the exercise at (in BPM)"
+        >
+            target tempo
             <input
                 type="number"
-                bind:value="{pastSeconds}"
+                bind:value="{targetTempo}"
                 on:change="{draw}"
-                min="10"
-                max="300"
-                step="10"
+                min="60"
+                max="200"
+                step="5"
             />
         </label>
+        <label title="Set the tempo increase between practice runs (in BPM)">
+            tempo increase
+            <input
+                type="number"
+                bind:value="{tempoIncrease}"
+                min="1"
+                max="20"
+                step="1"
+            />
+        </label>
+        <label>
+            quantize exercise
+            <select bind:value="{quantize}" on:change="{draw}">
+                {#each ['off', '32nd', '16th', '8th'] as d}
+                    <option value="{d}">{d}</option>
+                {/each}
+            </select>
+        </label>
+    </div>
+    <div class="control">
+        <label>
+            pre-defined exercise
+            <select on:change="{predefinedExercise}">
+                {#each ['quarter', 'eighth', 'quarter-triplets', 'swing'] as d}
+                    <option>{d}</option>
+                {/each}
+            </select>
+        </label>
+        <button
+            title="Start recording the exercise."
+            on:click="{inputExercise}"
+            disabled="{currentStep === 'input exercise' ||
+                currentStep === 'practice'}"
+        >
+            input exercise
+        </button>
+        <button
+            title="Stop recording the exercise."
+            on:click="{saveExercise}"
+            disabled="{currentStep !== 'input exercise'}"
+        >
+            save exercise
+        </button>
+        <button
+            title="Start recording the practice with speed-up."
+            on:click="{startPractice}"
+            disabled="{exerciseNotes.length === 0}"
+        >
+            start practice
+        </button>
+        <button
+            title="Stop recording the practice with speed-up."
+            on:click="{stopPractice}"
+            disabled="{currentStep !== 'practice'}"
+        >
+            stop practice
+        </button>
+    </div>
+    <div>
+        current step: {currentStep}<br />
+        current tempo: {currentTempo} BPM
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <button
-            title="Clear all played notes"
+            title="Clear practice but not exercise"
             on:click="{() => {
-                if (confirm('Reset played notes?')) {
-                    notes = [];
+                if (confirm('Reset practice?')) {
+                    practiceRecordings = new Map();
                     firstTimeStamp = performance.now();
+                    draw();
                 }
             }}"
         >
-            reset
+            reset practice
         </button>
     </div>
 </main>

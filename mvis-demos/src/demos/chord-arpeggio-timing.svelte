@@ -94,13 +94,6 @@
                 tickFormat: (d) => Midi.MIDI_NOTES[d].label,
             },
             marks: [
-                // Plot.ruleY(
-                //     d3.range(
-                //         Math.ceil((pitchExtent[0] - 1) / 12) * 12,
-                //         pitchExtent[1] + 2,
-                //         12,
-                //     ),
-                // ),
                 Plot.tickX(filtered, {
                     clip: true,
                     x: 'time',
