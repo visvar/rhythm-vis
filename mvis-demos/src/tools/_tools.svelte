@@ -1,9 +1,18 @@
 <script>
+    import ChordDetection from './chord-detection.svelte';
     import GuitarTab from './guitar-tab.svelte';
     import GuitarTunings from './guitar-tunings.svelte';
+    import MidiLogger from './midi-logger.svelte';
     import PianoRoll from './piano-roll.svelte';
 
     let TOOLS = [
+        {
+            id: 'midi-logger',
+            title: 'MIDI Logger',
+            description:
+                'Logs all incoming MIDI messages. Useful for getting to know a device or debugging MIDI issues.',
+            component: MidiLogger,
+        },
         {
             id: 'piano-roll',
             title: 'Piano Roll',
@@ -22,6 +31,12 @@
             description:
                 'Small tool that computes the notes for a guitar tuning based on parameters. Open tunings are not included.',
             component: GuitarTunings,
+        },
+        {
+            id: 'chord-detection',
+            title: 'Chord Detection',
+            description: "Play a chord and see what it's named.",
+            component: ChordDetection,
         },
     ];
 
@@ -44,7 +59,9 @@
                     }}"
                 >
                     <h2>{tool.title}</h2>
-                    {tool.description}
+                    <div class="description">
+                        {tool.description}
+                    </div>
                 </div>
             {/each}
         </div>

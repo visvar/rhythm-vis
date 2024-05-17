@@ -4,7 +4,8 @@
     import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
-    import { Note } from '@tonaljs/tonal';
+    import { Note, Scale } from '@tonaljs/tonal';
+    import { Midi } from 'musicvis-lib';
 
     let width = 1000;
     let height = 280;
@@ -15,11 +16,13 @@
     let container;
     let midiDevices = [];
     // settings
-
+    let root = 'A';
+    let scale = 'minor pentatonic';
     // data
     let notes = [];
-
     // domain knowledge
+    const noteNames = Midi.NOTE_NAMES_FLAT;
+    const scales = Scale.names();
 
     const onMidiEnabled = () => {
         midiDevices = [];
@@ -35,10 +38,8 @@
     };
 
     const noteOn = (e) => {
-        // console.log(e.note);
         const string = e.message.channel - 1;
         const note = {
-            // ...e.note,
             number: e.note.number,
             velocity: e.rawVelocity,
             time: e.timestamp,
@@ -51,18 +52,28 @@
     };
 
     const draw = () => {
-        // TODO: filter notes which are too close together
-        // TODO: filter notes with low velocity
-        // TODO: allow filtering over time
+        const lastNote = notes.at(-1);
         const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
-        const data = notes.map((d) => {
-            const string = d.channel - 1;
-            return {
-                ...d,
-                string,
-                fret: d.number - tuningPitches[string],
-            };
-        });
+        // get interval positions
+        const intervals = [];
+        if (lastNote) {
+            for (let string = 0; string < stringCount; string++) {
+                for (let fret = 0; fret < fretCount + 1; fret++) {
+                    const midi = tuningPitches[string] + fret;
+                    // TODO: step should be in scale degrees between current and this note
+                    let step = (midi - lastNote.number) % 12;
+                    if (step < 0) {
+                        step += 12;
+                    }
+                    intervals.push({
+                        string,
+                        fret,
+                        step,
+                    });
+                }
+            }
+        }
+
         const cellSize = (width - 100) / 25;
         const plot = Plot.plot({
             width,
@@ -72,19 +83,21 @@
             padding: 0,
             x: {
                 domain: d3.range(0, fretCount + 1),
-                ticks: d3.range(0, fretCount + 1),
                 tickSize: 0,
             },
             y: {
                 domain: d3.range(0, stringCount),
-                tickFormat: (d) => tuningNotes[d],
+                tickFormat: (d) => tuningNotes[d] + ' ' + d,
                 tickSize: 0,
             },
             color: {
                 legend: true,
                 marginLeft: 100,
                 width: 400,
-                scheme: 'blues',
+                // scheme: 'sinebow',
+                type: 'categorical',
+                // domain: [0, 3, 4, 7],
+                // range: ['black', 'red'],
             },
             marks: [
                 //  frets
@@ -112,53 +125,30 @@
                     fill: '#ddd',
                     r: 8,
                 }),
-                // heatmap
-                Plot.cell(
-                    data,
-                    Plot.group(
-                        { fill: 'count' },
-                        {
-                            x: 'fret',
-                            y: 'string',
-                            fill: 'count',
-                            inset: 5,
-                            rx: '50%',
-                            tip: true,
-                        },
-                    ),
-                ),
+                lastNote
+                    ? Plot.cell([lastNote], {
+                          x: 'fret',
+                          y: 'string',
+                          fill: 'black',
+                          tip: true,
+                          inset: 5,
+                          rx: 5,
+                      })
+                    : null,
+                Plot.cell(intervals, {
+                    x: 'fret',
+                    y: 'string',
+                    fill: 'step',
+                    inset: 10,
+                    rx: '50%',
+                    tip: true,
+                }),
             ],
         });
 
         container.textContent = '';
         container.appendChild(plot);
     };
-
-    // const exportData = () => {
-    //     const data = {
-    //         useColors,
-    //         notes,
-    //     };
-    //     const json = JSON.stringify(data, undefined, 2);
-    //     const blob = new Blob([json], {
-    //         type: 'text/plain;charset=utf-8',
-    //     });
-    //     saveAs(blob, 'tempo-drift.json');
-    // };
-
-    // const importData = async (e) => {
-    //     const file = e.target.files[0];
-    //     const text = await file.text();
-    //     const json = JSON.parse(text);
-    //     if (
-    //         notes.length === 0 ||
-    //         confirm('Import data and overwrite currently unsaved data?')
-    //     ) {
-    //         useColors = json.useColors;
-    //         notes = json.notes;
-    //         draw();
-    //     }
-    // };
 
     onMount(() => {
         WebMidi.enable()
@@ -176,13 +166,10 @@
 </script>
 
 <main class="demo">
-    <h2>Fretboard Heatmap</h2>
-    <p class="explanation">
-        Connect a MIDI guitar and start playing. The heatmap below shows how
-        often you played each fretboard position.
-    </p>
+    <h2>Fretboard Improvisation Intervals</h2>
+    <p class="explanation"></p>
     <div class="control">
-        <!-- <label>
+        <label>
             scale
             <select bind:value="{root}" on:change="{draw}">
                 {#each noteNames as n}
@@ -194,7 +181,7 @@
                     <option value="{s}">{s}</option>
                 {/each}
             </select>
-        </label> -->
+        </label>
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
@@ -209,20 +196,5 @@
         >
             reset
         </button>
-        <!-- <button title="Export all data and settings" on:click="{exportData}">
-            export
-        </button>
-        <button
-            title="Export all data and settings"
-            on:click="{() => document.querySelector('#file-input').click()}"
-        >
-            import
-        </button>
-        <input
-            type="file"
-            on:input="{importData}"
-            id="file-input"
-            style="display: none"
-        /> -->
     </div>
 </main>

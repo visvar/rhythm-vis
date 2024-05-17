@@ -18,10 +18,8 @@
     let showOutsideScale = true;
     // data
     let notes = [];
-
     // domain knowledge
     const noteNames = Midi.NOTE_NAMES_FLAT;
-
     const scales = Scale.names();
 
     const onMidiEnabled = () => {

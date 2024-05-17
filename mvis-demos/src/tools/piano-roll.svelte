@@ -4,6 +4,7 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Midi } from 'musicvis-lib';
+    import { getCs } from '../lib/lib';
 
     let width = 1000;
     let height = 500;
@@ -122,13 +123,7 @@
                 width: 300,
             },
             marks: [
-                Plot.ruleY(
-                    d3.range(
-                        Math.ceil((pitchExtent[0] - 1) / 12) * 12,
-                        pitchExtent[1] + 2,
-                        12,
-                    ),
-                ),
+                Plot.ruleY(getCs(pitchExtent[0] - 1, pitchExtent[1] + 2)),
                 // current time
                 Plot.ruleX([maxTime], { stroke: '#888' }),
                 Plot.barX(filtered, {

@@ -92,6 +92,7 @@ button {
 div.grid {
   margin-top: 20px;
   margin-bottom: 20px;
+  /* width: 1200px; */
   display: grid;
   grid-template-columns: repeat(3, auto);
   gap: 20px;
@@ -99,8 +100,9 @@ div.grid {
 }
 
 div.card {
-  padding: 2em;
-  width: 256px;
+  padding: 1.5em 2em;
+  width: 300px;
+  min-height: 100px;
   background-color: #fefefe;
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -109,12 +111,18 @@ div.card {
   transition: all 250ms;
 }
 
+
 div.card:hover {
   box-shadow: steelblue 0 0 8px;
 }
 
 div.card h2 {
   margin-top: 0;
+  font-size: 22px;
+}
+
+div.card .description {
+  text-align: left;
 }
 
 /* demo */

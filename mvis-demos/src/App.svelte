@@ -9,6 +9,9 @@
   import ImprovisationScaleDegrees from './demos/improvisation-scale-degrees.svelte';
   import FretboardHeatmap from './demos/fretboard-heatmap.svelte';
   import ChordArpeggioTiming from './demos/chord-arpeggio-timing.svelte';
+  import KeyboardHistogram from './demos/keyboard-histogram.svelte';
+  import FretboardImprovisationIntervals from './demos/fretboard-improvisation-intervals.svelte';
+  import SpeedUp from './demos/speed-up.svelte';
 
   /**
    * All demos defined here
@@ -63,6 +66,15 @@
       component: ImprovisationScaleDegrees,
     },
     {
+      id: 'keyboard-histogram',
+      title: '[new] Keyboard Histogram',
+      description: 'See how often you play different keyboard keys.',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['keyboard'],
+      component: KeyboardHistogram,
+    },
+    {
       id: 'fretboard-heatmap',
       title: 'Fretboard Heatmap',
       description: 'See how often you play different fretboard positions.',
@@ -72,14 +84,34 @@
       component: FretboardHeatmap,
     },
     {
+      id: 'fretboard-improvisation-intervals',
+      title: '[new] Fretboard Improvisation Intervals',
+      description:
+        'Once you play a note, see where on the fretboard you can reach different intervals to the last played note.',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['guitar/bass'],
+      component: FretboardImprovisationIntervals,
+    },
+    {
       id: 'chord-arpeggio-timing',
       title: 'Chord and Arpeggio Timing',
       description:
-        'See how spaced out the notes in a chord or arpeggio are, and how consistent the timing between consecutive chords/arpeggios is.',
+        'See how spaced out the notes in a chord or arpeggio are, and how much time lies between these.',
       task: 'timing',
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
       component: ChordArpeggioTiming,
+    },
+    {
+      id: 'speed-up',
+      title: '[new] Speed-Up',
+      description:
+        'Record a short exercise at a slow tempo, then practice it with steadily increasing tempo.',
+      task: 'timing',
+      input: 'MIDI',
+      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      component: SpeedUp,
     },
   ];
 
@@ -141,16 +173,13 @@
     <p class="explanation">
       This page contains a collection of small tools (demos) that are each
       tailored to a specific musical skill and sometimes also specific kind of
-      musical data.
+      musical data. You can filter demos with the bottuns below. Click a button
+      to toggle it, double click it to turn it on and all others of the same
+      kind off. A demo will only be shown if it supports at least one of the
+      active attributes.
     </p>
 
     <div>
-      <p class="explanation">
-        You can filter demos with the bottuns below. Click a button to toggle
-        it, double click it to turn it on and all others of the same kind off. A
-        demo will only be shown if it supports at least one of the active
-        attributes.
-      </p>
       task
       <button
         on:click="{() => {
@@ -204,7 +233,9 @@
             }}"
           >
             <h2>{demo.title}</h2>
-            {demo.description}
+            <div class="description">
+              {demo.description}
+            </div>
           </div>
         {/if}
       {/each}
