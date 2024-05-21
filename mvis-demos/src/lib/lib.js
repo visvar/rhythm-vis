@@ -50,3 +50,33 @@ export function delay(seconds) {
     setTimeout(resolve, seconds * 1000)
   })
 }
+
+/**
+ * Update a set by toggling the item
+ * @param {Set} set a Set
+ * @param {*} item an item
+ * @returns {Set} updated Set
+*/
+export function updSet(set, item) {
+  if (set.has(item)) {
+    set.delete(item)
+  } else {
+    set.add(item)
+  }
+  return new Set(set)
+};
+
+/**
+ * Returns true if the Set contains any of the given items
+ * @param {Set} set a Set
+ * @param {*} values values
+ * @returns {boolean} true if Set contains any of the values
+ */
+export function setHasAny(set, values) {
+  for (const v of values) {
+    if (set.has(v)) {
+      return true
+    }
+  }
+  return false
+};

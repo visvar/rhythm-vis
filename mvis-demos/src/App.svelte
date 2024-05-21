@@ -1,5 +1,7 @@
 <script>
   import { getUrlParam, setUrlParam } from './lib/url';
+  import { setHasAny, updSet } from './lib/lib';
+  import saveAs from 'file-saver';
   import Tools from './tools/_tools.svelte';
   // demos
   import SubDivision from './demos/sub-division.svelte';
@@ -159,6 +161,26 @@
     }
   };
 
+  // track how often and when each demo is used
+  $: {
+    if (currentDemo && currentDemo !== 'tools') {
+      let usage;
+      if (localStorage.getItem('usage') !== null) {
+        usage = localStorage.getItem('usage');
+        usage = JSON.parse(usage);
+      } else {
+        usage = {
+          demoClicks: {},
+        };
+      }
+      const demoClicks = usage.demoClicks;
+      const thisDemoUsage = demoClicks[currentDemo.id] ?? [];
+      thisDemoUsage.push(new Date().toUTCString());
+      demoClicks[currentDemo.id] = thisDemoUsage;
+      localStorage.setItem('usage', JSON.stringify(usage));
+    }
+  }
+
   // tags
   const allTasks = new Set(DEMOS.flatMap((d) => d.task).sort());
   const allInstruments = new Set(DEMOS.flatMap((d) => d.instruments).sort());
@@ -166,24 +188,6 @@
   let currentTasks = new Set(allTasks);
   let currentInstruments = new Set(allInstruments);
   $: console.log(currentInstruments);
-
-  const updSet = (set, item) => {
-    if (set.has(item)) {
-      set.delete(item);
-    } else {
-      set.add(item);
-    }
-    return new Set(set);
-  };
-
-  const setHasAny = (set, values) => {
-    for (const v of values) {
-      if (set.has(v)) {
-        return true;
-      }
-    }
-    return false;
-  };
 </script>
 
 <main>
@@ -258,10 +262,17 @@
             <div class="description">
               {demo.description}
             </div>
-            <div class="instruments">
+            <div class="tags">
+              instrument:
               {demo.instruments.includes('guitar/bass') ? '🎸' : ''}
               {demo.instruments.includes('drum') ? '🥁' : ''}
-              {demo.instruments.includes('keyboard') ? '🎘' : ''}
+              {demo.instruments.includes('keyboard') ? '🎹' : ''}
+            </div>
+            <div class="tags">
+              task:
+              {demo.task === 'dynamics' ? '🔊' : ''}
+              {demo.task === 'timing' ? '🕐' : ''}
+              {demo.task === 'pitch' ? '🎶' : ''}
             </div>
           </div>
         {/if}
@@ -274,7 +285,19 @@
         setUrlParam(window, 'd', 'tools');
       }}"
     >
-      Tools
+      tools
+    </button>
+    <!-- export usage button -->
+    <button
+      on:click="{() => {
+        const usage = localStorage.getItem('usage');
+        const blob = new Blob([usage], {
+          type: 'text/plain;charset=utf-8',
+        });
+        saveAs(blob, 'usage.json');
+      }}"
+    >
+      export usage
     </button>
   {:else}
     <!-- back button -->
@@ -296,7 +319,7 @@
 </main>
 
 <style>
-  .card .instruments {
+  .card .tags {
     font-size: larger;
   }
 

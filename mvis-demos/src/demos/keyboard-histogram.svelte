@@ -53,6 +53,10 @@
 
     const draw = () => {
         const limited = notes.slice(-pastNoteCount);
+        const counts = d3.groups(limited, (d) => d.number);
+        console.log(counts);
+        const maxCount = d3.max(counts, (d) => d[1].length);
+        console.log(maxCount);
         const plot = Plot.plot({
             width,
             height,
@@ -76,10 +80,20 @@
                 Plot.ruleX(getCs(minPitch, maxPitch), {
                     stroke: '#ddd',
                 }),
-
                 Plot.ruleY([0], {
                     stroke: '#ddd',
                 }),
+                // background bars
+                Plot.barY(
+                    d3.range(minPitch, maxPitch).filter((d) => Midi.isSharp(d)),
+                    {
+                        x: (d) => d,
+                        y: () => maxCount,
+                        fill: '#f8f8f8',
+                        inset: 0.5,
+                    },
+                ),
+                // data
                 Plot.barY(
                     limited,
                     Plot.groupX(
@@ -88,7 +102,7 @@
                             x: 'number',
                             // fill: (d) => console.log(d),
                             fill: (d) =>
-                                Midi.isSharp(d.number) ? '#888' : '#ddd',
+                                Midi.isSharp(d.number) ? '#444' : '#ccc',
                             inset: 0.5,
                             rx: 4,
                             tip: true,
