@@ -9,10 +9,6 @@
 
     let width = 1000;
     let height = 280;
-    let stringCount = 6;
-    let fretCount = 24;
-    // E standard tuning, strings start at high E
-    let tuningPitches = [64, 59, 55, 50, 45, 40];
     let container;
     let midiDevices = [];
     // settings
@@ -21,6 +17,11 @@
     // data
     let notes = [];
     // domain knowledge
+    let stringCount = 6;
+    let fretCount = 24;
+    // E standard tuning, strings start at high E
+    let tuningPitches = [64, 59, 55, 50, 45, 40];
+    const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
     const noteNames = Midi.NOTE_NAMES_FLAT;
     const scales = Scale.names();
 
@@ -53,7 +54,6 @@
 
     const draw = () => {
         const lastNote = notes.at(-1);
-        const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
         // get interval positions
         const intervals = [];
         if (lastNote) {

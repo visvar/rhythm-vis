@@ -12,6 +12,8 @@
   import KeyboardHistogram from './demos/keyboard-histogram.svelte';
   import FretboardImprovisationIntervals from './demos/fretboard-improvisation-intervals.svelte';
   import SpeedUp from './demos/speed-up.svelte';
+  import RhythmSheetMusic from './demos/rhythm-sheet-music.svelte';
+  import ChordDiagrams from './demos/chord-diagrams.svelte';
 
   /**
    * All demos defined here
@@ -112,6 +114,26 @@
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
       component: SpeedUp,
+    },
+    {
+      id: 'rhythm-sheet-music',
+      title: '[new] Rhythm Sheet Music',
+      description:
+        'This demo displays the notes you play as staff notation (𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯) and offset in percent.',
+      task: 'timing',
+      input: 'MIDI',
+      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      component: RhythmSheetMusic,
+    },
+    {
+      id: 'chord-diagrams',
+      title: '[new] Chord Diagrams',
+      description:
+        'See what chords you play on a guitar/bass as chord diagrams.',
+      task: 'chords',
+      input: 'MIDI',
+      instruments: ['guitar/bass'],
+      component: ChordDiagrams,
     },
   ];
 
@@ -236,6 +258,11 @@
             <div class="description">
               {demo.description}
             </div>
+            <div class="instruments">
+              {demo.instruments.includes('guitar/bass') ? '🎸' : ''}
+              {demo.instruments.includes('drum') ? '🥁' : ''}
+              {demo.instruments.includes('keyboard') ? '🎘' : ''}
+            </div>
           </div>
         {/if}
       {/each}
@@ -269,6 +296,10 @@
 </main>
 
 <style>
+  .card .instruments {
+    font-size: larger;
+  }
+
   button.active {
     background-color: rgb(218, 236, 251);
   }

@@ -3,7 +3,7 @@
     import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
-    import { Midi, Utils } from 'musicvis-lib';
+    import { Utils } from 'musicvis-lib';
     import Metronome from '../lib/Metronome.js';
     import { delay } from '../lib/lib';
 
@@ -144,7 +144,7 @@
         if (exerciseNotes.length === 0) {
             return;
         }
-        // qunatize exercise notes and convert time to beats
+        // quantize exercise notes and convert time to beats
         let quarter = Utils.bpmToSecondsPerBeat(initialTempo);
         const quantized = quantizeAndScaleNotes(
             exerciseNotes,
@@ -369,8 +369,7 @@
         </button>
     </div>
     <div>
-        current step: {currentStep}<br />
-        current tempo: {currentTempo} BPM
+        current step: <b>{currentStep}</b> current tempo: <b>{currentTempo}</b> BPM
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
