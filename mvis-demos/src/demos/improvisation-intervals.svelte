@@ -4,6 +4,7 @@
     import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
+    import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
 
     let width = 1000;
     let height = 650;
@@ -193,7 +194,7 @@
                 draw();
             }}"
         >
-            unison {filterUnison ? 'hidden' : 'shown'}
+            unison {!filterUnison ? toggleOnIcon : toggleOffIcon}
         </button>
         <button
             title="Use colors for interval types"
@@ -202,7 +203,7 @@
                 draw();
             }}"
         >
-            colors {useColors ? 'on' : 'off'}
+            colors {useColors ? toggleOnIcon : toggleOffIcon}
         </button>
         <button
             title="Show number of semitones instead of musical names for intervals on the y axis"
@@ -211,7 +212,7 @@
                 draw();
             }}"
         >
-            semitones {useSemitones ? 'on' : 'off'}
+            semitones {useSemitones ? toggleOnIcon : toggleOffIcon}
         </button>
         <!-- <label
             title="You can filter out bars that are shorter than a given note duration."

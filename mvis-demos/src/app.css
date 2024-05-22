@@ -138,6 +138,6 @@ p.explanation {
   text-align: justify;
 }
 
-svg text {
-  /* font-size: 12px; */
-}
+/* svg .tick>text {
+  font-size: 15px;
+} */

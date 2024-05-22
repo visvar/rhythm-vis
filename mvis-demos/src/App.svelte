@@ -16,6 +16,7 @@
   import SpeedUp from './demos/speed-up.svelte';
   import RhythmSheetMusic from './demos/rhythm-sheet-music.svelte';
   import ChordDiagrams from './demos/chord-diagrams.svelte';
+  import PitchBend from './demos/pitch-bend.svelte';
 
   /**
    * All demos defined here
@@ -28,6 +29,8 @@
       task: 'timing',
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
+      // TODO:
+      // analysis: ['planning', 'constant', 'glance', 'summary'],
       component: SubDivision,
     },
     {
@@ -71,7 +74,7 @@
     },
     {
       id: 'keyboard-histogram',
-      title: '[new] Keyboard Histogram',
+      title: 'Keyboard Histogram',
       description: 'See how often you play different keyboard keys.',
       task: 'pitch',
       input: 'MIDI',
@@ -89,7 +92,7 @@
     },
     {
       id: 'fretboard-improvisation-intervals',
-      title: '[new] Fretboard Improvisation Intervals',
+      title: 'Fretboard Improvisation Intervals',
       description:
         'Once you play a note, see where on the fretboard you can reach different intervals to the last played note.',
       task: 'pitch',
@@ -109,7 +112,7 @@
     },
     {
       id: 'speed-up',
-      title: '[new] Speed-Up',
+      title: 'Speed-Up',
       description:
         'Record a short exercise at a slow tempo, then practice it with steadily increasing tempo.',
       task: 'timing',
@@ -119,7 +122,7 @@
     },
     {
       id: 'rhythm-sheet-music',
-      title: '[new] Rhythm Sheet Music',
+      title: 'Rhythm Sheet Music',
       description:
         'This demo displays the notes you play as staff notation (𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯) and offset in percent.',
       task: 'timing',
@@ -129,13 +132,22 @@
     },
     {
       id: 'chord-diagrams',
-      title: '[new] Chord Diagrams',
+      title: '[changed] Chord Diagrams',
       description:
         'See what chords you play on a guitar/bass as chord diagrams.',
       task: 'chords',
       input: 'MIDI',
       instruments: ['guitar/bass'],
       component: ChordDiagrams,
+    },
+    {
+      id: 'pitch-bend',
+      title: '[new] Pitch Bend',
+      description: 'Practice different kinds of pitch bends.',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      component: PitchBend,
     },
   ];
 
@@ -267,12 +279,16 @@
               {demo.instruments.includes('guitar/bass') ? '🎸' : ''}
               {demo.instruments.includes('drum') ? '🥁' : ''}
               {demo.instruments.includes('keyboard') ? '🎹' : ''}
+              {demo.instruments.includes('wind') ? '🪈' : ''}
+              {demo.instruments.includes('singing') ? '🎤' : ''}
+              {demo.instruments.includes('strings') ? '🎻' : ''}
             </div>
             <div class="tags">
               task:
               {demo.task === 'dynamics' ? '🔊' : ''}
               {demo.task === 'timing' ? '🕐' : ''}
               {demo.task === 'pitch' ? '🎶' : ''}
+              {demo.task === 'chords' ? '⋮' : ''}
             </div>
           </div>
         {/if}

@@ -4,8 +4,9 @@
     import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
-    import { Note, Scale } from '@tonaljs/tonal';
+    import { Scale } from '@tonaljs/tonal';
     import { Midi } from 'musicvis-lib';
+    import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
 
     let width = 1000;
     let height = 650;
@@ -175,7 +176,7 @@
 </script>
 
 <main class="demo">
-    <h2>Improvisation Intervals</h2>
+    <h2>Improvisation Scale Degrees</h2>
     <p class="explanation">
         Connect a MIDI instrument (currently {midiDevices.length} connected) and
         start playing. The bar chart below shows how often you played each scale
@@ -205,7 +206,7 @@
                 draw();
             }}"
         >
-            colors {useColors ? 'on' : 'off'}
+            colors {useColors ? toggleOnIcon : toggleOffIcon}
         </button>
         <button
             title="Show notes outside the scale"
@@ -214,7 +215,7 @@
                 draw();
             }}"
         >
-            non-scale notes {showOutsideScale ? 'shown' : 'hidden'}
+            non-scale notes {showOutsideScale ? toggleOnIcon : toggleOffIcon}
         </button>
         <!-- <label
             title="You can filter out bars that are shorter than a given note duration."

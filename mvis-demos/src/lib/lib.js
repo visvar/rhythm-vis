@@ -79,4 +79,4 @@ export function setHasAny(set, values) {
     }
   }
   return false
-};
+}

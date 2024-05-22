@@ -3,12 +3,14 @@
     import { WebMidi } from 'webmidi';
     import saveAs from 'file-saver';
     import * as Plot from '@observablehq/plot';
+    import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
 
     let width = 1000;
     let height = 600;
     let container;
     let midiDevices = [];
     // see https://en.wikipedia.org/wiki/Dynamics_(music)
+    // TODO: move to mvlib
     const velocitiesLogic = new Map([
         [0, 'silent'],
         [16, 'ppp'],
@@ -178,7 +180,7 @@
                 draw();
             }}"
         >
-            binning is {isBinning ? 'on' : 'off'}
+            binning {isBinning ? toggleOnIcon : toggleOffIcon}
         </button>
         <label title="The number of most recent notes that are shown as bars.">
             bars

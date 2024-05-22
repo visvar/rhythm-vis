@@ -4,15 +4,16 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Midi } from 'musicvis-lib';
+    import { NOTE_COLORS } from '../lib/colors';
     import { Chord, Note } from '@tonaljs/tonal';
 
-    let width = 1000;
     let height = 200;
     let container;
     let midiDevices = [];
     // settings
     let pastChords = 5;
-    let maxNoteDistance = 0.2;
+    let maxFretSpan = 5;
+    let maxNoteDistance = 0.1;
     // domain knowledge
     let stringCount = 6;
     let fretCount = 24;
@@ -71,8 +72,23 @@
         }
         chords.push(currentChord);
 
+        // remove notes that are too far
+        chords = chords.map((notes) => {
+            const nonOpen = notes.filter((n) => n.fret > 0);
+            let minFret;
+            if (nonOpen.length === 0) {
+                // if all notes are open strings, wehave to take 0
+                minFret = 0;
+            } else {
+                // else we take the lowest non-open fret
+                minFret = d3.min(nonOpen, (d) => d.fret);
+            }
+            const maxFret = minFret + maxFretSpan;
+            return notes.filter((d) => d.fret <= maxFret);
+        });
+
         // limit
-        chords = chords.filter((d) => d.length > 1).slice(-pastChords);
+        chords = chords.filter((d) => d.length > 2).slice(-pastChords);
 
         // assign chord ID to all notes
         for (const [index, chord] of chords.entries()) {
@@ -92,99 +108,58 @@
             return Chord.detect(chordNotes);
         });
 
-        console.log(chords);
-
         // plot
-        const cellSize = (width - 100) / 25;
-        // const plot = Plot.plot({
-        //     width,
-        //     height,
-        //     marginLeft: 60,
-        //     marginBottom: 50,
-        //     padding: 0,
-        //     x: {
-        //         // domain: d3.range(0, fretCount + 1),
-        //         tickSize: 0,
-        //     },
-        //     y: {
-        //         domain: d3.range(0, stringCount),
-        //         tickFormat: (d) => tuningNotes[d] + ' ' + d,
-        //         tickSize: 0,
-        //     },
-        //     color: {
-        //         legend: true,
-        //         marginLeft: 100,
-        //         width: 400,
-        //         type: 'categorical',
-        //     },
-        //     facet: {
-        //         data: chords.flat(),
-        //         x: 'chordId',
-        //     },
-        //     marks: [
-        //         // //  frets
-        //         Plot.ruleX(d3.range(0, fretCount + 1), {
-        //             stroke: '#ddd',
-        //             dx: cellSize / 2,
-        //             fx: 'chordId',
-        //         }),
-        //         // strings
-        //         Plot.ruleY(d3.range(0, stringCount), {
-        //             stroke: '#ddd',
-        //             strokeWidth: (d) => Math.sqrt(d + 1),
-        //             fx: 'chordId',
-        //         }),
-        //         Plot.cell(chords.flat(), {
-        //             x: 'fret',
-        //             y: 'string',
-        //             // fill: 'step',
-        //             inset: 10,
-        //             rx: '50%',
-        //             // tip: true,
-        //             fx: 'chordId',
-        //         }),
-        //     ],
-        // });
-        // container.textContent = '';
-        // container.appendChild(plot);
+        const width = ((height - 35) / 3) * (maxFretSpan + 1) + 50;
+        const cellSize = (width - 100) / (maxFretSpan + 2);
         container.textContent = '';
-        for (const chord of chords) {
-            const frets = d3.extent(chord, (d) => d.fret);
+        for (const [index, chord] of chords.entries()) {
+            const nonOpen = chord.filter((n) => n.fret > 0);
+            let minFret = 0;
+            if (nonOpen.length > 0) {
+                minFret = d3.min(nonOpen, (d) => d.fret);
+            }
+            const maxFret = minFret + maxFretSpan;
             const plot = Plot.plot({
                 width,
                 height,
-                marginLeft: 60,
-                marginBottom: 50,
+                marginLeft: 40,
+                marginRight: 10,
+                marginBottom: 25,
                 padding: 0,
+                figure: true,
+                subtitle: chordNames[index].join(', '),
+                style: { textAlign: 'center' },
                 x: {
-                    // domain: d3.range(0, fretCount + 1),
                     domain: d3.range(
-                        frets[0] - 1,
-                        Math.max(frets[0] + 6, frets[1] + 2),
-                        1,
+                        minFret === 0 ? 0 : minFret - 1,
+                        maxFret + 2,
                     ),
+                    label: '',
                     tickSize: 0,
+                    tickPadding: 15,
                 },
                 y: {
                     domain: d3.range(0, stringCount),
                     tickFormat: (d) => tuningNotes[d],
+                    label: '',
                     tickSize: 0,
+                    tickPadding: 15,
                 },
                 color: {
                     domain: d3.range(12),
-                    legend: true,
+                    range: NOTE_COLORS.noteColormap,
+                    legend: index === 0,
                     marginLeft: 100,
-                    width: 400,
+                    width: 600,
                     type: 'categorical',
                     tickFormat: (d) => Midi.NOTE_NAMES[d],
                 },
                 r: {
-                    legend: true,
                     domain: [0, 100],
                     range: [5, 10],
                 },
                 marks: [
-                    // //  frets
+                    //  frets
                     Plot.ruleX(d3.range(0, fretCount + 1), {
                         stroke: '#ddd',
                         dx: cellSize / 2,
@@ -194,7 +169,7 @@
                         stroke: '#ddd',
                         strokeWidth: (d) => Math.sqrt(d + 1),
                     }),
-                    // dots
+                    // inlay dots
                     Plot.dot([3, 5, 7, 9, 15, 17, 19, 21], {
                         x: (d) => d,
                         y: 2,
@@ -209,14 +184,28 @@
                         fill: '#ddd',
                         r: 8,
                     }),
-                    // notes
-                    Plot.dot(chord, {
-                        x: 'fret',
-                        y: 'string',
-                        r: 'velocity',
-                        fill: (d) => d.number % 12,
-                        tip: true,
-                    }),
+                    // fretted notes
+                    Plot.dot(
+                        chord.filter((d) => d.fret > 0),
+                        {
+                            x: 'fret',
+                            y: 'string',
+                            r: 'velocity',
+                            fill: (d) => d.number % 12,
+                            tip: true,
+                        },
+                    ),
+                    // open strings
+                    Plot.dot(
+                        chord.filter((d) => d.fret === 0),
+                        {
+                            x: minFret === 0 ? 0 : minFret - 1,
+                            y: 'string',
+                            r: 'velocity',
+                            stroke: (d) => d.number % 12,
+                            tip: true,
+                        },
+                    ),
                 ],
             });
             container.appendChild(plot);
@@ -240,9 +229,9 @@
 </script>
 
 <main class="demo">
-    <h2>Chord and Arpeggio Timing</h2>
+    <h2>Chord Diagrams</h2>
     <p class="explanation">
-        <!-- TODO: -->
+        Play chords on a guitar and see the chord names and diagrams.
     </p>
     <div class="control">
         <label
@@ -256,6 +245,17 @@
                 min="0.05"
                 max="5"
                 step="0.05"
+            />
+        </label>
+        <label title="maximum distance between the lowest and highest fret">
+            max. fret span
+            <input
+                type="number"
+                bind:value="{maxFretSpan}"
+                on:change="{draw}"
+                min="5"
+                max="25"
+                step="1"
             />
         </label>
         <label title="The number of played chords that is displayed">

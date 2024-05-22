@@ -5,6 +5,7 @@
     import * as Plot from '@observablehq/plot';
     import { Utils } from 'musicvis-lib';
     import Metronome from '../lib/Metronome.js';
+    import { toggleOnIcon, toggleOffIcon } from '../lib/icons.js';
 
     let width = 1000;
     let container;
@@ -250,7 +251,7 @@
             title="Use dotted notes? If not, the closest non-dotted note will be taken."
             on:click="{() => (useDotted = !useDotted)}"
         >
-            dotted notes {useDotted ? 'on' : 'off'}
+            dotted notes {useDotted ? toggleOnIcon : toggleOffIcon}
         </button>
     </div>
     <div class="visualization" bind:this="{container}"></div>

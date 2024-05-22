@@ -97,7 +97,7 @@
                     stroke: '#ddd',
                     strokeWidth: (d) => Math.sqrt(d + 1),
                 }),
-                // dots
+                // inlay dots
                 Plot.dot([3, 5, 7, 9, 15, 17, 19, 21], {
                     x: (d) => d,
                     y: 2,
