@@ -3,6 +3,7 @@
     import GuitarTab from './guitar-tab.svelte';
     import GuitarTunings from './guitar-tunings.svelte';
     import MidiLogger from './midi-logger.svelte';
+    import NoteColors from './note-colors.svelte';
     import PianoRoll from './piano-roll.svelte';
 
     let TOOLS = [
@@ -37,6 +38,12 @@
             title: 'Chord Detection',
             description: "Play a chord and see what it's named.",
             component: ChordDetection,
+        },
+        {
+            id: 'note-colors',
+            title: 'Note Colors',
+            description: 'Different note coor schemes.',
+            component: NoteColors,
         },
     ];
 

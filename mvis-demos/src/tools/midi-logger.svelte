@@ -62,6 +62,7 @@
                 <th>timestamp</th>
                 <th>manufacturer</th>
                 <th>name</th>
+                <th>channel</th>
                 <th>command</th>
                 <th>data</th>
                 <th>note</th>
@@ -74,6 +75,7 @@
                         <td>{m.timestamp.toFixed(1)}</td>
                         <td>{m.port.manufacturer}</td>
                         <td>{m.port.name}</td>
+                        <td>{m.message.channel}</td>
                         <td>{m.message.command} {m.message.type}</td>
                         <td>{m.message.dataBytes}</td>
                         <td>
