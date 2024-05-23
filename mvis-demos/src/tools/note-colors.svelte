@@ -1,10 +1,9 @@
 <script>
-    import { Note } from '@tonaljs/tonal';
-    import { WebMidi } from 'webmidi';
     import { NOTE_COLORS } from '../lib/colors';
     import { Midi, Utils } from 'musicvis-lib';
     import * as d3 from 'd3';
 
+    export let toolInfo;
     const colorSchemes = [];
     for (const key in NOTE_COLORS) {
         if (NOTE_COLORS.hasOwnProperty(key)) {
@@ -17,7 +16,7 @@
 </script>
 
 <main class="demo">
-    <h2>Note Colors</h2>
+    <h2>{toolInfo.title}</h2>
     <p class="explanation">
         See <a
             href="https://github.com/fheyen/musicvis-lib/blob/905edbdc8280e8ca76a329ffc83a160f3cda674a/src/utils/NoteColorUtils.js"

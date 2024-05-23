@@ -3,6 +3,7 @@
     import { Midi } from 'musicvis-lib';
     import * as d3 from 'd3';
 
+    export let toolInfo;
     let container;
     // settings
     let root = 'A';
@@ -22,7 +23,7 @@
 </script>
 
 <main class="demo">
-    <h2>Scale Sets</h2>
+    <h2>{toolInfo.title}</h2>
     <p class="explanation">
         Select a root note and scale and see how this scale relates to others.
         This tool is mainly a graphical interface for <a

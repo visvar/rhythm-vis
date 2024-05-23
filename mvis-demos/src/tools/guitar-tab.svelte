@@ -6,6 +6,7 @@
     import { Midi } from 'musicvis-lib';
     import { Note } from '@tonaljs/tonal';
 
+    export let toolInfo;
     let width = 1000;
     let height = 500;
     let stringCount = 6;
@@ -190,7 +191,7 @@
 </script>
 
 <main class="demo">
-    <h2>Guitar Tab</h2>
+    <h2>{toolInfo.title}</h2>
     <p class="explanation">
         The guitar tab below shows incoming MIDI notes as rectangles with their
         string (y position) and start and end times (x left and right side of

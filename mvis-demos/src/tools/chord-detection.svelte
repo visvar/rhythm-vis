@@ -4,6 +4,8 @@
     import * as d3 from 'd3';
     import { Chord, Note } from '@tonaljs/tonal';
 
+    export let toolInfo;
+
     let midiDevices = [];
 
     // data
@@ -69,7 +71,7 @@
 </script>
 
 <main class="demo">
-    <h2>Chord Detection</h2>
+    <h2>{toolInfo.title}</h2>
     <p class="explanation">
         Play a chord on a MIDI instrument. The notes you played and the detected
         chord will be shown below.

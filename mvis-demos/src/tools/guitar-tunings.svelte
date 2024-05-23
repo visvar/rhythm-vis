@@ -1,6 +1,7 @@
 <script>
     import { Guitar, Midi } from 'musicvis-lib';
 
+    export let toolInfo;
     let stringCount = 6;
     let tune = 0;
     let drop = false;
@@ -29,7 +30,7 @@
 </script>
 
 <main>
-    <h2>Guitar Tunings</h2>
+    <h2>{toolInfo.title}</h2>
     <label>
         strings
         <input

@@ -5,6 +5,7 @@
     import MidiLogger from './midi-logger.svelte';
     import NoteColors from './note-colors.svelte';
     import PianoRoll from './piano-roll.svelte';
+    import PitchDetection from './tuner.svelte';
     import ScaleSets from './scale-sets.svelte';
 
     let TOOLS = [
@@ -53,6 +54,13 @@
                 'See how different musical scales relate to each other.',
             component: ScaleSets,
         },
+        {
+            id: 'tuner',
+            title: 'Tuner',
+            description:
+                'Tries to detect the currently most prominent pitch from microphone audio. Useful for tuning instruments.',
+            component: PitchDetection,
+        },
     ];
 
     let currentTool;
@@ -82,7 +90,10 @@
         </div>
     {:else}
         <div>
-            <svelte:component this="{currentTool.component}" />
+            <svelte:component
+                this="{currentTool.component}"
+                toolInfo="{currentTool}"
+            />
         </div>
     {/if}
 </main>

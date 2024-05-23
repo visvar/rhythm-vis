@@ -19,6 +19,7 @@
   import PitchBend from './demos/pitch-bend.svelte';
   import SpeedUpTab from './demos/speed-up-tab.svelte';
   import ImprovisationScaleDegreesBar from './demos/improvisation-scale-degrees-bar.svelte';
+  import PitchBendAudio from './demos/pitch-bend-audio.svelte';
 
   /**
    * All demos defined here
@@ -61,7 +62,7 @@
         'See how often you use different intervals in improvisation.',
       task: 'pitch',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      instruments: ['guitar/bass', 'keyboard'],
       component: ImprovisationIntervals,
     },
     {
@@ -71,7 +72,7 @@
         'See how often you use different scale degrees in improvisation.',
       task: 'pitch',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      instruments: ['guitar/bass', 'keyboard'],
       component: ImprovisationScaleDegrees,
     },
     {
@@ -81,7 +82,7 @@
         'See how often you use different scale degrees in improvisation. This version shows the distribution of notes for each played bar.',
       task: 'pitch',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      instruments: ['guitar/bass', 'keyboard'],
       component: ImprovisationScaleDegreesBar,
     },
     {
@@ -168,8 +169,17 @@
       description: 'Practice different kinds of pitch bends.',
       task: 'pitch',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      instruments: ['guitar/bass', 'keyboard'],
       component: PitchBend,
+    },
+    {
+      id: 'pitch-bend-audio',
+      title: '[new] Pitch Bend (Audio)',
+      description: 'Practice different kinds of pitch bends.',
+      task: 'pitch',
+      input: 'audio',
+      instruments: ['guitar/bass', 'keyboard'],
+      component: PitchBendAudio,
     },
   ];
 

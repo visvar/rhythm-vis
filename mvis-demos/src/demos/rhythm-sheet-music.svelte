@@ -180,7 +180,7 @@
         // plot
         const plot2 = Plot.plot({
             width,
-            height: 100,
+            height: 200,
             marginLeft: 80,
             x: {
                 label: 'Note',
@@ -243,7 +243,10 @@
         </label>
         <button
             title="Use dotted notes? If not, the closest non-dotted note will be taken."
-            on:click="{() => (useDotted = !useDotted)}"
+            on:click="{() => {
+                useDotted = !useDotted;
+                draw();
+            }}"
         >
             dotted notes {useDotted ? toggleOnIcon : toggleOffIcon}
         </button>

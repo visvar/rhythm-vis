@@ -3,6 +3,7 @@
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
 
+    export let toolInfo;
     let midiDevices = [];
 
     // data
@@ -41,7 +42,7 @@
 </script>
 
 <main class="demo">
-    <h2>MIDI Logger</h2>
+    <h2>{toolInfo.title}</h2>
     <p class="explanation">
         Input anything on a MIDI device to see the incoming messages below.
     </p>

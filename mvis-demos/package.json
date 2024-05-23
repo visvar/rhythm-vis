@@ -28,6 +28,7 @@
     "musicvis-lib": "^0.57.1",
     "npm": "^10.8.0",
     "npm-check-updates": "^16.14.20",
+    "pitchy": "^4.1.0",
     "underscore": "^1.13.6",
     "wavesurfer.js": "^7.7.15",
     "webmidi": "^3.1.9"

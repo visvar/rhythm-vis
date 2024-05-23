@@ -6,6 +6,7 @@
     import { Midi } from 'musicvis-lib';
     import { getCs } from '../lib/lib';
 
+    export let toolInfo;
     let width = 1000;
     let height = 500;
     let container;
@@ -166,7 +167,7 @@
 </script>
 
 <main class="demo">
-    <h2>Fretboard Heatmap</h2>
+    <h2>{toolInfo.title}</h2>
     <p class="explanation">
         The piano roll below shows incoming MIDI notes as rectangles with their
         pitch (y position) and start and end times (x left and right side of the
