@@ -17,6 +17,8 @@
   import RhythmSheetMusic from './demos/rhythm-sheet-music.svelte';
   import ChordDiagrams from './demos/chord-diagrams.svelte';
   import PitchBend from './demos/pitch-bend.svelte';
+  import SpeedUpTab from './demos/speed-up-tab.svelte';
+  import ImprovisationScaleDegreesBar from './demos/improvisation-scale-degrees-bar.svelte';
 
   /**
    * All demos defined here
@@ -30,7 +32,7 @@
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
       // TODO:
-      // analysis: ['planning', 'constant', 'glance', 'summary'],
+      // analysis: ['planning', 'constant', 'reactive', 'glance', 'summary'],
       component: SubDivision,
     },
     {
@@ -71,6 +73,16 @@
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
       component: ImprovisationScaleDegrees,
+    },
+    {
+      id: 'improvisation-scale-degrees-bar',
+      title: '[new] Improvisation Scale Degrees (per Bar)',
+      description:
+        'See how often you use different scale degrees in improvisation. This version shows the distribution of notes for each played bar.',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      component: ImprovisationScaleDegreesBar,
     },
     {
       id: 'keyboard-histogram',
@@ -119,6 +131,16 @@
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
       component: SpeedUp,
+    },
+    {
+      id: 'speed-up-tab',
+      title: ' [new] Speed-Up Tab',
+      description:
+        'Record a short guitar exercise at a slow tempo, then practice it with steadily increasing tempo.',
+      task: 'timing',
+      input: 'MIDI',
+      instruments: ['guitar/bass'],
+      component: SpeedUpTab,
     },
     {
       id: 'rhythm-sheet-music',
@@ -336,7 +358,7 @@
 
 <style>
   .card .tags {
-    font-size: larger;
+    font-size: 18px;
   }
 
   button.active {

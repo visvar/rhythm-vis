@@ -5,8 +5,9 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Scale } from '@tonaljs/tonal';
-    import { Midi } from 'musicvis-lib';
+    import { Midi, Utils } from 'musicvis-lib';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
+    import Metronome from '../lib/Metronome';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
 
@@ -14,11 +15,13 @@
     let height = 650;
     let container;
     let midiDevices = [];
+    let metro = new Metronome();
     // settings
     let root = 'A';
     let scale = 'minor pentatonic';
     let useColors = true;
     let showOutsideScale = true;
+    let tempo = 120;
     // data
     let notes = [];
     // domain knowledge
@@ -39,21 +42,20 @@
     };
 
     const noteOn = (e) => {
-        // console.log(e.note);
+        let seconds = 0;
+        if (notes.length > 0) {
+            seconds = e.timestamp / 1000 - notes[0].time;
+        }
         const note = {
-            // ...e.note,
             number: e.note.number,
             velocity: e.rawVelocity,
-            time: e.timestamp,
-            // channel: e.message.channel,
+            time: seconds,
         };
         notes.push(note);
         draw();
     };
 
     const draw = () => {
-        // TODO: filter notes which are too close together
-        // TODO: filter notes with low velocity
         // MIDI nr (0 to 11) of the scale root
         const rootNr = noteNames.indexOf(root);
         const scaleInfo = Scale.get(`${root} ${scale}`);
@@ -71,18 +73,39 @@
             };
         });
         const scaleOffsets = new Set(scaleNotes.map((d) => d.offset));
-        // note chroma from 0 to 11 (C to B)
-        const chroma = notes.map((d) => d.number % 12);
-        // steps from root to note
-        const rootOffsets = chroma.map((d) => {
-            const offset = d - rootNr;
-            return offset >= 0 ? offset : offset + 12;
-        });
-        const grouped = d3
-            .groups(rootOffsets, (d) => d)
-            .map(([key, grp]) => {
-                return { value: key, count: grp.length };
+
+        // group by bar
+        const barDuration = Utils.bpmToSecondsPerBeat(tempo) * 4;
+        const byBar = d3.groups(notes, (d) => Math.floor(d.time / barDuration));
+
+        let data = [];
+        // create one histogram per bar
+        for (const [barId, notes] of byBar) {
+            // note chroma from 0 to 11 (C to B)
+            const rootOffsets = notes.map((d) => {
+                const chroma = d.number % 12;
+                const offset = chroma - rootNr;
+                return offset >= 0 ? offset : offset + 12;
             });
+            const counted = d3
+                .groups(rootOffsets, (d) => d)
+                .map(([key, grp]) => {
+                    return {
+                        value: key,
+                        count: grp.length,
+                        barId,
+                    };
+                });
+            data = data.concat(counted);
+        }
+        console.log(data);
+
+        // TODO: allow setting
+        const maxBar = Math.floor(notes.at(-1).time / barDuration);
+        const minBar = maxBar - 9;
+        console.log({ minBar });
+        data = data.filter((d) => d.barId >= minBar);
+
         const plot = Plot.plot({
             width,
             height,
@@ -102,9 +125,10 @@
                 label: 'notes, increasing semitones from root 🡺',
             },
             marks: [
-                Plot.barX(grouped, {
+                Plot.barX(data, {
                     x: 'count',
                     y: 'value',
+                    fx: 'barId',
                     fill: (d) => {
                         // colors off?
                         if (!useColors) {
@@ -137,6 +161,7 @@
             useColors,
             showOutsideScale,
             notes,
+            tempo,
         };
         const json = JSON.stringify(data, undefined, 2);
         const blob = new Blob([json], {
@@ -158,6 +183,7 @@
             useColors = json.useColors;
             showOutsideScale = json.showOutsideScale;
             notes = json.notes;
+            tempo = json.tempo;
             draw();
         }
     };
@@ -174,6 +200,7 @@
         for (const input of WebMidi.inputs) {
             input.removeListener();
         }
+        metro.stop();
     });
 </script>
 
@@ -199,8 +226,19 @@
             </select>
         </label>
     </div>
-
     <div class="control">
+        <label title="The tempo in beats per minute (bpm)">
+            tempo
+            <input
+                type="number"
+                bind:value="{tempo}"
+                on:change="{draw}"
+                step="1"
+                min="10"
+                max="400"
+                style="width: 55px"
+            />
+        </label>
         <button
             title="Use colors for root, in-scale, outside-scale"
             on:click="{() => {
@@ -246,6 +284,14 @@
         </button>
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
+        <button
+            title="Toggle metronome (click)"
+            on:click="{() => {
+                metro.toggle(tempo, 4);
+            }}"
+        >
+            metronome
+        </button>
     </div>
 </main>
 

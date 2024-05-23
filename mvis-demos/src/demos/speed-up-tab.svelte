@@ -5,23 +5,25 @@
     import * as Plot from '@observablehq/plot';
     import { Utils } from 'musicvis-lib';
     import Metronome from '../lib/Metronome.js';
-    import { delay } from '../lib/lib';
-    import saveAs from 'file-saver';
+    import { delay } from '../lib/lib.js';
+    import { Note } from '@tonaljs/tonal';
     import { replacer, reviver } from '../lib/json.js';
+    import saveAs from 'file-saver';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
 
     let width = 1000;
-    let height = 60;
+    let height = 150;
     let container;
     let midiDevices = [];
     let metro = new Metronome();
+    let ready = true;
+    let tempoStepWatcher;
     // settings
     let initialTempo = 60;
     let targetTempo = 120;
     let tempoIncrease = 10;
     let quantize = 'off';
-
     // data
     let currentStep = '';
     let currentTempo = targetTempo;
@@ -30,8 +32,11 @@
     let exerciseBeatCount;
     // Map bpm->notes
     let practiceRecordings = new Map();
-    let ready = true;
-    let tempoStepWatcher;
+    // domain knowledge
+    let stringCount = 6;
+    // E standard tuning, strings start at high E
+    let tuningPitches = [64, 59, 55, 50, 45, 40];
+    const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
 
     const onMidiEnabled = () => {
         midiDevices = [];
@@ -48,7 +53,13 @@
 
     const noteOn = async (e) => {
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        const note = noteInSeconds;
+        const string = e.message.channel - 1;
+        const note = {
+            time: noteInSeconds,
+            string,
+            fret: e.note.number - tuningPitches[string],
+            velocity: e.velocity,
+        };
         if (currentStep === 'input exercise') {
             // currently inputting the exercise
             exerciseNotes = [...exerciseNotes, note];
@@ -76,7 +87,7 @@
         if (!notes || !notes.length) {
             return;
         }
-        const minTime = d3.min(notes);
+        const minTime = d3.min(notes, (d) => d.time);
         const now = (performance.now() - firstTimeStamp) / 1000;
         const currentDuration = now - minTime;
         let quarter = Utils.bpmToSecondsPerBeat(currentTempo);
@@ -117,7 +128,8 @@
         if (exerciseNotes.length > 0) {
             // get exercise duration in beats
             const exerciseDuration =
-                d3.max(exerciseNotes) - d3.min(exerciseNotes);
+                d3.max(exerciseNotes, (d) => d.time) -
+                d3.min(exerciseNotes, (d) => d.time);
             let quarter = Utils.bpmToSecondsPerBeat(initialTempo);
             exerciseBeatCount = Math.ceil(exerciseDuration / quarter);
         }
@@ -136,7 +148,6 @@
     };
 
     const stopPractice = () => {
-        console.log('stop practice');
         currentStep = '';
         currentTempo = targetTempo;
         clearInterval(tempoStepWatcher);
@@ -158,8 +169,8 @@
             quantize,
             quarter,
         );
-        let maxBeat = Math.ceil((d3.max(quantized) / 4) * 4) + 0.5;
-        console.log(quantized, maxBeat);
+        let maxBeat =
+            Math.ceil((d3.max(quantized, (d) => d.time) / 4) * 4) + 0.5;
         // plot
         const plot = Plot.plot({
             width,
@@ -169,10 +180,18 @@
                 label: 'time in beats',
                 domain: [0, maxBeat],
             },
-            y: {},
+            y: {
+                domain: d3.range(0, stringCount),
+                tickFormat: (d) => tuningNotes[d],
+                tickSize: 0,
+            },
             marks: [
                 // beat marks
                 Plot.ruleX(d3.range(0, maxBeat, 1), {
+                    stroke: '#ddd',
+                }),
+                // strings
+                Plot.ruleY(d3.range(0, stringCount), {
                     stroke: '#ddd',
                 }),
                 // bar marks
@@ -180,7 +199,8 @@
                 Plot.dot(quantized, {
                     symbol: 'times',
                     stroke: '#333',
-                    x: (d) => d,
+                    x: (d) => d.time,
+                    y: (d) => d.string,
                     r: 5,
                 }),
             ],
@@ -189,12 +209,20 @@
 
         // plot practice notes, one plot per tempo
         for (const [tempo, notes] of practiceRecordings) {
-            const firstNoteTime = notes[0];
+            if (notes.length === 0) {
+                continue;
+            }
+            const firstNoteTime = notes[0].time;
             quarter = Utils.bpmToSecondsPerBeat(tempo);
-            const inBeats = notes.map((d) => (d - firstNoteTime) / quarter);
+            const inBeats = notes.map((d) => {
+                return {
+                    ...d,
+                    time: (d.time - firstNoteTime) / quarter,
+                };
+            });
             const plot = Plot.plot({
                 width,
-                height: 70,
+                height,
                 marginLeft: 40,
                 x: {
                     label: 'time in beats',
@@ -202,7 +230,14 @@
                 },
                 y: {
                     label: `${tempo} BPM`,
-                    ticks: [],
+                    domain: d3.range(0, stringCount),
+                    tickFormat: (d) => tuningNotes[d],
+                    tickSize: 0,
+                },
+                color: {
+                    // legend: true,
+                    domain: [0, 1],
+                    scheme: 'Greys',
                 },
                 marks: [
                     // beat marks
@@ -211,12 +246,25 @@
                     }),
                     // bar marks
                     Plot.ruleX(d3.range(0, maxBeat, 4)),
+                    // strings
+                    Plot.ruleY(d3.range(0, stringCount), {
+                        stroke: '#ddd',
+                    }),
+                    // notes
                     Plot.dot(inBeats, {
                         symbol: 'times',
-                        stroke: '#333',
-                        x: (d) => d,
-                        y: 0,
-                        r: 5,
+                        stroke: 'velocity',
+                        x: (d) => d.time,
+                        y: (d) => d.string,
+                        r: 4,
+                    }),
+                    Plot.text(inBeats, {
+                        text: 'fret',
+                        fill: 'velocity',
+                        x: (d) => d.time,
+                        y: (d) => d.string,
+                        textAnchor: 'middle',
+                        dy: -10,
                     }),
                 ],
             });
@@ -242,10 +290,10 @@
     });
 
     function quantizeAndScaleNotes(notes, quantize, quarter) {
-        const firstNoteTime = notes[0];
+        const firstNoteTime = notes[0].time;
         const quantized = notes.map((d) => {
             // time relative to first note
-            let time = d - firstNoteTime;
+            let time = d.time - firstNoteTime;
             // quantize to 16th note or so
             if (quantize !== 'off') {
                 let q;
@@ -260,7 +308,11 @@
                 }
                 time = Math.round(time / q) * q;
             }
-            return time / quarter;
+            const newTime = time / quarter;
+            return {
+                ...d,
+                time: newTime,
+            };
         });
         return quantized;
     }
@@ -281,7 +333,10 @@
         const beats = exercises.get(ex);
         exerciseNotes = beats.map((d) => d * quarter);
         exerciseBeatCount = Math.ceil(d3.max(beats) + 1);
-        console.log(ex, exerciseNotes);
+        // make into a tab
+        exerciseNotes = exerciseNotes.map((d) => {
+            return { time: d, string: 5, fret: 5 };
+        });
         draw();
     };
 
@@ -307,7 +362,7 @@
         const blob = new Blob([json], {
             type: 'text/plain;charset=utf-8',
         });
-        saveAs(blob, 'speed-up.json');
+        saveAs(blob, 'speed-up-tab.json');
     };
 
     /**
@@ -340,11 +395,14 @@
 </script>
 
 <main class="demo">
-    <h2>Speed-Up</h2>
+    <h2>Speed-Up Tab</h2>
     <p class="explanation">
         Adjust the initial and target tempo, record an exercise at the inital
         tempo, and then practice it with increasing speed until you reach your
-        target tempo.
+        target tempo. The notes you play are displayed in a guitar-tab-like
+        visualization with crosses, numbers above notes indicate the fret. The
+        darkness (white to black) encodes the notes' velocities, so eventual
+        noise (unintended notes) is less distracting.
     </p>
     <div class="control">
         <label

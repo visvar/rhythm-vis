@@ -5,6 +5,8 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
+    import ExportButton from './common/export-button.svelte';
+    import ImportButton from './common/import-button.svelte';
 
     let width = 1000;
     let height = 650;
@@ -238,22 +240,9 @@
             }}"
         >
             reset
+            <ExportButton exportFunction="{exportData}" />
+            <ImportButton importFunction="{importData}" />
         </button>
-        <button title="Export all data and settings" on:click="{exportData}">
-            export
-        </button>
-        <button
-            title="Export all data and settings"
-            on:click="{() => document.querySelector('#file-input').click()}"
-        >
-            import
-        </button>
-        <input
-            type="file"
-            on:input="{importData}"
-            id="file-input"
-            style="display: none"
-        />
     </div>
 </main>
 

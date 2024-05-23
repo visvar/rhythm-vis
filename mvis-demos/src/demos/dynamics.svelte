@@ -4,6 +4,8 @@
     import saveAs from 'file-saver';
     import * as Plot from '@observablehq/plot';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
+    import ExportButton from './common/export-button.svelte';
+    import ImportButton from './common/import-button.svelte';
 
     let width = 1000;
     let height = 600;
@@ -208,21 +210,8 @@
         >
             reset
         </button>
-        <button title="Export all data and settings" on:click="{exportData}">
-            export
-        </button>
-        <button
-            title="Export all data and settings"
-            on:click="{() => document.querySelector('#file-input').click()}"
-        >
-            import
-        </button>
-        <input
-            type="file"
-            on:input="{importData}"
-            id="file-input"
-            style="display: none"
-        />
+        <ExportButton exportFunction="{exportData}" />
+        <ImportButton importFunction="{importData}" />
     </div>
 </main>
 

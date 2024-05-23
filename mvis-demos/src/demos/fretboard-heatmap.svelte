@@ -209,20 +209,7 @@
         >
             reset
         </button>
-        <!-- <button title="Export all data and settings" on:click="{exportData}">
-            export
-        </button>
-        <button
-            title="Export all data and settings"
-            on:click="{() => document.querySelector('#file-input').click()}"
-        >
-            import
-        </button>
-        <input
-            type="file"
-            on:input="{importData}"
-            id="file-input"
-            style="display: none"
-        /> -->
+        <!-- <ExportButton exportFunction="{exportData}" />
+        <ImportButton importFunction="{importData}" /> -->
     </div>
 </main>

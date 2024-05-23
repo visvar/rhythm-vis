@@ -6,6 +6,8 @@
     import * as kde from 'fast-kde';
     import * as d3 from 'd3';
     import Metronome from '../lib/Metronome.js';
+    import ImportButton from './common/import-button.svelte';
+    import ExportButton from './common/export-button.svelte';
 
     /**
      * TODO:
@@ -217,6 +219,9 @@
         ctx.stroke();
     };
 
+    /**
+     * export data to a JSON file as download
+     */
     const exportData = () => {
         const data = {
             tempo,
@@ -231,9 +236,13 @@
         const blob = new Blob([json], {
             type: 'text/plain;charset=utf-8',
         });
-        saveAs(blob, 'live-subdivision.json');
+        saveAs(blob, 'sub-division.json');
     };
 
+    /**
+     * import previously exported JSON file
+     * @param {InputEvent} e file input event
+     */
     const importData = async (e) => {
         const file = e.target.files[0];
         const text = await file.text();
@@ -367,21 +376,8 @@
         >
             reset
         </button>
-        <button title="Export all data and settings" on:click="{exportData}">
-            export
-        </button>
-        <button
-            title="Export all data and settings"
-            on:click="{() => document.querySelector('#file-input').click()}"
-        >
-            import
-        </button>
-        <input
-            type="file"
-            on:input="{importData}"
-            id="file-input"
-            style="display: none"
-        />
+        <ExportButton exportFunction="{exportData}" />
+        <ImportButton importFunction="{importData}" />
         <button
             title="Toggle metronome (click)"
             on:click="{() => {

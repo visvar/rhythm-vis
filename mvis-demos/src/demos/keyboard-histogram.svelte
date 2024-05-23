@@ -7,6 +7,8 @@
     import { Note } from '@tonaljs/tonal';
     import { getCs, clamp } from '../lib/lib';
     import { Midi, Utils } from 'musicvis-lib';
+    import ExportButton from './common/export-button.svelte';
+    import ImportButton from './common/import-button.svelte';
 
     let width = 1200;
     let height = 280;
@@ -16,7 +18,6 @@
     let midiDevices = [];
     // settings
     let pastNoteCount = 500;
-
     // data
     let notes = [];
 
@@ -116,6 +117,39 @@
         container.appendChild(plot);
     };
 
+    /**
+     * export data to a JSON file as download
+     */
+    const exportData = () => {
+        const data = {
+            notes,
+            pastNoteCount,
+        };
+        const json = JSON.stringify(data, undefined, 2);
+        const blob = new Blob([json], {
+            type: 'text/plain;charset=utf-8',
+        });
+        saveAs(blob, 'keyboard-histogram.json');
+    };
+
+    /**
+     * import previously exported JSON file
+     * @param {InputEvent} e file input event
+     */
+    const importData = async (e) => {
+        const file = e.target.files[0];
+        const text = await file.text();
+        const json = JSON.parse(text);
+        if (
+            notes.length === 0 ||
+            confirm('Import data and overwrite currently unsaved data?')
+        ) {
+            notes = json.notes;
+            pastNoteCount = json.pastNoteCount;
+            draw();
+        }
+    };
+
     onMount(() => {
         WebMidi.enable()
             .then(onMidiEnabled)
@@ -162,5 +196,7 @@
         >
             reset
         </button>
+        <ExportButton exportFunction="{exportData}" />
+        <ImportButton importFunction="{importData}" />
     </div>
 </main>

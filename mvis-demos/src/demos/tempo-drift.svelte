@@ -6,9 +6,11 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { secondsPerBeatToBpm } from '../lib/lib';
+    import ExportButton from './common/export-button.svelte';
+    import ImportButton from './common/import-button.svelte';
 
     let width = 1000;
-    let height = 600;
+    let height = 750;
     let container;
     let midiDevices = [];
     // settings
@@ -49,8 +51,19 @@
         const eighth = quarter / 2;
         const half = quarter * 2;
         const whole = quarter * 4;
-        const rules = [0, sixteenth, eighth, quarter, half];
-        const rulesText = ['0', '𝅘𝅥𝅯', '𝅘𝅥𝅮', '𝅘𝅥', '𝅗𝅥'];
+        const qTriplet = quarter / 3;
+        const rules = [
+            0,
+            qTriplet,
+            sixteenth,
+            eighth,
+            eighth * 1.5,
+            quarter,
+            quarter * 1.5,
+            half,
+            half * 1.5,
+        ];
+        const rulesText = ['0', '𝅘𝅥𝅘𝅥𝅘𝅥', '𝅘𝅥𝅯', '𝅘𝅥𝅮', '𝅘𝅥𝅮.', '𝅘𝅥', '𝅘𝅥.', '𝅗𝅥', '𝅗𝅥.'];
         // get inter-onset intervals
         let iois = noteOnTimes.map((d, i) =>
             i === 0 ? 0 : d - noteOnTimes[i - 1],
@@ -68,7 +81,7 @@
         const plot = Plot.plot({
             width,
             height,
-            marginLeft: 35,
+            marginLeft: 45,
             marginRight: 1,
             x: {
                 axis: false,
@@ -90,7 +103,9 @@
                     inset: 0,
                     dx: 0.5,
                 }),
-                Plot.ruleY(rules, { stroke: '#888' }),
+                Plot.ruleY(rules, {
+                    stroke: '#aaa',
+                }),
             ],
         });
         container.textContent = '';
@@ -164,6 +179,10 @@
         inter-note times, which happen whan playing two notes at roughly the same
         time as in a chord.
     </p>
+    <p>
+        One possible exercise is trying to play at a given tempo without any
+        count in. You can use the randomize tempo button (⚂) to get challenged.
+    </p>
     <div class="control">
         <label title="The tempo in beats per minute (bpm)">
             tempo
@@ -177,6 +196,18 @@
                 style="width: 55px"
             />
         </label>
+        <button
+            title="randomize tempo"
+            on:click="{() => {
+                let newTempo = tempo;
+                while (newTempo === tempo) {
+                    newTempo = Math.round(Math.random() * 24 + 12) * 5;
+                }
+                tempo = newTempo;
+            }}"
+        >
+            ⚂
+        </button>
         <label
             title="You can change between seeing exact bar heights and binned (rounded) heights."
         >
@@ -228,21 +259,8 @@
         >
             reset
         </button>
-        <button title="Export all data and settings" on:click="{exportData}">
-            export
-        </button>
-        <button
-            title="Export all data and settings"
-            on:click="{() => document.querySelector('#file-input').click()}"
-        >
-            import
-        </button>
-        <input
-            type="file"
-            on:input="{importData}"
-            id="file-input"
-            style="display: none"
-        />
+        <ExportButton exportFunction="{exportData}" />
+        <ImportButton importFunction="{importData}" />
     </div>
 </main>
 
