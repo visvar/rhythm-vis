@@ -104,7 +104,7 @@
     },
     {
       id: 'fretboard-improvisation-intervals',
-      title: 'Fretboard Improvisation Intervals',
+      title: '[changed] Fretboard Improvisation Intervals',
       description:
         'Once you play a note, see where on the fretboard you can reach different intervals to the last played note.',
       task: 'pitch',
@@ -221,11 +221,42 @@
   // filter
   let currentTasks = new Set(allTasks);
   let currentInstruments = new Set(allInstruments);
-  $: console.log(currentInstruments);
 </script>
 
 <main>
-  <h1>Data-Driven Music Education Demos</h1>
+  <header>
+    <h1>Data-Driven Music Education Demos</h1>
+    <!-- back button -->
+    <button
+      on:click="{() => {
+        currentDemo = null;
+        setUrlParam(window, 'd', '');
+      }}"
+    >
+      ☰ home
+    </button>
+    <!-- Tools page button -->
+    <button
+      on:click="{() => {
+        currentDemo = 'tools';
+        setUrlParam(window, 'd', 'tools');
+      }}"
+    >
+      🛠️ tools
+    </button>
+    <!-- export usage button -->
+    <button
+      on:click="{() => {
+        const usage = localStorage.getItem('usage');
+        const blob = new Blob([usage], {
+          type: 'text/plain;charset=utf-8',
+        });
+        saveAs(blob, 'usage.json');
+      }}"
+    >
+      💾 export usage
+    </button>
+  </header>
 
   {#if password !== corrP}
     <input type="password" placeholder="password" bind:value="{password}" />
@@ -316,43 +347,11 @@
         {/if}
       {/each}
     </div>
-    <!-- Tools page button -->
-    <button
-      on:click="{() => {
-        currentDemo = 'tools';
-        setUrlParam(window, 'd', 'tools');
-      }}"
-    >
-      tools
-    </button>
-    <!-- export usage button -->
-    <button
-      on:click="{() => {
-        const usage = localStorage.getItem('usage');
-        const blob = new Blob([usage], {
-          type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'usage.json');
-      }}"
-    >
-      export usage
-    </button>
+  {:else if currentDemo === 'tools'}
+    <Tools />
   {:else}
-    <!-- back button -->
-    <button
-      on:click="{() => {
-        currentDemo = null;
-        setUrlParam(window, 'd', '');
-      }}"
-    >
-      &lt; back
-    </button>
-    {#if currentDemo === 'tools'}
-      <Tools />
-    {:else}
-      <!-- show demo by importing dynamically -->
-      <svelte:component this="{currentDemo.component}" />
-    {/if}
+    <!-- show demo by importing dynamically -->
+    <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
   {/if}
 </main>
 

@@ -1,7 +1,6 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
-    import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Scale } from '@tonaljs/tonal';
@@ -12,6 +11,11 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoButton from './common/tempo-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
+
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
 
     let width = 1000;
     let height = 650;
@@ -167,7 +171,7 @@
             notes,
             tempo,
         };
-        downloadJsonFile('improvisation-scale-degrees-bar', data);
+        downloadJsonFile(demoInfo.id, data);
     };
 
     const importData = async (e) => {
@@ -202,7 +206,7 @@
 </script>
 
 <main class="demo">
-    <h2>Improvisation Scale Degrees</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI instrument (currently {midiDevices.length} connected) and
         start playing. The bar chart below shows how often you played each scale

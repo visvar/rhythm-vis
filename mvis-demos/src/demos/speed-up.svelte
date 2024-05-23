@@ -12,6 +12,11 @@
     import TempoButton from './common/tempo-button.svelte';
     import { parseJsonFile } from '../lib/json.js';
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     let width = 1000;
     let height = 60;
     let container;
@@ -304,7 +309,7 @@
             exerciseBeatCount,
             practiceRecordings,
         };
-        downloadJsonFile('speed-up', data);
+        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
@@ -335,7 +340,7 @@
 </script>
 
 <main class="demo">
-    <h2>Speed-Up</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Adjust the initial and target tempo, record an exercise at the inital
         tempo, and then practice it with increasing speed until you reach your

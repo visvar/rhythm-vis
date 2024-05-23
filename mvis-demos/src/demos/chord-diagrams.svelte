@@ -7,6 +7,11 @@
     import { NOTE_COLORS } from '../lib/colors';
     import { Chord, Note } from '@tonaljs/tonal';
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     let height = 200;
     let container;
     let midiDevices = [];
@@ -229,7 +234,7 @@
 </script>
 
 <main class="demo">
-    <h2>Chord Diagrams</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Play chords on a guitar and see the chord names and diagrams.
     </p>

@@ -8,6 +8,11 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoButton from './common/tempo-button.svelte';
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     let width = 1000;
     let container;
     let midiDevices = [];
@@ -217,7 +222,7 @@
 </script>
 
 <main class="demo">
-    <h2>Rhythm Sheet Music</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Set a tempo and start playing. The time between the notes you play will
         be displayed as note symbols, so you can see whether you play, for

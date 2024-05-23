@@ -10,6 +10,11 @@
     import ImportButton from './common/import-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     let width = 1200;
     let height = 280;
     const minPitch = 21;
@@ -125,7 +130,7 @@
             notes,
             pastNoteCount,
         };
-        downloadJsonFile('keyboard-histogram', data);
+        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
@@ -160,7 +165,7 @@
 </script>
 
 <main class="demo">
-    <h2>Keyboard Histogram</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI keyboard and start playing. The heatmap below shows how
         often you played each keyboard key.

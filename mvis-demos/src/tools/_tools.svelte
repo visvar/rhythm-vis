@@ -5,6 +5,7 @@
     import MidiLogger from './midi-logger.svelte';
     import NoteColors from './note-colors.svelte';
     import PianoRoll from './piano-roll.svelte';
+    import ScaleSets from './scale-sets.svelte';
 
     let TOOLS = [
         {
@@ -44,6 +45,13 @@
             title: 'Note Colors',
             description: 'Different note coor schemes.',
             component: NoteColors,
+        },
+        {
+            id: 'scale-sets',
+            title: 'Scale Sets',
+            description:
+                'See how different musical scales relate to each other.',
+            component: ScaleSets,
         },
     ];
 

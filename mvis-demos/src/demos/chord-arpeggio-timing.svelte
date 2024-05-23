@@ -5,6 +5,11 @@
     import * as Plot from '@observablehq/plot';
     import { Midi } from 'musicvis-lib';
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     let width = 1000;
     let height = 400;
     let container;
@@ -200,9 +205,12 @@
 </script>
 
 <main class="demo">
-    <h2>Chord and Arpeggio Timing</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        <!-- TODO: -->
+        Play chords or short arpeggios with pauses inbetween. In the
+        visualization below, you can then see how long the time between the
+        first and last note of each chord/arpeggio was and how much time lies
+        between consecutive chords/arpeggios.
     </p>
     <div class="control">
         <label

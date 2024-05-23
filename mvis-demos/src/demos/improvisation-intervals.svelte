@@ -8,6 +8,11 @@
     import ImportButton from './common/import-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     let width = 1000;
     let height = 650;
     let container;
@@ -140,7 +145,7 @@
             useSemitones,
             notes,
         };
-        downloadJsonFile('improvisation-intervals', data);
+        downloadJsonFile(demoInfo.id, data);
     };
 
     const importData = async (e) => {
@@ -173,7 +178,7 @@
 </script>
 
 <main class="demo">
-    <h2>Improvisation Intervals</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI instrument (currently {midiDevices.length} connected) and
         start playing. The bar chart below shows how often you played each interval:

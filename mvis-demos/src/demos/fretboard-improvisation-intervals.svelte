@@ -1,11 +1,15 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
-    import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note, Scale } from '@tonaljs/tonal';
     import { Midi } from 'musicvis-lib';
+
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
 
     let width = 1000;
     let height = 280;
@@ -54,21 +58,40 @@
 
     const draw = () => {
         const lastNote = notes.at(-1);
-        // get interval positions
-        const intervals = [];
+
+        const data = [];
         if (lastNote) {
+            const lastNoteChroma = lastNote.number % 12;
+            // get scale intervals
+            const scaleInfo = Scale.get(`${root} ${scale}`);
+            const scaleNotes = new Map(
+                scaleInfo.notes.map((note, i) => {
+                    // note chroma from 0 to 11 (C to B)
+                    const chroma = noteNames.indexOf(note);
+                    let offset = chroma - lastNoteChroma;
+                    offset = offset >= 0 ? offset : offset + 12;
+                    const info = {
+                        name: note,
+                        chroma,
+                        interval: scaleInfo.intervals[i],
+                        degree: i,
+                        offset,
+                    };
+                    return [chroma, info];
+                }),
+            );
+            // get interval positions
             for (let string = 0; string < stringCount; string++) {
                 for (let fret = 0; fret < fretCount + 1; fret++) {
-                    const midi = tuningPitches[string] + fret;
-                    // TODO: step should be in scale degrees between current and this note
-                    let step = (midi - lastNote.number) % 12;
-                    if (step < 0) {
-                        step += 12;
+                    const midi = (tuningPitches[string] + fret) % 12;
+                    // only consider notes in scale
+                    if (!scaleNotes.has(midi)) {
+                        continue;
                     }
-                    intervals.push({
+                    data.push({
                         string,
                         fret,
-                        step,
+                        step: scaleNotes.get(midi).offset,
                     });
                 }
             }
@@ -87,7 +110,7 @@
             },
             y: {
                 domain: d3.range(0, stringCount),
-                tickFormat: (d) => tuningNotes[d] + ' ' + d,
+                tickFormat: (d) => tuningNotes[d],
                 tickSize: 0,
             },
             color: {
@@ -135,7 +158,7 @@
                           rx: 5,
                       })
                     : null,
-                Plot.cell(intervals, {
+                Plot.cell(data, {
                     x: 'fret',
                     y: 'string',
                     fill: 'step',
@@ -166,8 +189,11 @@
 </script>
 
 <main class="demo">
-    <h2>Fretboard Improvisation Intervals</h2>
-    <p class="explanation"></p>
+    <h2>{demoInfo.title}</h2>
+    <p class="explanation">
+        Each time you play a note, the fretboard below shows you how far each
+        note of the scale is away from the note you just played.
+    </p>
     <div class="control">
         <label>
             scale

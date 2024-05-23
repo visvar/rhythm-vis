@@ -7,6 +7,11 @@
     import ImportButton from './common/import-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     let width = 1000;
     let height = 600;
     let container;
@@ -127,7 +132,7 @@
             barLimit,
             noteVelocities,
         };
-        downloadJsonFile('tempo-drift', data);
+        downloadJsonFile(demoInfo.id, data);
     };
 
     const importData = async (e) => {
@@ -159,7 +164,7 @@
 </script>
 
 <main class="demo">
-    <h2>Dynamics</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI instrument (currently {midiDevices.length} connected) and
         start playing. The loudness of each note will be shown as a bar. Bar heights

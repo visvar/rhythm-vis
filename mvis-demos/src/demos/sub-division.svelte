@@ -19,6 +19,11 @@
      * - fill up x of KDE to fill whole circle
      */
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     const GRIDS = ['4:2', '4:3', '4:4', '4:5', '3:2', '3:3', '3:4', '3:5'];
     const TWO_PI = Math.PI * 2;
 
@@ -232,7 +237,7 @@
             showKde,
             noteOnTimes,
         };
-        downloadJsonFile('sub-division', data);
+        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
@@ -272,7 +277,7 @@
 </script>
 
 <main class="demo">
-    <h2>Live-Subdivision</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI instrument (currently {midiDevices.length} connected), choose
         your tempo and subdivision, and start playing. The bar chart will show you

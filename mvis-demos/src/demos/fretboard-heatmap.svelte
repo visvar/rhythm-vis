@@ -5,6 +5,11 @@
     import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
 
+    /**
+     * contains the demo meta information defined in App.js
+     */
+    export let demoInfo;
+
     let width = 1000;
     let height = 280;
     let stringCount = 6;
@@ -149,7 +154,7 @@
 </script>
 
 <main class="demo">
-    <h2>Fretboard Heatmap</h2>
+    <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI guitar and start playing. The heatmap below shows how
         often you played each fretboard position.
