@@ -1,9 +1,11 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
-    import saveAs from 'file-saver';
     import * as Plot from '@observablehq/plot';
     import { throttle } from 'underscore';
+    import ExportButton from './common/export-button.svelte';
+    import ImportButton from './common/import-button.svelte';
+    import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
     let width = 1200;
     let height = 700;
@@ -42,6 +44,7 @@
         const now = (performance.now() - firstTimeStamp) / 1000;
         const minTime = now - pastTime;
         const limited = bendValues.filter((d) => d.time > minTime);
+        // TODO: split into multiple lines if time between bends values is larger than some threshold
         const plot = Plot.plot({
             width,
             height,
@@ -73,6 +76,35 @@
     };
 
     const drawThrottled = throttle(draw, 33);
+
+    /**
+     * export data to a JSON file as download
+     */
+    const exportData = () => {
+        const data = {
+            pastTime,
+            firstTimeStamp,
+            bendValues,
+        };
+        downloadJsonFile('pitch-bend', data);
+    };
+
+    /**
+     * import previously exported JSON file
+     * @param {InputEvent} e file input event
+     */
+    const importData = async (e) => {
+        if (
+            bendValues.length === 0 ||
+            confirm('Import data and overwrite currently unsaved data?')
+        ) {
+            const json = await parseJsonFile(e);
+            pastTime = json.pastTime;
+            firstTimeStamp = json.firstTimeStamp;
+            bendValues = json.bendValues;
+            draw();
+        }
+    };
 
     onMount(() => {
         WebMidi.enable()
@@ -121,5 +153,7 @@
         >
             reset
         </button>
+        <ExportButton exportFunction="{exportData}" />
+        <ImportButton importFunction="{importData}" />
     </div>
 </main>

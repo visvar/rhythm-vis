@@ -1,7 +1,6 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
-    import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Scale } from '@tonaljs/tonal';
@@ -9,6 +8,7 @@
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
+    import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
     let width = 1000;
     let height = 650;
@@ -52,6 +52,9 @@
     };
 
     const draw = () => {
+        if (notes.length === 0) {
+            return;
+        }
         // TODO: filter notes which are too close together
         // TODO: filter notes with low velocity
         // MIDI nr (0 to 11) of the scale root
@@ -130,6 +133,9 @@
         container.appendChild(plot);
     };
 
+    /**
+     * export data to a JSON file as download
+     */
     const exportData = () => {
         const data = {
             root,
@@ -138,21 +144,19 @@
             showOutsideScale,
             notes,
         };
-        const json = JSON.stringify(data, undefined, 2);
-        const blob = new Blob([json], {
-            type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'tempo-drift.json');
+        downloadJsonFile('improvisation-scale-degrees', data);
     };
 
+    /**
+     * import previously exported JSON file
+     * @param {InputEvent} e file input event
+     */
     const importData = async (e) => {
-        const file = e.target.files[0];
-        const text = await file.text();
-        const json = JSON.parse(text);
         if (
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            const json = await parseJsonFile(e);
             root = json.root;
             scale = json.scale;
             useColors = json.useColors;

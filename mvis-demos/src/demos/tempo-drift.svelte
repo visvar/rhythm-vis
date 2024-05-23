@@ -1,13 +1,13 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
-    import saveAs from 'file-saver';
     import { Utils } from 'musicvis-lib';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { secondsPerBeatToBpm } from '../lib/lib';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
+    import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
     let width = 1000;
     let height = 750;
@@ -129,21 +129,15 @@
             barLimit,
             noteOnTimes,
         };
-        const json = JSON.stringify(data, undefined, 2);
-        const blob = new Blob([json], {
-            type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'tempo-drift.json');
+        downloadJsonFile('tempo-drift', data);
     };
 
     const importData = async (e) => {
-        const file = e.target.files[0];
-        const text = await file.text();
-        const json = JSON.parse(text);
         if (
             noteOnTimes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            const json = await parseJsonFile(e);
             tempo = json.tempo;
             binNote = json.binNote;
             filterNote = json.filterNote;
@@ -179,7 +173,7 @@
         inter-note times, which happen whan playing two notes at roughly the same
         time as in a chord.
     </p>
-    <p>
+    <p class="explanation">
         One possible exercise is trying to play at a given tempo without any
         count in. You can use the randomize tempo button (⚂) to get challenged.
     </p>

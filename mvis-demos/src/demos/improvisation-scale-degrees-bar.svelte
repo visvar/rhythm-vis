@@ -7,15 +7,16 @@
     import { Scale } from '@tonaljs/tonal';
     import { Midi, Utils } from 'musicvis-lib';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
-    import Metronome from '../lib/Metronome';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
+    import MetronomeButton from './common/metronome-button.svelte';
+    import TempoButton from './common/tempo-button.svelte';
+    import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
     let width = 1000;
     let height = 650;
     let container;
     let midiDevices = [];
-    let metro = new Metronome();
     // settings
     let root = 'A';
     let scale = 'minor pentatonic';
@@ -56,6 +57,9 @@
     };
 
     const draw = () => {
+        if (notes.length === 0) {
+            return;
+        }
         // MIDI nr (0 to 11) of the scale root
         const rootNr = noteNames.indexOf(root);
         const scaleInfo = Scale.get(`${root} ${scale}`);
@@ -163,21 +167,15 @@
             notes,
             tempo,
         };
-        const json = JSON.stringify(data, undefined, 2);
-        const blob = new Blob([json], {
-            type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'tempo-drift.json');
+        downloadJsonFile('improvisation-scale-degrees-bar', data);
     };
 
     const importData = async (e) => {
-        const file = e.target.files[0];
-        const text = await file.text();
-        const json = JSON.parse(text);
         if (
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            const json = await parseJsonFile(e);
             root = json.root;
             scale = json.scale;
             useColors = json.useColors;
@@ -200,7 +198,6 @@
         for (const input of WebMidi.inputs) {
             input.removeListener();
         }
-        metro.stop();
     });
 </script>
 
@@ -227,18 +224,7 @@
         </label>
     </div>
     <div class="control">
-        <label title="The tempo in beats per minute (bpm)">
-            tempo
-            <input
-                type="number"
-                bind:value="{tempo}"
-                on:change="{draw}"
-                step="1"
-                min="10"
-                max="400"
-                style="width: 55px"
-            />
-        </label>
+        <TempoButton bind:tempo callback="{draw}" />
         <button
             title="Use colors for root, in-scale, outside-scale"
             on:click="{() => {
@@ -284,14 +270,7 @@
         </button>
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
-        <button
-            title="Toggle metronome (click)"
-            on:click="{() => {
-                metro.toggle(tempo, 4);
-            }}"
-        >
-            metronome
-        </button>
+        <MetronomeButton {tempo} accent="{4}" />
     </div>
 </main>
 

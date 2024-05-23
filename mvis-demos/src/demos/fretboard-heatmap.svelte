@@ -1,7 +1,6 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
-    import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
@@ -133,32 +132,6 @@
         container.textContent = '';
         container.appendChild(plot);
     };
-
-    // const exportData = () => {
-    //     const data = {
-    //         useColors,
-    //         notes,
-    //     };
-    //     const json = JSON.stringify(data, undefined, 2);
-    //     const blob = new Blob([json], {
-    //         type: 'text/plain;charset=utf-8',
-    //     });
-    //     saveAs(blob, 'tempo-drift.json');
-    // };
-
-    // const importData = async (e) => {
-    //     const file = e.target.files[0];
-    //     const text = await file.text();
-    //     const json = JSON.parse(text);
-    //     if (
-    //         notes.length === 0 ||
-    //         confirm('Import data and overwrite currently unsaved data?')
-    //     ) {
-    //         useColors = json.useColors;
-    //         notes = json.notes;
-    //         draw();
-    //     }
-    // };
 
     onMount(() => {
         WebMidi.enable()

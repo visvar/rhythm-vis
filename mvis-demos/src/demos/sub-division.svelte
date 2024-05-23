@@ -2,12 +2,13 @@
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
     import { Canvas, Utils } from 'musicvis-lib';
-    import saveAs from 'file-saver';
     import * as kde from 'fast-kde';
     import * as d3 from 'd3';
-    import Metronome from '../lib/Metronome.js';
     import ImportButton from './common/import-button.svelte';
     import ExportButton from './common/export-button.svelte';
+    import MetronomeButton from './common/metronome-button.svelte';
+    import TempoButton from './common/tempo-button.svelte';
+    import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
     /**
      * TODO:
@@ -24,7 +25,6 @@
     let canvas;
     let width = 1000;
     let height = 1000;
-    let metro = new Metronome();
     let midiDevices = [];
     // settings
     let tempo = 120;
@@ -229,14 +229,10 @@
             binNote,
             adjustTime,
             noteTickLimit,
-            noteOnTimes,
             showKde,
+            noteOnTimes,
         };
-        const json = JSON.stringify(data, undefined, 2);
-        const blob = new Blob([json], {
-            type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'sub-division.json');
+        downloadJsonFile('sub-division', data);
     };
 
     /**
@@ -244,13 +240,11 @@
      * @param {InputEvent} e file input event
      */
     const importData = async (e) => {
-        const file = e.target.files[0];
-        const text = await file.text();
-        const json = JSON.parse(text);
         if (
             noteOnTimes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            const json = await parseJsonFile(e);
             tempo = json.tempo;
             grid = json.grid;
             binNote = json.binNote;
@@ -270,8 +264,6 @@
     });
 
     onDestroy(() => {
-        // turn off metronome
-        metro.stop();
         // remove MIDI listeners to avoid duplicate calls and improve performance
         for (const input of WebMidi.inputs) {
             input.removeListener();
@@ -292,18 +284,7 @@
         case you messed up the first one.
     </p>
     <div class="control">
-        <label title="The tempo in beats per minute (bpm)">
-            tempo
-            <input
-                type="number"
-                bind:value="{tempo}"
-                on:change="{draw}"
-                step="1"
-                min="10"
-                max="400"
-                style="width: 55px"
-            />
-        </label>
+        <TempoButton bind:tempo callback="{draw}" />
         <label
             title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
@@ -378,13 +359,6 @@
         </button>
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
-        <button
-            title="Toggle metronome (click)"
-            on:click="{() => {
-                metro.toggle(tempo, +grid.split(':')[0]);
-            }}"
-        >
-            metronome
-        </button>
+        <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
     </div>
 </main>

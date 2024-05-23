@@ -4,13 +4,13 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Utils } from 'musicvis-lib';
-    import Metronome from '../lib/Metronome.js';
     import { toggleOnIcon, toggleOffIcon } from '../lib/icons.js';
+    import MetronomeButton from './common/metronome-button.svelte';
+    import TempoButton from './common/tempo-button.svelte';
 
     let width = 1000;
     let container;
     let midiDevices = [];
-    let metro = new Metronome();
     // settings
     let tempo = 120;
     let noteCount = 10;
@@ -213,7 +213,6 @@
         for (const input of WebMidi.inputs) {
             input.removeListener();
         }
-        metro.stop();
     });
 </script>
 
@@ -225,17 +224,7 @@
         example, correct quarter notes.
     </p>
     <div class="control">
-        <label title="Tempo (in BPM)">
-            tempo
-            <input
-                type="number"
-                bind:value="{tempo}"
-                on:change="{draw}"
-                min="30"
-                max="100"
-                step="5"
-            />
-        </label>
+        <TempoButton bind:tempo callback="{draw}" />
         <label title="Number of shown notes">
             note count
             <input
@@ -268,13 +257,6 @@
         >
             reset
         </button>
-        <button
-            title="Toggle metronome (click)"
-            on:click="{() => {
-                metro.toggle(tempo, 4);
-            }}"
-        >
-            metronome
-        </button>
+        <MetronomeButton {tempo} accent="{4}" />
     </div>
 </main>

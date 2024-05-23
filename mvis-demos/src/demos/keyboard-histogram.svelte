@@ -1,14 +1,14 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
-    import saveAs from 'file-saver';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
     import { getCs, clamp } from '../lib/lib';
-    import { Midi, Utils } from 'musicvis-lib';
+    import { Midi } from 'musicvis-lib';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
+    import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
     let width = 1200;
     let height = 280;
@@ -125,11 +125,7 @@
             notes,
             pastNoteCount,
         };
-        const json = JSON.stringify(data, undefined, 2);
-        const blob = new Blob([json], {
-            type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'keyboard-histogram.json');
+        downloadJsonFile('keyboard-histogram', data);
     };
 
     /**
@@ -137,13 +133,11 @@
      * @param {InputEvent} e file input event
      */
     const importData = async (e) => {
-        const file = e.target.files[0];
-        const text = await file.text();
-        const json = JSON.parse(text);
         if (
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            const json = await parseJsonFile(e);
             notes = json.notes;
             pastNoteCount = json.pastNoteCount;
             draw();

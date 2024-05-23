@@ -6,10 +6,11 @@
     import { Utils } from 'musicvis-lib';
     import Metronome from '../lib/Metronome.js';
     import { delay } from '../lib/lib';
-    import saveAs from 'file-saver';
-    import { replacer, reviver } from '../lib/json.js';
+    import { downloadJsonFile } from '../lib/json.js';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
+    import TempoButton from './common/tempo-button.svelte';
+    import { parseJsonFile } from '../lib/json.js';
 
     let width = 1000;
     let height = 60;
@@ -303,11 +304,7 @@
             exerciseBeatCount,
             practiceRecordings,
         };
-        const json = JSON.stringify(data, replacer, 2);
-        const blob = new Blob([json], {
-            type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'speed-up.json');
+        downloadJsonFile('speed-up', data);
     };
 
     /**
@@ -315,14 +312,12 @@
      * @param {InputEvent} e file input event
      */
     const importData = async (e) => {
-        const file = e.target.files[0];
-        const text = await file.text();
-        const json = JSON.parse(text, reviver);
         if (
             exerciseNotes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
             // settings
+            const json = await parseJsonFile(e);
             initialTempo = json.initialTempo;
             targetTempo = json.targetTempo;
             tempoIncrease = json.tempoIncrease;
@@ -347,32 +342,18 @@
         target tempo.
     </p>
     <div class="control">
-        <label
+        <TempoButton
+            label="initial tempo"
             title="Set a tempo at which you are able to input the exercise precisely (in BPM)"
-        >
-            initial tempo
-            <input
-                type="number"
-                bind:value="{initialTempo}"
-                on:change="{draw}"
-                min="30"
-                max="100"
-                step="5"
-            />
-        </label>
-        <label
+            bind:tempo="{initialTempo}"
+            callback="{draw}"
+        />
+        <TempoButton
+            label="target tempo"
             title="Set the tempo you want to be able to play the exercise at (in BPM)"
-        >
-            target tempo
-            <input
-                type="number"
-                bind:value="{targetTempo}"
-                on:change="{draw}"
-                min="60"
-                max="200"
-                step="5"
-            />
-        </label>
+            bind:tempo="{targetTempo}"
+            callback="{draw}"
+        />
         <label title="Set the tempo increase between practice runs (in BPM)">
             tempo increase
             <input
