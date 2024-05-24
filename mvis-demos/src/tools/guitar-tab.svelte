@@ -21,7 +21,7 @@
     // data
     let firstTimeStamp = 0;
     let notes = [];
-    const openNoteMap = new Map();
+    let openNoteMap = new Map();
     let currentAniFrame = null;
 
     const onMidiEnabled = () => {
@@ -225,6 +225,7 @@
             on:click="{() => {
                 if (confirm('Reset played notes?')) {
                     notes = [];
+                    openNoteMap = new Map();
                     firstTimeStamp = performance.now();
                 }
             }}"

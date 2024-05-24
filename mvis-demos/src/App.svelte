@@ -20,6 +20,7 @@
   import SpeedUpTab from './demos/speed-up-tab.svelte';
   import ImprovisationScaleDegreesBar from './demos/improvisation-scale-degrees-bar.svelte';
   import PitchBendAudio from './demos/pitch-bend-audio.svelte';
+  import ImprovisationNoteColors from './demos/improvisation-note-colors.svelte';
 
   /**
    * All demos defined here
@@ -84,6 +85,16 @@
       input: 'MIDI',
       instruments: ['guitar/bass', 'keyboard'],
       component: ImprovisationScaleDegreesBar,
+    },
+    {
+      id: 'improvisation-note-colors',
+      title: '[new] Improvisation Note Colors',
+      description:
+        'See how often you use different kinds of notes in improvisation.',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['guitar/bass', 'keyboard'],
+      component: ImprovisationNoteColors,
     },
     {
       id: 'keyboard-histogram',
@@ -373,24 +384,25 @@
         {/if}
       {/each}
     </div>
+    <!-- export usage button -->
+    <button
+      title="Export usage statistics"
+      on:click="{() => {
+        const usage = localStorage.getItem('usage');
+        const blob = new Blob([usage], {
+          type: 'text/plain;charset=utf-8',
+        });
+        saveAs(blob, 'usage.json');
+      }}"
+    >
+      💾 export usage
+    </button>
   {:else if currentDemo === 'tools'}
     <Tools bind:currentTool />
   {:else}
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
   {/if}
-  <!-- export usage button -->
-  <button
-    on:click="{() => {
-      const usage = localStorage.getItem('usage');
-      const blob = new Blob([usage], {
-        type: 'text/plain;charset=utf-8',
-      });
-      saveAs(blob, 'usage.json');
-    }}"
-  >
-    💾 export usage
-  </button>
 </main>
 
 <style>

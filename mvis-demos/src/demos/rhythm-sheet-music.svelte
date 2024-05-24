@@ -6,7 +6,8 @@
     import { Utils } from 'musicvis-lib';
     import { toggleOnIcon, toggleOffIcon } from '../lib/icons.js';
     import MetronomeButton from './common/metronome-button.svelte';
-    import TempoButton from './common/tempo-button.svelte';
+    import TempoInput from './common/tempo-input.svelte';
+    import NoteCountInput from './common/note-count-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -18,7 +19,7 @@
     let midiDevices = [];
     // settings
     let tempo = 120;
-    let noteCount = 10;
+    let pastNoteCount = 10;
     let useDotted = true;
     // data
     let firstTimeStamp = 0;
@@ -129,7 +130,7 @@
             return;
         }
         let quarter = Utils.bpmToSecondsPerBeat(tempo);
-        const sliced = notes.slice(-(noteCount + 1));
+        const sliced = notes.slice(-(pastNoteCount + 1));
         const deltas = sliced.map((d, i) => (i === 0 ? 0 : d - sliced[i - 1]));
         const inBeats = deltas.map((d) => d / quarter);
 
@@ -153,7 +154,7 @@
             marginLeft: 80,
             x: {
                 label: '',
-                domain: d3.range(1, noteCount),
+                domain: d3.range(1, pastNoteCount),
                 ticks: [],
             },
             y: {
@@ -184,7 +185,7 @@
             marginLeft: 80,
             x: {
                 label: 'Note',
-                domain: d3.range(1, noteCount),
+                domain: d3.range(1, pastNoteCount),
                 tickSize: 0,
                 ticks: [],
             },
@@ -229,18 +230,8 @@
         example, correct quarter notes.
     </p>
     <div class="control">
-        <TempoButton bind:tempo callback="{draw}" />
-        <label title="Number of shown notes">
-            note count
-            <input
-                type="number"
-                bind:value="{noteCount}"
-                on:change="{draw}"
-                min="5"
-                max="100"
-                step="5"
-            />
-        </label>
+        <TempoInput bind:value="{tempo}" callback="{draw}" />
+        <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
         <button
             title="Use dotted notes? If not, the closest non-dotted note will be taken."
             on:click="{() => {

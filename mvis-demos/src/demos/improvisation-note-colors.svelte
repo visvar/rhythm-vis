@@ -3,8 +3,8 @@
     import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
-    import { Note } from '@tonaljs/tonal';
-    import { getCs, clamp } from '../lib/lib';
+    import { Scale } from '@tonaljs/tonal';
+    import { clamp } from '../lib/lib';
     import { Midi } from 'musicvis-lib';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
@@ -18,14 +18,15 @@
 
     let width = 1200;
     let height = 280;
-    const minPitch = 21;
-    const maxPitch = 108;
     let container;
     let midiDevices = [];
     // settings
-    let pastNoteCount = 500;
+    let root = 'A';
+    let pastNoteCount = 50;
     // data
     let notes = [];
+    let firstTimeStamp;
+    let openNoteMap = new Map();
 
     const onMidiEnabled = () => {
         midiDevices = [];
@@ -35,6 +36,7 @@
             WebMidi.inputs.forEach((device, index) => {
                 console.log(`MIDI device ${index}: ${device.name}`);
                 device.addListener('noteon', noteOn);
+                device.addListener('noteoff', noteOff);
                 device.addListener('controlchange', controlChange);
             });
             midiDevices = [...WebMidi.inputs];
@@ -42,14 +44,36 @@
     };
 
     const noteOn = (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
+            name: e.note.name,
             number: e.note.number,
             velocity: e.rawVelocity,
-            time: e.timestamp,
+            time: noteInSeconds,
             channel: e.message.channel,
         };
+        // fix old note if its end was missed
+        if (openNoteMap.has(e.note.number)) {
+            const oldNote = openNoteMap.get(e.note.number);
+            if (oldNote.end === undefined) {
+                oldNote.end = noteInSeconds;
+            }
+        }
         notes.push(note);
+        openNoteMap.set(e.note.number, note);
         draw();
+    };
+
+    const noteOff = (e) => {
+        if (openNoteMap.has(e.note.number)) {
+            const note = openNoteMap.get(e.note.number);
+            const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
+            note.end = noteInSeconds;
+            note.duration = note.end - note.time;
+        }
     };
 
     const controlChange = (e) => {
@@ -59,9 +83,23 @@
     };
 
     const draw = () => {
+        const scale1 = new Set(Scale.get(`${root} minor`).notes);
+        const scale2 = new Set(Scale.get(`${root} minor blues`).notes);
+        const scale3 = new Set(Scale.get(`${root} minor pentatonic`).notes);
+        const colorMap = Midi.NOTE_NAMES_FLAT.map((note) => {
+            if (note === root) {
+                return '#1B5E20';
+            } else if (scale3.has(note)) {
+                return '#689F38';
+            } else if (scale2.has(note)) {
+                return 'cornflowerblue';
+            } else if (scale1.has(note)) {
+                return '#D4E157';
+            } else {
+                return 'lightgray';
+            }
+        });
         const limited = notes.slice(-pastNoteCount);
-        const counts = d3.groups(limited, (d) => d.number);
-        const maxCount = d3.max(counts, (d) => d[1].length);
         const plot = Plot.plot({
             width,
             height,
@@ -69,51 +107,36 @@
             marginBottom: 50,
             padding: 0,
             x: {
-                domain: d3.range(minPitch, maxPitch),
-                tickFormat: (d) => {
-                    if (Midi.isSharp(d)) {
-                        return '';
-                    } else if (d % 12 === 0) {
-                        return '\n' + Note.fromMidiSharps(d);
-                    } else {
-                        return Note.fromMidiSharps(d).slice(0, -1);
-                    }
-                },
+                axis: false,
             },
             y: {},
+            color: {
+                legend: true,
+                domain: d3.range(12),
+                range: colorMap,
+                tickFormat: (d) => Midi.NOTE_NAMES[d],
+                marginLeft: 290,
+            },
             marks: [
-                Plot.ruleX(getCs(minPitch, maxPitch), {
-                    stroke: '#ddd',
-                }),
                 Plot.ruleY([0], {
                     stroke: '#ddd',
                 }),
-                // background bars
-                Plot.barY(
-                    d3.range(minPitch, maxPitch).filter((d) => Midi.isSharp(d)),
-                    {
-                        x: (d) => d,
-                        y: () => maxCount,
-                        fill: '#f8f8f8',
-                        inset: 0.5,
-                    },
-                ),
                 // data
-                Plot.barY(
-                    limited,
-                    Plot.groupX(
-                        { y: 'count' },
-                        {
-                            x: 'number',
-                            // fill: (d) => console.log(d),
-                            fill: (d) =>
-                                Midi.isSharp(d.number) ? '#444' : '#ccc',
-                            inset: 0.5,
-                            rx: 4,
-                            tip: true,
-                        },
-                    ),
-                ),
+                Plot.barY(limited, {
+                    x: (d, i) => i,
+                    y: 'duration',
+                    fill: (d) => d.number % 12,
+                    inset: 0.5,
+                    rx: 4,
+                    tip: true,
+                }),
+                Plot.text(limited, {
+                    x: (d, i) => i,
+                    y: 'duration',
+                    text: 'name',
+                    fontSize: 14,
+                    dy: -10,
+                }),
             ],
         });
 
@@ -126,6 +149,8 @@
      */
     const exportData = () => {
         const data = {
+            // data
+            root,
             notes,
             pastNoteCount,
         };
@@ -142,6 +167,8 @@
             confirm('Import data and overwrite currently unsaved data?')
         ) {
             const json = await parseJsonFile(e);
+            root = json.root;
+            // data
             notes = json.notes;
             pastNoteCount = json.pastNoteCount;
             draw();
@@ -166,10 +193,18 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI keyboard and start playing. The heatmap below shows how
-        often you played each keyboard key.
+        Notes that you play are shown as bars. The color shows which scale
+        subset a note belongs to. The bars' height encodes the notes' durations.
     </p>
     <div class="control">
+        <label>
+            root note
+            <select bind:value="{root}" on:change="{draw}">
+                {#each Midi.NOTE_NAMES as n}
+                    <option value="{n}">{n}</option>
+                {/each}
+            </select>
+        </label>
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
     </div>
     <div class="visualization" bind:this="{container}"></div>
@@ -179,6 +214,7 @@
             on:click="{() => {
                 if (confirm('Reset played notes?')) {
                     notes = [];
+                    openNoteMap = new Map();
                     draw();
                 }
             }}"

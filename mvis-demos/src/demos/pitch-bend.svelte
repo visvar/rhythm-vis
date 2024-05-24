@@ -73,6 +73,9 @@
                 Plot.line(limited, {
                     x: 'time',
                     y: 'value',
+                    clip: true,
+                    // smooth a bit
+                    curve: 'basis',
                 }),
             ],
         });

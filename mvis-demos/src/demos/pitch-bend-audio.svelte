@@ -99,6 +99,8 @@
                     x: 'time',
                     y: ignoreOctave ? 'actualMidiChroma' : 'actualMidi',
                     clip: true,
+                    // smooth a bit
+                    curve: 'basis',
                 }),
             ],
         });

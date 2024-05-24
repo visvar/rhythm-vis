@@ -1,5 +1,5 @@
 <script>
-    export let tempo;
+    export let value;
     export let callback = () => {};
     export let label = 'tempo';
     export let title = 'The tempo in beats per minute (bpm)';
@@ -9,7 +9,7 @@
     {label}
     <input
         type="number"
-        bind:value="{tempo}"
+        bind:value
         on:change="{callback}"
         step="5"
         min="10"

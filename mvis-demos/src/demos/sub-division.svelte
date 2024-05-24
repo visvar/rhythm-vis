@@ -7,7 +7,7 @@
     import ImportButton from './common/import-button.svelte';
     import ExportButton from './common/export-button.svelte';
     import MetronomeButton from './common/metronome-button.svelte';
-    import TempoButton from './common/tempo-button.svelte';
+    import TempoInput from './common/tempo-input.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
     /**
@@ -289,7 +289,7 @@
         case you messed up the first one.
     </p>
     <div class="control">
-        <TempoButton bind:tempo callback="{draw}" />
+        <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label
             title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >

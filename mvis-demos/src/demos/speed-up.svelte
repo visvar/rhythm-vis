@@ -9,7 +9,7 @@
     import { downloadJsonFile } from '../lib/json.js';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
-    import TempoButton from './common/tempo-button.svelte';
+    import TempoInput from './common/tempo-input.svelte';
     import { parseJsonFile } from '../lib/json.js';
 
     /**
@@ -347,16 +347,16 @@
         target tempo.
     </p>
     <div class="control">
-        <TempoButton
+        <TempoInput
             label="initial tempo"
             title="Set a tempo at which you are able to input the exercise precisely (in BPM)"
-            bind:tempo="{initialTempo}"
+            bind:value="{initialTempo}"
             callback="{draw}"
         />
-        <TempoButton
+        <TempoInput
             label="target tempo"
             title="Set the tempo you want to be able to play the exercise at (in BPM)"
-            bind:tempo="{targetTempo}"
+            bind:value="{targetTempo}"
             callback="{draw}"
         />
         <label title="Set the tempo increase between practice runs (in BPM)">

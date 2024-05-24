@@ -9,7 +9,7 @@
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
     import MetronomeButton from './common/metronome-button.svelte';
-    import TempoButton from './common/tempo-button.svelte';
+    import TempoInput from './common/tempo-input.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
 
     /**
@@ -228,7 +228,7 @@
         </label>
     </div>
     <div class="control">
-        <TempoButton bind:tempo callback="{draw}" />
+        <TempoInput bind:value="{tempo}" callback="{draw}" />
         <button
             title="Use colors for root, in-scale, outside-scale"
             on:click="{() => {

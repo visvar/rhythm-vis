@@ -4,6 +4,7 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
+    import NoteCountInput from './common/note-count-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -19,11 +20,9 @@
     let container;
     let midiDevices = [];
     // settings
-
+    let pastNoteCount = 200;
     // data
     let notes = [];
-
-    // domain knowledge
 
     const onMidiEnabled = () => {
         midiDevices = [];
@@ -39,10 +38,8 @@
     };
 
     const noteOn = (e) => {
-        // console.log(e.note);
         const string = e.message.channel - 1;
         const note = {
-            // ...e.note,
             number: e.note.number,
             velocity: e.rawVelocity,
             time: e.timestamp,
@@ -57,16 +54,9 @@
     const draw = () => {
         // TODO: filter notes which are too close together
         // TODO: filter notes with low velocity
-        // TODO: allow filtering over time
+
         const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
-        const data = notes.map((d) => {
-            const string = d.channel - 1;
-            return {
-                ...d,
-                string,
-                fret: d.number - tuningPitches[string],
-            };
-        });
+        const data = notes.slice(-pastNoteCount);
         const cellSize = (width - 100) / 25;
         const plot = Plot.plot({
             width,
@@ -160,19 +150,7 @@
         often you played each fretboard position.
     </p>
     <div class="control">
-        <!-- <label>
-            scale
-            <select bind:value="{root}" on:change="{draw}">
-                {#each noteNames as n}
-                    <option value="{n}">{n}</option>
-                {/each}
-            </select>
-            <select bind:value="{scale}" on:change="{draw}">
-                {#each scales as s}
-                    <option value="{s}">{s}</option>
-                {/each}
-            </select>
-        </label> -->
+        <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
