@@ -7,6 +7,7 @@
     import PianoRoll from './piano-roll.svelte';
     import PitchDetection from './tuner.svelte';
     import ScaleSets from './scale-sets.svelte';
+    import ScaleNotes from './scale-notes.svelte';
 
     let TOOLS = [
         {
@@ -55,6 +56,12 @@
             component: ScaleSets,
         },
         {
+            id: 'scale-notes',
+            title: 'Scale Notes',
+            description: 'See which notes are in each scale.',
+            component: ScaleNotes,
+        },
+        {
             id: 'tuner',
             title: 'Tuner',
             description:
@@ -63,7 +70,7 @@
         },
     ];
 
-    let currentTool;
+    export let currentTool;
 </script>
 
 <main>

@@ -228,9 +228,14 @@
   // tags
   const allTasks = new Set(DEMOS.flatMap((d) => d.task).sort());
   const allInstruments = new Set(DEMOS.flatMap((d) => d.instruments).sort());
+  const allInputs = new Set(DEMOS.flatMap((d) => d.input).sort());
   // filter
   let currentTasks = new Set(allTasks);
   let currentInstruments = new Set(allInstruments);
+  let currentInputs = new Set(allInputs);
+
+  // allow to reset current tool with tools button
+  let currentTool = null;
 </script>
 
 <main>
@@ -243,28 +248,17 @@
         setUrlParam(window, 'd', '');
       }}"
     >
-      ☰ home
+      ☰ demos
     </button>
     <!-- Tools page button -->
     <button
       on:click="{() => {
         currentDemo = 'tools';
+        currentTool = null;
         setUrlParam(window, 'd', 'tools');
       }}"
     >
       🛠️ tools
-    </button>
-    <!-- export usage button -->
-    <button
-      on:click="{() => {
-        const usage = localStorage.getItem('usage');
-        const blob = new Blob([usage], {
-          type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'usage.json');
-      }}"
-    >
-      💾 export usage
     </button>
   </header>
 
@@ -319,11 +313,30 @@
         </button>
       {/each}
     </div>
+    <div>
+      input
+      <button
+        on:click="{() => {
+          currentInputs = new Set(allInputs);
+        }}"
+      >
+        all
+      </button>
+      {#each allInputs.values() as d}
+        <button
+          on:click="{() => (currentInputs = updSet(currentInputs, d))}"
+          on:dblclick="{() => (currentInputs = new Set([d]))}"
+          class="{currentInputs.has(d) ? 'active' : 'hidden'}"
+        >
+          {d}
+        </button>
+      {/each}
+    </div>
 
     <!-- demo overview grid -->
     <div class="grid">
       {#each DEMOS as demo}
-        {#if currentTasks.has(demo.task) && setHasAny(currentInstruments, demo.instruments)}
+        {#if currentTasks.has(demo.task) && setHasAny(currentInstruments, demo.instruments) && currentInputs.has(demo.input)}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
           <div
@@ -353,16 +366,31 @@
               {demo.task === 'pitch' ? '🎶' : ''}
               {demo.task === 'chords' ? '⋮' : ''}
             </div>
+            <div class="tags">
+              data: {demo.input}
+            </div>
           </div>
         {/if}
       {/each}
     </div>
   {:else if currentDemo === 'tools'}
-    <Tools />
+    <Tools bind:currentTool />
   {:else}
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
   {/if}
+  <!-- export usage button -->
+  <button
+    on:click="{() => {
+      const usage = localStorage.getItem('usage');
+      const blob = new Blob([usage], {
+        type: 'text/plain;charset=utf-8',
+      });
+      saveAs(blob, 'usage.json');
+    }}"
+  >
+    💾 export usage
+  </button>
 </main>
 
 <style>

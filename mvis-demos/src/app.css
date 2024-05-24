@@ -110,7 +110,7 @@ div.card {
   background-color: #fefefe;
   border: 1px solid #ddd;
   border-radius: 12px;
-  box-shadow: #ccc 0 0 8px;
+  box-shadow: #ddd 0 0 8px;
   cursor: pointer;
   transition: all 250ms;
 }

@@ -28,8 +28,10 @@
         Select a root note and scale and see how this scale relates to others.
         This tool is mainly a graphical interface for <a
             href="https://github.com/tonaljs/tonal/tree/main/packages/scale"
-            target="_blank">tonaljs</a
+            target="_blank"
         >
+            tonaljs.
+        </a>
     </p>
     <div class="control">
         <label>
