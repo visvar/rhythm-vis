@@ -6,6 +6,7 @@
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -198,17 +199,7 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
-            title="Clear all played notes"
-            on:click="{() => {
-                if (confirm('Reset played notes?')) {
-                    noteVelocities = [];
-                    draw();
-                }
-            }}"
-        >
-            reset
-        </button>
+        <ResetNotesButton bind:notes="{noteVelocities}" callback="{draw}" />
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>

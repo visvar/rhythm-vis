@@ -5,6 +5,7 @@
     import * as Plot from '@observablehq/plot';
     import { Note, Scale } from '@tonaljs/tonal';
     import { Midi } from 'musicvis-lib';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -211,16 +212,6 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
-            title="Clear all played notes"
-            on:click="{() => {
-                if (confirm('Reset played notes?')) {
-                    notes = [];
-                    draw();
-                }
-            }}"
-        >
-            reset
-        </button>
+        <ResetNotesButton bind:notes callback="{draw}" />
     </div>
 </main>

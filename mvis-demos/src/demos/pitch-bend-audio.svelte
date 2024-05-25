@@ -8,6 +8,7 @@
     import { Midi, Note } from '@tonaljs/tonal';
     import * as d3 from 'd3';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -207,17 +208,7 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
-            title="Clear all played notes"
-            on:click="{() => {
-                if (confirm('Reset played notes?')) {
-                    bendValues = [];
-                    draw();
-                }
-            }}"
-        >
-            reset
-        </button>
+        <ResetNotesButton bind:notes="{bendValues}" callback="{draw}" />
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>

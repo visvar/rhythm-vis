@@ -9,6 +9,7 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
      * TODO:
@@ -351,17 +352,7 @@
         ></canvas>
     </div>
     <div class="control">
-        <button
-            title="Clear all played notes"
-            on:click="{() => {
-                if (confirm('Reset played notes?')) {
-                    noteOnTimes = [];
-                    draw();
-                }
-            }}"
-        >
-            reset
-        </button>
+        <ResetNotesButton bind:notes="{noteOnTimes}" callback="{draw}" />
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
         <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />

@@ -22,6 +22,7 @@
     "@stdlib/stdlib": "^0.2.0",
     "@tonaljs/tonal": "^4.10.0",
     "d3": "^7.9.0",
+    "essentia.js": "^0.1.3",
     "fast-kde": "^0.2.2",
     "file-saver": "^2.0.5",
     "gh-pages": "^6.1.1",
