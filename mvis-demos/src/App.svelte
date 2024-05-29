@@ -21,6 +21,7 @@
   import ImprovisationScaleDegreesBar from './demos/improvisation-scale-degrees-bar.svelte';
   import PitchBendAudio from './demos/pitch-bend-audio.svelte';
   import ImprovisationNoteColors from './demos/improvisation-note-colors.svelte';
+  import SubDivisionBar from './demos/sub-division-bar.svelte';
 
   /**
    * All demos defined here
@@ -36,6 +37,15 @@
       // TODO:
       // analysis: ['planning', 'constant', 'reactive', 'glance', 'summary'],
       component: SubDivision,
+    },
+    {
+      id: 'sub-division-bar',
+      title: '[new] Sub-Division (per Bar)',
+      description: 'Learn rhythmic playing in different sub-divisions.',
+      task: 'timing',
+      input: 'MIDI',
+      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      component: SubDivisionBar,
     },
     {
       id: 'tempo-drift',

@@ -13,15 +13,6 @@
     import { clamp } from '../lib/lib';
 
     /**
-     * TODO:
-     * - metric for spread
-     * - metric for mistake
-     * - metric for trend to early/late
-     * - interpolate first and last point (pad and add?)
-     * - fill up x of KDE to fill whole circle
-     */
-
-    /**
      * contains the demo meta information defined in App.js
      */
     export let demoInfo;
@@ -51,7 +42,6 @@
     let grid = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
-    let noteTickLimit = 1;
     let showKde = false;
     // data
     let firstTimeStamp = 0;
@@ -89,10 +79,9 @@
         // console.log('draw');
         const cx = width / 2;
         const cy = height / 2;
-        const r = width * 0.4;
+        const r = width * 0.2;
         const r2 = r * 0.8;
         const r3 = r * 0.9;
-        const r4 = r * 1.1;
         const r5 = r * 0.95;
         // offset in radians for 0 on top
         const topOffs = Math.PI / 2;
@@ -122,12 +111,32 @@
 
         const clamped = notes.map((d) => d % circleSeconds);
         const noteAngles = clamped.map((d) => (d / circleSeconds) * TWO_PI);
-        const maxBinHeight = width * 0.08;
+        const maxBinHeight = r * 0.2;
+
+        // for 3/4 bars there are less bins
+        const binCount = (binNote * grid1) / 4;
+
+        // draw wegdes for 'good enough'
+        ctx.fillStyle = '#f8f8f8';
+        const wedgeSize = TWO_PI / binCount;
+        const wedges = d3
+            .range(grid1 * grid2)
+            .map((d) => (TWO_PI / (grid1 * grid2)) * d - topOffs);
+        const rWedge = width / 2 - 10;
+        for (const g of wedges) {
+            const dx1 = Math.cos(g - wedgeSize);
+            const dy1 = Math.sin(g - wedgeSize);
+            const dx2 = Math.cos(g + wedgeSize);
+            const dy2 = Math.sin(g + wedgeSize);
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + dx1 * rWedge, cy + dy1 * rWedge);
+            ctx.lineTo(cx + dx2 * rWedge, cy + dy2 * rWedge);
+            ctx.closePath();
+        }
+        ctx.fill();
 
         // draw histogram
         if (!showKde) {
-            // for 3/4 bars there are less bins
-            const binCount = (binNote * grid1) / 4;
             ctx.fillStyle = '#f8f8f8';
             ctx.strokeStyle = '#aaa';
             const bin = d3
@@ -193,20 +202,30 @@
         }
 
         // draw notes
-        if (noteTickLimit > 0) {
-            ctx.lineWidth = 3;
-            // const color = d3.interpolate('#00000044', 'black');
-            const color = (d) => d3.interpolateRdYlBu(1 - d);
-            const lastNotes = notes.slice(-noteTickLimit);
+        if (notes.length > 0) {
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#888';
+            const lastNotes = notes;
+            const layerCount = Math.floor(notes.at(-1) / circleSeconds) + 1;
+            const layerSize = (width / 2 - r - maxBinHeight - 10) / layerCount;
             for (const [i, n] of lastNotes.entries()) {
                 const angle = (n / circleSeconds) * TWO_PI - topOffs;
                 const dx = Math.cos(angle);
                 const dy = Math.sin(angle);
-                ctx.strokeStyle = color(i / lastNotes.length);
+                const layer = Math.floor(n / circleSeconds);
+                const layerR1 = r + maxBinHeight + layer * layerSize + 5;
+                const layerR2 = layerR1 + layerSize;
                 ctx.beginPath();
-                ctx.moveTo(cx + dx * r, cy + dy * r);
-                ctx.lineTo(cx + dx * r4, cy + dy * r4);
+                ctx.moveTo(cx + dx * layerR1, cy + dy * layerR1);
+                ctx.lineTo(cx + dx * layerR2, cy + dy * layerR2);
                 ctx.stroke();
+            }
+            // draw rings
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = '#eee';
+            for (let i = 0; i < layerCount; i++) {
+                const layerR = r + maxBinHeight + i * layerSize + 5;
+                Canvas.drawCircle(ctx, cx, cy, layerR);
             }
         }
 
@@ -254,7 +273,6 @@
             grid,
             binNote,
             adjustTime,
-            noteTickLimit,
             showKde,
             noteOnTimes,
         };
@@ -275,7 +293,6 @@
             grid = json.grid;
             binNote = json.binNote;
             adjustTime = json.adjustTime;
-            noteTickLimit = json.noteTickLimit;
             noteOnTimes = json.noteOnTimes;
             showKde = json.showKde ?? false;
             draw();
@@ -302,12 +319,12 @@
     <p class="explanation">
         Connect a MIDI instrument (currently {midiDevices.length} connected), choose
         your tempo and subdivision, and start playing. The bar chart will show you
-        how often you hit each time bin and the last {noteTickLimit} notes will be
-        shown as ticks that fade out one new notes come in (from red for new to blue
-        for old). You can play freely, use the integrated metronome, or play a song
-        in the background (in another tab). All notes will be timed relative to the
-        first one, but you can adjust all notes to make them earlier or later in
-        case you messed up the first one.
+        how often you hit each time bin and the notes will be shown as ticks, one
+        layer per bar. You can play freely, use the integrated metronome, or play
+        a song in the background (in another tab). Light gray wedges show if you
+        stayed within on bin size of your defined timing grid. All notes will be
+        timed relative to the first one, but you can adjust all notes to make them
+        earlier or later in case you messed up the first one.
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
@@ -340,18 +357,6 @@
                 step="0.01"
                 min="-2"
                 max="2"
-                style="width: 55px"
-            />
-        </label>
-        <label title="The number of most recent notes that are shown as ticks.">
-            note ticks
-            <input
-                type="number"
-                bind:value="{noteTickLimit}"
-                on:change="{draw}"
-                step="1"
-                min="0"
-                max="100"
                 style="width: 55px"
             />
         </label>
