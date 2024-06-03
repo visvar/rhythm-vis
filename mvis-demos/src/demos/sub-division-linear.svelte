@@ -1,7 +1,8 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
-    import { Canvas, Utils } from 'musicvis-lib';
+    import { Utils } from 'musicvis-lib';
+    import * as Plot from '@observablehq/plot';
     import * as kde from 'fast-kde';
     import * as d3 from 'd3';
     import ImportButton from './common/import-button.svelte';
@@ -14,32 +15,19 @@
     import { BIN_NOTES, GRIDS } from '../lib/music';
 
     /**
-     * TODO:
-     * - metric for spread
-     * - metric for mistake
-     * - metric for trend to early/late
-     * - interpolate first and last point (pad and add?)
-     * - fill up x of KDE to fill whole circle
-     */
-
-    /**
      * contains the demo meta information defined in App.js
      */
     export let demoInfo;
 
-    const TWO_PI = Math.PI * 2;
-
-    let canvas;
     let width = 1000;
-    let height = 1000;
     let midiDevices = [];
+    let container;
     // settings
     let tempo = 120;
     let grid = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
-    let noteTickLimit = 1;
-    let showKde = false;
+    let noteTickLimit = 100;
     // data
     let firstTimeStamp = 0;
     let noteOnTimes = [];
@@ -97,162 +85,110 @@
     };
 
     const draw = () => {
-        // console.log('draw');
-        const cx = width / 2;
-        const cy = height / 2;
-        const r = width * 0.4;
-        const r2 = r * 0.8;
-        const r3 = r * 0.9;
-        const r4 = r * 1.1;
-        const r5 = r * 0.95;
-        // offset in radians for 0 on top
-        const topOffs = Math.PI / 2;
-        const ctx = canvas.getContext('2d');
-        // scale to DPR
-        // Get the DPR and size of the canvas
-        const dpr = window.devicePixelRatio;
-        const rect = canvas.getBoundingClientRect();
-        // Set the "actual" size of the canvas
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        // Scale the context to ensure correct drawing operations
-        ctx.scale(dpr, dpr);
-        // Set the "drawn" size of the canvas
-        canvas.style.width = `${rect.width}px`;
-        canvas.style.height = `${rect.height}px`;
-        // fade-out old data
-        ctx.clearRect(0, 0, width, height);
-        // ctx.fillRect(0, 0, width, height);
-
         const [grid1, grid2] = grid.split(':').map((d) => +d);
+        const quarter = Utils.bpmToSecondsPerBeat(tempo);
+        const notes = noteOnTimes.map((d) => (d + adjustTime) / quarter);
+        const clamped = notes.map((d) => d % grid1);
 
-        // number of seconds for a fill circle rotation
-        const circleSeconds = Utils.bpmToSecondsPerBeat(tempo) * grid1;
-
-        const notes = noteOnTimes.map((d) => d + adjustTime);
-
-        const clamped = notes.map((d) => d % circleSeconds);
-        const noteAngles = clamped.map((d) => (d / circleSeconds) * TWO_PI);
-        const maxBinHeight = width * 0.08;
-
-        // draw histogram
-        if (!showKde) {
-            // for 3/4 bars there are less bins
-            const binCount = (binNote * grid1) / 4;
-            ctx.fillStyle = '#f8f8f8';
-            ctx.strokeStyle = '#aaa';
-            const bin = d3
-                .bin()
-                .domain([0, TWO_PI])
-                .thresholds(
-                    d3.range(binCount).map((d) => (d / binCount) * TWO_PI),
-                );
-            const binned = bin(noteAngles);
-            const maxBin = d3.max(binned, (d) => d.length);
-            for (const b of binned) {
-                if (b.length === 0) {
-                    continue;
-                }
-                const binHeight = (b.length / maxBin) * maxBinHeight;
-                const binR = r + binHeight;
-                const angle1 = b.x0 - topOffs;
-                const dx = Math.cos(angle1);
-                const dy = Math.sin(angle1);
-                const angle2 = b.x1 - topOffs;
-                const dx2 = Math.cos(angle2);
-                const dy2 = Math.sin(angle2);
-                ctx.beginPath();
-                ctx.moveTo(cx + dx * r, cy + dy * r);
-                ctx.lineTo(cx + dx * binR, cy + dy * binR);
-                ctx.arc(cx, cy, binR, angle1, angle2);
-                ctx.lineTo(cx + dx2 * r, cy + dy2 * r);
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-            }
-        }
-
-        // draw KDE
-        if (showKde && noteAngles.length > 0) {
+        // KDE
+        let kdePoints = [];
+        if (clamped.length > 0) {
             let bandwidth = 4 / binNote;
-            let pad = 0.1;
-            let bins = 360;
-            const density1d = kde.density1d(noteAngles, {
+            let pad = 1;
+            let bins = width / 2;
+            const density1d = kde.density1d(clamped, {
                 bandwidth,
                 pad,
                 bins,
             });
-            const points = density1d.bandwidth(bandwidth);
-            const maxValue = d3.max([...points], (d) => d.y);
-            // smooth around first and last point
-            console.log([...points]);
-            ctx.beginPath();
-            let i = 0;
-            for (const p of points) {
-                console.log(i++, p);
-                const angle = p.x - topOffs;
-                const rp = r + (p.y / maxValue) * maxBinHeight;
-                const dx = Math.cos(angle);
-                const dy = Math.sin(angle);
-                ctx.lineTo(cx + dx * rp, cy + dy * rp);
-            }
-            ctx.closePath();
-            ctx.fillStyle = '#e4f0fa';
-            ctx.fill();
-            ctx.strokeStyle = '#aaa';
-            ctx.stroke();
+            kdePoints = density1d.bandwidth(bandwidth);
         }
 
-        // draw notes
+        let lastNotes = [];
         if (noteTickLimit > 0) {
-            ctx.lineWidth = 3;
-            const color = (d) => d3.interpolateViridis(1 - d);
-            const lastNotes = notes.slice(-noteTickLimit);
-            for (const [i, n] of lastNotes.entries()) {
-                const angle = (n / circleSeconds) * TWO_PI - topOffs;
-                const dx = Math.cos(angle);
-                const dy = Math.sin(angle);
-                ctx.strokeStyle = color(i / lastNotes.length);
-                ctx.beginPath();
-                ctx.moveTo(cx + dx * r, cy + dy * r);
-                ctx.lineTo(cx + dx * r4, cy + dy * r4);
-                ctx.stroke();
-            }
+            lastNotes = clamped.slice(-noteTickLimit);
         }
 
-        // grid
-        ctx.strokeStyle = '#aaa';
-        ctx.fillStyle = 'white';
-        Canvas.drawCircle(ctx, cx, cy, r);
-        ctx.lineWidth = 2;
-        ctx.fill();
-        ctx.stroke();
-        // grid angles
-        const coarseGridAngles = d3
-            .range(grid1)
-            .map((d) => (TWO_PI / grid1) * d - topOffs);
-        const fineGridAngles = d3
-            .range(grid1 * grid2)
-            .map((d) => (TWO_PI / (grid1 * grid2)) * d - topOffs);
-        // draw grid ticks
-        ctx.beginPath();
-        ctx.lineWidth = 2;
-        for (const g of coarseGridAngles) {
-            const dx = Math.cos(g);
-            const dy = Math.sin(g);
-            ctx.moveTo(cx + dx * r2, cy + dy * r2);
-            ctx.lineTo(cx + dx * r5, cy + dy * r5);
-        }
-        ctx.stroke();
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        for (const g of fineGridAngles) {
-            const dx = Math.cos(g);
-            const dy = Math.sin(g);
-            ctx.moveTo(cx + dx * r3, cy + dy * r3);
-            ctx.lineTo(cx + dx * r5, cy + dy * r5);
-        }
-        ctx.stroke();
+        const coarseGrid = d3.range(0, grid1 + 1, 1);
+        const fineGrid = d3.range(0, grid1 * grid2, 1 / grid2);
+        const gridLines = [
+            Plot.tickX(fineGrid, {
+                stroke: '#888',
+            }),
+            Plot.tickX(coarseGrid, {
+                stroke: '#888',
+                strokeWidth: 3,
+            }),
+        ];
+
+        const plotOptions = {
+            width,
+            height: 90,
+            marginLeft: 60,
+            marginBottom: 10,
+            padding: 0,
+            x: {
+                label: null,
+                domain: [0, grid1],
+                ticks: [],
+            },
+            y: {
+                axis: false,
+            },
+        };
+
+        const histoPlot = Plot.plot({
+            ...plotOptions,
+            marks: [
+                Plot.rectY(
+                    clamped,
+                    Plot.binX(
+                        { y: 'count' },
+                        {
+                            x: (d) => d,
+                            fill: '#ccc',
+                            thresholds: d3.range(0, grid1 + 1, 4 / binNote),
+                        },
+                    ),
+                ),
+                Plot.ruleY([0]),
+                ...gridLines,
+            ],
+        });
+        const kdePlot = Plot.plot({
+            ...plotOptions,
+            marks: [
+                Plot.areaY(kdePoints, {
+                    x: 'x',
+                    y: 'y',
+                    fill: (d) => '#e4f0fa',
+                    clip: true,
+                }),
+                Plot.ruleY([0]),
+                ...gridLines,
+            ],
+        });
+
+        const tickPlot = Plot.plot({
+            ...plotOptions,
+            color: {
+                scheme: 'viridis',
+                reverse: true,
+                domain: [0, lastNotes.length],
+            },
+            marks: [
+                Plot.tickX(lastNotes, {
+                    x: (d) => d,
+                    stroke: (d, i) => i,
+                    clip: true,
+                }),
+            ],
+        });
+
+        container.textContent = '';
+        container.appendChild(histoPlot);
+        container.appendChild(kdePlot);
+        container.appendChild(tickPlot);
     };
 
     /**
@@ -265,7 +201,6 @@
             binNote,
             adjustTime,
             noteTickLimit,
-            showKde,
             noteOnTimes,
         };
         downloadJsonFile(demoInfo.id, data);
@@ -284,10 +219,9 @@
             tempo = json.tempo;
             grid = json.grid;
             binNote = json.binNote;
-            adjustTime = json.adjustTime;
+            adjustTime = json.adjustTime ?? 0;
             noteTickLimit = json.noteTickLimit ?? 0;
             noteOnTimes = json.noteOnTimes;
-            showKde = json.showKde ?? false;
             draw();
         }
     };
@@ -336,7 +270,7 @@
         >
             binning
             <select bind:value="{binNote}" on:change="{draw}">
-                {#each [16, 32, 64, 128] as g}
+                {#each BIN_NOTES as g}
                     <option value="{g}">1/{g} note</option>
                 {/each}
             </select>
@@ -365,22 +299,8 @@
                 style="width: 55px"
             />
         </label>
-        <button
-            title="Toggle between bars and area"
-            on:click="{() => {
-                showKde = !showKde;
-                draw();
-            }}"
-        >
-            {showKde ? 'area' : 'bars'}
-        </button>
     </div>
-    <div class="visualization">
-        <canvas
-            bind:this="{canvas}"
-            style="width: {width}px; height: {height}px"
-        ></canvas>
-    </div>
+    <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <ResetNotesButton bind:notes="{noteOnTimes}" callback="{draw}" />
         <ExportButton exportFunction="{exportData}" />

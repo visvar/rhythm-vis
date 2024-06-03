@@ -135,7 +135,7 @@ div.card .description {
 
 div.control,
 div.visualization {
-  margin: 5px;
+  margin: 10px 5px;
 }
 
 p.explanation {

@@ -13,7 +13,8 @@
     export let demoInfo;
 
     let width = 1000;
-    let height = 280;
+    let height = 300;
+    const random = () => (Math.random() - 0.5) * 0.5;
     let stringCount = 6;
     let fretCount = 24;
     // E standard tuning, strings start at high E
@@ -41,22 +42,52 @@
 
     const noteOn = (e) => {
         const string = e.message.channel - 1;
+        const fret = e.note.number - tuningPitches[string];
         const note = {
             number: e.note.number,
             velocity: e.rawVelocity,
             time: e.timestamp,
             channel: e.message.channel,
             string,
-            fret: e.note.number - tuningPitches[string],
+            fret,
+            // add a little jitter
+            stringJitter: string + random(),
+            fretJitter: fret + random(),
         };
         notes.push(note);
         draw();
     };
 
-    const draw = () => {
-        // TODO: filter notes which are too close together
-        // TODO: filter notes with low velocity
+    /**
+     * Allow controlling vis with a MIDI knob
+     * @param e MIDI controllchange event
+     */
+    const controlChange = (e) => {
+        const c = e.controller.number;
+        if (c === 14) {
+            // tempo
+            tempo = clamp(e.rawValue, 0, 120) + 60;
+        } else if (c === 15) {
+            // grid
+            grid =
+                GRIDS[clamp(Math.floor(e.rawValue / 5), 0, GRIDS.length - 1)];
+        } else if (c === 16) {
+            // binning
+            binNote =
+                BIN_NOTES[
+                    clamp(Math.floor(e.rawValue / 5), 0, BIN_NOTES.length - 1)
+                ];
+        } else if (c === 17) {
+            // adjust
+            adjustTime = (clamp(e.rawValue, 0, 100) - 50) / 100;
+        } else if (c === 18) {
+            // note ticks
+            noteTickLimit = Math.round(clamp(e.rawValue * 2, 0, 200));
+        }
+        draw();
+    };
 
+    const draw = () => {
         const data = notes.slice(-pastNoteCount);
         const cellSize = (width - 100) / 25;
         const plot = Plot.plot({
@@ -66,21 +97,31 @@
             marginBottom: 50,
             padding: 0,
             x: {
-                domain: d3.range(0, fretCount + 1),
+                // domain: d3.range(0, fretCount + 1),
+                domain: [-1, fretCount + 1.5],
                 ticks: d3.range(0, fretCount + 1),
                 tickSize: 0,
+                label: 'fret',
             },
             y: {
-                domain: d3.range(0, stringCount),
+                // domain: d3.range(0, stringCount),
+                domain: [stringCount - 0.5, 0.5],
                 tickFormat: (d) => tuningNotes[d],
                 tickSize: 0,
+                label: 'string',
             },
             color: {
                 legend: true,
                 marginLeft: 100,
                 width: 400,
-                scheme: 'blues',
-                label: 'count',
+                scheme: 'viridis',
+                reverse: true,
+                domain: [0, pastNoteCount],
+                label: 'note index',
+            },
+            r: {
+                domain: [0, 127],
+                range: [0, 5],
             },
             marks: [
                 // frets
@@ -108,21 +149,16 @@
                     fill: '#ddd',
                     r: 8,
                 }),
-                // heatmap
-                Plot.cell(
-                    data,
-                    Plot.group(
-                        { fill: 'count' },
-                        {
-                            x: 'fret',
-                            y: 'string',
-                            fill: 'count',
-                            inset: 5,
-                            rx: '50%',
-                            tip: true,
-                        },
-                    ),
-                ),
+                // note scatterplot
+                Plot.dot(data, {
+                    x: 'fretJitter',
+                    y: 'stringJitter',
+                    // x: (d) => d.fretJitter,
+                    // y: (d) => d.stringJitter - 1,
+                    // dy: cellSize / 2,
+                    fill: (d, i) => i,
+                    r: 'velocity',
+                }),
             ],
         });
 
@@ -148,8 +184,8 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI guitar and start playing. The heatmap below shows how
-        often you played each fretboard position.
+        Connect a MIDI guitar and start playing. The fretboard scatterplot below
+        shows you where you played, color-coded by time.
     </p>
     <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />

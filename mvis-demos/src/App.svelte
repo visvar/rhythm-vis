@@ -22,6 +22,8 @@
   import PitchBendAudio from './demos/pitch-bend-audio.svelte';
   import ImprovisationNoteColors from './demos/improvisation-note-colors.svelte';
   import SubDivisionBar from './demos/sub-division-bar.svelte';
+  import SubDivisionLinear from './demos/sub-division-linear.svelte';
+  import FretboardJitter from './demos/fretboard-jitter.svelte';
 
   /**
    * All demos defined here
@@ -46,6 +48,15 @@
       input: 'MIDI',
       instruments: ['drum', 'guitar/bass', 'keyboard'],
       component: SubDivisionBar,
+    },
+    {
+      id: 'sub-division-linear',
+      title: '[new] Sub-Division (linear)',
+      description: 'Learn rhythmic playing in different sub-divisions.',
+      task: 'timing',
+      input: 'MIDI',
+      instruments: ['drum', 'guitar/bass', 'keyboard'],
+      component: SubDivisionLinear,
     },
     {
       id: 'tempo-drift',
@@ -123,6 +134,15 @@
       input: 'MIDI',
       instruments: ['guitar/bass'],
       component: FretboardHeatmap,
+    },
+    {
+      id: 'fretboard-jitter',
+      title: '[new] Fretboard Jitter',
+      description: 'See how you play different fretboard positions over time.',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['guitar/bass'],
+      component: FretboardJitter,
     },
     {
       id: 'fretboard-improvisation-intervals',

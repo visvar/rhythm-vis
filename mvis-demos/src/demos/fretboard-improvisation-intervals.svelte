@@ -124,7 +124,7 @@
                 // range: ['black', 'red'],
             },
             marks: [
-                //  frets
+                // frets
                 Plot.ruleX(d3.range(0, fretCount + 1), {
                     stroke: '#ddd',
                     dx: cellSize / 2,
