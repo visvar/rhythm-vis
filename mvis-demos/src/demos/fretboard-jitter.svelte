@@ -6,6 +6,7 @@
     import { Note } from '@tonaljs/tonal';
     import NoteCountInput from './common/note-count-input.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import { clamp } from '../lib/lib';
 
     /**
      * contains the demo meta information defined in App.js
@@ -35,6 +36,7 @@
             WebMidi.inputs.forEach((device, index) => {
                 console.log(`MIDI device ${index}: ${device.name}`);
                 device.addListener('noteon', noteOn);
+                device.addListener('controlchange', controlChange);
             });
             midiDevices = [...WebMidi.inputs];
         }
@@ -63,27 +65,7 @@
      * @param e MIDI controllchange event
      */
     const controlChange = (e) => {
-        const c = e.controller.number;
-        if (c === 14) {
-            // tempo
-            tempo = clamp(e.rawValue, 0, 120) + 60;
-        } else if (c === 15) {
-            // grid
-            grid =
-                GRIDS[clamp(Math.floor(e.rawValue / 5), 0, GRIDS.length - 1)];
-        } else if (c === 16) {
-            // binning
-            binNote =
-                BIN_NOTES[
-                    clamp(Math.floor(e.rawValue / 5), 0, BIN_NOTES.length - 1)
-                ];
-        } else if (c === 17) {
-            // adjust
-            adjustTime = (clamp(e.rawValue, 0, 100) - 50) / 100;
-        } else if (c === 18) {
-            // note ticks
-            noteTickLimit = Math.round(clamp(e.rawValue * 2, 0, 200));
-        }
+        pastNoteCount = Math.round(clamp(e.rawValue * 2, 0, 200));
         draw();
     };
 

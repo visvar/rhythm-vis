@@ -24,6 +24,7 @@
   import SubDivisionBar from './demos/sub-division-bar.svelte';
   import SubDivisionLinear from './demos/sub-division-linear.svelte';
   import FretboardJitter from './demos/fretboard-jitter.svelte';
+  import FretboardSpacetimeCube from './demos/fretboard-spacetime-cube.svelte';
 
   /**
    * All demos defined here
@@ -143,6 +144,15 @@
       input: 'MIDI',
       instruments: ['guitar/bass'],
       component: FretboardJitter,
+    },
+    {
+      id: 'fretboard-spacetmime-cube',
+      title: '[new] Fretboard Spacetime Cube',
+      description: 'See how you play different fretboard positions over time.',
+      task: 'pitch',
+      input: 'MIDI',
+      instruments: ['guitar/bass'],
+      component: FretboardSpacetimeCube,
     },
     {
       id: 'fretboard-improvisation-intervals',
