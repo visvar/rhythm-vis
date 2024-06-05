@@ -2,38 +2,36 @@
     import { onDestroy, onMount } from 'svelte';
     import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
-    import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
-    import NoteCountInput from './common/note-count-input.svelte';
-    import ResetNotesButton from './common/reset-notes-button.svelte';
     import 'aframe';
     import 'aframe-svelte';
-    import { log } from 'aframe';
+    import { Midi } from 'musicvis-lib';
 
     /**
      * contains the demo meta information defined in App.js
      */
     export let demoInfo;
 
-    let width = 1000;
-    let height = 300;
     let stringCount = 6;
     let fretCount = 24;
     // E standard tuning, strings start at high E
     let tuningPitches = [64, 59, 55, 50, 45, 40];
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
-    let container;
+    // const stringColors = tuningNotes.map(()=>'#aaa')
+    const stringColors = d3.schemeObservable10;
     let midiDevices = [];
-    const timeFactor = 0.05;
-    // settings
-    let pastNoteCount = 200;
+    const timeFactor = 0.25;
     // data
     let notes = [];
-    notes = d3.range(20).map(() => {
+    notes = d3.range(30).map(() => {
+        const string = Math.floor(Math.random() * 6);
+        const fret = Math.round(Math.random() * 24);
+        const midiNr = tuningPitches[string] + fret;
         return {
-            string: Math.floor(Math.random() * 6),
-            fret: Math.round(Math.random() * 24),
-            time: Math.round(Math.random() * 30),
+            string,
+            fret,
+            time: Math.round(Math.random() * 60),
+            note: Midi.NOTE_NAMES[midiNr % 12],
         };
     });
     console.log(notes);
@@ -56,6 +54,7 @@
         const fret = e.note.number - tuningPitches[string];
         const note = {
             number: e.note.number,
+            note: Midi.NOTE_NAMES[e.note.number % 12],
             velocity: e.rawVelocity,
             time: e.timestamp,
             channel: e.message.channel,
@@ -160,112 +159,113 @@
 </script>
 
 <main class="demo">
-    <h2>{demoInfo.title}</h2>
-    <p class="explanation">
-        Connect a MIDI guitar and start playing. The fretboard scatterplot below
-        shows you where you played, color-coded by time.
-    </p>
-    <div class="control">
-        <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
-    </div>
-    <div class="visualization" bind:this="{container}">
-        <a-scene>
-            <a-sky color="white"></a-sky>
-            <!-- x is right, y is up, z is toward camera -->
-            <a-box
-                position="0.5 0 0"
-                color="red"
-                width="1"
-                height="0.1"
-                depth="0.1"
-            ></a-box>
-            <a-box
-                position="0 0.5 0"
-                color="green"
-                width="0.1"
-                height="1"
-                depth="0.1"
-            ></a-box>
-            <a-box
-                position="0 0 0.5"
-                color="blue"
-                width="0.1"
-                height="0.1"
-                depth="1"
-            ></a-box>
-            <a-box
-                position="0 .5 -2"
-                rotation="0 0 0"
-                scale=".1 .1 .1"
-                visible="true"
-            >
-                <!-- fretboard -->
-                {#each d3.range(stringCount) as string}
-                    <a-cylinder
-                        position="{`${fretCount / 2} 0 ${string - 5}`}"
-                        radius="{0.02 * (string / 6 + 1)}"
-                        height="26"
-                        rotation="0 0 90"
-                        color="#aaa"
-                    ></a-cylinder>
-                {/each}
-                {#each d3.range(fretCount + 1) as fret}
-                    <a-cylinder
-                        position="{`${fret} 0 -2.5`}"
-                        radius="{0.02}"
-                        height="5"
-                        rotation="90 0 0"
-                        color="#ddd"
-                    ></a-cylinder>
-                    <!-- fret numbers -->
+    <!-- x is right, y is up, z is toward camera -->
+    <a-scene>
+        <a-sky color="white"></a-sky>
+        <!-- text with explanation -->
+        <a-entity
+            text="value: {demoInfo.title}; color: #666; width: 5"
+            position="-1.75 1.8 -1.5"
+            scale=".35 .35 .35"
+        ></a-entity>
+        <a-entity
+            text="value: Connect a MIDI guitar and start playing. Notes are positioned based on their string (forward), fret (right), and time (up). They are colored by string and labelled with note name and fret number.\n\nGo back in your browser to return to the main page.; color: #666; width: 5"
+            position="-2 1.5 -1.5"
+            scale=".25 .25 .25"
+        ></a-entity>
+        <!-- visualization container -->
+        <a-box
+            position="-1 .5 -1"
+            rotation="0 0 0"
+            scale=".1 .1 .1"
+            visible="true"
+            opacity="0"
+        >
+            <!-- fretboard -->
+            {#each d3.range(stringCount) as string}
+                <!-- strings -->
+                <a-cylinder
+                    position="{`${fretCount / 2} 0 ${string - 5}`}"
+                    radius="{0.02 * (string / 6 + 1)}"
+                    height="26"
+                    rotation="0 0 90"
+                    color="{stringColors[stringCount - string - 1]}"
+                ></a-cylinder>
+                <!-- string notes -->
+                <a-entity
+                    text="value: {tuningNotes[string]}; color: #666"
+                    position="{`2.5 0 ${string - 5}`}"
+                    scale="10 10 10"
+                ></a-entity>
+            {/each}
+            {#each d3.range(fretCount + 1) as fret}
+                <!-- frets -->
+                <a-cylinder
+                    position="{`${fret} 0 -2.5`}"
+                    radius="{0.02}"
+                    height="5"
+                    rotation="90 0 0"
+                    color="#ddd"
+                ></a-cylinder>
+                <!-- fret numbers -->
+                <a-entity
+                    text="value: {fret}; color: #666"
+                    position="{`${fret + 4.5} 0 1`}"
+                    scale="10 10 10"
+                ></a-entity>
+            {/each}
+            <!-- inlays -->
+            {#each [3, 5, 7, 9, 15, 17, 19, 21] as dot}
+                <a-sphere
+                    position="{dot - 0.5} 0 -2.5"
+                    color="silver"
+                    scale="0.25 0.1 0.25"
+                ></a-sphere>
+            {/each}
+            {#each [12, 24] as dot}
+                <a-sphere
+                    position="{dot - 0.5} 0 -1.5"
+                    color="silver"
+                    scale="0.25 0.1 0.25"
+                ></a-sphere>
+                <a-sphere
+                    position="{dot - 0.5} 0 -3.5"
+                    color="silver"
+                    scale="0.25 0.1 0.25"
+                ></a-sphere>
+            {/each}
+            {#each d3.range(0, d3.max(notes, (d) => d.time) + 5, 5) as time}
+                <!-- time axis -->
+                <a-cylinder
+                    position="{`${fretCount / 2} ${time * timeFactor + 1} -6`}"
+                    radius="0.02"
+                    height="26"
+                    rotation="0 0 90"
+                    color="#ccc"
+                ></a-cylinder>
+                <a-entity
+                    text="value: {time}s; color: #666"
+                    position="{`2.5 ${time * timeFactor + 1} -6 `}"
+                    scale="10 10 10"
+                ></a-entity>
+            {/each}
+            <!-- notes -->
+            {#each notes as note, index}
+                <a-box
+                    position="{`${note.fret - 0.3} ${note.time * timeFactor + 1} ${note.string - 5}`}"
+                    color="{stringColors[stringCount - note.string - 1]}"
+                    opacity="0.5"
+                    width="0.4"
+                    height="0.4"
+                    depth="0.4"
+                >
                     <a-entity
-                        text="value: {fret}; color: #000"
-                        position="{`${fret + 4} 0 1`}"
-                        scale="10 10 10"
+                        text="value: {note.note}\n{note.fret}; color: #666"
+                        position="2.35 0 0.201"
+                        scale="5 5 5"
                     ></a-entity>
-                {/each}
-                <!-- inlays -->
-                {#each [3, 5, 7, 9, 15, 17, 19, 21] as dot}
-                    <a-sphere
-                        position="{dot - 0.5} 0 -2.5"
-                        color="red"
-                        scale="0.25 0.025 0.25"
-                    ></a-sphere>
-                {/each}
-                {#each [12, 24] as dot}
-                    <a-sphere
-                        position="{dot - 0.5} 0 -1.5"
-                        color="red"
-                        scale="0.25 0.025 0.25"
-                    ></a-sphere>
-                    <a-sphere
-                        position="{dot - 0.5} 0 -3.5"
-                        color="red"
-                        scale="0.25 0.025 0.25"
-                    ></a-sphere>
-                {/each}
-                <!-- notes -->
-                {#each notes as note, index}
-                    <a-box
-                        position="{`${note.fret - 0.3} ${index * timeFactor} ${note.string - 5}`}"
-                        color="gray"
-                        width="0.5"
-                        height="0.5"
-                        depth="0.5"
-                    ></a-box>
-                {/each}
-            </a-box>
-        </a-scene>
-    </div>
-    <div class="control">
-        <ResetNotesButton bind:notes callback="{draw}" />
-        <!-- <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" /> -->
-    </div>
+                </a-box>
+            {/each}
+        </a-box>
+    </a-scene>
 </main>
-
-<style>
-    .control {
-        z-index: 10000;
-    }
-</style>
