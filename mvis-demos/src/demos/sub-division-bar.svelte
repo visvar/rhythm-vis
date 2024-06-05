@@ -57,6 +57,13 @@
         draw();
     };
 
+    const keyDown = (e) => {
+        if (e.key === ' ') {
+            e.preventDefault();
+            noteOn({ timestamp: performance.now() });
+        }
+    };
+
     /**
      * Allow controlling vis with a MIDI knob
      * @param e MIDI controllchange event
@@ -312,6 +319,7 @@
             .then(onMidiEnabled)
             .catch((err) => alert(err));
         draw();
+        document.addEventListener('keydown', keyDown);
     });
 
     onDestroy(() => {
@@ -319,6 +327,7 @@
         for (const input of WebMidi.inputs) {
             input.removeListener();
         }
+        document.removeEventListener('keydown', keyDown);
     });
 </script>
 

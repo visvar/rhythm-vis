@@ -87,7 +87,7 @@
             },
             y: {
                 // domain: d3.range(0, stringCount),
-                domain: [stringCount - 0.5, 0.5],
+                domain: [stringCount - 0.5, -0.5],
                 tickFormat: (d) => tuningNotes[d],
                 tickSize: 0,
                 label: 'string',

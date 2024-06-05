@@ -8,6 +8,18 @@
     import { Midi } from 'musicvis-lib';
 
     /**
+     * TODO:#
+     * - improve text (anchor, baseline, side, wrappixels)
+     *  - https://aframe.io/docs/1.5.0/components/text.html
+     * - allow interaction to reset notes and scale time
+     *  - https://aframe.io/docs/1.5.0/guides/building-a-basic-scene.html#event-listener-component-intermediate
+     *  - support VR controllers?
+     *      - https://aframe.io/docs/1.5.0/introduction/interactions-and-controllers.html
+     * - use custom geometry?
+     *  - https://aframe.io/docs/1.5.0/components/geometry.html
+     */
+
+    /**
      * contains the demo meta information defined in App.js
      */
     export let demoInfo;

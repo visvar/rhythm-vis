@@ -56,7 +56,6 @@
     const draw = () => {
         // TODO: filter notes which are too close together
         // TODO: filter notes with low velocity
-
         const data = notes.slice(-pastNoteCount);
         const cellSize = (width - 100) / 25;
         const plot = Plot.plot({
