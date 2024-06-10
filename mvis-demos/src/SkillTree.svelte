@@ -1,87 +1,11 @@
 <script>
     import { caretDownIcon, caretUpIcon } from './lib/icons';
-
-    let skillTree = [
-        {
-            title: 'timing',
-            children: [
-                {
-                    title: 'playing to grid',
-                    skill: 'sub-division',
-                },
-                {
-                    title: 'tempo keeping',
-                    skill: 'tempo-keeping',
-                },
-                {
-                    title: 'chord timing',
-                    skill: 'chord-timing',
-                },
-                {
-                    title: 'arpeggio timing',
-                    skill: 'argpeggio-timing',
-                },
-                {
-                    title: 'timing consistency',
-                    skill: 'timing-consistency',
-                },
-            ],
-        },
-        {
-            title: 'dynamics',
-            children: [
-                {
-                    title: 'constant dynamics',
-                    skill: 'constant-dynamics',
-                },
-                {
-                    title: '(de)crescendo',
-                    skill: '(de)crescendo',
-                },
-            ],
-        },
-        {
-            title: 'pitch',
-            children: [
-                {
-                    title: 'intervals',
-                    skill: 'pitch-intervals',
-                },
-                {
-                    title: 'scale degrees',
-                    skill: 'scale-degrees',
-                },
-                {
-                    title: 'chord notes',
-                    skill: 'chord-notes',
-                },
-                {
-                    title: 'pitch keeping',
-                    skill: 'pitch-keeping',
-                },
-                {
-                    title: 'bending',
-                    skill: 'bending',
-                },
-                {
-                    title: 'vibrato',
-                    skill: 'vibrato',
-                },
-            ],
-        },
-        {
-            title: 'instrument',
-            children: [
-                {
-                    title: 'instrument layout',
-                    skill: 'instrument-layout',
-                },
-            ],
-        },
-    ];
+    import { SKILL_TREE } from './lib/skills';
 
     export let allSkills = new Set();
     export let currentSkills = new Set();
+
+    let skillTree = SKILL_TREE;
 
     const toggleNode = (node) => {
         const shown = !node.shown;

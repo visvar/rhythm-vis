@@ -8,7 +8,6 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
     import NoteCountInput from './common/note-count-input.svelte';
-    import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import { noteDurations } from '../lib/note-durations.js';
 
     /**
