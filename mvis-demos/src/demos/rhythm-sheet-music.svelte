@@ -9,6 +9,7 @@
     import TempoInput from './common/tempo-input.svelte';
     import NoteCountInput from './common/note-count-input.svelte';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
+    import { noteDurations } from '../lib/note-durations.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -30,84 +31,7 @@
     let notes = [];
     // domain knowledge
     // 𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯
-    const possibilities = [
-        // TODO: triplets? but maybe only when 3 detected?
-        {
-            name: 'double-whole',
-            beats: 8,
-            symbol: '𝅝_𝅝',
-        },
-        {
-            name: 'dotted-whole',
-            beats: 6,
-            symbol: '𝅝.',
-            dotted: true,
-        },
-        {
-            name: 'whole',
-            beats: 4,
-            symbol: '𝅝',
-        },
-        {
-            name: 'dotted-half',
-            beats: 3,
-            symbol: '𝅗𝅥.',
-            dotted: true,
-        },
-        {
-            name: 'half',
-            beats: 2,
-            symbol: '𝅗𝅥',
-        },
-        {
-            name: 'dotted-quarter',
-            beats: 1.5,
-            symbol: '𝅘𝅥.',
-            dotted: true,
-        },
-        {
-            name: 'quarter',
-            beats: 1,
-            symbol: '𝅘𝅥',
-        },
-        {
-            name: 'quarter-triplet',
-            beats: 1 / 3,
-            symbol: 'trp',
-        },
-        {
-            name: 'dotted-eighth',
-            beats: 0.75,
-            symbol: '𝅘𝅥𝅮.',
-            dotted: true,
-        },
-        {
-            name: 'eighth',
-            beats: 0.5,
-            symbol: '𝅘𝅥𝅮',
-        },
-        {
-            name: 'dotted-sixteenth',
-            beats: 0.375,
-            symbol: '𝅘𝅥𝅯.',
-            dotted: true,
-        },
-        {
-            name: 'sixteenth',
-            beats: 0.25,
-            symbol: '𝅘𝅥𝅯',
-        },
-        {
-            name: 'thirtysecond',
-            beats: 0.125,
-            symbol: '𝅘𝅥𝅰',
-        },
-        {
-            name: 'sixtyfourth',
-            beats: 0.0625,
-            symbol: '𝅘𝅥𝅱',
-        },
-    ];
+    const possibilities = noteDurations;
     const possibilitiesNonDotted = possibilities.filter((d) => !d.dotted);
 
     const onMidiEnabled = () => {

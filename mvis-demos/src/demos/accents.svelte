@@ -9,6 +9,7 @@
     import TempoInput from './common/tempo-input.svelte';
     import NoteCountInput from './common/note-count-input.svelte';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
+    import { noteDurations } from '../lib/note-durations.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -20,91 +21,14 @@
     let midiDevices = [];
     // settings
     let tempo = 120;
-    let pastNoteCount = 10;
+    let pastNoteCount = 12;
     let useDotted = true;
     // data
     let firstTimeStamp = 0;
     let notes = [];
     // domain knowledge
     // 𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯
-    const possibilities = [
-        // TODO: triplets? but maybe only when 3 detected?
-        {
-            name: 'double-whole',
-            beats: 8,
-            symbol: '𝅝_𝅝',
-        },
-        {
-            name: 'dotted-whole',
-            beats: 6,
-            symbol: '𝅝.',
-            dotted: true,
-        },
-        {
-            name: 'whole',
-            beats: 4,
-            symbol: '𝅝',
-        },
-        {
-            name: 'dotted-half',
-            beats: 3,
-            symbol: '𝅗𝅥.',
-            dotted: true,
-        },
-        {
-            name: 'half',
-            beats: 2,
-            symbol: '𝅗𝅥',
-        },
-        {
-            name: 'dotted-quarter',
-            beats: 1.5,
-            symbol: '𝅘𝅥.',
-            dotted: true,
-        },
-        {
-            name: 'quarter',
-            beats: 1,
-            symbol: '𝅘𝅥',
-        },
-        {
-            name: 'quarter-triplet',
-            beats: 1 / 3,
-            symbol: 't',
-        },
-        {
-            name: 'dotted-eighth',
-            beats: 0.75,
-            symbol: '𝅘𝅥𝅮.',
-            dotted: true,
-        },
-        {
-            name: 'eighth',
-            beats: 0.5,
-            symbol: '𝅘𝅥𝅮',
-        },
-        {
-            name: 'dotted-sixteenth',
-            beats: 0.375,
-            symbol: '𝅘𝅥𝅯.',
-            dotted: true,
-        },
-        {
-            name: 'sixteenth',
-            beats: 0.25,
-            symbol: '𝅘𝅥𝅯',
-        },
-        {
-            name: 'thirtysecond',
-            beats: 0.125,
-            symbol: '𝅘𝅥𝅰',
-        },
-        {
-            name: 'sixtyfourth',
-            beats: 0.0625,
-            symbol: '𝅘𝅥𝅱',
-        },
-    ];
+    const possibilities = noteDurations;
     const possibilitiesNonDotted = possibilities.filter((d) => !d.dotted);
 
     const onMidiEnabled = () => {
@@ -122,7 +46,10 @@
 
     const noteOn = async (e) => {
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        const note = noteInSeconds;
+        const note = {
+            time: noteInSeconds,
+            velocity: e.velocity,
+        };
         notes.push(note);
         draw();
     };
@@ -137,21 +64,32 @@
         }
         let quarter = Utils.bpmToSecondsPerBeat(tempo);
         const sliced = notes.slice(-(pastNoteCount + 1));
-        const deltas = sliced.map((d, i) => (i === 0 ? 0 : d - sliced[i - 1]));
-        const inBeats = deltas.map((d) => d / quarter);
+        const deltas = sliced.map((d, i) => {
+            if (i === 0) {
+                return {};
+            }
+            const delta = d.time - sliced[i - 1].time;
+            return {
+                delta: delta / quarter,
+                velocity: sliced[i - 1].velocity,
+            };
+        });
 
         const poss = useDotted ? possibilities : possibilitiesNonDotted;
-        const bestFit = inBeats.map((delta) => {
+        const bestFit = deltas.slice(1).map((delta) => {
             const bestIndex = d3.minIndex(poss, (d) =>
-                Math.abs(delta - d.beats),
+                Math.abs(delta.delta - d.beats),
             );
             const best = poss[bestIndex];
             return {
                 ...best,
                 beats: delta,
-                offsetPercent: ((delta / best.beats) * 100).toFixed(),
+                velocity: delta.velocity,
+                offsetPercent: ((delta.delta / best.beats) * 100).toFixed(),
             };
         });
+
+        console.log(bestFit);
 
         // plot
         const plot = Plot.plot({
@@ -163,58 +101,27 @@
                 domain: d3.range(1, pastNoteCount),
                 ticks: [],
             },
-            y: {
-                domain: [1, 0],
-                ticks: d3.range(3),
-                tickFormat: (d) => ['note', '% offset'][d],
-            },
+            y: {},
             marks: [
                 Plot.text(bestFit, {
                     text: 'symbol',
                     x: (d, i) => i,
-                    y: 0,
-                    fontSize: 40,
-                }),
-                // amount of beats
-                // Plot.text(bestFit, {
-                //     text: 'beats',
-                //     x: (d, i) => i,
-                //     y: 1,
-                //     fontSize: 20,
-                // }),
-                // percent deviation
-                Plot.text(bestFit, {
-                    text: (d) => d.offsetPercent - 100,
-                    x: (d, i) => i,
-                    y: 1,
-                    fontSize: 20,
+                    fontSize: (d) => d.velocity * 60 + 10,
                 }),
             ],
         });
         container.appendChild(plot);
-        // plot
+        // legend
         const plot2 = Plot.plot({
             width,
-            height: 200,
+            height: 100,
             marginLeft: 80,
-            x: {
-                label: 'Note',
-                domain: d3.range(1, pastNoteCount),
-                tickSize: 0,
-                ticks: [],
-            },
-            y: {
-                domain: [0, 150],
-                ticks: [0, 50, 100, 150],
-            },
             marks: [
-                Plot.barY(bestFit, {
-                    x: (d, i) => i,
-                    y: 'offsetPercent',
-                    fill: '#ddd',
+                Plot.text(d3.range(0.1, 1.1, 0.1), {
+                    text: (d) => '𝅘𝅥',
+                    x: (d, i) => d,
+                    fontSize: (d) => d * 60 + 10,
                 }),
-                Plot.ruleY([50, 150], { stroke: '#aaa' }),
-                Plot.ruleY([100]),
             ],
         });
         container.appendChild(plot2);
@@ -240,7 +147,20 @@
     <p class="explanation">
         Set a tempo and start playing. The time between the notes you play will
         be displayed as note symbols, so you can see whether you play, for
-        example, correct quarter notes.
+        example, correct quarter notes. The note's velocity is encoded as font
+        size, so you can see whether you accent the correct notes, for example
+        the first note in each triplet, or the the first in each group of 4. You
+        can also try different accent patterns such as:
+    </p>
+    <p>
+        <b>1</b>e+<b>a</b> 2e+a 3<b>e</b>+a <b>4</b>e+a
+    </p>
+    <p>
+        <span class="acc">𝅘𝅥</span> 𝅘𝅥 𝅘𝅥 <span class="acc">𝅘𝅥</span> | 𝅘𝅥 𝅘𝅥 𝅘𝅥 𝅘𝅥 | 𝅘𝅥
+        <span class="acc">𝅘𝅥</span>
+        𝅘𝅥 𝅘𝅥 |
+        <span class="acc">𝅘𝅥</span>
+        𝅘𝅥 𝅘𝅥 𝅘𝅥
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
@@ -271,8 +191,10 @@
         </button>
         <MetronomeButton {tempo} accent="{4}" />
     </div>
-    <PcKeyboardInput
-        key=" "
-        callback="{() => noteOn({ timestamp: performance.now() })}"
-    />
 </main>
+
+<style>
+    .acc {
+        font-size: 1.6em;
+    }
+</style>
