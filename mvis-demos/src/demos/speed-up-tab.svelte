@@ -33,7 +33,7 @@
     // data
     let currentStep = '';
     let currentTempo = targetTempo;
-    let firstTimeStamp = 0;
+    let firstTimeStamp = performance.now();
     let exerciseNotes = [];
     let exerciseBeatCount;
     // Map bpm->notes
@@ -282,7 +282,6 @@
         WebMidi.enable()
             .then(onMidiEnabled)
             .catch((err) => alert(err));
-        firstTimeStamp = performance.now();
         draw();
     });
 

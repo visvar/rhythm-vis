@@ -6,6 +6,7 @@
     import 'aframe';
     import 'aframe-svelte';
     import { Midi } from 'musicvis-lib';
+    import { roundToStep } from '../lib/lib';
 
     /**
      * TODO:#
@@ -32,21 +33,37 @@
     // const stringColors = tuningNotes.map(()=>'#aaa')
     const stringColors = d3.schemeObservable10;
     let midiDevices = [];
-    const timeFactor = 0.25;
+    // settings
+    const timeFactor = 0.5;
+    const pastSeconds = 60;
     // data
+    let firstTimeStamp = 0;
+    let lastTimeSeconds = 60;
+    $: firstTimeSeconds = lastTimeSeconds - pastSeconds;
+    $: scaleTime = d3
+        .scaleLinear()
+        .domain([lastTimeSeconds, firstTimeSeconds])
+        .range([0.5, pastSeconds * timeFactor]);
     let notes = [];
-    notes = d3.range(30).map(() => {
+    // create random data until MIDI input is received
+    const randomNote = (time) => {
         const string = Math.floor(Math.random() * 6);
         const fret = Math.round(Math.random() * 24);
         const midiNr = tuningPitches[string] + fret;
+        time = time ?? Math.round(Math.random() * 60);
+        lastTimeSeconds = time;
         return {
             string,
             fret,
-            time: Math.round(Math.random() * 60),
+            time,
             note: Midi.NOTE_NAMES[midiNr % 12],
         };
-    });
-    console.log(notes);
+    };
+    let testInterval = setInterval(
+        () => (notes = [...notes, randomNote(performance.now() / 1000)]),
+        500,
+    );
+    $: lastNotes = notes.filter((d) => d.time > lastTimeSeconds - pastSeconds);
 
     const onMidiEnabled = () => {
         midiDevices = [];
@@ -62,104 +79,40 @@
     };
 
     const noteOn = (e) => {
+        console.log('noteon');
+        console.log(testInterval);
+        if (testInterval) {
+            clearInterval(testInterval);
+            testInterval = null;
+            notes = [];
+        }
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const string = e.message.channel - 1;
         const fret = e.note.number - tuningPitches[string];
+        if (fret < 0) {
+            // happens when guitar is out of tune or not tuned to E standard
+            return;
+        }
         const note = {
             number: e.note.number,
             note: Midi.NOTE_NAMES[e.note.number % 12],
             velocity: e.rawVelocity,
-            time: e.timestamp,
+            time: noteInSeconds,
             channel: e.message.channel,
             string,
             fret,
         };
         notes = [...notes, note];
-        draw();
-    };
-
-    const draw = () => {
-        // const data = notes.slice(-pastNoteCount);
-        // const cellSize = (width - 100) / 25;
-        // const plot = Plot.plot({
-        //     width,
-        //     height,
-        //     marginLeft: 60,
-        //     marginBottom: 50,
-        //     padding: 0,
-        //     x: {
-        //         // domain: d3.range(0, fretCount + 1),
-        //         domain: [-1, fretCount + 1.5],
-        //         ticks: d3.range(0, fretCount + 1),
-        //         tickSize: 0,
-        //         label: 'fret',
-        //     },
-        //     y: {
-        //         // domain: d3.range(0, stringCount),
-        //         domain: [stringCount - 0.5, 0.5],
-        //         tickFormat: (d) => tuningNotes[d],
-        //         tickSize: 0,
-        //         label: 'string',
-        //     },
-        //     color: {
-        //         legend: true,
-        //         marginLeft: 100,
-        //         width: 400,
-        //         scheme: 'viridis',
-        //         reverse: true,
-        //         domain: [0, pastNoteCount],
-        //         label: 'note index',
-        //     },
-        //     r: {
-        //         domain: [0, 127],
-        //         range: [0, 5],
-        //     },
-        //     marks: [
-        //         // frets
-        //         Plot.ruleX(d3.range(0, fretCount + 1), {
-        //             stroke: '#ddd',
-        //             dx: cellSize / 2,
-        //         }),
-        //         // strings
-        //         Plot.ruleY(d3.range(0, stringCount), {
-        //             stroke: '#ddd',
-        //             strokeWidth: (d) => Math.sqrt(d + 1),
-        //         }),
-        //         // inlay dots
-        //         Plot.dot([3, 5, 7, 9, 15, 17, 19, 21], {
-        //             x: (d) => d,
-        //             y: 2,
-        //             dy: cellSize / 2,
-        //             fill: '#ddd',
-        //             r: 8,
-        //         }),
-        //         Plot.dot([12, 12, 24, 24], {
-        //             x: (d) => d,
-        //             y: (d, i) => (i % 2 === 0 ? 1 : 3),
-        //             dy: cellSize / 2,
-        //             fill: '#ddd',
-        //             r: 8,
-        //         }),
-        //         // note scatterplot
-        //         Plot.dot(data, {
-        //             x: 'fretJitter',
-        //             y: 'stringJitter',
-        //             // x: (d) => d.fretJitter,
-        //             // y: (d) => d.stringJitter - 1,
-        //             // dy: cellSize / 2,
-        //             fill: (d, i) => i,
-        //             r: 'velocity',
-        //         }),
-        //     ],
-        // });
-        // container.textContent = '';
-        // container.appendChild(plot);
+        lastTimeSeconds = noteInSeconds;
     };
 
     onMount(() => {
         WebMidi.enable()
             .then(onMidiEnabled)
             .catch((err) => alert(err));
-        draw();
     });
 
     onDestroy(() => {
@@ -167,6 +120,7 @@
         for (const input of WebMidi.inputs) {
             input.removeListener();
         }
+        clearInterval(testInterval);
     });
 </script>
 
@@ -177,11 +131,11 @@
         <!-- text with explanation -->
         <a-entity
             text="value: {demoInfo.title}; color: #666; width: 5"
-            position="-1.75 1.8 -1.5"
+            position="-1.75 1.85 -1.5"
             scale=".35 .35 .35"
         ></a-entity>
         <a-entity
-            text="value: Connect a MIDI guitar and start playing. Notes are positioned based on their string (forward), fret (right), and time (up). They are colored by string and labelled with note name and fret number.\n\nGo back in your browser to return to the main page.; color: #666; width: 5"
+            text="value: Connect a MIDI guitar and start playing. Notes are positioned based on their string (forward), fret (right), and time (up). They are colored by string and labelled with note name and fret number.\n\nRandom notes are shown until you play.\n\nGo back in your browser to return to the main page.; color: #666; width: 5"
             position="-2 1.5 -1.5"
             scale=".25 .25 .25"
         ></a-entity>
@@ -246,25 +200,25 @@
                     scale="0.25 0.1 0.25"
                 ></a-sphere>
             {/each}
-            {#each d3.range(0, d3.max(notes, (d) => d.time) + 5, 5) as time}
+            {#each d3.range(roundToStep(firstTimeSeconds, 5), lastTimeSeconds + 1, 5) as time}
                 <!-- time axis -->
                 <a-cylinder
-                    position="{`${fretCount / 2} ${time * timeFactor + 1} -6`}"
+                    position="{`${fretCount / 2} ${scaleTime(time)} -6`}"
                     radius="0.02"
                     height="26"
                     rotation="0 0 90"
                     color="#ccc"
                 ></a-cylinder>
                 <a-entity
-                    text="value: {time}s; color: #666"
-                    position="{`2.5 ${time * timeFactor + 1} -6 `}"
+                    text="value: {time.toFixed()}s; color: #666"
+                    position="{`2.5 ${scaleTime(time)} -6 `}"
                     scale="10 10 10"
                 ></a-entity>
             {/each}
             <!-- notes -->
-            {#each notes as note, index}
+            {#each lastNotes as note}
                 <a-box
-                    position="{`${note.fret - 0.3} ${note.time * timeFactor + 1} ${note.string - 5}`}"
+                    position="{`${note.fret - 0.3} ${scaleTime(note.time)} ${note.string - 5}`}"
                     color="{stringColors[stringCount - note.string - 1]}"
                     opacity="0.5"
                     width="0.4"

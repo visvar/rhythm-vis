@@ -36,6 +36,9 @@
     };
 
     const noteOn = (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
             // ...e.note,
@@ -192,7 +195,6 @@
         WebMidi.enable()
             .then(onMidiEnabled)
             .catch((err) => alert(err));
-        firstTimeStamp = performance.now();
         draw();
     });
 

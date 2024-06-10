@@ -9,6 +9,7 @@
     import ImportButton from './common/import-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import PcKeyboardInput from './common/pc-keyboard-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -252,6 +253,10 @@
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>
+    <PcKeyboardInput
+        key=" "
+        callback="{() => noteOn({ timestamp: performance.now() })}"
+    />
 </main>
 
 <style>

@@ -80,3 +80,23 @@ export function setHasAny(set, values) {
   }
   return false
 }
+
+/**
+ * Rounds a number to a certain steps, e.g., to multiples of 5
+ * @param {number} value a number
+ * @param {number} step a step
+ * @returns {number} rounded number
+ */
+export function roundToStep(value, step) {
+  return Math.round(value / step) * step
+}
+
+/**
+ * Floors a number to a certain step, e.g., to multiples of 5
+ * @param {number} value a number
+ * @param {number} step a step
+ * @returns {number} rounded number
+ */
+export function floorToStep(value, step) {
+  return Math.round(value / step) * step
+}

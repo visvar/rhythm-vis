@@ -7,7 +7,6 @@
     import { PitchDetector } from 'pitchy';
     import { Midi, Note } from '@tonaljs/tonal';
     import * as d3 from 'd3';
-    import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
     import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
@@ -25,12 +24,10 @@
     const waitTime = 16;
     // settings
     let pastTime = 10;
-    let ignoreOctave = true;
     let minVolumeDecibels = -25;
     // data
     let firstTimeStamp = 0;
     let bendValues = [];
-    let lastValidPitch = 0;
 
     function updatePitch(input, sampleRate) {
         analyserNode.getFloatTimeDomainData(input);
@@ -61,17 +58,6 @@
         container.textContent = '';
         const now = (performance.now() - firstTimeStamp) / 1000;
         const minTime = now - pastTime;
-        // plot pitch as MIDI number
-        const lastSecond = 1000 / waitTime;
-        let medianOfLast = Math.round(
-            d3.median(bendValues.slice(-lastSecond), (d) => d.actualMidi),
-        );
-        // make sure we keep a valid number
-        if (isNaN(medianOfLast)) {
-            medianOfLast = lastValidPitch;
-        } else {
-            lastValidPitch = medianOfLast;
-        }
         const plot2 = Plot.plot({
             width,
             height,
@@ -83,23 +69,22 @@
                 label: 'time in seconds',
             },
             y: {
-                domain: ignoreOctave
-                    ? [0, 12]
-                    : [medianOfLast - 5, medianOfLast + 5],
-                label: ignoreOctave ? 'chroma' : 'pitch',
-                tickFormat: (d) =>
-                    Math.floor(d) === d
-                        ? Midi.midiToNoteName(d, {
-                              pitchClass: ignoreOctave,
-                              sharps: true,
-                          })
-                        : '',
+                domain: [-50, 50],
+                label: 'offset in cents',
                 grid: true,
             },
             marks: [
+                Plot.ruleY([0]),
                 Plot.line(bendValues, {
                     x: 'time',
-                    y: ignoreOctave ? 'actualMidiChroma' : 'actualMidi',
+                    y: 'centsOffset',
+                    clip: true,
+                    // smooth a bit
+                    curve: 'basis',
+                }),
+                Plot.line(bendValues, {
+                    x: 'time',
+                    y: 'centsOffset',
                     clip: true,
                     // smooth a bit
                     curve: 'basis',
@@ -117,7 +102,6 @@
             pastTime,
             firstTimeStamp,
             minVolumeDecibels,
-            ignoreOctave,
             bendValues,
         };
         downloadJsonFile(demoInfo.id, data);
@@ -136,7 +120,6 @@
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;
             minVolumeDecibels = json.minVolumeDecibels;
-            ignoreOctave = json.ignoreOctave ?? false;
             bendValues = json.bendValues;
             draw();
         }
@@ -168,6 +151,13 @@
         Allow microphone access and play pitch bends or vibratos. The line chart
         below shows how far you bend up and down over time.
     </p>
+    {#if bendValues.length > 0}
+        <p>
+            Current closest note: {Midi.midiToNoteName(
+                bendValues.at(-1).noteMidi,
+            )}
+        </p>
+    {/if}
     <div class="control">
         <label>
             past seconds
@@ -193,14 +183,6 @@
                 step="5"
             />
         </label>
-        <button
-            title="When ignoring the octave, the lower visualization will only show the note's chroma from C to B"
-            on:click="{() => {
-                ignoreOctave = !ignoreOctave;
-            }}"
-        >
-            octave {!ignoreOctave ? toggleOnIcon : toggleOffIcon}
-        </button>
         <button
             title="Press this button if your browser prevents audio access because there needs to be a user interaction first"
             on:click="{() => audioContext.resume()}"

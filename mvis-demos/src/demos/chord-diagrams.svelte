@@ -43,15 +43,18 @@
     };
 
     const noteOn = (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const string = e.message.channel - 1;
         const note = {
+            time: noteInSeconds,
             number: e.note.number,
             velocity: e.rawVelocity,
-            time: noteInSeconds,
-            channel: e.message.channel,
             string,
             fret: e.note.number - tuningPitches[string],
+            channel: e.message.channel,
         };
         notes.push(note);
         draw();
@@ -221,7 +224,6 @@
         WebMidi.enable()
             .then(onMidiEnabled)
             .catch((err) => alert(err));
-        firstTimeStamp = performance.now();
         draw();
     });
 

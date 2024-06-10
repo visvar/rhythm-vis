@@ -22,9 +22,6 @@
     let tempo = 120;
     let pastNoteCount = 10;
     let useDotted = true;
-    // colors
-    const orange = d3.schemeObservable10[1];
-    const blue = d3.schemeObservable10[0];
     // data
     let firstTimeStamp = 0;
     let notes = [];
@@ -73,7 +70,7 @@
         {
             name: 'quarter-triplet',
             beats: 1 / 3,
-            symbol: 'trp',
+            symbol: 't',
         },
         {
             name: 'dotted-eighth',
@@ -124,9 +121,6 @@
     };
 
     const noteOn = async (e) => {
-        if (notes.length === 0) {
-            firstTimeStamp = e.timestamp;
-        }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = noteInSeconds;
         notes.push(note);
@@ -145,7 +139,7 @@
         const sliced = notes.slice(-(pastNoteCount + 1));
         const deltas = sliced.map((d, i) => (i === 0 ? 0 : d - sliced[i - 1]));
         const inBeats = deltas.map((d) => d / quarter);
-        // use dotted notes or not?
+
         const poss = useDotted ? possibilities : possibilitiesNonDotted;
         const bestFit = inBeats.map((delta) => {
             const bestIndex = d3.minIndex(poss, (d) =>
@@ -172,7 +166,7 @@
             y: {
                 domain: [1, 0],
                 ticks: d3.range(3),
-                tickFormat: (d) => ['note', 'percent too long'][d],
+                tickFormat: (d) => ['note', '% offset'][d],
             },
             marks: [
                 Plot.text(bestFit, {
@@ -201,7 +195,7 @@
         // plot
         const plot2 = Plot.plot({
             width,
-            height: 250,
+            height: 200,
             marginLeft: 80,
             x: {
                 label: 'Note',
@@ -210,19 +204,17 @@
                 ticks: [],
             },
             y: {
-                label: 'percent too long',
-                domain: [-30, 30],
-                ticks: d3.range(-30, 31, 10),
-                grid: true,
+                domain: [0, 150],
+                ticks: [0, 50, 100, 150],
             },
             marks: [
                 Plot.barY(bestFit, {
                     x: (d, i) => i,
-                    y: (d) => d.offsetPercent - 100,
-                    fill: (d) => (d.offsetPercent < 100 ? orange : blue),
+                    y: 'offsetPercent',
+                    fill: '#ddd',
                 }),
-                // Plot.ruleY(d3.range(-30, 31, 10), { stroke: '#aaa' }),
-                Plot.ruleY([0]),
+                Plot.ruleY([50, 150], { stroke: '#aaa' }),
+                Plot.ruleY([100]),
             ],
         });
         container.appendChild(plot2);
@@ -248,13 +240,7 @@
     <p class="explanation">
         Set a tempo and start playing. The time between the notes you play will
         be displayed as note symbols, so you can see whether you play, for
-        example, correct quarter notes. Numbers show you how many percent of the
-        detected note duration you played, for example a -5 means your note was
-        5% too short. Bars below show you these percent as well, <span
-            style="color:{blue}">blue</span
-        >
-        for notes that were too long (playing too slow) and
-        <span style="color:{orange}">orange</span> for short (fast) ones.
+        example, correct quarter notes.
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />

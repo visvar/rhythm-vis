@@ -11,6 +11,7 @@
     import ImportButton from './common/import-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
     import { parseJsonFile } from '../lib/json.js';
+    import PcKeyboardInput from './common/pc-keyboard-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -31,7 +32,7 @@
     // data
     let currentStep = '';
     let currentTempo = targetTempo;
-    let firstTimeStamp = 0;
+    let firstTimeStamp = performance.now();
     let exerciseNotes = [];
     let exerciseBeatCount;
     // Map bpm->notes
@@ -234,7 +235,6 @@
         WebMidi.enable()
             .then(onMidiEnabled)
             .catch((err) => alert(err));
-        firstTimeStamp = performance.now();
         draw();
     });
 
@@ -438,4 +438,8 @@
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>
+    <PcKeyboardInput
+        key=" "
+        callback="{() => noteOn({ timestamp: performance.now() })}"
+    />
 </main>

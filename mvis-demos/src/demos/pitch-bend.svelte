@@ -37,6 +37,9 @@
     };
 
     const pitchBend = (e) => {
+        if (bendValues.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const bend = {
             value: e.value,
@@ -119,7 +122,6 @@
         WebMidi.enable()
             .then(onMidiEnabled)
             .catch((err) => alert(err));
-        firstTimeStamp = performance.now();
         draw();
     });
 
