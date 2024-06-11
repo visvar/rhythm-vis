@@ -1,6 +1,5 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Utils } from 'musicvis-lib';
@@ -12,6 +11,7 @@
     import TempoInput from './common/tempo-input.svelte';
     import { parseJsonFile } from '../lib/json.js';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -21,7 +21,6 @@
     let width = 1000;
     let height = 60;
     let container;
-    let midiDevices = [];
     let metro = new Metronome();
     // settings
     let initialTempo = 60;
@@ -39,19 +38,6 @@
     let practiceRecordings = new Map();
     let ready = true;
     let tempoStepWatcher;
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = async (e) => {
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
@@ -231,18 +217,9 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
+    onMount(draw);
 
     onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
         clearInterval(tempoStepWatcher);
         metro.stop();
     });
@@ -442,4 +419,5 @@
         key=" "
         callback="{() => noteOn({ timestamp: performance.now() })}"
     />
+    <MidiInput {noteOn} />
 </main>

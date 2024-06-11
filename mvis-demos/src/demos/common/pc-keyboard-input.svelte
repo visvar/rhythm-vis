@@ -1,4 +1,7 @@
 <script>
+    /**
+     * This component handles keyboard input and takes care of setting up and destroying event listeners
+     */
     import { onDestroy, onMount } from 'svelte';
 
     export let key = ' ';

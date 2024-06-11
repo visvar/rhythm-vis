@@ -6,7 +6,6 @@
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import { PitchDetector } from 'pitchy';
     import { Midi, Note } from '@tonaljs/tonal';
-    import * as d3 from 'd3';
     import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**

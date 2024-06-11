@@ -1,10 +1,10 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Midi } from 'musicvis-lib';
     import { Note } from '@tonaljs/tonal';
+    import MidiInput from '../demos/common/midi-input.svelte';
 
     export let toolInfo;
     let width = 1000;
@@ -13,7 +13,6 @@
     // E standard tuning, strings start at high E
     let tuningPitches = [64, 59, 55, 50, 45, 40];
     let container;
-    let midiDevices = [];
     // settings
     let pastSeconds = 30;
     let colorMap = 'velocity';
@@ -23,20 +22,6 @@
     let notes = [];
     let openNoteMap = new Map();
     let currentAniFrame = null;
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-                device.addListener('noteoff', noteOff);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
@@ -174,18 +159,11 @@
     };
 
     onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
         firstTimeStamp = performance.now();
         currentAniFrame = requestAnimationFrame(draw);
     });
 
     onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
         cancelAnimationFrame(currentAniFrame);
     });
 </script>
@@ -233,4 +211,5 @@
             reset
         </button>
     </div>
+    <MidiInput {noteOn} {noteOff} />
 </main>

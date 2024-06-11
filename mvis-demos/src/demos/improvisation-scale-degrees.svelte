@@ -1,6 +1,5 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Scale } from '@tonaljs/tonal';
@@ -10,6 +9,7 @@
     import ImportButton from './common/import-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -19,7 +19,6 @@
     let width = 1000;
     let height = 650;
     let container;
-    let midiDevices = [];
     // settings
     let root = 'A';
     let scale = 'minor pentatonic';
@@ -30,19 +29,6 @@
     // domain knowledge
     const noteNames = Midi.NOTE_NAMES_FLAT;
     const scales = Scale.names();
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         const note = {
@@ -169,27 +155,14 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI instrument (currently {midiDevices.length} connected) and
-        start playing. The bar chart below shows how often you played each scale
-        degree.
+        Connect a MIDI instrument and start playing. The bar chart below shows
+        how often you played each scale degree.
     </p>
     <div class="control">
         <label>
@@ -244,6 +217,7 @@
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>
+    <MidiInput {noteOn} />
 </main>
 
 <style>

@@ -1,6 +1,5 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
@@ -8,6 +7,7 @@
     import ImportButton from './common/import-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -17,7 +17,6 @@
     let width = 1000;
     let height = 650;
     let container;
-    let midiDevices = [];
     // settings
     let filterUnison = true;
     let useColors = false;
@@ -43,19 +42,6 @@
         { semitones: 11, name: 'Major 7th', short: 'M7', type: 'major' },
         { semitones: 12, name: 'Perfect 8ve', short: 'P8', type: 'perfect' },
     ];
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         const note = {
@@ -163,30 +149,18 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI instrument (currently {midiDevices.length} connected) and
-        start playing. The bar chart below shows how often you played each interval:
-        when you go up in pitch, the bar of the played interval in the top half will
-        increase. If you go down, it will show up in the bottom half. Colors denote
-        the type of interval, so you can quickly see if you play, for example, more
-        major or minor intervals.
+        Connect a MIDI instrument and start playing. The bar chart below shows
+        how often you played each interval: when you go up in pitch, the bar of
+        the played interval in the top half will increase. If you go down, it
+        will show up in the bottom half. Colors denote the type of interval, so
+        you can quickly see if you play, for example, more major or minor
+        intervals.
     </p>
     <div class="control">
         <button
@@ -234,6 +208,7 @@
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>
+    <MidiInput {noteOn} />
 </main>
 
 <style>

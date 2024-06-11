@@ -1,12 +1,12 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import * as Plot from '@observablehq/plot';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
     import ExportButton from './common/export-button.svelte';
     import ImportButton from './common/import-button.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -16,7 +16,6 @@
     let width = 1000;
     let height = 600;
     let container;
-    let midiDevices = [];
     // see https://en.wikipedia.org/wiki/Dynamics_(music)
     // TODO: move to mvlib
     const velocitiesLogic = new Map([
@@ -64,20 +63,6 @@
     let barLimit = 50;
     // data
     let noteVelocities = [];
-
-    const onMidiEnabled = () => {
-        console.log('MIDI enabled');
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         noteVelocities.push(e.rawVelocity);
@@ -149,27 +134,14 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI instrument (currently {midiDevices.length} connected) and
-        start playing. The loudness of each note will be shown as a bar. Bar heights
-        are either exact or rounded to the
+        Connect a MIDI instrument and start playing. The loudness of each note
+        will be shown as a bar. Bar heights are either exact or rounded to the
         <a href="https://en.wikipedia.org/wiki/Dynamics_(music)"
             >closest rough dynamics</a
         >, for example a forte.
@@ -203,6 +175,7 @@
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>
+    <MidiInput {noteOn} />
 </main>
 
 <style>

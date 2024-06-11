@@ -1,31 +1,16 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import { Chord, Note } from '@tonaljs/tonal';
+    import MidiInput from '../demos/common/midi-input.svelte';
 
     export let toolInfo;
-
-    let midiDevices = [];
 
     // data
     let firstTimeStamp = 0;
     let notes = [];
     let chordNotes = [];
     let chord = [];
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         if (notes.length === 0) {
@@ -57,19 +42,7 @@
         chord = Chord.detect(chordNotes);
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
@@ -82,4 +55,5 @@
         Notes: <b>{chordNotes.join(', ')}</b><br />
         Detected chord: <b>{chord.join(' or ')}</b>
     </div>
+    <MidiInput {noteOn} />
 </main>

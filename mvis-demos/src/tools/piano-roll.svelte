@@ -1,16 +1,15 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Midi } from 'musicvis-lib';
     import { getCs } from '../lib/lib';
+    import MidiInput from '../demos/common/midi-input.svelte';
 
     export let toolInfo;
     let width = 1000;
     let height = 500;
     let container;
-    let midiDevices = [];
     // settings
     let pastSeconds = 30;
     let colorMap = 'velocity';
@@ -20,20 +19,6 @@
     let notes = [];
     const openNoteMap = new Map();
     let currentAniFrame = null;
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-                device.addListener('noteoff', noteOff);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
@@ -61,6 +46,14 @@
             const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
             note.end = noteInSeconds;
         }
+    };
+
+    /**
+     * Allow controlling vis with a MIDI knob
+     * @param e MIDI controllchange event
+     */
+    const controlChange = (e) => {
+        pastSeconds = e.value * 55 + 5;
     };
 
     const draw = () => {
@@ -150,18 +143,11 @@
     };
 
     onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
         firstTimeStamp = performance.now();
         currentAniFrame = requestAnimationFrame(draw);
     });
 
     onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
         cancelAnimationFrame(currentAniFrame);
     });
 </script>
@@ -208,4 +194,5 @@
             reset
         </button>
     </div>
+    <MidiInput {noteOn} {noteOff} {controlChange} />
 </main>

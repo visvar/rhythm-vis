@@ -1,6 +1,5 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Scale } from '@tonaljs/tonal';
@@ -10,6 +9,7 @@
     import ImportButton from './common/import-button.svelte';
     import NoteCountInput from './common/note-count-input.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -19,7 +19,6 @@
     let width = 1200;
     let height = 280;
     let container;
-    let midiDevices = [];
     // settings
     let root = 'A';
     let pastNoteCount = 50;
@@ -27,21 +26,6 @@
     let notes = [];
     let firstTimeStamp;
     let openNoteMap = new Map();
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-                device.addListener('noteoff', noteOff);
-                device.addListener('controlchange', controlChange);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         if (notes.length === 0) {
@@ -175,19 +159,7 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
@@ -224,4 +196,5 @@
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>
+    <MidiInput {noteOn} {noteOff} {controlChange} />
 </main>

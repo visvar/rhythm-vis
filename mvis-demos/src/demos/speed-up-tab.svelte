@@ -1,6 +1,5 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Utils } from 'musicvis-lib';
@@ -12,6 +11,7 @@
     import ImportButton from './common/import-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
     import { parseJsonFile } from '../lib/json.js';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -21,7 +21,6 @@
     let width = 1000;
     let height = 150;
     let container;
-    let midiDevices = [];
     let metro = new Metronome();
     let ready = true;
     let tempoStepWatcher;
@@ -43,19 +42,6 @@
     // E standard tuning, strings start at high E
     let tuningPitches = [64, 59, 55, 50, 45, 40];
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = async (e) => {
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
@@ -278,18 +264,9 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
+    onMount(draw);
 
     onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
         clearInterval(tempoStepWatcher);
         metro.stop();
     });
@@ -495,4 +472,5 @@
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
     </div>
+    <MidiInput {noteOn} />
 </main>

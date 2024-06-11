@@ -1,11 +1,11 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
     import NoteCountInput from './common/note-count-input.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -20,25 +20,11 @@
     let tuningPitches = [64, 59, 55, 50, 45, 40];
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
     let container;
-    let midiDevices = [];
     // settings
     let pastNoteCount = 200;
     // data
     let firstTimeStamp = 0;
     let notes = [];
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         if (notes.length === 0) {
@@ -134,19 +120,7 @@
         container.appendChild(plot);
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
@@ -164,4 +138,5 @@
         <!-- <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" /> -->
     </div>
+    <MidiInput {noteOn} />
 </main>

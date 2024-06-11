@@ -1,6 +1,5 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import { Utils } from 'musicvis-lib';
     import * as Plot from '@observablehq/plot';
     import * as kde from 'fast-kde';
@@ -14,6 +13,7 @@
     import { BIN_NOTES, GRIDS } from '../lib/music';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import InsideTextButton from './common/inside-text-button.svelte';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -21,7 +21,6 @@
     export let demoInfo;
 
     let width = 1000;
-    let midiDevices = [];
     let containerLeft;
     let containerRight;
     // settings
@@ -35,19 +34,6 @@
     // data
     let firstTimeStamp = 0;
     let notes = [];
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         if (notes.length === 0) {
@@ -187,19 +173,7 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
@@ -295,6 +269,7 @@
         callback="{() =>
             noteOn({ timestamp: performance.now(), note: { number: 127 } })}"
     />
+    <MidiInput {noteOn} />
 </main>
 
 <style>

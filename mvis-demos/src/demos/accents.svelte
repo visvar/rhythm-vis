@@ -1,6 +1,5 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Utils } from 'musicvis-lib';
@@ -9,6 +8,7 @@
     import TempoInput from './common/tempo-input.svelte';
     import NoteCountInput from './common/note-count-input.svelte';
     import { noteDurations } from '../lib/note-durations.js';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -17,7 +17,6 @@
 
     let width = 1000;
     let container;
-    let midiDevices = [];
     // settings
     let tempo = 120;
     let pastNoteCount = 12;
@@ -29,19 +28,6 @@
     // 𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯
     const possibilities = noteDurations;
     const possibilitiesNonDotted = possibilities.filter((d) => !d.dotted);
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = async (e) => {
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
@@ -87,9 +73,6 @@
                 offsetPercent: ((delta.delta / best.beats) * 100).toFixed(),
             };
         });
-
-        console.log(bestFit);
-
         // plot
         const plot = Plot.plot({
             width,
@@ -126,19 +109,7 @@
         container.appendChild(plot2);
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
@@ -190,6 +161,7 @@
         </button>
         <MetronomeButton {tempo} accent="{4}" />
     </div>
+    <MidiInput {noteOn} />
 </main>
 
 <style>

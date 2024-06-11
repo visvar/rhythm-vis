@@ -1,43 +1,21 @@
 <script>
     import { Note } from '@tonaljs/tonal';
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
+    import MidiInput from '../demos/common/midi-input.svelte';
 
     export let toolInfo;
-    let midiDevices = [];
 
     // data
     let firstTimeStamp = 0;
     let messages = [];
 
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('midimessage', (e) => {
-                    messages = [e, ...messages];
-                    console.log(e);
-                });
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
+    const midiMessage = (e) => {
+        messages = [e, ...messages];
+        console.log(e);
     };
 
     onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
         firstTimeStamp = performance.now();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
     });
 </script>
 
@@ -94,6 +72,7 @@
             </tbody>
         </table>
     </div>
+    <MidiInput {midiMessage} />
 </main>
 
 <style>

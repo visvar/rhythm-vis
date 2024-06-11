@@ -1,12 +1,12 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onDestroy } from 'svelte';
     import * as d3 from 'd3';
     import { Note } from '@tonaljs/tonal';
     import 'aframe';
     import 'aframe-svelte';
     import { Midi } from 'musicvis-lib';
     import { roundToStep } from '../lib/lib';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * TODO:#
@@ -32,10 +32,9 @@
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
     // const stringColors = tuningNotes.map(()=>'#aaa')
     const stringColors = d3.schemeObservable10;
-    let midiDevices = [];
     // settings
-    const timeFactor = 0.5;
-    const pastSeconds = 60;
+    let timeFactor = 0.5;
+    let pastSeconds = 60;
     // data
     let firstTimeStamp = 0;
     let lastTimeSeconds = 60;
@@ -64,19 +63,6 @@
         500,
     );
     $: lastNotes = notes.filter((d) => d.time > lastTimeSeconds - pastSeconds);
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         console.log('noteon');
@@ -109,17 +95,26 @@
         lastTimeSeconds = noteInSeconds;
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-    });
+    /**
+     * Allow controlling vis with a MIDI knob
+     * @param e MIDI controllchange event
+     */
+    /**
+     * Allow controlling vis with a MIDI knob
+     * @param e MIDI controllchange event
+     */
+    const controlChange = (e) => {
+        const c = e.controller.number;
+        if (c === 14) {
+            // time scaling
+            timeFactor = e.value;
+        } else if (c === 15) {
+            // past seconds
+            pastSeconds = e.value * 120;
+        }
+    };
 
     onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
         clearInterval(testInterval);
     });
 </script>
@@ -234,4 +229,5 @@
             {/each}
         </a-box>
     </a-scene>
+    <MidiInput {noteOn} {controlChange} />
 </main>

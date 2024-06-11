@@ -1,6 +1,5 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import { Utils } from 'musicvis-lib';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
@@ -10,6 +9,7 @@
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -19,7 +19,6 @@
     let width = 1000;
     let height = 750;
     let container;
-    let midiDevices = [];
     // settings
     let tempo = 120;
     let binNote = 64;
@@ -29,19 +28,6 @@
     let firstTimeStamp = 0;
     let noteOnTimes = [];
     let estimatedTempo = 0;
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         if (noteOnTimes.length === 0) {
@@ -154,31 +140,19 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI instrument (currently {midiDevices.length} connected), choose
-        your tempo, and start playing. The time between two note onsets will be shown
-        as a bar, so you can see how well you still hit, for example, quarter notes
-        after playing for some time. Bar heights are either exact or rounded to the
-        closest, for example, 64th note (binning dropdown). You can filter very short
-        inter-note times, which happen whan playing two notes at roughly the same
-        time as in a chord.
+        Connect a MIDI instrument, choose your tempo, and start playing. The
+        time between two note onsets will be shown as a bar, so you can see how
+        well you still hit, for example, quarter notes after playing for some
+        time. Bar heights are either exact or rounded to the closest, for
+        example, 64th note (binning dropdown). You can filter very short
+        inter-note times, which happen whan playing two notes at roughly the
+        same time as in a chord.
     </p>
     <p class="explanation">
         One possible exercise is trying to play at a given tempo without any
@@ -257,6 +231,7 @@
         key=" "
         callback="{() => noteOn({ timestamp: performance.now() })}"
     />
+    <MidiInput {noteOn} />
 </main>
 
 <style>

@@ -1,6 +1,5 @@
 <script>
-    import { onDestroy, onMount } from 'svelte';
-    import { WebMidi } from 'webmidi';
+    import { onMount } from 'svelte';
     import { Canvas, Utils } from 'musicvis-lib';
     import * as kde from 'fast-kde';
     import * as d3 from 'd3';
@@ -13,6 +12,7 @@
     import { clamp } from '../lib/lib';
     import { BIN_NOTES, GRIDS } from '../lib/music';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
+    import MidiInput from './common/midi-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -24,7 +24,6 @@
     let canvas;
     let width = 1000;
     let height = 1000;
-    let midiDevices = [];
     // settings
     let tempo = 120;
     let grid = GRIDS[0];
@@ -34,20 +33,6 @@
     // data
     let firstTimeStamp = 0;
     let noteOnTimes = [];
-
-    const onMidiEnabled = () => {
-        midiDevices = [];
-        if (WebMidi.inputs.length < 1) {
-            console.warn('No MIDI device detected');
-        } else {
-            WebMidi.inputs.forEach((device, index) => {
-                console.log(`MIDI device ${index}: ${device.name}`);
-                device.addListener('noteon', noteOn);
-                device.addListener('controlchange', controlChange);
-            });
-            midiDevices = [...WebMidi.inputs];
-        }
-    };
 
     const noteOn = (e) => {
         if (noteOnTimes.length === 0) {
@@ -308,32 +293,20 @@
         }
     };
 
-    onMount(() => {
-        WebMidi.enable()
-            .then(onMidiEnabled)
-            .catch((err) => alert(err));
-        draw();
-    });
-
-    onDestroy(() => {
-        // remove MIDI listeners to avoid duplicate calls and improve performance
-        for (const input of WebMidi.inputs) {
-            input.removeListener();
-        }
-    });
+    onMount(draw);
 </script>
 
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI instrument (currently {midiDevices.length} connected), choose
-        your tempo and subdivision, and start playing. The bar chart will show you
-        how often you hit each time bin and the notes will be shown as ticks, one
-        layer per bar. You can play freely, use the integrated metronome, or play
-        a song in the background (in another tab). Light gray wedges show if you
-        stayed within on bin size of your defined timing grid. All notes will be
-        timed relative to the first one, but you can adjust all notes to make them
-        earlier or later in case you messed up the first one.
+        Connect a MIDI instrument, choose your tempo and subdivision, and start
+        playing. The bar chart will show you how often you hit each time bin and
+        the notes will be shown as ticks, one layer per bar. You can play
+        freely, use the integrated metronome, or play a song in the background
+        (in another tab). Light gray wedges show if you stayed within on bin
+        size of your defined timing grid. All notes will be timed relative to
+        the first one, but you can adjust all notes to make them earlier or
+        later in case you messed up the first one.
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
@@ -395,4 +368,5 @@
         key=" "
         callback="{() => noteOn({ timestamp: performance.now() })}"
     />
+    <MidiInput {noteOn} {controlChange} />
 </main>
