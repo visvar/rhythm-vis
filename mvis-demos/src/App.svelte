@@ -5,38 +5,39 @@
     localStorageGetUsageData,
     localStorageReport,
   } from './lib/localstorage';
+  import { audioIcon, midiIcon } from './lib/icons';
   import saveAs from 'file-saver';
-  // tools
+  import SkillTree from './SkillTree.svelte';
+  // tools etc
   import Tools from './tools/_tools.svelte';
+  import Settings from './Settings.svelte';
+  import DemoOverview from './DemoOverview.svelte';
   // demos
-  import SubDivision from './demos/sub-division.svelte';
-  import TempoDrift from './demos/tempo-drift.svelte';
-  import Dynamics from './demos/dynamics.svelte';
-  import ImprovisationIntervals from './demos/improvisation-intervals.svelte';
-  import ImprovisationScaleDegrees from './demos/improvisation-scale-degrees.svelte';
-  import FretboardHeatmap from './demos/fretboard-heatmap.svelte';
+  import Accents from './demos/accents.svelte';
   import ChordArpeggioTiming from './demos/chord-arpeggio-timing.svelte';
-  import KeyboardHistogram from './demos/keyboard-histogram.svelte';
-  import FretboardImprovisationIntervals from './demos/fretboard-improvisation-intervals.svelte';
-  import SpeedUp from './demos/speed-up.svelte';
-  import RhythmSheetMusic from './demos/rhythm-sheet-music.svelte';
   import ChordDiagrams from './demos/chord-diagrams.svelte';
-  import PitchBend from './demos/pitch-bend.svelte';
-  import SpeedUpTab from './demos/speed-up-tab.svelte';
-  import ImprovisationScaleDegreesBar from './demos/improvisation-scale-degrees-bar.svelte';
-  import PitchBendAudio from './demos/pitch-bend-audio.svelte';
-  import ImprovisationNoteColors from './demos/improvisation-note-colors.svelte';
-  import SubDivisionBar from './demos/sub-division-bar.svelte';
-  import SubDivisionLinear from './demos/sub-division-linear.svelte';
+  import Dynamics from './demos/dynamics.svelte';
+  import FretboardHeatmap from './demos/fretboard-heatmap.svelte';
+  import FretboardImprovisationIntervals from './demos/fretboard-improvisation-intervals.svelte';
   import FretboardJitter from './demos/fretboard-jitter.svelte';
   import FretboardSpacetimeCube from './demos/fretboard-spacetime-cube.svelte';
+  import ImprovisationIntervals from './demos/improvisation-intervals.svelte';
+  import ImprovisationNoteColors from './demos/improvisation-note-colors.svelte';
+  import ImprovisationScaleDegrees from './demos/improvisation-scale-degrees.svelte';
+  import ImprovisationScaleDegreesBar from './demos/improvisation-scale-degrees-bar.svelte';
+  import KeyboardHistogram from './demos/keyboard-histogram.svelte';
+  import PitchBend from './demos/pitch-bend.svelte';
+  import PitchBendAudio from './demos/pitch-bend-audio.svelte';
   import PitchOffsetCents from './demos/pitch-offset-cents.svelte';
-  import Accents from './demos/accents.svelte';
-  import Settings from './Settings.svelte';
-  import SkillTree from './SkillTree.svelte';
-  import { audioIcon, midiIcon } from './lib/icons';
+  import RhythmSheetMusic from './demos/rhythm-sheet-music.svelte';
+  import SpeedUp from './demos/speed-up.svelte';
+  import SpeedUpTab from './demos/speed-up-tab.svelte';
   import StrummingPattern from './demos/strumming-pattern.svelte';
-  import DemoOverview from './DemoOverview.svelte';
+  import SubDivision from './demos/sub-division.svelte';
+  import SubDivisionBar from './demos/sub-division-bar.svelte';
+  import SubDivisionLinear from './demos/sub-division-linear.svelte';
+  import TempoDrift from './demos/tempo-drift.svelte';
+  import TwoHandedTiming from './demos/two-handed-timing.svelte';
 
   /**
    * All demos defined here
@@ -149,7 +150,7 @@
     },
     {
       id: 'improvisation-scale-degrees-bar',
-      title: 'Improvisation Scale Degrees (Per Bar)',
+      title: 'Improvisation Scale Degrees (Bar)',
       description:
         'See how often you use different scale degrees in improvisation, for each played bar.',
       input: 'MIDI',
@@ -199,7 +200,7 @@
       description:
         'This demo displays the notes you play as staff notation (𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯) and offset in percent.',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard', 'key'],
+      instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
       skills: ['sub-division'],
       component: RhythmSheetMusic,
     },
@@ -209,7 +210,7 @@
       description:
         'Record a short exercise at a slow tempo, then practice it with steadily increasing tempo.',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard', 'key'],
+      instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
       skills: ['sub-division', 'timing-consistency'],
       component: SpeedUp,
     },
@@ -228,7 +229,7 @@
       title: 'Sub-Division',
       description: 'Learn rhythmic playing in different sub-divisions.',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard', 'key'],
+      instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
       skills: ['sub-division', 'timing-consistency'],
       component: SubDivision,
     },
@@ -237,7 +238,7 @@
       title: 'Sub-Division (Per Bar)',
       description: 'Learn rhythmic playing in different sub-divisions.',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard', 'key'],
+      instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
       skills: ['sub-division', 'timing-consistency'],
       component: SubDivisionBar,
     },
@@ -246,7 +247,7 @@
       title: 'Sub-Division (Linear)',
       description: 'Learn rhythmic playing in different sub-divisions.',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard', 'key'],
+      instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
       skills: ['sub-division', 'timing-consistency'],
       component: SubDivisionLinear,
     },
@@ -264,9 +265,19 @@
       title: 'Tempo Drift',
       description: 'Keep your tempo constant over a longer stretch of playing.',
       input: 'MIDI',
-      instruments: ['drum', 'guitar/bass', 'keyboard', 'key'],
+      instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
       skills: ['tempo-keeping'],
       component: TempoDrift,
+    },
+    {
+      id: 'two-handed-timing',
+      title: '[new] Two-Handed Timing',
+      description:
+        'Play the same or a different rhythm with each hand and see your timing seperately.',
+      input: 'MIDI',
+      instruments: ['keyboard', 'pc-key'],
+      skills: ['sub-division', 'timing-consistency'],
+      component: TwoHandedTiming,
     },
   ];
 
@@ -350,6 +361,15 @@
     >
       ☰ demos
     </button>
+    <!-- DemoOverview page button -->
+    <button
+      on:click="{() => {
+        currentDemo = 'overview';
+        setUrlParam(window, 'd', 'overview');
+      }}"
+    >
+      ☰ overview
+    </button>
     <!-- Tools page button -->
     <button
       on:click="{() => {
@@ -377,10 +397,8 @@
     <p class="explanation">
       This page contains a collection of small tools (demos) that are each
       tailored to a specific musical skill and sometimes also specific kind of
-      musical data. You can filter demos with the bottuns below. Click a button
-      to toggle it, double click it to turn it on and all others of the same
-      kind off. A demo will only be shown if it supports at least one of the
-      active attributes.
+      musical data. You can filter demos by different aspects with the sidebar
+      on the left.
     </p>
 
     <div class="grid-filter-demo">
@@ -412,6 +430,7 @@
                 (currentInstruments = updSet(currentInstruments, d))}"
               on:dblclick="{() => (currentInstruments = new Set([d]))}"
               class="{currentInstruments.has(d) ? 'active' : 'hidden'}"
+              title="click to toggle, double-click to only show this"
             >
               {d}
             </button>
@@ -431,6 +450,7 @@
               on:click="{() => (currentInputs = updSet(currentInputs, d))}"
               on:dblclick="{() => (currentInputs = new Set([d]))}"
               class="{currentInputs.has(d) ? 'active' : 'hidden'}"
+              title="click to toggle, double-click to only show this"
             >
               {d}
             </button>
@@ -465,7 +485,7 @@
               {demo.instruments.includes('wind') ? '🪈' : ''}
               {demo.instruments.includes('singing') ? '🎤' : ''}
               {demo.instruments.includes('strings') ? '🎻' : ''}
-              {demo.instruments.includes('key') ? '⌨️' : ''}
+              {demo.instruments.includes('pc-key') ? '⌨️' : ''}
             </div>
           </div>
         {/each}
@@ -488,11 +508,12 @@
     <Tools bind:currentTool />
   {:else if currentDemo === 'settings'}
     <Settings />
+  {:else if currentDemo === 'overview'}
+    <DemoOverview demos="{DEMOS}" {allInstruments} />
   {:else}
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
   {/if}
-  <DemoOverview demos="{DEMOS}" {allInstruments} />
 </main>
 
 <style>

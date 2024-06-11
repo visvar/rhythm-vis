@@ -12,6 +12,7 @@
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import { clamp } from '../lib/lib';
     import { BIN_NOTES, GRIDS } from '../lib/music';
+    import PcKeyboardInput from './common/pc-keyboard-input.svelte';
 
     /**
      * TODO:
@@ -65,13 +66,6 @@
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         noteOnTimes.push(noteInSeconds);
         draw();
-    };
-
-    const keyDown = (e) => {
-        if (e.key === ' ') {
-            e.preventDefault();
-            noteOn({ timestamp: performance.now() });
-        }
     };
 
     /**
@@ -304,7 +298,6 @@
             .then(onMidiEnabled)
             .catch((err) => alert(err));
         draw();
-        document.addEventListener('keydown', keyDown);
     });
 
     onDestroy(() => {
@@ -312,7 +305,6 @@
         for (const input of WebMidi.inputs) {
             input.removeListener();
         }
-        document.removeEventListener('keydown', keyDown);
     });
 </script>
 
@@ -396,4 +388,8 @@
         <ImportButton importFunction="{importData}" />
         <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
     </div>
+    <PcKeyboardInput
+        key=" "
+        callback="{() => noteOn({ timestamp: performance.now() })}"
+    />
 </main>

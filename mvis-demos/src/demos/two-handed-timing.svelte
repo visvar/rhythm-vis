@@ -11,9 +11,9 @@
     import TempoInput from './common/tempo-input.svelte';
     import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
-    import { clamp } from '../lib/lib';
     import { BIN_NOTES, GRIDS } from '../lib/music';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
+    import InsideTextButton from './common/inside-text-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -22,16 +22,19 @@
 
     let width = 1000;
     let midiDevices = [];
-    let container;
+    let containerLeft;
+    let containerRight;
     // settings
     let tempo = 120;
-    let grid = GRIDS[0];
+    let gridLeft = GRIDS[0];
+    let gridRight = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
-    let noteTickLimit = 100;
+    let middleNote = 69;
+    let showKde = false;
     // data
     let firstTimeStamp = 0;
-    let noteOnTimes = [];
+    let notes = [];
 
     const onMidiEnabled = () => {
         midiDevices = [];
@@ -41,55 +44,35 @@
             WebMidi.inputs.forEach((device, index) => {
                 console.log(`MIDI device ${index}: ${device.name}`);
                 device.addListener('noteon', noteOn);
-                device.addListener('controlchange', controlChange);
             });
             midiDevices = [...WebMidi.inputs];
         }
     };
 
     const noteOn = (e) => {
-        if (noteOnTimes.length === 0) {
+        if (notes.length === 0) {
             firstTimeStamp = e.timestamp;
         }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        noteOnTimes.push(noteInSeconds);
+        notes.push({
+            time: noteInSeconds,
+            number: e.note.number,
+        });
         draw();
     };
 
-    /**
-     * Allow controlling vis with a MIDI knob
-     * @param e MIDI controllchange event
-     */
-    const controlChange = (e) => {
-        const c = e.controller.number;
-        if (c === 14) {
-            // tempo
-            tempo = clamp(e.rawValue, 0, 120) + 60;
-        } else if (c === 15) {
-            // grid
-            grid =
-                GRIDS[clamp(Math.floor(e.rawValue / 5), 0, GRIDS.length - 1)];
-        } else if (c === 16) {
-            // binning
-            binNote =
-                BIN_NOTES[
-                    clamp(Math.floor(e.rawValue / 5), 0, BIN_NOTES.length - 1)
-                ];
-        } else if (c === 17) {
-            // adjust
-            adjustTime = (clamp(e.rawValue, 0, 100) - 50) / 100;
-        } else if (c === 18) {
-            // note ticks
-            noteTickLimit = Math.round(clamp(e.rawValue * 2, 0, 200));
-        }
-        draw();
-    };
-
-    const draw = () => {
+    const drawHand = (left = true) => {
+        const grid = left ? gridLeft : gridRight;
         const [grid1, grid2] = grid.split(':').map((d) => +d);
         const quarter = Utils.bpmToSecondsPerBeat(tempo);
-        const notes = noteOnTimes.map((d) => (d + adjustTime) / quarter);
-        const clamped = notes.map((d) => d % grid1);
+        const clamped = notes
+            .filter(
+                // only look at left OR right hand
+                (d) =>
+                    (left && d.number < middleNote) ||
+                    (!left && d.number >= middleNote),
+            )
+            .map((d) => ((d.time + adjustTime) / quarter) % grid1);
 
         // KDE
         let kdePoints = [];
@@ -105,28 +88,14 @@
             kdePoints = density1d.bandwidth(bandwidth);
         }
 
-        let lastNotes = [];
-        if (noteTickLimit > 0) {
-            lastNotes = clamped.slice(-noteTickLimit);
-        }
-
         const coarseGrid = d3.range(0, grid1 + 1, 1);
         const fineGrid = d3.range(0, grid1 * grid2, 1 / grid2);
-        const gridLines = [
-            Plot.tickX(fineGrid, {
-                stroke: '#888',
-            }),
-            Plot.tickX(coarseGrid, {
-                stroke: '#888',
-                strokeWidth: 3,
-            }),
-        ];
 
-        const plotOptions = {
+        const plot = Plot.plot({
             width,
             height: 90,
             marginLeft: 60,
-            marginBottom: 10,
+            marginBottom: 0,
             padding: 0,
             x: {
                 label: null,
@@ -135,61 +104,52 @@
             },
             y: {
                 axis: false,
+                reverse: !left,
             },
-        };
+            marks: [
+                showKde
+                    ? Plot.areaY(kdePoints, {
+                          x: 'x',
+                          y: 'y',
+                          fill: (d) => '#e4f0fa',
+                          clip: true,
+                      })
+                    : Plot.rectY(
+                          clamped,
+                          Plot.binX(
+                              { y: 'count' },
+                              {
+                                  x: (d) => d,
+                                  fill: '#ccc',
+                                  thresholds: d3.range(
+                                      0,
+                                      grid1 + 1,
+                                      4 / binNote,
+                                  ),
+                              },
+                          ),
+                      ),
 
-        const histoPlot = Plot.plot({
-            ...plotOptions,
-            marks: [
-                Plot.rectY(
-                    clamped,
-                    Plot.binX(
-                        { y: 'count' },
-                        {
-                            x: (d) => d,
-                            fill: '#ccc',
-                            thresholds: d3.range(0, grid1 + 1, 4 / binNote),
-                        },
-                    ),
-                ),
                 Plot.ruleY([0]),
-                ...gridLines,
-            ],
-        });
-        const kdePlot = Plot.plot({
-            ...plotOptions,
-            marks: [
-                Plot.areaY(kdePoints, {
-                    x: 'x',
-                    y: 'y',
-                    fill: (d) => '#e4f0fa',
-                    clip: true,
+                // beat grid
+                Plot.tickX(fineGrid, {
+                    stroke: '#888',
                 }),
-                Plot.ruleY([0]),
-                ...gridLines,
-            ],
-        });
-
-        const tickPlot = Plot.plot({
-            ...plotOptions,
-            color: {
-                scheme: 'viridis',
-                reverse: true,
-                domain: [0, lastNotes.length],
-            },
-            marks: [
-                Plot.tickX(lastNotes, {
-                    x: (d) => d,
-                    stroke: (d, i) => i,
-                    clip: true,
+                Plot.tickX(coarseGrid, {
+                    stroke: '#888',
+                    strokeWidth: 3,
                 }),
             ],
         });
 
+        const container = left ? containerLeft : containerRight;
         container.textContent = '';
-        container.appendChild(histoPlot);
-        container.appendChild(kdePlot);
-        container.appendChild(tickPlot);
+        container.appendChild(plot);
+    };
+
+    const draw = () => {
+        drawHand(true);
+        drawHand(false);
     };
 
     /**
@@ -198,11 +158,11 @@
     const exportData = () => {
         const data = {
             tempo,
-            grid,
+            gridLeft,
+            gridRight,
             binNote,
             adjustTime,
-            noteTickLimit,
-            noteOnTimes,
+            noteOnTimes: notes,
         };
         downloadJsonFile(demoInfo.id, data);
     };
@@ -213,16 +173,16 @@
      */
     const importData = async (e) => {
         if (
-            noteOnTimes.length === 0 ||
+            notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
             const json = await parseJsonFile(e);
             tempo = json.tempo;
-            grid = json.grid;
+            gridLeft = json.gridLeft;
+            gridRight = json.grid;
             binNote = json.binNote;
             adjustTime = json.adjustTime ?? 0;
-            noteTickLimit = json.noteTickLimit ?? 0;
-            noteOnTimes = json.noteOnTimes;
+            notes = json.noteOnTimes;
             draw();
         }
     };
@@ -245,22 +205,41 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI instrument (currently {midiDevices.length} connected), choose
-        your tempo and subdivision, and start playing. The bar chart will show you
-        how often you hit each time bin and the last {noteTickLimit} notes will be
-        shown as ticks that fade out one new notes come in (from red for new to blue
-        for old). You can play freely, use the integrated metronome, or play a song
-        in the background (in another tab). All notes will be timed relative to the
-        first one, but you can adjust all notes to make them earlier or later in
-        case you messed up the first one.
+        Connect a MIDI keyboard and start playing to the metronome. The chart
+        will show you how a summary of where your notes started, the top one is
+        for your left hand (keys left of the middle A) and the bottom one for
+        your right hand. For example, you can try to play eighths with your left
+        and quarter triplets with your right hand (click
+        <InsideTextButton
+            onclick="{() => {
+                gridLeft = '4:2';
+                gridRight = '4:3';
+                draw();
+            }}"
+        >
+            here
+        </InsideTextButton>
+        to set this up). If you do not have a MIDI keyboard, you can press the
+        <code>f</code>
+        key on your PC keyboard for left and <code>j</code> for right.
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label
             title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
-            grid
-            <select bind:value="{grid}" on:change="{draw}">
+            grid (left)
+            <select bind:value="{gridLeft}" on:change="{draw}">
+                {#each GRIDS as g}
+                    <option value="{g}">{g}</option>
+                {/each}
+            </select>
+        </label>
+        <label
+            title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+        >
+            grid (right)
+            <select bind:value="{gridRight}" on:change="{draw}">
                 {#each GRIDS as g}
                     <option value="{g}">{g}</option>
                 {/each}
@@ -288,28 +267,40 @@
                 style="width: 55px"
             />
         </label>
-        <label title="The number of most recent notes that are shown as ticks.">
-            note ticks
-            <input
-                type="number"
-                bind:value="{noteTickLimit}"
-                on:change="{draw}"
-                step="1"
-                min="0"
-                max="100"
-                style="width: 55px"
-            />
-        </label>
+        <button
+            title="Toggle between bars and area"
+            on:click="{() => {
+                showKde = !showKde;
+                draw();
+            }}"
+        >
+            {showKde ? 'area' : 'bars'}
+        </button>
     </div>
-    <div class="visualization" bind:this="{container}"></div>
+    <div class="visualization" bind:this="{containerLeft}"></div>
+    <div class="visualization" bind:this="{containerRight}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes="{noteOnTimes}" callback="{draw}" />
+        <ResetNotesButton bind:notes callback="{draw}" />
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
-        <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
+        <MetronomeButton {tempo} accent="{+gridLeft.split(':')[0]}" />
     </div>
     <PcKeyboardInput
-        key=" "
-        callback="{() => noteOn({ timestamp: performance.now() })}"
+        key="f"
+        callback="{() =>
+            noteOn({ timestamp: performance.now(), note: { number: 0 } })}"
+    />
+    <PcKeyboardInput
+        key="j"
+        callback="{() =>
+            noteOn({ timestamp: performance.now(), note: { number: 127 } })}"
     />
 </main>
+
+<style>
+    code {
+        background-color: #eee;
+        padding: 4px;
+        border-radius: 4px;
+    }
+</style>
