@@ -10,6 +10,9 @@
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import { BIN_NOTES } from '../lib/music';
+    import MetronomeButton from './common/metronome-button.svelte';
+    import example from '../example-recordings/tempo-drift.json';
 
     /**
      * contains the demo meta information defined in App.js
@@ -125,19 +128,27 @@
         downloadJsonFile(demoInfo.id, data);
     };
 
+    /**
+     * import previously exported JSON file
+     * @param {InputEvent} e file input event
+     */
     const importData = async (e) => {
         if (
             noteOnTimes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
             const json = await parseJsonFile(e);
-            tempo = json.tempo;
-            binNote = json.binNote;
-            filterNote = json.filterNote;
-            barLimit = json.barLimit;
-            noteOnTimes = json.noteOnTimes;
-            draw();
+            loadExample(json);
         }
+    };
+
+    const loadExample = (json) => {
+        tempo = json.tempo;
+        binNote = json.binNote ?? 'off';
+        filterNote = json.filterNote ?? 'off';
+        barLimit = json.barLimit;
+        noteOnTimes = json.noteOnTimes;
+        draw();
     };
 
     onMount(draw);
@@ -189,7 +200,7 @@
             binning
             <select bind:value="{binNote}" on:change="{draw}">
                 <option value="{0}">off</option>
-                {#each [16, 32, 64, 128] as g}
+                {#each BIN_NOTES as g}
                     <option value="{g}">1/{g} note</option>
                 {/each}
             </select>
@@ -226,6 +237,8 @@
         <ResetNotesButton bind:notes="{noteOnTimes}" callback="{draw}" />
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
+        <button on:click="{() => loadExample(example)}"> example </button>
+        <MetronomeButton {tempo} accent="{4}" maxBeeps="{8}" />
     </div>
     <PcKeyboardInput
         key=" "

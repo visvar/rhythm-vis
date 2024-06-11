@@ -31,7 +31,7 @@
             {#each node.children as skill}
                 <button
                     class="skill"
-                    on:click="{() => (currentSkills = new Set([skill.skill]))}"
+                    on:click="{() => (currentSkills = new Set([skill.id]))}"
                 >
                     {skill.title}
                 </button>

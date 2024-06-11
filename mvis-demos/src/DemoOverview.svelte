@@ -1,9 +1,46 @@
 <script>
-    import { SKILL_TREE, SKILL_TREE_LEAFS } from './lib/skills';
+    import { SKILL_TREE } from './lib/skills';
     import * as d3 from 'd3';
+    import * as Plot from '@observablehq/plot';
+    import { onMount } from 'svelte';
 
     export let demos = [];
     export let allInstruments = new Set();
+
+    let container;
+
+    const drawTree = () => {
+        const getPaths = (tree) => {
+            if (tree.children) {
+                const childPaths = tree.children.flatMap((child) =>
+                    getPaths(child).map((d) => `${tree.title}/${d}`),
+                );
+
+                return [tree.title, ...childPaths];
+            } else {
+                return [tree.title];
+            }
+        };
+        const treePaths = getPaths({ title: 'skills', children: SKILL_TREE });
+        const plot = Plot.plot({
+            axis: null,
+            margin: 10,
+            marginLeft: 60,
+            marginRight: 160,
+            width: 800,
+            marks: [
+                Plot.cluster(treePaths, {
+                    treeSort: 'node:height',
+                    // delimiter: '/',
+                    fontSize: 16,
+                }),
+            ],
+        });
+        container.textContent = '';
+        container.appendChild(plot);
+    };
+
+    onMount(drawTree);
 </script>
 
 <main>
@@ -93,7 +130,7 @@
                     <!-- skill -->
                     {#each SKILL_TREE as s}
                         {#each s.children as skill}
-                            <td>{d.skills.includes(skill.skill) ? '⬤' : ''}</td>
+                            <td>{d.skills.includes(skill.id) ? '⬤' : ''}</td>
                         {/each}
                     {/each}
                 </tr>
@@ -104,7 +141,7 @@
                 {#each SKILL_TREE as s}
                     {#each s.children as skill}
                         <td>
-                            {demos.filter((d) => d.skills.includes(skill.skill))
+                            {demos.filter((d) => d.skills.includes(skill.id))
                                 .length}
                         </td>
                     {/each}
@@ -112,6 +149,10 @@
             </tr>
         </tbody>
     </table>
+
+    <!-- skill tree -->
+    <h2>skill tree</h2>
+    <div class="visualization" bind:this="{container}"></div>
 </main>
 
 <style>

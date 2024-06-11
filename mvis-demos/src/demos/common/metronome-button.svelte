@@ -4,6 +4,7 @@
 
     export let tempo = 120;
     export let accent = 4;
+    export let maxBeeps = Infinity;
 
     const metro = new Metronome();
 
@@ -16,7 +17,7 @@
 <button
     title="Toggle metronome (click)"
     on:click="{() => {
-        metro.toggle(tempo, accent);
+        metro.toggle(tempo, accent, maxBeeps);
     }}"
 >
     metronome

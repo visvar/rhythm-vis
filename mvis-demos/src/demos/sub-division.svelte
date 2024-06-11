@@ -13,6 +13,7 @@
     import { BIN_NOTES, GRIDS } from '../lib/music';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import example from '../example-recordings/sub-division.json';
 
     /**
      * TODO:
@@ -265,15 +266,19 @@
             confirm('Import data and overwrite currently unsaved data?')
         ) {
             const json = await parseJsonFile(e);
-            tempo = json.tempo;
-            grid = json.grid;
-            binNote = json.binNote;
-            adjustTime = json.adjustTime;
-            noteTickLimit = json.noteTickLimit ?? 0;
-            noteOnTimes = json.noteOnTimes;
-            showKde = json.showKde ?? false;
-            draw();
+            loadExample(json);
         }
+    };
+
+    const loadExample = (json) => {
+        tempo = json.tempo;
+        grid = json.grid;
+        binNote = json.binNote;
+        adjustTime = json.adjustTime;
+        noteTickLimit = json.noteTickLimit ?? 0;
+        noteOnTimes = json.noteOnTimes;
+        showKde = json.showKde ?? false;
+        draw();
     };
 
     onMount(draw);
@@ -308,7 +313,7 @@
         >
             binning
             <select bind:value="{binNote}" on:change="{draw}">
-                {#each [16, 32, 64, 128] as g}
+                {#each BIN_NOTES as g}
                     <option value="{g}">1/{g} note</option>
                 {/each}
             </select>
@@ -360,6 +365,7 @@
         <ResetNotesButton bind:notes="{noteOnTimes}" callback="{draw}" />
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
+        <button on:click="{() => loadExample(example)}"> example </button>
         <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
     </div>
     <PcKeyboardInput

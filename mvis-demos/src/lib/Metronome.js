@@ -49,7 +49,7 @@ class Metronome {
    * @param {number} [accent=4] accent every nth beat by changing pitch
    * @param {number} [maxBeeps=Infinity] number of beeps to produce, can be
    *  used for count-ins
-   */
+  */
   start(bpm, accent = 4, maxBeeps = Infinity) {
     if (!bpm || Number.isNaN(+bpm)) {
       console.error(`[Metronome] Invalid bpm ${bpm}`)
@@ -79,7 +79,7 @@ class Metronome {
 
   /**
    * Stops the metronome
-   */
+  */
   stop() {
     console.log('[Metronome] stopped')
     clearTimeout(this.#timerID)
@@ -88,18 +88,19 @@ class Metronome {
 
   /**
    * Starts the metronome is it not running and stops it if it is
-   *
-   * @param {number} bpm tempo in bpm, last used bpm will be used as fallback
-   * @param {number} [accent=4] accent every nth beat by changing pitch
+  *
+  * @param {number} bpm tempo in bpm, last used bpm will be used as fallback
+  * @param {number} [accent=4] accent every nth beat by changing pitch
+   * @param {number} [maxBeeps=Infinity] number of beeps to produce, can be
    */
-  toggle(bpm, accent = 4) {
+  toggle(bpm, accent = 4, maxBeeps = Infinity) {
     if (this.#isPlaying) {
       this.stop()
     } else {
       if (bpm === undefined) {
         bpm = this.#bpm
       }
-      this.start(bpm, accent)
+      this.start(bpm, accent, maxBeeps)
     }
   }
 

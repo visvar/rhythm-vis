@@ -19,4 +19,4 @@ export const GRIDS = [
 /**
  * Note values to bin by
  */
-export const BIN_NOTES = [16, 32, 64, 128]
+export const BIN_NOTES = [16, 32, 64, 128, 24, 48, 96]
