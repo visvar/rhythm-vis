@@ -11,7 +11,6 @@
 
     const midiMessage = (e) => {
         messages = [e, ...messages];
-        console.log(e);
     };
 
     onMount(() => {

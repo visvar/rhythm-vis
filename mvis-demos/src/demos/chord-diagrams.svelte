@@ -6,6 +6,7 @@
     import { NOTE_COLORS } from '../lib/colors';
     import { Chord, Note } from '@tonaljs/tonal';
     import MidiInput from './common/midi-input.svelte';
+    import { detectChords } from '../lib/chords';
 
     /**
      * contains the demo meta information defined in App.js
@@ -48,23 +49,7 @@
 
     const draw = () => {
         // clustering to chords
-        // TODO: move to mvlib
-        let chords = [];
-        let currentChord = [];
-        for (const note of notes) {
-            if (currentChord.length === 0) {
-                // empty chord?
-                currentChord.push(note);
-            } else if (note.time - currentChord.at(-1).time < maxNoteDistance) {
-                // add to current chord
-                currentChord.push(note);
-            } else {
-                // start new chord
-                chords.push(currentChord);
-                currentChord = [note];
-            }
-        }
-        chords.push(currentChord);
+        let chords = detectChords(notes, maxNoteDistance);
 
         // remove notes that are too far
         chords = chords.map((notes) => {
@@ -149,7 +134,7 @@
                     tickFormat: (d) => Midi.NOTE_NAMES[d],
                 },
                 r: {
-                    domain: [0, 100],
+                    domain: [0, 1],
                     range: [5, 10],
                 },
                 marks: [

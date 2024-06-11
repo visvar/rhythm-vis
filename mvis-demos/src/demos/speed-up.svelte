@@ -74,7 +74,6 @@
         const currentDuration = now - minTime;
         let quarter = Utils.bpmToSecondsPerBeat(currentTempo);
         const currentBeats = currentDuration / quarter;
-        // console.log(`${currentBeats} of ${exerciseBeatCount}`);
         if (currentBeats >= exerciseBeatCount) {
             console.log(`increasing bpm`);
             // go to next step
@@ -264,7 +263,6 @@
         const beats = exercises.get(ex);
         exerciseNotes = beats.map((d) => d * quarter);
         exerciseBeatCount = Math.ceil(d3.max(beats) + 1);
-        console.log(ex, exerciseNotes);
         draw();
     };
 

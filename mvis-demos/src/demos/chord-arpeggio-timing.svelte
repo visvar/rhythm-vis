@@ -4,6 +4,7 @@
     import * as Plot from '@observablehq/plot';
     import { Midi } from 'musicvis-lib';
     import MidiInput from './common/midi-input.svelte';
+    import { detectChords } from '../lib/chords';
 
     /**
      * contains the demo meta information defined in App.js
@@ -45,23 +46,7 @@
             (d) => d.end > minTime || d.end === undefined,
         );
         // clustering to chords
-        // TODO: move to mvlib
-        const chords = [];
-        let currentChord = [];
-        for (const note of filtered) {
-            if (currentChord.length === 0) {
-                // empty chord?
-                currentChord.push(note);
-            } else if (note.time - currentChord.at(-1).time < maxNoteDistance) {
-                // add to current chord
-                currentChord.push(note);
-            } else {
-                // start new chord
-                chords.push(currentChord);
-                currentChord = [note];
-            }
-        }
-        chords.push(currentChord);
+        const chords = detectChords(filtered, maxNoteDistance);
         const chordExtents = chords.map((c) => d3.extent(c, (d) => d.time));
         const chordGaps = chordExtents
             .slice(1)

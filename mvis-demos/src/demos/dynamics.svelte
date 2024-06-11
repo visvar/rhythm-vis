@@ -70,7 +70,6 @@
     };
 
     const draw = () => {
-        console.log('draw');
         // round bars' height to make view clearer
         let binnedVelocities = noteVelocities;
         if (isBinning) {

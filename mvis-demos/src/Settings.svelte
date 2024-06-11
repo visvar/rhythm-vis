@@ -5,7 +5,6 @@
     const updateSetting = (key, value) => {
         settings[key] = value;
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
-        console.log(localStorage.getItem(SETTINGS_KEY));
     };
 </script>
 
@@ -22,7 +21,7 @@
             max="127"
             value="{settings.guitarMidiMinVelocity ?? 0}"
             on:change="{(e) =>
-                updateSetting('guitarMidiMinVelocity', e.target.value)}"
+                updateSetting('guitarMidiMinVelocity', +e.target.value)}"
         />
     </label>
     <label>
@@ -30,10 +29,18 @@
         <input
             type="number"
             min="0"
-            max="127"
+            max="0.5"
+            step="0.05"
             value="{settings.guitarMidiMinDuration ?? 0}"
             on:change="{(e) =>
-                updateSetting('guitarMidiMinDuration', e.target.value)}"
+                updateSetting('guitarMidiMinDuration', +e.target.value)}"
         />
     </label>
 </main>
+
+<style>
+    label {
+        display: block;
+        margin: 10px;
+    }
+</style>

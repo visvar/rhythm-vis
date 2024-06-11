@@ -83,7 +83,6 @@
     };
 
     const draw = () => {
-        // console.log('draw');
         const cx = width / 2;
         const cy = height / 2;
         const r = width * 0.4;
@@ -171,11 +170,10 @@
             const points = density1d.bandwidth(bandwidth);
             const maxValue = d3.max([...points], (d) => d.y);
             // smooth around first and last point
-            console.log([...points]);
+            // console.log([...points]);
             ctx.beginPath();
             let i = 0;
             for (const p of points) {
-                console.log(i++, p);
                 const angle = p.x - topOffs;
                 const rp = r + (p.y / maxValue) * maxBinHeight;
                 const dx = Math.cos(angle);
@@ -349,7 +347,10 @@
             {showKde ? 'area' : 'bars'}
         </button>
     </div>
-    <div class="visualization">
+    <div
+        class="visualization"
+        on:touchstart="{() => noteOn({ timestamp: performance.now() })}"
+    >
         <canvas
             bind:this="{canvas}"
             style="width: {width}px; height: {height}px"

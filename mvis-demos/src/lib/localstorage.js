@@ -14,10 +14,8 @@ export function localStorageKBytes() {
     }
     entryLength = ((localStorage[entry].length + entry.length) * 2)
     _lsTotal += entryLength
-    // console.log(entry.substring(0, 50) + ' = ' + (entryLength / 1024).toFixed(2) + ' KB')
   };
   const total = _lsTotal / 1024
-  // console.log('Total = ' + (_lsTotal / 1024).toFixed(2) + ' KB')
   return total
 }
 
@@ -76,16 +74,12 @@ export function localStorageSetUsageData(usage) {
   }
 }
 
-export function localStorageGetSetting() {
-  let usage
-  if (localStorage.getItem('usage') !== null) {
-    usage = localStorage.getItem('usage')
-    usage = JSON.parse(usage)
+export function localStorageGetSetting(key) {
+  const item = localStorage.getItem(SETTINGS_KEY)
+  if (!item) {
+    return undefined
   } else {
-    usage = {
-      demoClicks: {},
-      demoRecordedData: {}
-    }
+    const obj = JSON.parse(item)
+    return obj[key]
   }
-  return usage
 }

@@ -1,5 +1,5 @@
 <script>
-    import { onDestroy } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import { Note } from '@tonaljs/tonal';
     import 'aframe';
@@ -7,6 +7,7 @@
     import { Midi } from 'musicvis-lib';
     import { roundToStep } from '../lib/lib';
     import MidiInput from './common/midi-input.svelte';
+    import * as AFRAME from 'aframe';
 
     /**
      * TODO:#
@@ -16,6 +17,8 @@
      *  - https://aframe.io/docs/1.5.0/guides/building-a-basic-scene.html#event-listener-component-intermediate
      *  - support VR controllers?
      *      - https://aframe.io/docs/1.5.0/introduction/interactions-and-controllers.html
+     * - support hand tracking?
+     *      - https://github.com/aframevr/aframe/blob/master/docs/components/hand-tracking-controls.md
      * - use custom geometry?
      *  - https://aframe.io/docs/1.5.0/components/geometry.html
      */
@@ -48,6 +51,7 @@
     const randomNote = (time) => {
         const string = Math.floor(Math.random() * 6);
         const fret = Math.round(Math.random() * 24);
+        const velocity = Math.round(Math.random() * 127);
         const midiNr = tuningPitches[string] + fret;
         time = time ?? Math.round(Math.random() * 60);
         lastTimeSeconds = time;
@@ -56,6 +60,7 @@
             fret,
             time,
             note: Midi.NOTE_NAMES[midiNr % 12],
+            velocity,
         };
     };
     let testInterval = setInterval(
@@ -64,9 +69,9 @@
     );
     $: lastNotes = notes.filter((d) => d.time > lastTimeSeconds - pastSeconds);
 
+    let debugMsg = '';
+
     const noteOn = (e) => {
-        console.log('noteon');
-        console.log(testInterval);
         if (testInterval) {
             clearInterval(testInterval);
             testInterval = null;
@@ -114,6 +119,31 @@
         }
     };
 
+    onMount(() => {
+        // https://github.com/aframevr/aframe/blob/master/docs/components/oculus-touch-controls.md#events
+        console.log(AFRAME);
+        AFRAME.registerComponent('thumbstick-logging', {
+            init: function () {
+                this.el.addEventListener('thumbstickmoved', this.logThumbstick);
+            },
+            logThumbstick: function (evt) {
+                if (evt.detail.y > 0.95) {
+                    console.log('DOWN');
+                }
+                if (evt.detail.y < -0.95) {
+                    console.log('UP');
+                }
+                if (evt.detail.x < -0.95) {
+                    console.log('LEFT');
+                }
+                if (evt.detail.x > 0.95) {
+                    console.log('RIGHT');
+                }
+                debugMsg = `x ${evt.detail.x} y ${evt.detail.y}`;
+            },
+        });
+    });
+
     onDestroy(() => {
         clearInterval(testInterval);
     });
@@ -122,6 +152,14 @@
 <main class="demo">
     <!-- x is right, y is up, z is toward camera -->
     <a-scene>
+        <!-- controllers -->
+        <a-entity oculus-touch-controls="hand: left"></a-entity>
+        <a-entity oculus-touch-controls="hand: right"></a-entity>
+        <!-- hand tracking -->
+        <a-entity id="leftHand" hand-tracking-controls="hand: left;"></a-entity>
+        <a-entity id="rightHand" hand-tracking-controls="hand: right;"
+        ></a-entity>
+        <!-- skybox -->
         <a-sky color="white"></a-sky>
         <!-- text with explanation -->
         <a-entity
@@ -132,6 +170,12 @@
         <a-entity
             text="value: Connect a MIDI guitar and start playing. Notes are positioned based on their string (forward), fret (right), and time (up). They are colored by string and labelled with note name and fret number.\n\nRandom notes are shown until you play.\n\nGo back in your browser to return to the main page.; color: #666; width: 5"
             position="-2 1.5 -1.5"
+            scale=".25 .25 .25"
+        ></a-entity>
+        <!-- text for debugging -->
+        <a-entity
+            text="value: {debugMsg}; color: #666; width: 5"
+            position="-2 1 -1.5"
             scale=".25 .25 .25"
         ></a-entity>
         <!-- visualization container -->

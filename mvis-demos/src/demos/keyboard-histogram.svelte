@@ -91,7 +91,6 @@
                         { y: 'count' },
                         {
                             x: 'number',
-                            // fill: (d) => console.log(d),
                             fill: (d) =>
                                 Midi.isSharp(d.number) ? '#444' : '#ccc',
                             inset: 0.5,

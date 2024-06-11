@@ -1,7 +1,6 @@
 <script>
     import { SKILL_TREE, SKILL_TREE_LEAFS } from './lib/skills';
     import * as d3 from 'd3';
-    console.log(SKILL_TREE_LEAFS);
 
     export let demos = [];
     export let allInstruments = new Set();

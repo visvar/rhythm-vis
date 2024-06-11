@@ -93,7 +93,6 @@
                 });
             data = data.concat(counted);
         }
-        console.log(data);
 
         // TODO: allow setting
         const maxBar = Math.floor(notes.at(-1).time / barDuration);

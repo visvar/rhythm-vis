@@ -50,7 +50,7 @@
             time: noteInSeconds,
             string,
             fret: e.note.number - tuningPitches[string],
-            velocity: e.velocity,
+            velocity: e.rawVelocity,
         };
         if (currentStep === 'input exercise') {
             // currently inputting the exercise
@@ -84,7 +84,6 @@
         const currentDuration = now - minTime;
         let quarter = Utils.bpmToSecondsPerBeat(currentTempo);
         const currentBeats = currentDuration / quarter;
-        // console.log(`${currentBeats} of ${exerciseBeatCount}`);
         if (currentBeats >= exerciseBeatCount) {
             console.log(`increasing bpm`);
             // go to next step
@@ -228,7 +227,7 @@
                 },
                 color: {
                     // legend: true,
-                    domain: [0, 1],
+                    domain: [0, 127],
                     scheme: 'Greys',
                 },
                 marks: [
