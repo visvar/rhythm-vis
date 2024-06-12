@@ -158,6 +158,12 @@
 
         const tickPlot = Plot.plot({
             ...plotOptions,
+            marginBottom: 30,
+            x: {
+                ticks: [...fineGrid, grid1],
+                label: 'time in beats',
+                domain: [0, grid1],
+            },
             color: {
                 scheme: 'viridis',
                 reverse: true,

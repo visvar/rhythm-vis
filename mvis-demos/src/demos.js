@@ -23,6 +23,7 @@ import SubDivisionBar from './demos/sub-division-bar.svelte'
 import SubDivisionLinear from './demos/sub-division-linear.svelte'
 import TempoDrift from './demos/tempo-drift.svelte'
 import TwoHandedTiming from './demos/two-handed-timing.svelte'
+import SubDivisionDrums from './demos/sub-division-drums.svelte'
 
 /**
  * All demos defined here
@@ -226,6 +227,15 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     skills: ['sub-division', 'timing-consistency'],
     component: SubDivisionBar
+  },
+  {
+    id: 'sub-division-drums',
+    title: '[new] Sub-Division (Drums)',
+    description: 'Learn rhythmic playing in different sub-divisions.',
+    input: 'MIDI',
+    instruments: ['drum', 'pc-key'],
+    skills: ['sub-division', 'timing-consistency'],
+    component: SubDivisionDrums
   },
   {
     id: 'sub-division-linear',

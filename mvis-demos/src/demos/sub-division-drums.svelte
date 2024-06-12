@@ -14,7 +14,6 @@
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
     import { clamp } from '../lib/lib';
-    import RhythmPlayerButton from './common/rhythm-player-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -22,20 +21,50 @@
     export let demoInfo;
 
     let width = 1000;
-    let containerLeft;
-    let containerRight;
+    let container;
     // settings
     let tempo = 60;
-    let gridLeft = GRIDS[1];
-    let gridRight = GRIDS[0];
+    let grid = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
-    let middleNote = 69;
     let showKde = true;
     let pastBars = 4;
     // data
     let firstTimeStamp = 0;
     let notes = [];
+    // knowledge
+    export const drumPitchReplacementMapMD90 = new Map([
+        // Crash 1
+        [49, { repPitch: 49, label: 'CC', name: 'Crash Cymbal 1' }],
+        [55, { repPitch: 49, label: 'CC', name: 'Crash Cymbal 1' }],
+        [52, { repPitch: 57, label: 'CC', name: 'Crash Cymbal 2' }],
+        [57, { repPitch: 57, label: 'CC', name: 'Crash Cymbal 2' }],
+        // Hi-hat
+        [22, { repPitch: 46, label: 'HH', name: 'Hi-Hat' }],
+        [26, { repPitch: 46, label: 'HH', name: 'Hi-Hat' }],
+        [42, { repPitch: 46, label: 'HH', name: 'Hi-Hat' }],
+        [46, { repPitch: 46, label: 'HH', name: 'Hi-Hat' }],
+        [44, { repPitch: 44, label: 'HH', name: 'Hi-Hat Pedal' }],
+        // Ride
+        [51, { repPitch: 51, label: 'Rd', name: 'Ride Cymbal' }],
+        [53, { repPitch: 51, label: 'Rd', name: 'Ride Cymbal' }],
+        [59, { repPitch: 51, label: 'Rd', name: 'Ride Cymbal' }],
+        // Snare
+        [38, { repPitch: 38, label: 'SN', name: 'Snare' }],
+        [40, { repPitch: 38, label: 'SN', name: 'Snare' }],
+        // Tom
+        [48, { repPitch: 48, label: 'TO', name: 'Tom 1' }],
+        [50, { repPitch: 48, label: 'TO', name: 'Tom 1' }],
+        [45, { repPitch: 45, label: 'TO', name: 'Tom 2' }],
+        [47, { repPitch: 45, label: 'TO', name: 'Tom 2' }],
+        [43, { repPitch: 43, label: 'TO', name: 'Stand Tom 1' }],
+        [58, { repPitch: 43, label: 'TO', name: 'Stand Tom 1' }],
+        [39, { repPitch: 41, label: 'TO', name: 'Stand Tom 2' }],
+        [41, { repPitch: 41, label: 'TO', name: 'Stand Tom 2' }],
+        // Bass drum
+        [35, { repPitch: 36, label: 'KD', name: 'Kick Drum' }],
+        [36, { repPitch: 36, label: 'KD', name: 'Kick Drum' }],
+    ]);
 
     const noteOn = (e) => {
         if (notes.length === 0) {
@@ -45,6 +74,9 @@
         notes.push({
             time: noteInSeconds,
             number: e.note.number,
+            drum:
+                drumPitchReplacementMapMD90.get(e.note.number)?.label ??
+                e.note.number,
         });
         draw();
     };
@@ -74,16 +106,11 @@
         draw();
     };
 
-    const drawHand = (left = true) => {
-        const grid = left ? gridLeft : gridRight;
+    const drawDrum = (drum = 'KD', xLabel = null) => {
         const [grid1, grid2] = grid.split(':').map((d) => +d);
         const quarter = Utils.bpmToSecondsPerBeat(tempo);
-        let clamped = notes.filter(
-            (d) =>
-                // only look at left OR right hand
-                (left && d.number < middleNote) ||
-                (!left && d.number >= middleNote),
-        );
+        // only look at one drum part
+        let clamped = notes.filter((d) => d.drum === drum);
 
         clamped = clamped.map((d) => (d.time + adjustTime) / quarter);
         if (pastBars > 0 && clamped.length > 0) {
@@ -108,22 +135,21 @@
         }
 
         const coarseGrid = d3.range(0, grid1 + 1, 1);
-        const fineGrid = d3.range(0, grid1 * grid2, 1 / grid2);
+        const fineGrid = d3.range(0, grid1, 1 / grid2);
 
         const plot = Plot.plot({
             width,
-            height: left ? 90 : 105,
+            height: 90,
             marginLeft: 60,
-            marginBottom: left ? 0 : 15,
+            marginBottom: 10,
             padding: 0,
             x: {
-                label: left ? null : 'time in beats',
+                label: xLabel,
                 domain: [0, 4],
                 ticks: [],
             },
             y: {
                 axis: false,
-                reverse: !left,
             },
             marks: [
                 showKde
@@ -161,14 +187,18 @@
             ],
         });
 
-        const container = left ? containerLeft : containerRight;
-        container.textContent = '';
+        const title = document.createElement('span');
+        title.innerText = drum;
+        container.appendChild(title);
         container.appendChild(plot);
     };
 
     const draw = () => {
-        drawHand(true);
-        drawHand(false);
+        container.textContent = '';
+        drawDrum('HH');
+        drawDrum('SN');
+        drawDrum('TO');
+        drawDrum('KD', 'time in beats');
     };
 
     /**
@@ -177,8 +207,7 @@
     const exportData = () => {
         const data = {
             tempo,
-            gridLeft,
-            gridRight,
+            grid,
             binNote,
             adjustTime,
             pastBars,
@@ -198,8 +227,7 @@
         ) {
             const json = await parseJsonFile(e);
             tempo = json.tempo;
-            gridLeft = json.gridLeft;
-            gridRight = json.gridRight;
+            grid = json.grid;
             binNote = json.binNote;
             adjustTime = json.adjustTime ?? 0;
             pastBars = json.pastBars;
@@ -209,42 +237,16 @@
     };
 
     onMount(draw);
-
-    const getRhythmNotes = (gridLeft, gridRight, tempo) => {
-        if (!gridLeft) {
-            return [];
-        }
-        const quarter = Utils.bpmToSecondsPerBeat(tempo);
-
-        let beats = [gridLeft, gridRight].flatMap((grid, isRight) => {
-            const [grid1, grid2] = grid.split(':').map((d) => +d);
-            const fineGrid = d3.range(0, grid1, 1 / grid2);
-            console.log({ grid1, grid2, fineGrid });
-            return fineGrid.map((d) => {
-                return {
-                    time: d * quarter,
-                    // number: isRight ? 62 : 69,
-                    number: 69,
-                };
-            });
-        });
-        beats.sort((a, b) => a.time - b.time);
-        console.log(beats);
-        return beats;
-    };
 </script>
 
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI keyboard and start playing to the metronome. The chart
-        will show you how a summary of where your notes started, the top one is
-        for your left hand (keys left of the middle A) and the bottom one for
-        your right hand. For example, you can try to play quarter triplets with
-        your left and eighths with your right hand. If you do not have a MIDI
-        keyboard, you can press the
-        <code>f</code>
-        key on your PC keyboard for left and <code>j</code> for right.
+        Connect a MIDI drum kit and start playing to the metronome. The chart
+        will show you how a summary of where your notes started, one for each
+        type of drum. If you do not have a MIDI keyboard, you can press the
+        <code>s</code>
+        key on your PC keyboard for snare and <code>k</code> for kick drum.
         <i> Try playing without looking, focus on the metronome. </i>
     </p>
     <div class="control">
@@ -252,18 +254,8 @@
         <label
             title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
-            grid (left)
-            <select bind:value="{gridLeft}" on:change="{draw}">
-                {#each GRIDS as g}
-                    <option value="{g}">{g}</option>
-                {/each}
-            </select>
-        </label>
-        <label
-            title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
-        >
-            grid (right)
-            <select bind:value="{gridRight}" on:change="{draw}">
+            grid
+            <select bind:value="{grid}" on:change="{draw}">
                 {#each GRIDS as g}
                     <option value="{g}">{g}</option>
                 {/each}
@@ -315,26 +307,32 @@
             {showKde ? 'density area' : 'histogram'}
         </button>
     </div>
-    <div class="visualization" bind:this="{containerLeft}"></div>
-    <div class="visualization" bind:this="{containerRight}"></div>
+    <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <ResetNotesButton bind:notes callback="{draw}" />
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
-        <MetronomeButton {tempo} accent="{+gridLeft.split(':')[0]}" />
-        <RhythmPlayerButton
-            notes="{getRhythmNotes(gridLeft, gridRight, tempo)}"
-        />
+        <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
     </div>
     <PcKeyboardInput
-        key="f"
+        key="s"
         callback="{() =>
-            noteOn({ timestamp: performance.now(), note: { number: 0 } })}"
+            noteOn({ timestamp: performance.now(), note: { number: 38 } })}"
     />
     <PcKeyboardInput
-        key="j"
+        key="h"
         callback="{() =>
-            noteOn({ timestamp: performance.now(), note: { number: 127 } })}"
+            noteOn({ timestamp: performance.now(), note: { number: 46 } })}"
+    />
+    <PcKeyboardInput
+        key="t"
+        callback="{() =>
+            noteOn({ timestamp: performance.now(), note: { number: 48 } })}"
+    />
+    <PcKeyboardInput
+        key="k"
+        callback="{() =>
+            noteOn({ timestamp: performance.now(), note: { number: 36 } })}"
     />
     <MidiInput {noteOn} {controlChange} />
 </main>
