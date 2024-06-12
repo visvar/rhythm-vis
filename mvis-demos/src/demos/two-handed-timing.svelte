@@ -14,6 +14,9 @@
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import InsideTextButton from './common/inside-text-button.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import { clamp } from '../lib/lib';
+    import RhythmPlayerButton from './common/rhythm-player-button.svelte';
+    import { log } from 'aframe';
 
     /**
      * contains the demo meta information defined in App.js
@@ -24,13 +27,14 @@
     let containerLeft;
     let containerRight;
     // settings
-    let tempo = 120;
-    let gridLeft = GRIDS[0];
+    let tempo = 60;
+    let gridLeft = GRIDS[1];
     let gridRight = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
     let middleNote = 69;
-    let showKde = false;
+    let showKde = true;
+    let pastBars = 4;
     // data
     let firstTimeStamp = 0;
     let notes = [];
@@ -47,18 +51,49 @@
         draw();
     };
 
+    /**
+     * Allow controlling vis with a MIDI knob
+     * @param e MIDI controllchange event
+     */
+    const controlChange = (e) => {
+        const c = e.controller.number;
+        if (c === 14) {
+            // tempo
+            tempo = clamp(e.rawValue, 0, 120) + 60;
+        } else if (c === 15) {
+            // binning
+            binNote =
+                BIN_NOTES[
+                    clamp(Math.floor(e.rawValue / 5), 0, BIN_NOTES.length - 1)
+                ];
+        } else if (c === 16) {
+            // adjust
+            adjustTime = (clamp(e.rawValue, 0, 100) - 50) / 100;
+        } else if (c === 17) {
+            pastBars = clamp(e.rawValue, 0, 99) + 1;
+        } else if (c === 18) {
+        }
+        draw();
+    };
+
     const drawHand = (left = true) => {
         const grid = left ? gridLeft : gridRight;
         const [grid1, grid2] = grid.split(':').map((d) => +d);
         const quarter = Utils.bpmToSecondsPerBeat(tempo);
-        const clamped = notes
-            .filter(
+        let clamped = notes.filter(
+            (d) =>
                 // only look at left OR right hand
-                (d) =>
-                    (left && d.number < middleNote) ||
-                    (!left && d.number >= middleNote),
-            )
-            .map((d) => ((d.time + adjustTime) / quarter) % grid1);
+                (left && d.number < middleNote) ||
+                (!left && d.number >= middleNote),
+        );
+
+        clamped = clamped.map((d) => (d.time + adjustTime) / quarter);
+        if (pastBars > 0 && clamped.length > 0) {
+            // only show most recent bars
+            const maxBar = Math.floor(clamped.at(-1) / grid1);
+            clamped = clamped.filter((d) => d / grid1 >= maxBar - pastBars);
+        }
+        clamped = clamped.map((d) => d % grid1);
 
         // KDE
         let kdePoints = [];
@@ -85,7 +120,7 @@
             padding: 0,
             x: {
                 label: null,
-                domain: [0, grid1],
+                domain: [0, 4],
                 ticks: [],
             },
             y: {
@@ -148,6 +183,7 @@
             gridRight,
             binNote,
             adjustTime,
+            pastBars,
             noteOnTimes: notes,
         };
         downloadJsonFile(demoInfo.id, data);
@@ -168,12 +204,36 @@
             gridRight = json.grid;
             binNote = json.binNote;
             adjustTime = json.adjustTime ?? 0;
+            pastBars = json.pastBars;
             notes = json.noteOnTimes;
             draw();
         }
     };
 
     onMount(draw);
+
+    const getRhythmNotes = (gridLeft, gridRight, tempo) => {
+        if (!gridLeft) {
+            return [];
+        }
+        const quarter = Utils.bpmToSecondsPerBeat(tempo);
+
+        let beats = [gridLeft, gridRight].flatMap((grid, isRight) => {
+            const [grid1, grid2] = grid.split(':').map((d) => +d);
+            const fineGrid = d3.range(0, grid1, 1 / grid2);
+            console.log({ grid1, grid2, fineGrid });
+            return fineGrid.map((d) => {
+                return {
+                    time: d * quarter,
+                    // number: isRight ? 62 : 69,
+                    number: 69,
+                };
+            });
+        });
+        beats.sort((a, b) => a.time - b.time);
+        console.log(beats);
+        return beats;
+    };
 </script>
 
 <main class="demo">
@@ -182,20 +242,12 @@
         Connect a MIDI keyboard and start playing to the metronome. The chart
         will show you how a summary of where your notes started, the top one is
         for your left hand (keys left of the middle A) and the bottom one for
-        your right hand. For example, you can try to play eighths with your left
-        and quarter triplets with your right hand (click
-        <InsideTextButton
-            onclick="{() => {
-                gridLeft = '4:2';
-                gridRight = '4:3';
-                draw();
-            }}"
-        >
-            here
-        </InsideTextButton>
-        to set this up). If you do not have a MIDI keyboard, you can press the
+        your right hand. For example, you can try to play quarter triplets with
+        your left and eighths with your right hand. If you do not have a MIDI
+        keyboard, you can press the
         <code>f</code>
         key on your PC keyboard for left and <code>j</code> for right.
+        <i> Try playing without looking, focus on the metronome. </i>
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
@@ -241,14 +293,28 @@
                 style="width: 55px"
             />
         </label>
+        <label
+            title="The number of past bars to be shown. Allows to 'forget' mistakes in the beginning."
+        >
+            last bars
+            <input
+                type="number"
+                bind:value="{pastBars}"
+                on:change="{draw}"
+                min="1"
+                max="100"
+                style="width: 55px"
+            />
+        </label>
         <button
-            title="Toggle between bars and area"
+            title="Toggle between an area chart and a histogram of the note density"
             on:click="{() => {
                 showKde = !showKde;
                 draw();
             }}"
+            style="width: 120px"
         >
-            {showKde ? 'area' : 'bars'}
+            {showKde ? 'density area' : 'histogram'}
         </button>
     </div>
     <div class="visualization" bind:this="{containerLeft}"></div>
@@ -258,6 +324,9 @@
         <ExportButton exportFunction="{exportData}" />
         <ImportButton importFunction="{importData}" />
         <MetronomeButton {tempo} accent="{+gridLeft.split(':')[0]}" />
+        <RhythmPlayerButton
+            notes="{getRhythmNotes(gridLeft, gridRight, tempo)}"
+        />
     </div>
     <PcKeyboardInput
         key="f"
@@ -269,7 +338,7 @@
         callback="{() =>
             noteOn({ timestamp: performance.now(), note: { number: 127 } })}"
     />
-    <MidiInput {noteOn} />
+    <MidiInput {noteOn} {controlChange} />
 </main>
 
 <style>

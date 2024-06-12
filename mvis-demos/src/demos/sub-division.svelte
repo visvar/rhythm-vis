@@ -295,6 +295,7 @@
         All notes will be timed relative to the first one, but you can adjust
         all notes to make them earlier or later in case you messed up the first
         one.
+        <i> Try playing without looking, focus on the metronome. </i>
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />

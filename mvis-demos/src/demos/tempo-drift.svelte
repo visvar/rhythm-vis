@@ -164,6 +164,7 @@
         example, 64th note (binning dropdown). You can filter very short
         inter-note times, which happen whan playing two notes at roughly the
         same time as in a chord.
+        <i> Try playing without looking! </i>
     </p>
     <p class="explanation">
         One possible exercise is trying to play at a given tempo without any
@@ -206,12 +207,12 @@
             </select>
         </label>
         <label
-            title="You can filter out bars that are shorter than a given note duration."
+            title="You can filter out notes that are shorter than a given note duration."
         >
             filtering
             <select bind:value="{filterNote}" on:change="{draw}">
                 <option value="{0}">off</option>
-                {#each [16, 32, 64, 128] as g}
+                {#each BIN_NOTES as g}
                     <option value="{g}">1/{g} note</option>
                 {/each}
             </select>

@@ -38,6 +38,7 @@
             velocity: e.rawVelocity,
             time: noteInSeconds,
             channel: e.message.channel,
+            duration: 0,
         };
         // fix old note if its end was missed
         if (openNoteMap.has(e.note.number)) {
@@ -58,6 +59,7 @@
             note.end = noteInSeconds;
             note.duration = note.end - note.time;
         }
+        draw();
     };
 
     const controlChange = (e) => {

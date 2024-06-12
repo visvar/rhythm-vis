@@ -6,11 +6,10 @@
  * m.start(120, 4)
  */
 class Metronome {
-
   // Config
   #beepDuration = 0.03
-  #lookAheadTime = 0.25
-  #scheduleTimeout = 100
+  #lookAheadTime = 0.1
+  #scheduleTimeout = 50
   // State
   #isPlaying = false
   // Stores the timeout
