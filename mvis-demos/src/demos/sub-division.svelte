@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import { Canvas, Utils } from 'musicvis-lib';
     import * as kde from 'fast-kde';
     import * as d3 from 'd3';
@@ -14,6 +14,9 @@
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
     import example from '../example-recordings/sub-division.json';
+    import { localStorageAddRecording } from '../lib/localstorage';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
 
     /**
      * TODO:
@@ -241,10 +244,10 @@
     };
 
     /**
-     * export data to a JSON file as download
+     * Used for exporting and for automatics saving
      */
-    const exportData = () => {
-        const data = {
+    const getExportData = () => {
+        return {
             tempo,
             grid,
             binNote,
@@ -253,35 +256,34 @@
             showKde,
             noteOnTimes,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
-     * import previously exported JSON file
-     * @param {InputEvent} e file input event
+     * Import data from file or example
      */
-    const importData = async (e) => {
+    const loadData = (json) => {
         if (
             noteOnTimes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            const json = await parseJsonFile(e);
-            loadExample(json);
+            tempo = json.tempo;
+            grid = json.grid;
+            binNote = json.binNote;
+            adjustTime = json.adjustTime;
+            noteTickLimit = json.noteTickLimit ?? 0;
+            noteOnTimes = json.noteOnTimes;
+            showKde = json.showKde ?? false;
+            draw();
         }
     };
 
-    const loadExample = (json) => {
-        tempo = json.tempo;
-        grid = json.grid;
-        binNote = json.binNote;
-        adjustTime = json.adjustTime;
-        noteTickLimit = json.noteTickLimit ?? 0;
-        noteOnTimes = json.noteOnTimes;
-        showKde = json.showKde ?? false;
-        draw();
+    const saveToStorage = () => {
+        localStorageAddRecording(demoInfo.id, getExportData());
     };
 
     onMount(draw);
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -363,10 +365,16 @@
         ></canvas>
     </div>
     <div class="control">
-        <ResetNotesButton bind:notes="{noteOnTimes}" callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
-        <button on:click="{() => loadExample(example)}"> example </button>
+        <ResetNotesButton
+            bind:notes="{noteOnTimes}"
+            callback="{() => {
+                saveToStorage();
+                draw();
+            }}"
+        />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
     </div>
     <PcKeyboardInput

@@ -271,7 +271,7 @@ export const DEMOS = [
       'Play the same or a different rhythm with each hand and see your timing seperately.',
     input: 'MIDI',
     instruments: ['keyboard', 'pc-key'],
-    skills: ['sub-division', 'timing-consistency'],
+    skills: ['sub-division', 'timing-consistency', 'syncopation'],
     component: TwoHandedTiming
-  },
+  }
 ]

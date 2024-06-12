@@ -9,6 +9,7 @@
     import NoteCountInput from './common/note-count-input.svelte';
     import { noteDurations } from '../lib/note-durations.js';
     import MidiInput from './common/midi-input.svelte';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -147,18 +148,13 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
-            title="Clear played notes"
-            on:click="{() => {
-                if (confirm('Clear notes?')) {
-                    firstTimeStamp = performance.now();
-                    notes = [];
-                    draw();
-                }
+        <ResetNotesButton
+            bind:notes
+            callback="{() => {
+                firstTimeStamp = performance.now();
+                draw();
             }}"
-        >
-            reset
-        </button>
+        />
         <MetronomeButton {tempo} accent="{4}" />
     </div>
     <MidiInput {noteOn} />

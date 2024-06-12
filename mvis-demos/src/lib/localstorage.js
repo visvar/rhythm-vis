@@ -1,4 +1,5 @@
 export const SETTINGS_KEY = 'demo-settings'
+export const USAGE_KEY = 'usage'
 
 /**
  * @see https://stackoverflow.com/questions/4391575/how-to-find-the-size-of-localstorage
@@ -54,8 +55,8 @@ export function localStorageReport() {
 
 export function localStorageGetUsageData() {
   let usage
-  if (localStorage.getItem('usage') !== null) {
-    usage = localStorage.getItem('usage')
+  if (localStorage.getItem(USAGE_KEY) !== null) {
+    usage = localStorage.getItem(USAGE_KEY)
     usage = JSON.parse(usage)
   } else {
     usage = {
@@ -68,9 +69,9 @@ export function localStorageGetUsageData() {
 
 export function localStorageSetUsageData(usage) {
   try {
-    localStorage.setItem('usage', JSON.stringify(usage))
+    localStorage.setItem(USAGE_KEY, JSON.stringify(usage))
   } catch (e) {
-    alert('localStorage might be full: ', e)
+    alert('localStorage might be full: ' + e.toString())
   }
 }
 
@@ -82,4 +83,26 @@ export function localStorageGetSetting(key) {
     const obj = JSON.parse(item)
     return obj[key]
   }
+}
+
+/**
+ * Stores the recorded data of the demo in the usage localSorage
+ * @param {string} demoId demo ID
+ * @param {object} data data to save
+ */
+export function localStorageAddRecording(demoId, data) {
+  const usage = localStorageGetUsageData()
+  console.log(usage)
+  if (!usage.demoRecordedData) {
+    usage.demoRecordedData = {}
+  }
+  if (!usage.demoRecordedData[demoId]) {
+    usage.demoRecordedData[demoId] = []
+  }
+  console.log(usage)
+  usage.demoRecordedData[demoId].push({
+    date: (new Date()).toISOString(),
+    data
+  })
+  localStorageSetUsageData(usage)
 }

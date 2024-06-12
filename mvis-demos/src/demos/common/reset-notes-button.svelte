@@ -6,7 +6,7 @@
 <button
     title="Clear all played notes"
     on:click="{() => {
-        if (confirm('Reset played notes?')) {
+        if (notes.length === 0 || confirm('Reset played notes?')) {
             notes = [];
             callback();
         }

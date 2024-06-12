@@ -244,9 +244,9 @@
     <p class="explanation">
         Connect a MIDI drum kit and start playing to the metronome. The chart
         will show you how a summary of where your notes started, one for each
-        type of drum. If you do not have a MIDI keyboard, you can press the
-        <code>s</code>
-        key on your PC keyboard for snare and <code>k</code> for kick drum.
+        type of drum. If you do not have a MIDI keyboard, you can press keys:
+        <code>h</code>, <code>s</code>, <code>t</code>, and <code>k</code> for
+        hi-hat, snare, tom, and kick drum.
         <i> Try playing without looking, focus on the metronome. </i>
     </p>
     <div class="control">
