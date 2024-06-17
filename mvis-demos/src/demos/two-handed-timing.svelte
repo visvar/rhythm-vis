@@ -1,20 +1,20 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import { Utils } from 'musicvis-lib';
     import * as Plot from '@observablehq/plot';
     import * as kde from 'fast-kde';
     import * as d3 from 'd3';
-    import ImportButton from './common/import-button.svelte';
-    import ExportButton from './common/export-button.svelte';
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import { BIN_NOTES, GRIDS } from '../lib/music';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
     import { clamp } from '../lib/lib';
     import RhythmPlayerButton from './common/rhythm-player-button.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -88,7 +88,8 @@
         clamped = clamped.map((d) => (d.time + adjustTime) / quarter);
         if (pastBars > 0 && clamped.length > 0) {
             // only show most recent bars
-            const maxBar = Math.floor(clamped.at(-1) / grid1);
+            const lastBeat = (notes.at(-1).time + adjustTime) / quarter;
+            const maxBar = Math.ceil(lastBeat / grid1);
             clamped = clamped.filter((d) => d / grid1 >= maxBar - pastBars);
         }
         clamped = clamped.map((d) => d % grid1);
@@ -172,43 +173,47 @@
     };
 
     /**
-     * export data to a JSON file as download
+     * Used for exporting and for automatics saving
      */
-    const exportData = () => {
-        const data = {
+    const getExportData = () => {
+        return {
             tempo,
             gridLeft,
             gridRight,
             binNote,
             adjustTime,
             pastBars,
-            noteOnTimes: notes,
+            notes,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
-     * import previously exported JSON file
-     * @param {InputEvent} e file input event
+     * Import data from file or example
      */
-    const importData = async (e) => {
+    const loadData = (json) => {
         if (
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            const json = await parseJsonFile(e);
             tempo = json.tempo;
             gridLeft = json.gridLeft;
             gridRight = json.gridRight;
             binNote = json.binNote;
             adjustTime = json.adjustTime ?? 0;
             pastBars = json.pastBars;
-            notes = json.noteOnTimes;
+            notes = json.notes;
             draw();
+        }
+    };
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
         }
     };
 
     onMount(draw);
+
+    onDestroy(saveToStorage);
 
     const getRhythmNotes = (gridLeft, gridRight, tempo) => {
         if (!gridLeft) {
@@ -318,9 +323,9 @@
     <div class="visualization" bind:this="{containerLeft}"></div>
     <div class="visualization" bind:this="{containerRight}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
         <MetronomeButton {tempo} accent="{+gridLeft.split(':')[0]}" />
         <RhythmPlayerButton
             notes="{getRhythmNotes(gridLeft, gridRight, tempo)}"
@@ -338,11 +343,3 @@
     />
     <MidiInput {noteOn} {controlChange} />
 </main>
-
-<style>
-    code {
-        background-color: #eee;
-        padding: 4px;
-        border-radius: 4px;
-    }
-</style>

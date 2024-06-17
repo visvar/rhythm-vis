@@ -1,12 +1,12 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as Plot from '@observablehq/plot';
     import { throttle } from 'underscore';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
 
     /**
      * contains the demo meta information defined in App.js
@@ -75,28 +75,27 @@
 
     const drawThrottled = throttle(draw, 33);
 
+    onMount(draw);
+
     /**
-     * export data to a JSON file as download
+     * Used for exporting and for automatics saving
      */
-    const exportData = () => {
-        const data = {
+    const getExportData = () => {
+        return {
             pastTime,
             firstTimeStamp,
             bendValues,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
-     * import previously exported JSON file
-     * @param {InputEvent} e file input event
+     * Import data from file or example
      */
-    const importData = async (e) => {
+    const loadData = (json) => {
         if (
             bendValues.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            const json = await parseJsonFile(e);
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;
             bendValues = json.bendValues;
@@ -104,14 +103,20 @@
         }
     };
 
-    onMount(draw);
+    const saveToStorage = () => {
+        if (bendValues.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI device and play pitch bends or vibratos. The line chart
-        below shows how far you bend up and down over time
+        below shows how far you bend up and down over time.
     </p>
     <div class="control">
         <label>
@@ -127,9 +132,13 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes="{bendValues}" callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ResetNotesButton
+            bind:notes="{bendValues}"
+            {saveToStorage}
+            callback="{draw}"
+        />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
     <MidiInput {pitchBend} />
 </main>

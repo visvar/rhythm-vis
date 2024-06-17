@@ -31,7 +31,7 @@ import SubDivisionDrums from './demos/sub-division-drums.svelte'
 export const DEMOS = [
   {
     id: 'accents',
-    title: '[new] Accents',
+    title: 'Accents',
     description: 'See if you accent the right notes.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard'],
@@ -173,7 +173,7 @@ export const DEMOS = [
   },
   {
     id: 'pitch-offset-cents',
-    title: '[new] Pitch Offset in Cents',
+    title: 'Pitch Offset in Cents',
     description: 'See how well you are on pitch.',
     input: 'audio',
     instruments: ['guitar/bass', 'keyboard', 'singing'],
@@ -230,11 +230,11 @@ export const DEMOS = [
   },
   {
     id: 'sub-division-drums',
-    title: '[new] Sub-Division (Drums)',
+    title: 'Sub-Division (Drums)',
     description: 'Learn rhythmic playing in different sub-divisions.',
     input: 'MIDI',
     instruments: ['drum', 'pc-key'],
-    skills: ['sub-division', 'timing-consistency'],
+    skills: ['sub-division', 'timing-consistency', 'synchronized-body-parts'],
     component: SubDivisionDrums
   },
   {
@@ -248,7 +248,7 @@ export const DEMOS = [
   },
   {
     id: 'strumming-pattern',
-    title: '[new] Strumming Pattern',
+    title: 'Strumming Pattern',
     description: 'Practice up/down strumming patterns.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
@@ -266,12 +266,12 @@ export const DEMOS = [
   },
   {
     id: 'two-handed-timing',
-    title: '[new] Two-Handed Timing',
+    title: 'Two-Handed Timing',
     description:
       'Play the same or a different rhythm with each hand and see your timing seperately.',
     input: 'MIDI',
     instruments: ['keyboard', 'pc-key'],
-    skills: ['sub-division', 'timing-consistency', 'syncopation'],
+    skills: ['sub-division', 'timing-consistency', 'syncopation', 'synchronized-timing', 'synchronized-body-parts'],
     component: TwoHandedTiming
   }
 ]

@@ -1,12 +1,13 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as Plot from '@observablehq/plot';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
+    import { VELOCITIES_LOGIC } from '../lib/music';
 
     /**
      * contains the demo meta information defined in App.js
@@ -16,64 +17,23 @@
     let width = 1000;
     let height = 600;
     let container;
-    // see https://en.wikipedia.org/wiki/Dynamics_(music)
-    // TODO: move to mvlib
-    const velocitiesLogic = new Map([
-        [0, 'silent'],
-        [16, 'ppp'],
-        [32, 'pp'],
-        [48, 'p'],
-        [64, 'mp'],
-        [80, 'mf'],
-        [96, 'f'],
-        [112, 'ff'],
-        [127, 'fff'],
-    ]);
-    const velocitiesFinale = new Map([
-        [0, 'silent'],
-        [10, 'pppp'],
-        [23, 'ppp'],
-        [36, 'pp'],
-        [49, 'p'],
-        [62, 'mp'],
-        [75, 'mf'],
-        [88, 'f'],
-        [101, 'ff'],
-        [114, 'fff'],
-        [127, 'ffff'],
-    ]);
-    const velocitiesMuseScore = new Map([
-        [0, 'silent'],
-        [5, 'ppppp'],
-        [10, 'pppp'],
-        [16, 'ppp'],
-        [33, 'pp'],
-        [49, 'p'],
-        [64, 'mp'],
-        [80, 'mf'],
-        [96, 'f'],
-        [112, 'ff'],
-        [126, 'fff'],
-        [127, 'ffff'],
-    ]);
-    const velocities = velocitiesLogic;
-
+    const velocities = VELOCITIES_LOGIC;
     // settings
     let isBinning = true;
     let barLimit = 50;
     // data
-    let noteVelocities = [];
+    let notes = [];
 
     const noteOn = (e) => {
-        noteVelocities.push(e.rawVelocity);
+        notes.push(e.rawVelocity);
         draw();
     };
 
     const draw = () => {
         // round bars' height to make view clearer
-        let binnedVelocities = noteVelocities;
+        let binnedVelocities = notes;
         if (isBinning) {
-            binnedVelocities = noteVelocities.map((d) => {
+            binnedVelocities = notes.map((d) => {
                 for (const v of velocities.keys()) {
                     if (d <= v) {
                         return v;
@@ -111,29 +71,42 @@
         container.appendChild(plot);
     };
 
-    const exportData = () => {
-        const data = {
+    onMount(draw);
+
+    /**
+     * Used for exporting and for automatics saving
+     */
+    const getExportData = () => {
+        return {
             isBinning,
             barLimit,
-            noteVelocities,
+            notes,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
-    const importData = async (e) => {
+    /**
+     * Import data from file or example
+     */
+    const loadData = (json) => {
         if (
-            noteVelocities.length === 0 ||
+            notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            const json = await parseJsonFile(e);
             isBinning = json.isBinning;
             barLimit = json.barLimit;
-            noteVelocities = json.noteVelocities;
+            // data
+            notes = json.notes;
             draw();
         }
     };
 
-    onMount(draw);
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -170,9 +143,9 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes="{noteVelocities}" callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
     <MidiInput {noteOn} />
 </main>

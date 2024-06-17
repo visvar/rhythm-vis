@@ -1,11 +1,16 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
     import MidiInput from '../demos/common/midi-input.svelte';
-    import { localStorageGetSetting } from '../lib/localstorage';
+    import {
+        localStorageAddRecording,
+        localStorageGetSetting,
+    } from '../lib/localstorage';
     import { detectChords } from '../lib/chords';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
 
     export let demoInfo;
     let width = 1000;
@@ -172,6 +177,41 @@
         firstTimeStamp = performance.now();
         draw();
     });
+
+    /**
+     * Used for exporting and for automatics saving
+     */
+    const getExportData = () => {
+        return {
+            pastSeconds,
+            maxNoteDistance,
+            notes,
+        };
+    };
+
+    /**
+     * Import data from file or example
+     */
+    const loadData = (json) => {
+        if (
+            notes.length === 0 ||
+            confirm('Import data and overwrite currently unsaved data?')
+        ) {
+            pastSeconds = json.pastSeconds;
+            maxNoteDistance = json.maxNoteDistance;
+            // data
+            notes = json.notes;
+            draw();
+        }
+    };
+
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -179,11 +219,11 @@
     <p class="explanation">
         This demo shows you how you strummed (up or down? which strings?), so
         you can make sure you strumm a pattern as intended. For example, try
-        strumming D U U D. The upper chart shows you the when you played a note
-        on which string. The lower chart shows you the time between the start of
-        the first and last note of the chord (rectangle width) and which strings
-        it spanned (rectangle y and height). Blue chords were strummed upward
-        and orange ones downward.
+        strumming <code>D U U D</code>. The upper chart shows you the when you
+        played a note on which string. The lower chart shows you the time
+        between the start of the first and last note of the chord (rectangle
+        width) and which strings it spanned (rectangle y and height). Blue
+        chords were strummed upward and orange ones downward.
     </p>
     <div class="control">
         <label title="time in seconds for past notes to be shown">
@@ -216,6 +256,7 @@
             title="Clear all played notes"
             on:click="{() => {
                 if (confirm('Reset played notes?')) {
+                    saveToStorage();
                     notes = [];
                     openNoteMap = new Map();
                     firstTimeStamp = performance.now();
@@ -224,6 +265,8 @@
         >
             reset
         </button>
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
     <MidiInput {noteOn} {noteOff} />
 </main>

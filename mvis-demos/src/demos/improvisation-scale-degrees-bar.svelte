@@ -1,17 +1,17 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Scale } from '@tonaljs/tonal';
     import { Midi, Utils } from 'musicvis-lib';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
 
     /**
      * contains the demo meta information defined in App.js
@@ -147,35 +147,49 @@
         container.appendChild(plot);
     };
 
-    const exportData = () => {
-        const data = {
+    onMount(draw);
+
+    /**
+     * Used for exporting and for automatics saving
+     */
+    const getExportData = () => {
+        return {
             root,
             scale,
             useColors,
             showOutsideScale,
-            notes,
             tempo,
+            // data
+            notes,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
-    const importData = async (e) => {
+    /**
+     * Import data from file or example
+     */
+    const loadData = (json) => {
         if (
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            const json = await parseJsonFile(e);
             root = json.root;
             scale = json.scale;
             useColors = json.useColors;
             showOutsideScale = json.showOutsideScale;
-            notes = json.notes;
             tempo = json.tempo;
+            // data
+            notes = json.notes;
             draw();
         }
     };
 
-    onMount(draw);
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -233,9 +247,9 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
         <MetronomeButton {tempo} accent="{4}" />
     </div>
     <MidiInput {noteOn} />

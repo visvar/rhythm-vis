@@ -1,12 +1,12 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import * as Plot from '@observablehq/plot';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import { PitchDetector } from 'pitchy';
     import { Midi, Note } from '@tonaljs/tonal';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
 
     /**
      * contains the demo meta information defined in App.js
@@ -93,37 +93,6 @@
         container.appendChild(plot2);
     };
 
-    /**
-     * export data to a JSON file as download
-     */
-    const exportData = () => {
-        const data = {
-            pastTime,
-            firstTimeStamp,
-            minVolumeDecibels,
-            bendValues,
-        };
-        downloadJsonFile(demoInfo.id, data);
-    };
-
-    /**
-     * import previously exported JSON file
-     * @param {InputEvent} e file input event
-     */
-    const importData = async (e) => {
-        if (
-            bendValues.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            const json = await parseJsonFile(e);
-            pastTime = json.pastTime;
-            firstTimeStamp = json.firstTimeStamp;
-            minVolumeDecibels = json.minVolumeDecibels;
-            bendValues = json.bendValues;
-            draw();
-        }
-    };
-
     onMount(() => {
         firstTimeStamp = performance.now();
         audioContext = new window.AudioContext();
@@ -138,9 +107,44 @@
         draw();
     });
 
+    /**
+     * Used for exporting and for automatics saving
+     */
+    const getExportData = () => {
+        return {
+            pastTime,
+            firstTimeStamp,
+            minVolumeDecibels,
+            bendValues,
+        };
+    };
+
+    /**
+     * Import data from file or example
+     */
+    const loadData = (json) => {
+        if (
+            bendValues.length === 0 ||
+            confirm('Import data and overwrite currently unsaved data?')
+        ) {
+            pastTime = json.pastTime;
+            firstTimeStamp = json.firstTimeStamp;
+            minVolumeDecibels = json.minVolumeDecibels;
+            bendValues = json.bendValues;
+            draw();
+        }
+    };
+
+    const saveToStorage = () => {
+        if (bendValues.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
     onDestroy(() => {
         clearTimeout(timeout);
         cancelAnimationFrame(timeout);
+        saveToStorage();
     });
 </script>
 
@@ -191,8 +195,12 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes="{bendValues}" callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ResetNotesButton
+            bind:notes="{bendValues}"
+            {saveToStorage}
+            callback="{draw}"
+        />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
 </main>

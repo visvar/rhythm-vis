@@ -112,7 +112,7 @@
         setUrlParam(window, 'd', 'overview');
       }}"
     >
-      ☰ overview
+      📋 overview
     </button>
     <!-- Tools page button -->
     <button

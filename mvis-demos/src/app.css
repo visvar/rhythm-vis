@@ -105,6 +105,8 @@ div.grid {
   grid-template-columns: repeat(3, auto);
   gap: 18px;
   /* grid-auto-rows: max-content; */
+  align-content: start;
+  justify-content: start;
 }
 
 div.card {
@@ -146,4 +148,12 @@ p.explanation {
   max-width: 850px;
   margin: auto;
   text-align: justify;
+}
+
+
+/* used for keyboard shortcut styling */
+code {
+  background-color: #eee;
+  padding: 4px;
+  border-radius: 4px;
 }

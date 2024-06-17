@@ -10,6 +10,9 @@
     import { noteDurations } from '../lib/note-durations.js';
     import MidiInput from './common/midi-input.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -31,6 +34,9 @@
     const possibilitiesNonDotted = possibilities.filter((d) => !d.dotted);
 
     const noteOn = async (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
             time: noteInSeconds,
@@ -110,7 +116,44 @@
         container.appendChild(plot2);
     };
 
+    /**
+     * Used for exporting and for automatics saving
+     */
+    const getExportData = () => {
+        return {
+            tempo,
+            pastNoteCount,
+            useDotted,
+            notes,
+        };
+    };
+
+    /**
+     * Import data from file or example
+     */
+    const loadData = (json) => {
+        if (
+            notes.length === 0 ||
+            confirm('Import data and overwrite currently unsaved data?')
+        ) {
+            tempo = json.tempo;
+            pastNoteCount = json.pastNoteCount;
+            useDotted = json.useDotted;
+            // data
+            notes = json.notes;
+            draw();
+        }
+    };
+
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
     onMount(draw);
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -148,13 +191,9 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton
-            bind:notes
-            callback="{() => {
-                firstTimeStamp = performance.now();
-                draw();
-            }}"
-        />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
         <MetronomeButton {tempo} accent="{4}" />
     </div>
     <MidiInput {noteOn} />

@@ -5,13 +5,12 @@
     import { Utils } from 'musicvis-lib';
     import Metronome from '../lib/Metronome.js';
     import { delay } from '../lib/lib';
-    import { downloadJsonFile } from '../lib/json.js';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
-    import { parseJsonFile } from '../lib/json.js';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -218,11 +217,6 @@
 
     onMount(draw);
 
-    onDestroy(() => {
-        clearInterval(tempoStepWatcher);
-        metro.stop();
-    });
-
     function quantizeAndScaleNotes(notes, quantize, quarter) {
         const firstNoteTime = notes[0];
         const quantized = notes.map((d) => {
@@ -267,10 +261,10 @@
     };
 
     /**
-     * export data to a JSON file as download
+     * Used for exporting and for automatics saving
      */
-    const exportData = () => {
-        const data = {
+    const getExportData = () => {
+        return {
             // settings
             initialTempo,
             targetTempo,
@@ -284,20 +278,17 @@
             exerciseBeatCount,
             practiceRecordings,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
-     * import previously exported JSON file
-     * @param {InputEvent} e file input event
+     * Import data from file or example
      */
-    const importData = async (e) => {
+    const loadData = (json) => {
         if (
             exerciseNotes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
             // settings
-            const json = await parseJsonFile(e);
             initialTempo = json.initialTempo;
             targetTempo = json.targetTempo;
             tempoIncrease = json.tempoIncrease;
@@ -312,6 +303,18 @@
             draw();
         }
     };
+
+    const saveToStorage = () => {
+        if (exerciseNotes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(() => {
+        clearInterval(tempoStepWatcher);
+        metro.stop();
+        saveToStorage();
+    });
 </script>
 
 <main class="demo">
@@ -357,6 +360,7 @@
         <label>
             pre-defined exercise
             <select on:change="{predefinedExercise}">
+                <option selected disabled></option>
                 {#each ['quarter', 'eighth', 'quarter-triplets', 'swing'] as d}
                     <option>{d}</option>
                 {/each}
@@ -402,6 +406,7 @@
             disabled="{currentStep !== ''}"
             on:click="{() => {
                 if (confirm('Reset practice?')) {
+                    saveToStorage();
                     practiceRecordings = new Map();
                     firstTimeStamp = performance.now();
                     draw();
@@ -410,8 +415,8 @@
         >
             reset practice
         </button>
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
     <PcKeyboardInput
         key=" "

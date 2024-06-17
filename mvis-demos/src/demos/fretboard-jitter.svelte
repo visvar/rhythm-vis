@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
@@ -7,6 +7,9 @@
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import { clamp } from '../lib/lib';
     import MidiInput from './common/midi-input.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
 
     /**
      * contains the demo meta information defined in App.js
@@ -125,8 +128,6 @@
                 Plot.dot(data, {
                     x: 'fretJitter',
                     y: 'stringJitter',
-                    // x: (d) => d.fretJitter,
-                    // y: (d) => d.stringJitter - 1,
                     // dy: cellSize / 2,
                     fill: (d, i) => i,
                     r: 'velocity',
@@ -140,6 +141,39 @@
     };
 
     onMount(draw);
+
+    /**
+     * Used for exporting and for automatics saving
+     */
+    const getExportData = () => {
+        return {
+            pastNoteCount,
+            notes,
+        };
+    };
+
+    /**
+     * Import data from file or example
+     */
+    const loadData = (json) => {
+        if (
+            notes.length === 0 ||
+            confirm('Import data and overwrite currently unsaved data?')
+        ) {
+            pastNoteCount = json.pastNoteCount;
+            // data
+            notes = json.notes;
+            draw();
+        }
+    };
+
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -153,9 +187,9 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes callback="{draw}" />
-        <!-- <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" /> -->
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
     <MidiInput {noteOn} {controlChange} />
 </main>

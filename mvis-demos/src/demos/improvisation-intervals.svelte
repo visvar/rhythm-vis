@@ -1,13 +1,13 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
 
     /**
      * contains the demo meta information defined in App.js
@@ -90,6 +90,7 @@
                 legend: useColors,
                 domain: ['minor', 'major', 'perfect', 'tritone'],
                 range: ['#7da2e8', '#ed796a', 'gold', '#ccc'],
+                marginLeft: 100,
             },
             x: {
                 // axis: false,
@@ -125,31 +126,45 @@
         container.appendChild(plot);
     };
 
-    const exportData = () => {
-        const data = {
+    onMount(draw);
+
+    /**
+     * Used for exporting and for automatics saving
+     */
+    const getExportData = () => {
+        return {
             filterUnison,
             useColors,
             useSemitones,
+            // data
             notes,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
-    const importData = async (e) => {
+    /**
+     * Import data from file or example
+     */
+    const loadData = (json) => {
         if (
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            const json = await parseJsonFile(e);
             filterUnison = json.filterUnison;
             useColors = json.useColors;
             useSemitones = json.useSemitones;
+            // data
             notes = json.notes;
             draw();
         }
     };
 
-    onMount(draw);
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -190,30 +205,12 @@
         >
             semitones {useSemitones ? toggleOnIcon : toggleOffIcon}
         </button>
-        <!-- <label
-            title="You can filter out bars that are shorter than a given note duration."
-        >
-            filtering
-            <select bind:value="{filterNote}" on:change="{draw}">
-                <option value="{0}">off</option>
-                {#each [16, 32, 64, 128] as g}
-                    <option value="{g}">1/{g} note</option>
-                {/each}
-            </select>
-        </label> -->
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
     <MidiInput {noteOn} />
 </main>
-
-<style>
-    /* adjust color legend position */
-    div :global(figure > div) {
-        margin-left: 100px;
-    }
-</style>

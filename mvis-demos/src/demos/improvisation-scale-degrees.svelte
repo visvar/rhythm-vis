@@ -1,15 +1,15 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Scale } from '@tonaljs/tonal';
     import { Midi } from 'musicvis-lib';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
 
     /**
      * contains the demo meta information defined in App.js
@@ -85,6 +85,7 @@
                 legend: useColors,
                 domain: ['root', 'scale', 'outside scale'],
                 range: ['#666', '#aaa', '#eee'],
+                marginLeft: 100,
             },
             y: {
                 tickFormat: (d) => noteNames[(d + rootNr) % 12],
@@ -122,30 +123,29 @@
         container.appendChild(plot);
     };
 
+    onMount(draw);
+
     /**
-     * export data to a JSON file as download
+     * Used for exporting and for automatics saving
      */
-    const exportData = () => {
-        const data = {
+    const getExportData = () => {
+        return {
             root,
             scale,
             useColors,
             showOutsideScale,
             notes,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
-     * import previously exported JSON file
-     * @param {InputEvent} e file input event
+     * Import data from file or example
      */
-    const importData = async (e) => {
+    const loadData = (json) => {
         if (
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            const json = await parseJsonFile(e);
             root = json.root;
             scale = json.scale;
             useColors = json.useColors;
@@ -155,7 +155,13 @@
         }
     };
 
-    onMount(draw);
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -199,30 +205,12 @@
         >
             non-scale notes {showOutsideScale ? toggleOnIcon : toggleOffIcon}
         </button>
-        <!-- <label
-            title="You can filter out bars that are shorter than a given note duration."
-        >
-            filtering
-            <select bind:value="{filterNote}" on:change="{draw}">
-                <option value="{0}">off</option>
-                {#each [16, 32, 64, 128] as g}
-                    <option value="{g}">1/{g} note</option>
-                {/each}
-            </select>
-        </label> -->
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
     <MidiInput {noteOn} />
 </main>
-
-<style>
-    /* adjust color legend position */
-    div :global(figure > div) {
-        margin-left: 100px;
-    }
-</style>

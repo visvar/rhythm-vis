@@ -26,7 +26,7 @@ export function localStorageKBytes() {
  * @returns {number} localStorage limit in KB
  */
 export function localStorageSizeKBytes() {
-  let string = ' '
+  let string = '12345678'
   let characters = 0
   while (true) {
     try {
@@ -91,6 +91,7 @@ export function localStorageGetSetting(key) {
  * @param {object} data data to save
  */
 export function localStorageAddRecording(demoId, data) {
+  console.log(`saving recording for ${demoId}`, data)
   const usage = localStorageGetUsageData()
   console.log(usage)
   if (!usage.demoRecordedData) {

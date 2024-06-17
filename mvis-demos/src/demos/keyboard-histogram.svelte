@@ -1,16 +1,16 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note } from '@tonaljs/tonal';
     import { getCs, clamp } from '../lib/lib';
     import { Midi } from 'musicvis-lib';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
     import NoteCountInput from './common/note-count-input.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import MidiInput from './common/midi-input.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage';
 
     /**
      * contains the demo meta information defined in App.js
@@ -101,39 +101,43 @@
                 ),
             ],
         });
-
         container.textContent = '';
         container.appendChild(plot);
     };
 
+    onMount(draw);
+
     /**
-     * export data to a JSON file as download
+     * Used for exporting and for automatics saving
      */
-    const exportData = () => {
-        const data = {
-            notes,
+    const getExportData = () => {
+        return {
             pastNoteCount,
+            notes,
         };
-        downloadJsonFile(demoInfo.id, data);
     };
 
     /**
-     * import previously exported JSON file
-     * @param {InputEvent} e file input event
+     * Import data from file or example
      */
-    const importData = async (e) => {
+    const loadData = (json) => {
         if (
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
-            const json = await parseJsonFile(e);
-            notes = json.notes;
             pastNoteCount = json.pastNoteCount;
+            notes = json.notes;
             draw();
         }
     };
 
-    onMount(draw);
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -147,9 +151,9 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes callback="{draw}" />
-        <ExportButton exportFunction="{exportData}" />
-        <ImportButton importFunction="{importData}" />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
     </div>
-    <MidiInput {noteOn} />
+    <MidiInput {noteOn} {controlChange} />
 </main>

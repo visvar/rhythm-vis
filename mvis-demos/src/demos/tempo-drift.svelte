@@ -4,9 +4,6 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { secondsPerBeatToBpm } from '../lib/lib';
-    import ExportButton from './common/export-button.svelte';
-    import ImportButton from './common/import-button.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
@@ -32,15 +29,15 @@
     let barLimit = 50;
     // data
     let firstTimeStamp = 0;
-    let noteOnTimes = [];
+    let notes = [];
     let estimatedTempo = 0;
 
     const noteOn = (e) => {
-        if (noteOnTimes.length === 0) {
+        if (notes.length === 0) {
             firstTimeStamp = e.timestamp;
         }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        noteOnTimes.push(noteInSeconds);
+        notes.push(noteInSeconds);
         draw();
     };
 
@@ -64,9 +61,7 @@
         ];
         const rulesText = ['0', '𝅘𝅥𝅘𝅥𝅘𝅥', '𝅘𝅥𝅯', '𝅘𝅥𝅮', '𝅘𝅥𝅮.', '𝅘𝅥', '𝅘𝅥.', '𝅗𝅥', '𝅗𝅥.'];
         // get inter-onset intervals
-        let iois = noteOnTimes.map((d, i) =>
-            i === 0 ? 0 : d - noteOnTimes[i - 1],
-        );
+        let iois = notes.map((d, i) => (i === 0 ? 0 : d - notes[i - 1]));
         if (filterNote !== 0) {
             const minSize = whole / filterNote;
             iois = iois.filter((d) => d >= minSize);
@@ -129,26 +124,28 @@
             binNote,
             filterNote,
             barLimit,
-            noteOnTimes,
+            notes,
         };
     };
 
     const loadData = (json) => {
         if (
-            noteOnTimes.length === 0 ||
+            notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
             tempo = json.tempo;
             binNote = json.binNote ?? 'off';
             filterNote = json.filterNote ?? 'off';
             barLimit = json.barLimit;
-            noteOnTimes = json.noteOnTimes;
+            notes = json.notes;
             draw();
         }
     };
 
     const saveToStorage = () => {
-        localStorageAddRecording(demoInfo.id, getExportData());
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
     };
 
     onMount(draw);
@@ -237,13 +234,7 @@
         <div>estimated: {estimatedTempo.toFixed(1)} bpm</div>
     {/if}
     <div class="control">
-        <ResetNotesButton
-            bind:notes="{noteOnTimes}"
-            callback="{() => {
-                saveToStorage();
-                draw();
-            }}"
-        />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>

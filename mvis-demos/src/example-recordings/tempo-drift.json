@@ -3,7 +3,7 @@
   "binNote": 128,
   "filterNote": 0,
   "barLimit": 100,
-  "noteOnTimes": [
+  "notes": [
     0,
     0.461,
     0.995,

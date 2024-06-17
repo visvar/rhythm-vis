@@ -23,3 +23,46 @@ export const GRIDS = [
  * Note values to bin by
  */
 export const BIN_NOTES = [16, 32, 64, 128, 24, 48, 96, 192]
+
+
+
+// see https://en.wikipedia.org/wiki/Dynamics_(music)
+// TODO: move to mvlib
+export const VELOCITIES_LOGIC = new Map([
+  [0, 'silent'],
+  [16, 'ppp'],
+  [32, 'pp'],
+  [48, 'p'],
+  [64, 'mp'],
+  [80, 'mf'],
+  [96, 'f'],
+  [112, 'ff'],
+  [127, 'fff']
+])
+export const VELOCITIES_FINALE = new Map([
+  [0, 'silent'],
+  [10, 'pppp'],
+  [23, 'ppp'],
+  [36, 'pp'],
+  [49, 'p'],
+  [62, 'mp'],
+  [75, 'mf'],
+  [88, 'f'],
+  [101, 'ff'],
+  [114, 'fff'],
+  [127, 'ffff']
+])
+export const VELOCITIES_MUSESCORE = new Map([
+  [0, 'silent'],
+  [5, 'ppppp'],
+  [10, 'pppp'],
+  [16, 'ppp'],
+  [33, 'pp'],
+  [49, 'p'],
+  [64, 'mp'],
+  [80, 'mf'],
+  [96, 'f'],
+  [112, 'ff'],
+  [126, 'fff'],
+  [127, 'ffff']
+])

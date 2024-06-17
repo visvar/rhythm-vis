@@ -2,6 +2,7 @@
 export const SKILL_TREE = [
   {
     title: 'timing',
+    description: 'Performing actions at the itended time',
     children: [
       {
         id: 'sub-division',
@@ -43,15 +44,11 @@ export const SKILL_TREE = [
         title: 'syncopation',
         description: 'When playing different rhythms together, the timing should be on grid'
       }
-      // {
-      //   id: 'polyrhythm',
-      //   title: 'polyrhythm',
-      //   description: 'When playing different rhythmic divisions at the same time, the timing should be on grid'
-      // }
     ]
   },
   {
     title: 'pitch',
+    description: 'Playing or modulating notes at the intended pitch (frequency in Hertz)',
     children: [
       {
         id: 'on-pitch',
@@ -92,6 +89,7 @@ export const SKILL_TREE = [
   },
   {
     title: 'dynamics',
+    description: 'Playing notes at the intended loudness and changing or varying this loudness as intended',
     children: [
       {
         id: 'constant-dynamics',
@@ -112,11 +110,17 @@ export const SKILL_TREE = [
   },
   {
     title: 'instrument',
+    description: 'Knowing and correctly using the instrument and all its part',
     children: [
       {
         id: 'instrument-layout',
         title: 'instrument layout',
         description: 'The musician should know where notes are played on the instrument and use different parts of it appropriately'
+      },
+      {
+        id: 'synchronized-body-parts',
+        title: 'synchronized body parts',
+        description: 'Different parts of the instrument should be played with synchronized timing when played with mutliple body parts: hands, feet, mouth, ...'
       },
       {
         id: 'strumming-direction',
@@ -129,8 +133,31 @@ export const SKILL_TREE = [
         description: 'Only the intended strings should be strummed'
       }
     ]
+  },
+  {
+    title: 'ensemble',
+    description: 'Playing together with other musicians that use the same or a different type of instrument',
+    children: [
+      {
+        id: 'synchronized-timing',
+        title: 'synchronized timing',
+        description: 'Multiple musicians playing together should play to the same timing grid'
+      },
+      {
+        id: 'same-key',
+        title: 'same key',
+        description: 'Multiple musicians playing together should play in the same key and change it at the same time'
+      }
+    ]
   }
 ]
+
+// assign numbering
+for (const group of SKILL_TREE) {
+  for (const [index, skill] of group.children.entries()) {
+    skill.label = `${group.title.at(0).toUpperCase()}${index + 1}`
+  }
+}
 
 function getLeafs(children) {
   let leafs = []

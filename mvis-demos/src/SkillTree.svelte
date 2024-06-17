@@ -24,6 +24,7 @@
     <button on:click="{() => (currentSkills = allSkills)}"> show all </button>
     {#each skillTree as node}
         <button class="node" on:click="{() => toggleNode(node)}">
+            📁
             {node.shown ? caretUpIcon : caretDownIcon}
             {node.title}
         </button>

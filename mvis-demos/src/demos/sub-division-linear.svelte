@@ -4,11 +4,8 @@
     import * as Plot from '@observablehq/plot';
     import * as kde from 'fast-kde';
     import * as d3 from 'd3';
-    import ImportButton from './common/import-button.svelte';
-    import ExportButton from './common/export-button.svelte';
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
-    import { downloadJsonFile, parseJsonFile } from '../lib/json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import { clamp } from '../lib/lib';
     import { BIN_NOTES, GRIDS } from '../lib/music';
@@ -34,14 +31,14 @@
     let noteTickLimit = 100;
     // data
     let firstTimeStamp = 0;
-    let noteOnTimes = [];
+    let notes = [];
 
     const noteOn = (e) => {
-        if (noteOnTimes.length === 0) {
+        if (notes.length === 0) {
             firstTimeStamp = e.timestamp;
         }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        noteOnTimes.push(noteInSeconds);
+        notes.push(noteInSeconds);
         draw();
     };
 
@@ -77,8 +74,8 @@
     const draw = () => {
         const [grid1, grid2] = grid.split(':').map((d) => +d);
         const quarter = Utils.bpmToSecondsPerBeat(tempo);
-        const notes = noteOnTimes.map((d) => (d + adjustTime) / quarter);
-        const clamped = notes.map((d) => d % grid1);
+        const notesInBeats = notes.map((d) => (d + adjustTime) / quarter);
+        const clamped = notesInBeats.map((d) => d % grid1);
 
         // KDE
         let kdePoints = [];
@@ -187,6 +184,8 @@
         container.appendChild(tickPlot);
     };
 
+    onMount(draw);
+
     /**
      * Used for exporting and for automatics saving
      */
@@ -197,13 +196,13 @@
             binNote,
             adjustTime,
             noteTickLimit,
-            noteOnTimes,
+            notes,
         };
     };
 
     const loadData = (json) => {
         if (
-            noteOnTimes.length === 0 ||
+            notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
             tempo = json.tempo;
@@ -211,16 +210,17 @@
             binNote = json.binNote;
             adjustTime = json.adjustTime;
             noteTickLimit = json.noteTickLimit ?? 0;
-            noteOnTimes = json.noteOnTimes;
+            // data
+            notes = json.notes;
             draw();
         }
     };
 
     const saveToStorage = () => {
-        localStorageAddRecording(demoInfo.id, getExportData());
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
     };
-
-    onMount(draw);
 
     onDestroy(saveToStorage);
 </script>
@@ -287,13 +287,7 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <ResetNotesButton
-            bind:notes="{noteOnTimes}"
-            callback="{() => {
-                saveToStorage();
-                draw();
-            }}"
-        />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>

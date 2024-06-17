@@ -18,7 +18,7 @@
 
                 return [tree.title, ...childPaths];
             } else {
-                return [tree.title];
+                return [`${tree.label} ${tree.title}`];
             }
         };
         const treePaths = getPaths({ title: 'skills', children: SKILL_TREE });
@@ -26,7 +26,7 @@
             axis: null,
             margin: 10,
             marginLeft: 60,
-            marginRight: 160,
+            marginRight: 200,
             width: 800,
             marks: [
                 Plot.cluster(treePaths, {

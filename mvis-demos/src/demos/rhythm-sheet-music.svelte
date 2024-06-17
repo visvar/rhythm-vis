@@ -1,5 +1,5 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Utils } from 'musicvis-lib';
@@ -10,6 +10,10 @@
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import { noteDurations } from '../lib/note-durations.js';
     import MidiInput from './common/midi-input.svelte';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
+    import ExportButton2 from './common/export-button2.svelte';
+    import ImportButton2 from './common/import-button2.svelte';
+    import { localStorageAddRecording } from '../lib/localstorage.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -22,12 +26,12 @@
     let tempo = 120;
     let pastNoteCount = 10;
     let useDotted = true;
-    // colors
-    const orange = d3.schemeObservable10[1];
-    const blue = d3.schemeObservable10[0];
     // data
     let firstTimeStamp = 0;
     let notes = [];
+    // colors
+    const orange = d3.schemeObservable10[1];
+    const blue = d3.schemeObservable10[0];
     // domain knowledge
     // 𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯
     const possibilities = noteDurations;
@@ -91,13 +95,6 @@
                     y: 0,
                     fontSize: 40,
                 }),
-                // amount of beats
-                // Plot.text(bestFit, {
-                //     text: 'beats',
-                //     x: (d, i) => i,
-                //     y: 1,
-                //     fontSize: 20,
-                // }),
                 // percent deviation
                 Plot.text(bestFit, {
                     text: (d) => d.offsetPercent - 100,
@@ -131,7 +128,6 @@
                     y: (d) => d.offsetPercent - 100,
                     fill: (d) => (d.offsetPercent < 100 ? orange : blue),
                 }),
-                // Plot.ruleY(d3.range(-30, 31, 10), { stroke: '#aaa' }),
                 Plot.ruleY([0]),
             ],
         });
@@ -139,6 +135,45 @@
     };
 
     onMount(draw);
+
+    /**
+     * Used for exporting and for automatics saving
+     */
+    const getExportData = () => {
+        return {
+            // settings
+            tempo,
+            pastNoteCount,
+            useDotted,
+            // data
+            notes,
+        };
+    };
+
+    /**
+     * Import data from file or example
+     */
+    const loadData = (json) => {
+        if (
+            notes.length === 0 ||
+            confirm('Import data and overwrite currently unsaved data?')
+        ) {
+            tempo = json.tempo;
+            pastNoteCount = json.pastNoteCount;
+            useDotted = json.useDotted;
+            // data
+            notes = json.notes;
+            draw();
+        }
+    };
+
+    const saveToStorage = () => {
+        if (notes.length > 0) {
+            localStorageAddRecording(demoInfo.id, getExportData());
+        }
+    };
+
+    onDestroy(saveToStorage);
 </script>
 
 <main class="demo">
@@ -169,18 +204,9 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
-            title="Clear played notes"
-            on:click="{() => {
-                if (confirm('Clear notes?')) {
-                    firstTimeStamp = performance.now();
-                    notes = [];
-                    draw();
-                }
-            }}"
-        >
-            reset
-        </button>
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
         <MetronomeButton {tempo} accent="{4}" />
     </div>
     <PcKeyboardInput

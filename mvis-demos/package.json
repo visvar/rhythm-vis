@@ -13,12 +13,12 @@
     "upd": "ncu -u"
   },
   "devDependencies": {
-    "@sveltejs/vite-plugin-svelte": "^3.1.0",
-    "svelte": "^4.2.17",
-    "vite": "^5.2.11"
+    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "svelte": "^4.2.18",
+    "vite": "^5.3.1"
   },
   "dependencies": {
-    "@observablehq/plot": "^0.6.14",
+    "@observablehq/plot": "^0.6.15",
     "@stdlib/stdlib": "^0.2.0",
     "@tonaljs/tonal": "^4.10.0",
     "aframe": "^1.6.0",
@@ -29,7 +29,7 @@
     "file-saver": "^2.0.5",
     "gh-pages": "^6.1.1",
     "musicvis-lib": "^0.57.1",
-    "npm": "^10.8.0",
+    "npm": "^10.8.1",
     "npm-check-updates": "^16.14.20",
     "pitchy": "^4.1.0",
     "underscore": "^1.13.6",
