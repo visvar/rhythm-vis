@@ -15,6 +15,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
+    import LoadFromStorageButton from './common/load-from-storage-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -323,13 +324,14 @@
     <div class="visualization" bind:this="{containerLeft}"></div>
     <div class="visualization" bind:this="{containerRight}"></div>
     <div class="control">
-        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
         <MetronomeButton {tempo} accent="{+gridLeft.split(':')[0]}" />
         <RhythmPlayerButton
             notes="{getRhythmNotes(gridLeft, gridRight, tempo)}"
         />
+        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ImportButton2 {loadData} />
+        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <PcKeyboardInput
         key="f"

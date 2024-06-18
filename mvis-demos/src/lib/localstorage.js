@@ -107,3 +107,19 @@ export function localStorageAddRecording(demoId, data) {
   })
   localStorageSetUsageData(usage)
 }
+
+/**
+ * Returns all locally stored recordings for the given demo
+ * @param {string} demoId demo ID
+ * @returns {object[]} recording objects
+ */
+export function localSorageGetRecordings(demoId) {
+  const usage = localStorageGetUsageData()
+  if (!usage.demoRecordedData) {
+    return []
+  }
+  if (!usage.demoRecordedData[demoId]) {
+    return []
+  }
+  return usage.demoRecordedData[demoId]
+}

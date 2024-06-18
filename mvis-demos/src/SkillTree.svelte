@@ -55,6 +55,7 @@
 
     button.skill {
         font-weight: normal;
+        text-align: left;
     }
 
     button.node,

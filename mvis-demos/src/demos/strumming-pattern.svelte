@@ -11,6 +11,7 @@
     import { detectChords } from '../lib/chords';
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
+    import LoadFromStorageButton from './common/load-from-storage-button.svelte';
 
     export let demoInfo;
     let width = 1000;
@@ -267,6 +268,7 @@
         </button>
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} {noteOff} />
 </main>

@@ -40,9 +40,22 @@
     }
   };
 
+  // warn user to not quit window before leaving demo
+  window.onbeforeunload = function () {
+    if (
+      currentDemo &&
+      !['tools', 'settings', 'overview'].includes(currentDemo)
+    ) {
+      return 'Please go back to the main page first to prevent data loss';
+    }
+  };
+
   // track how often and when each demo is used
   $: {
-    if (currentDemo && currentDemo !== 'tools') {
+    if (
+      currentDemo &&
+      !['tools', 'settings', 'overview'].includes(currentDemo)
+    ) {
       let usage;
       if (localStorage.getItem('usage') !== null) {
         usage = localStorage.getItem('usage');

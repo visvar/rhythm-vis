@@ -10,6 +10,7 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
+    import LoadFromStorageButton from './common/load-from-storage-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -202,6 +203,7 @@
         </button>
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} {noteOff} {controlChange} />
 </main>
