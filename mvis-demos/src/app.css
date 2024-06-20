@@ -87,6 +87,11 @@ button {
 }
 
 
+svg text {
+  user-select: none;
+  pointer-events: none;
+}
+
 /* main page */
 
 

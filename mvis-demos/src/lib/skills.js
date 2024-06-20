@@ -6,7 +6,7 @@ export const SKILL_TREE = [
     children: [
       {
         id: 'sub-division',
-        title: 'playing to grid',
+        title: 'sub-division',
         description: 'Note onsets should follow a sub-division of beats consistently, for example playing straight eighth notes or quarter triplets'
       },
       {

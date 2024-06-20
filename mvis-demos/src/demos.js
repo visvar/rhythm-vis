@@ -24,6 +24,7 @@ import SubDivisionLinear from './demos/sub-division-linear.svelte'
 import TempoDrift from './demos/tempo-drift.svelte'
 import TwoHandedTiming from './demos/two-handed-timing.svelte'
 import SubDivisionDrums from './demos/sub-division-drums.svelte'
+import SubDivisionHistory from './demos/sub-division-history.svelte'
 
 /**
  * All demos defined here
@@ -35,7 +36,9 @@ export const DEMOS = [
     description: 'See if you accent the right notes.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard'],
+    data: ['order', 'ioi', 'velocity'],
     skills: ['accents'],
+    patterns: ['duration/ioi as symbol', 'linear time'],
     component: Accents
   },
   {
@@ -45,7 +48,9 @@ export const DEMOS = [
       'See how spaced out the notes in a chord or arpeggio are, and how much time lies between these.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard'],
+    data: ['order', 'onset/time', 'ioi', 'pitch'],
     skills: ['chord-timing', 'arpeggio-timing'],
+    patterns: ['onset as tick', 'compressed pitches', 'linear time', 'chord detection'],
     component: ChordArpeggioTiming
   },
   {
@@ -55,7 +60,9 @@ export const DEMOS = [
       'See what chords you play on a guitar/bass as chord diagrams.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
+    data: ['order', 'onset/time', 'pitch', 'velocity', 'instrument'],
     skills: ['chord-notes'],
+    patterns: ['instrument layout', 'chord detection'],
     component: ChordDiagrams
   },
   {
@@ -64,7 +71,9 @@ export const DEMOS = [
     description: 'Check how well you control the loudness of notes.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard'],
+    data: ['order', 'dynamics'],
     skills: ['constant-dynamics', '(de)crescendo', 'accents'],
+    patterns: ['dynamics as bar', 'baselines as grid'],
     component: Dynamics
   },
   {
@@ -73,7 +82,9 @@ export const DEMOS = [
     description: 'See how often you play different fretboard positions.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
+    data: ['instrument'],
     skills: ['instrument-layout'],
+    patterns: ['distribution as heatmap', 'instrument layout'],
     component: FretboardHeatmap
   },
   {
@@ -83,7 +94,9 @@ export const DEMOS = [
       'Once you play a note, see where on the fretboard you can reach different intervals to the last played note.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
+    data: ['order', 'pitch', 'instrument', 'pitch-interval'],
     skills: ['instrument-layout', 'pitch-intervals'],
+    patterns: [],
     component: FretboardImprovisationIntervals
   },
   {
@@ -92,7 +105,9 @@ export const DEMOS = [
     description: 'See how you play different fretboard positions over time.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
+    data: ['order', 'instrument'],
     skills: ['instrument-layout'],
+    patterns: ['distribution as jitter', 'instrument layout'],
     component: FretboardJitter
   },
   {
@@ -101,7 +116,9 @@ export const DEMOS = [
     description: 'See how you play different fretboard positions over time.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
+    data: ['onset/time', 'instrument'],
     skills: ['instrument-layout'],
+    patterns: ['spacetime cube', 'instrument layout'],
     component: FretboardSpacetimeCube
   },
   {
@@ -111,7 +128,9 @@ export const DEMOS = [
       'See how often you use different intervals in improvisation.',
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
+    data: ['order', 'pitch', 'pitch-interval'],
     skills: ['pitch-intervals'],
+    patterns: [],
     component: ImprovisationIntervals
   },
   {
@@ -121,7 +140,9 @@ export const DEMOS = [
       'See how often you use different kinds of notes in improvisation.',
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
+    data: ['order', 'duration', 'pitch'],
     skills: ['pitch-intervals', 'scale-degrees'],
+    patterns: ['note role as color', 'duration/ioi as bar'],
     component: ImprovisationNoteColors
   },
   {
@@ -131,7 +152,9 @@ export const DEMOS = [
       'See how often you use different scale degrees in improvisation.',
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
+    data: ['pitch'],
     skills: ['pitch-intervals', 'scale-degrees'],
+    patterns: ['note role as color', 'distribution as histogram'],
     component: ImprovisationScaleDegrees
   },
   {
@@ -141,7 +164,9 @@ export const DEMOS = [
       'See how often you use different scale degrees in improvisation, for each played bar.',
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
+    data: ['pitch', 'onset/time'],
     skills: ['pitch-intervals', 'scale-degrees'],
+    patterns: ['note role as color', 'distribution as histogram', 'facets', 'time segments'],
     component: ImprovisationScaleDegreesBar
   },
   {
@@ -150,7 +175,9 @@ export const DEMOS = [
     description: 'See how often you play different keyboard keys.',
     input: 'MIDI',
     instruments: ['keyboard'],
+    data: ['pitch', 'instrument'],
     skills: ['instrument-layout'],
+    patterns: ['distribution as histogram', 'instrument layout'],
     component: KeyboardHistogram
   },
   {
@@ -159,7 +186,9 @@ export const DEMOS = [
     description: 'Practice different kinds of pitch bends.',
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
+    data: ['onset/time', 'pitch'],
     skills: ['bending', 'vibrato'],
+    patterns: ['pitch as line', 'baselines as grid'],
     component: PitchBend
   },
   {
@@ -168,7 +197,9 @@ export const DEMOS = [
     description: 'Practice different kinds of pitch bends.',
     input: 'audio',
     instruments: ['guitar/bass', 'keyboard', 'singing'],
+    data: ['onset/time', 'pitch'],
     skills: ['bending', 'vibrato'],
+    patterns: ['pitch as line', 'baselines as grid'],
     component: PitchBendAudio
   },
   {
@@ -177,7 +208,9 @@ export const DEMOS = [
     description: 'See how well you are on pitch.',
     input: 'audio',
     instruments: ['guitar/bass', 'keyboard', 'singing'],
+    data: ['onset/time', 'pitch'],
     skills: ['pitch-keeping', 'bending', 'vibrato'],
+    patterns: ['pitch as line', 'baselines as grid', 'explicit difference'],
     component: PitchOffsetCents
   },
   {
@@ -187,7 +220,9 @@ export const DEMOS = [
       'This demo displays the notes you play as staff notation (𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯) and offset in percent.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
+    data: ['order', 'duration/ioi'],
     skills: ['sub-division'],
+    patterns: ['duration/ioi as symbol'],
     component: RhythmSheetMusic
   },
   {
@@ -197,17 +232,21 @@ export const DEMOS = [
       'Record a short exercise at a slow tempo, then practice it with steadily increasing tempo.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
+    data: ['onset/time', 'exercise', 'baselines as grid'],
     skills: ['sub-division', 'timing-consistency'],
+    patterns: ['phrase repetition', 'facets', 'increasing difficulty'],
     component: SpeedUp
   },
   {
     id: 'speed-up-tab',
-    title: ' Speed-Up Tab',
+    title: 'Speed-Up Tab',
     description:
       'Record a short guitar exercise at a slow tempo, then practice it with steadily increasing tempo.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
+    data: ['onset/time', 'exercise', 'baselines as grid', 'instrument'],
     skills: ['sub-division', 'timing-consistency'],
+    patterns: ['phrase repetition', 'facets', 'increasing difficulty'],
     component: SpeedUpTab
   },
   {
@@ -216,7 +255,9 @@ export const DEMOS = [
     description: 'Learn rhythmic playing in different sub-divisions.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
+    data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
+    patterns: ['cyclic time', 'circular encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density'],
     component: SubDivision
   },
   {
@@ -225,7 +266,9 @@ export const DEMOS = [
     description: 'Learn rhythmic playing in different sub-divisions.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
+    data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
+    patterns: ['cyclic time', 'circular encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'target areas'],
     component: SubDivisionBar
   },
   {
@@ -234,7 +277,9 @@ export const DEMOS = [
     description: 'Learn rhythmic playing in different sub-divisions.',
     input: 'MIDI',
     instruments: ['drum', 'pc-key'],
+    data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'synchronized-body-parts'],
+    patterns: ['cyclic time', 'linear encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
     component: SubDivisionDrums
   },
   {
@@ -243,8 +288,21 @@ export const DEMOS = [
     description: 'Learn rhythmic playing in different sub-divisions.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
+    data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
+    patterns: ['cyclic time', 'linear encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density'],
     component: SubDivisionLinear
+  },
+  {
+    id: 'sub-division-history',
+    title: 'Sub-Division (History)',
+    description: 'Learn rhythmic playing in different sub-divisions.',
+    input: 'MIDI',
+    instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
+    data: ['onset/time'],
+    skills: ['sub-division', 'timing-consistency'],
+    patterns: ['cyclic time', 'circular encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
+    component: SubDivisionHistory
   },
   {
     id: 'strumming-pattern',
@@ -252,7 +310,9 @@ export const DEMOS = [
     description: 'Practice up/down strumming patterns.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
+    data: ['onset/time', 'instrument'],
     skills: ['strumming-direction', 'strumming-strings'],
+    patterns: ['direction as arrow', 'direction as color', 'chord detection'],
     component: StrummingPattern
   },
   {
@@ -261,7 +321,9 @@ export const DEMOS = [
     description: 'Keep your tempo constant over a longer stretch of playing.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
+    data: ['order', 'duration/ioi'],
     skills: ['tempo-keeping'],
+    patterns: ['duration/ioi as bar', 'baselines as grid'],
     component: TempoDrift
   },
   {
@@ -271,7 +333,9 @@ export const DEMOS = [
       'Play the same or a different rhythm with each hand and see your timing seperately.',
     input: 'MIDI',
     instruments: ['keyboard', 'pc-key'],
+    data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'syncopation', 'synchronized-timing', 'synchronized-body-parts'],
+    patterns: ['cyclic time', 'linear encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
     component: TwoHandedTiming
   }
 ]

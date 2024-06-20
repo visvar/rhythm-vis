@@ -77,9 +77,11 @@
   console.log('usage data', localStorageGetUsageData());
 
   // tags
-  const allInstruments = new Set(DEMOS.flatMap((d) => d.instruments).sort());
   const allInputs = new Set(DEMOS.flatMap((d) => d.input).sort());
+  const allInstruments = new Set(DEMOS.flatMap((d) => d.instruments).sort());
+  const allData = new Set(DEMOS.flatMap((d) => d.data));
   const allSkills = new Set(DEMOS.flatMap((d) => d.skills).sort());
+  const allPatterns = new Set(DEMOS.flatMap((d) => d.patterns).sort());
   // filter
   let currentInstruments = new Set(allInstruments);
   let currentInputs = new Set(allInputs);
@@ -173,6 +175,26 @@
         <SkillTree bind:currentSkills {allSkills} />
         <!-- task, instrument, input filters -->
         <div>
+          <h2>input</h2>
+          <button
+            on:click="{() => {
+              currentInputs = new Set(allInputs);
+            }}"
+          >
+            show all
+          </button>
+          {#each allInputs.values() as d}
+            <button
+              on:click="{() => (currentInputs = updSet(currentInputs, d))}"
+              on:dblclick="{() => (currentInputs = new Set([d]))}"
+              class="{currentInputs.has(d) ? 'active' : 'hidden'}"
+              title="click to toggle, double-click to only show this"
+            >
+              {d}
+            </button>
+          {/each}
+        </div>
+        <div>
           <h2>instrument</h2>
           <button
             on:click="{() => {
@@ -187,26 +209,6 @@
                 (currentInstruments = updSet(currentInstruments, d))}"
               on:dblclick="{() => (currentInstruments = new Set([d]))}"
               class="{currentInstruments.has(d) ? 'active' : 'hidden'}"
-              title="click to toggle, double-click to only show this"
-            >
-              {d}
-            </button>
-          {/each}
-        </div>
-        <div>
-          <h2>input</h2>
-          <button
-            on:click="{() => {
-              currentInputs = new Set(allInputs);
-            }}"
-          >
-            show all
-          </button>
-          {#each allInputs.values() as d}
-            <button
-              on:click="{() => (currentInputs = updSet(currentInputs, d))}"
-              on:dblclick="{() => (currentInputs = new Set([d]))}"
-              class="{currentInputs.has(d) ? 'active' : 'hidden'}"
               title="click to toggle, double-click to only show this"
             >
               {d}
@@ -261,12 +263,26 @@
     >
       💾 export usage
     </button>
+    <button
+      title="Reset usage statistics"
+      on:click="{() => {
+        if (
+          confirm(
+            'Please only do this after exporting usage data! Do you really want to delete now?',
+          )
+        ) {
+          localStorage.removeItem('usage');
+        }
+      }}"
+    >
+      🚮 delete usage
+    </button>
   {:else if currentDemo === 'tools'}
     <Tools bind:currentTool />
   {:else if currentDemo === 'settings'}
     <Settings />
   {:else if currentDemo === 'overview'}
-    <DemoOverview demos="{DEMOS}" {allInstruments} />
+    <DemoOverview demos="{DEMOS}" {allInstruments} {allData} {allPatterns} />
   {:else}
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />

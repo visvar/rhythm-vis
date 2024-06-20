@@ -5,8 +5,6 @@
     export let loadData = (e) => {};
 
     const recordings = localSorageGetRecordings(demoId).reverse();
-
-    console.log(recordings);
 </script>
 
 <select on:change="{(e) => loadData(recordings[+e.target.value].data)}">

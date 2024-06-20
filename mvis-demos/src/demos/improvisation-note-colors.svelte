@@ -18,7 +18,7 @@
     export let demoInfo;
 
     let width = 1200;
-    let height = 280;
+    let height = 400;
     let container;
     // settings
     let root = 'A';

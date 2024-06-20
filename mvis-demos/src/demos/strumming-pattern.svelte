@@ -68,17 +68,22 @@
     };
 
     const draw = () => {
-        const maxTime = (performance.now() - firstTimeStamp) / 1000 + 0.5;
-        const minTime = maxTime - pastSeconds;
-        const filtered = notes.filter((d) => {
+        const filteredNoise = notes.filter((d) => {
             // only handle recent notes
             return (
-                (d.end > minTime || d.end === undefined) &&
                 // filter noise
                 d.velocity >= minVelo &&
                 (d.duration === undefined || d.duration >= minDur)
             );
         });
+        let maxTime = 0.5;
+        if (filteredNoise.length > 0) {
+            maxTime = notes.at(-1).time + 0.5;
+        }
+        const minTime = maxTime - pastSeconds;
+        const filtered = notes.filter(
+            (d) => d.end > minTime || d.end === undefined,
+        );
         const chords = detectChords(filtered, maxNoteDistance);
         const chordInfo = chords.map((chord) => {
             const stringExtent = d3.extent(chord, (d) => d.string);
@@ -86,12 +91,18 @@
             const timeDelta = chord
                 .slice(1)
                 .map((n, i) => n.string - chord[i].string);
+            let direction;
+            if (stringExtent[0] === stringExtent[1]) {
+                direction = 'single';
+            } else {
+                direction = d3.median(timeDelta) > 0 ? 'up' : 'down';
+            }
             return {
                 minString: stringExtent[0],
                 maxString: stringExtent[1],
                 minTime: timeExtent[0],
                 maxTime: timeExtent[1],
-                direction: d3.median(timeDelta) > 0 ? 'up' : 'down',
+                direction,
             };
         });
         // plot
@@ -148,6 +159,7 @@
                 grid: true,
                 domain: d3.range(0, stringCount),
                 tickFormat: (d) => tuningNotes[d],
+                padding: 0.7,
             },
             color: {
                 type: 'categorical',
@@ -155,7 +167,7 @@
                 legend: true,
                 marginLeft: 100,
                 width: 300,
-                domain: ['up', 'down'],
+                domain: ['up', 'down', 'single'],
             },
             marks: [
                 Plot.rect(chordInfo, {
@@ -166,6 +178,15 @@
                     y2: 'maxString',
                     fill: 'direction',
                     rx: 5,
+                }),
+                Plot.dot(chordInfo, {
+                    clip: true,
+                    x: (d) => (d.minTime + d.maxTime) / 2,
+                    y: (d) =>
+                        d.direction === 'down' ? d.minString : d.maxString,
+                    fill: 'direction',
+                    symbol: 'diamond',
+                    r: 10,
                 }),
             ],
         });
@@ -224,7 +245,11 @@
         played a note on which string. The lower chart shows you the time
         between the start of the first and last note of the chord (rectangle
         width) and which strings it spanned (rectangle y and height). Blue
-        chords were strummed upward and orange ones downward.
+        chords were strummed upward and orange ones downward. The strummin
+        direction is further indicated by arrow heads. Due to how guitar tabs
+        are drawn from the point of view of the guitarist, downward strumming
+        will result in upward arrows in the lower visualization. Single notes
+        are drawn in red.
     </p>
     <div class="control">
         <label title="time in seconds for past notes to be shown">
