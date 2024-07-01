@@ -1,4 +1,5 @@
 <script>
+  import { version } from '../package.json';
   import { getUrlParam, setUrlParam } from './lib/url';
   import { setHasAny, updSet } from './lib/lib';
   import {
@@ -287,6 +288,7 @@
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
   {/if}
+  version {version}
 </main>
 
 <style>

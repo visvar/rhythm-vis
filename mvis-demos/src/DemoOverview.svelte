@@ -99,7 +99,11 @@
                 label: matrixRow,
             },
             color: {
+                label: 'number of demos',
+                legend: true,
                 scheme: 'blues',
+                // scheme: 'cividis',
+                // reverse: true,
             },
             marks: [
                 Plot.cell(data2, {

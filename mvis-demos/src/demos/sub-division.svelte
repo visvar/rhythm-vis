@@ -356,10 +356,7 @@
             {showKde ? 'area' : 'bars'}
         </button>
     </div>
-    <div
-        class="visualization"
-        on:touchstart="{() => noteOn({ timestamp: performance.now() })}"
-    >
+    <div class="visualization">
         <canvas
             bind:this="{canvas}"
             style="width: {width}px; height: {height}px"

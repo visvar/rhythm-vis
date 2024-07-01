@@ -1,3 +1,5 @@
+import { version } from '../../package.json'
+
 export const SETTINGS_KEY = 'demo-settings'
 export const USAGE_KEY = 'usage'
 
@@ -103,6 +105,7 @@ export function localStorageAddRecording(demoId, data) {
   console.log(usage)
   usage.demoRecordedData[demoId].push({
     date: (new Date()).toISOString(),
+    softwareVersion: version,
     data
   })
   localStorageSetUsageData(usage)

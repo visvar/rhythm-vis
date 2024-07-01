@@ -25,6 +25,7 @@ import TempoDrift from './demos/tempo-drift.svelte'
 import TwoHandedTiming from './demos/two-handed-timing.svelte'
 import SubDivisionDrums from './demos/sub-division-drums.svelte'
 import SubDivisionHistory from './demos/sub-division-history.svelte'
+import PitchOffsetCentsNeedle from './demos/pitch-offset-cents-needle.svelte'
 
 /**
  * All demos defined here
@@ -38,7 +39,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard'],
     data: ['order', 'ioi', 'velocity'],
     skills: ['accents'],
-    patterns: ['duration/ioi as symbol', 'linear time'],
+    patterns: ['duration/ioi as symbol', 'dynamics as font-size'],
     component: Accents
   },
   {
@@ -50,7 +51,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard'],
     data: ['order', 'onset/time', 'ioi', 'pitch'],
     skills: ['chord-timing', 'arpeggio-timing'],
-    patterns: ['onset as tick', 'compressed pitches', 'linear time', 'chord detection'],
+    patterns: ['onset as tick', 'compressed pitches', 'chord detection'],
     component: ChordArpeggioTiming
   },
   {
@@ -214,6 +215,17 @@ export const DEMOS = [
     component: PitchOffsetCents
   },
   {
+    id: 'pitch-offset-cents-needle',
+    title: 'Pitch Offset in Cents (Needle)',
+    description: 'See how well you are on pitch.',
+    input: 'audio',
+    instruments: ['guitar/bass', 'keyboard', 'singing'],
+    data: ['onset/time', 'pitch'],
+    skills: ['pitch-keeping'],
+    patterns: ['pitch as angle', 'baselines as grid', 'explicit difference'],
+    component: PitchOffsetCentsNeedle
+  },
+  {
     id: 'rhythm-sheet-music',
     title: 'Rhythm Sheet Music',
     description:
@@ -221,7 +233,7 @@ export const DEMOS = [
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['order', 'duration/ioi'],
-    skills: ['sub-division'],
+    skills: ['sub-division', 'tempo-keeping'],
     patterns: ['duration/ioi as symbol'],
     component: RhythmSheetMusic
   },
@@ -234,7 +246,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time', 'exercise', 'baselines as grid'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['phrase repetition', 'facets', 'increasing difficulty'],
+    patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes'],
     component: SpeedUp
   },
   {
@@ -246,7 +258,7 @@ export const DEMOS = [
     instruments: ['guitar/bass'],
     data: ['onset/time', 'exercise', 'baselines as grid', 'instrument'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['phrase repetition', 'facets', 'increasing difficulty'],
+    patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes'],
     component: SpeedUpTab
   },
   {
@@ -257,7 +269,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['cyclic time', 'circular encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density'],
+    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density'],
     component: SubDivision
   },
   {
@@ -268,7 +280,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['cyclic time', 'circular encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'target areas'],
+    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'target areas'],
     component: SubDivisionBar
   },
   {
@@ -279,7 +291,7 @@ export const DEMOS = [
     instruments: ['drum', 'pc-key'],
     data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'synchronized-body-parts'],
-    patterns: ['cyclic time', 'linear encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
+    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
     component: SubDivisionDrums
   },
   {
@@ -290,18 +302,18 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['cyclic time', 'linear encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density'],
+    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density'],
     component: SubDivisionLinear
   },
   {
     id: 'sub-division-history',
-    title: 'Sub-Division (History)',
+    title: '[new] Sub-Division (History)',
     description: 'Learn rhythmic playing in different sub-divisions.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['cyclic time', 'circular encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
+    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'comparison between takes'],
     component: SubDivisionHistory
   },
   {
@@ -335,7 +347,7 @@ export const DEMOS = [
     instruments: ['keyboard', 'pc-key'],
     data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'syncopation', 'synchronized-timing', 'synchronized-body-parts'],
-    patterns: ['cyclic time', 'linear encoding', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
+    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
     component: TwoHandedTiming
   }
 ]
