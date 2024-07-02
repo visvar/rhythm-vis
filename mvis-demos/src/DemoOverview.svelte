@@ -41,6 +41,7 @@
                     treeSort: 'node:height',
                     // delimiter: '/',
                     fontSize: 16,
+                    textLayout: 'normal',
                 }),
             ],
         });
@@ -262,6 +263,8 @@
                         {/each}
                         <th class="spacer"></th>
                     {/each}
+                    <!-- count of skills for this demo -->
+                    <td>{d.skills.length}</td>
                 </tr>
             {/each}
             <!-- counts -->
@@ -274,8 +277,9 @@
                                 .length}
                         </td>
                     {/each}
-                    <th class="spacer"></th>
+                    <td class="spacer"></td>
                 {/each}
+                <td></td>
             </tr>
         </tbody>
     </table>
@@ -297,6 +301,7 @@
                     {#each [...allPatterns] as i}
                         <td>{d.patterns.includes(i) ? '⬤' : ''}</td>
                     {/each}
+                    <td>{d.patterns.length}</td>
                 </tr>
             {/each}
             <!-- counts -->
@@ -306,6 +311,7 @@
                     <td>{demos.filter((d) => d.patterns.includes(i)).length}</td
                     >
                 {/each}
+                <td></td>
             </tr>
         </tbody>
     </table>
@@ -338,6 +344,10 @@
 </main>
 
 <style>
+    /* table th.small {
+        transform: rotate(-90deg);
+    } */
+
     td:not(.spacer) {
         min-width: 60px;
     }
