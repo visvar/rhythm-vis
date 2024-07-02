@@ -9,6 +9,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import { VELOCITIES_LOGIC } from '../lib/music';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import example from '../example-recordings/dynamics.json';
 
     /**
      * contains the demo meta information defined in App.js
@@ -147,6 +148,7 @@
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} />

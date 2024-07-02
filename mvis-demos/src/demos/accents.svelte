@@ -14,6 +14,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage.js';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import example from '../example-recordings/accents.json';
 
     /**
      * contains the demo meta information defined in App.js
@@ -103,9 +104,15 @@
         container.appendChild(plot);
         // legend
         const plot2 = Plot.plot({
-            width,
+            subtitle: 'size legend',
+            width: width,
             height: 100,
-            marginLeft: 80,
+            marginLeft: width / 3,
+            marginRight: width / 3,
+            x: {
+                label: 'loudness',
+                labelAnchor: 'center',
+            },
             marks: [
                 Plot.text(d3.range(0.1, 1.1, 0.1), {
                     text: (d) => '𝅘𝅥',
@@ -196,6 +203,7 @@
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} />

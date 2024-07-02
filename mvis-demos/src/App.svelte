@@ -47,7 +47,8 @@
       currentDemo &&
       !['tools', 'settings', 'overview'].includes(currentDemo)
     ) {
-      return 'Please go back to the main page first to prevent data loss';
+      // alert('Please go back to the main page first to prevent data loss');
+      return true;
     }
   };
 
@@ -288,7 +289,9 @@
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
   {/if}
-  version {version}
+  <div>
+    version {version}
+  </div>
 </main>
 
 <style>

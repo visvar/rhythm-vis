@@ -8,6 +8,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
 
     /**
      * contains the demo meta information defined in App.js
@@ -25,6 +26,7 @@
     // settings
     let pastTime = 10;
     let minVolumeDecibels = -25;
+    let colorArea = false;
     // data
     let firstTimeStamp = 0;
     let bendValues = [];
@@ -82,13 +84,19 @@
                     // smooth a bit
                     curve: 'basis',
                 }),
-                Plot.line(bendValues, {
-                    x: 'time',
-                    y: 'centsOffset',
-                    clip: true,
-                    // smooth a bit
-                    curve: 'basis',
-                }),
+                colorArea
+                    ? Plot.differenceY(bendValues, {
+                          // Plot.windowY(10, {
+                          x: 'time',
+                          y1: 'centsOffset',
+                          y2: 0,
+                          // clip: true,
+                          curve: 'basis',
+                          positiveFill: 'steelblue',
+                          negativeFill: 'crimson',
+                          // tip: true,
+                      })
+                    : null,
             ],
         });
         container.appendChild(plot2);
@@ -116,6 +124,7 @@
             pastTime,
             firstTimeStamp,
             minVolumeDecibels,
+            colorArea,
             bendValues,
         };
     };
@@ -131,6 +140,7 @@
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;
             minVolumeDecibels = json.minVolumeDecibels;
+            colorArea = json.colorArea ?? false;
             bendValues = json.bendValues;
             draw();
         }
@@ -187,6 +197,14 @@
                 step="5"
             />
         </label>
+        <button
+            title="Use colors for interval types"
+            on:click="{() => {
+                colorArea = !colorArea;
+            }}"
+        >
+            colors {colorArea ? toggleOnIcon : toggleOffIcon}
+        </button>
         <button
             title="Press this button if your browser prevents audio access because there needs to be a user interaction first"
             on:click="{() => audioContext.resume()}"

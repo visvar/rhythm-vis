@@ -3,11 +3,6 @@
     import * as d3 from 'd3';
     import { PitchDetector } from 'pitchy';
     import { Midi, Note } from '@tonaljs/tonal';
-    import ResetNotesButton from './common/reset-notes-button.svelte';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
-    import { localStorageAddRecording } from '../lib/localstorage';
-    import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import { Canvas } from 'musicvis-lib';
 
     /**
@@ -167,44 +162,9 @@
         draw();
     });
 
-    /**
-     * Used for exporting and for automatics saving
-     */
-    const getExportData = () => {
-        return {
-            pastTime,
-            firstTimeStamp,
-            minVolumeDecibels,
-            bendValues,
-        };
-    };
-
-    /**
-     * Import data from file or example
-     */
-    const loadData = (json) => {
-        if (
-            bendValues.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            pastTime = json.pastTime;
-            firstTimeStamp = json.firstTimeStamp;
-            minVolumeDecibels = json.minVolumeDecibels;
-            bendValues = json.bendValues;
-            draw();
-        }
-    };
-
-    const saveToStorage = () => {
-        if (bendValues.length > 0) {
-            localStorageAddRecording(demoInfo.id, getExportData());
-        }
-    };
-
     onDestroy(() => {
         clearTimeout(timeout);
         cancelAnimationFrame(timeout);
-        saveToStorage();
     });
 </script>
 
@@ -253,15 +213,5 @@
             bind:this="{canvas}"
             style="width: {width}px; height: {height}px"
         ></canvas>
-    </div>
-    <div class="control">
-        <ResetNotesButton
-            bind:notes="{bendValues}"
-            {saveToStorage}
-            callback="{draw}"
-        />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
-        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
 </main>
