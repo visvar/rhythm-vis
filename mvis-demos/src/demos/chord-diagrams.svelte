@@ -10,7 +10,11 @@
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
-    import { localStorageAddRecording } from '../lib/localstorage';
+    import {
+        localStorageAddRecording,
+        localStorageGetSetting,
+    } from '../lib/localstorage';
+    import example from '../example-recordings/chord-diagrams.json';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
 
     /**
@@ -24,6 +28,7 @@
     let pastChords = 5;
     let maxFretSpan = 5;
     let maxNoteDistance = 0.1;
+    const minVelo = localStorageGetSetting('guitarMidiMinVelocity') ?? 0;
     // domain knowledge
     let stringCount = 6;
     let fretCount = 24;
@@ -38,18 +43,21 @@
         if (notes.length === 0) {
             firstTimeStamp = e.timestamp;
         }
-        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        const string = e.message.channel - 1;
-        const note = {
-            time: noteInSeconds,
-            number: e.note.number,
-            velocity: e.rawVelocity,
-            string,
-            fret: e.note.number - tuningPitches[string],
-            channel: e.message.channel,
-        };
-        notes.push(note);
-        draw();
+        if (e.rawVelocity >= minVelo) {
+            const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
+            const string = e.message.channel - 1;
+            const note = {
+                time: noteInSeconds,
+                number: e.note.number,
+                note: e.note.name,
+                velocity: e.rawVelocity,
+                string,
+                fret: e.note.number - tuningPitches[string],
+                channel: e.message.channel,
+            };
+            notes.push(note);
+            draw();
+        }
     };
 
     const draw = () => {
@@ -112,7 +120,7 @@
                 padding: 0,
                 figure: true,
                 subtitle: chordNames[index].join(', '),
-                style: { textAlign: 'center' },
+                style: { textAlign: 'center', margin: 'auto' },
                 x: {
                     domain: d3.range(
                         minFret === 0 ? 0 : minFret - 1,
@@ -133,13 +141,13 @@
                     domain: d3.range(12),
                     range: NOTE_COLORS.noteColormap,
                     legend: index === 0,
-                    marginLeft: 100,
-                    width: 600,
+                    marginLeft: 250,
+                    width: 500,
                     type: 'categorical',
                     tickFormat: (d) => Midi.NOTE_NAMES[d],
                 },
                 r: {
-                    domain: [0, 1],
+                    domain: [0, 127],
                     range: [5, 10],
                 },
                 marks: [
@@ -177,6 +185,15 @@
                             r: 'velocity',
                             fill: (d) => d.number % 12,
                             tip: true,
+                        },
+                    ),
+                    Plot.text(
+                        chord.filter((d) => d.fret > 0),
+                        {
+                            x: 'fret',
+                            y: 'string',
+                            text: 'note',
+                            fill: 'white',
                         },
                     ),
                     // open strings
@@ -223,6 +240,7 @@
             maxFretSpan = json.maxFretSpan;
             // data
             notes = json.notes;
+            console.log(notes);
             draw();
         }
     };
@@ -283,6 +301,7 @@
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} />

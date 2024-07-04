@@ -12,6 +12,7 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import example from '../example-recordings/strumming-pattern.json';
 
     export let demoInfo;
     let width = 1000;
@@ -23,7 +24,7 @@
     let container;
     // settings
     let pastSeconds = 10;
-    let maxNoteDistance = 0.1;
+    let maxNoteDistance = 0.05;
     // global settings
     const minVelo = localStorageGetSetting('guitarMidiMinVelocity') ?? 0;
     const minDur = localStorageGetSetting('guitarMidiMinDuration') ?? 0;
@@ -112,11 +113,11 @@
             marginLeft: 60,
             marginBottom: 40,
             x: {
-                label: 'Time in seconds',
+                label: 'time in seconds',
                 domain: [minTime, maxTime],
             },
             y: {
-                label: 'String',
+                label: 'string',
                 grid: true,
                 domain: d3.range(0, stringCount),
                 tickFormat: (d) => tuningNotes[d],
@@ -151,11 +152,11 @@
             marginLeft: 60,
             marginBottom: 40,
             x: {
-                label: 'Time in seconds',
+                label: 'time in seconds',
                 domain: [minTime, maxTime],
             },
             y: {
-                label: 'Strumming',
+                label: 'string',
                 grid: true,
                 domain: d3.range(0, stringCount),
                 tickFormat: (d) => tuningNotes[d],
@@ -257,6 +258,7 @@
             <input
                 type="number"
                 bind:value="{pastSeconds}"
+                on:change="{draw}"
                 min="10"
                 max="300"
                 step="10"
@@ -270,9 +272,9 @@
                 type="number"
                 bind:value="{maxNoteDistance}"
                 on:change="{draw}"
-                min="0.05"
+                min="0.01"
                 max="5"
-                step="0.05"
+                step="0.01"
             />
         </label>
     </div>
@@ -286,6 +288,7 @@
                     notes = [];
                     openNoteMap = new Map();
                     firstTimeStamp = performance.now();
+                    draw();
                 }
             }}"
         >
@@ -293,6 +296,7 @@
         </button>
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} {noteOff} />

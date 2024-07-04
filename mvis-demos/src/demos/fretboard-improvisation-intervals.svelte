@@ -9,6 +9,8 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
+    import { toggleOnIcon, toggleOffIcon } from '../lib/icons.js';
+    import example from '../example-recordings/fretboard-improvisation-intervals.json';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
 
     /**
@@ -22,6 +24,7 @@
     // settings
     let root = 'A';
     let scale = 'minor pentatonic';
+    let showNames = false;
     // data
     let notes = [];
     // domain knowledge
@@ -71,6 +74,7 @@
                     return [chroma, info];
                 }),
             );
+            const lastNoteDegree = scaleNotes.get(lastNote.number % 12).degree;
             // get interval positions
             for (let string = 0; string < stringCount; string++) {
                 for (let fret = 0; fret < fretCount + 1; fret++) {
@@ -79,10 +83,15 @@
                     if (!scaleNotes.has(midi)) {
                         continue;
                     }
+                    const n = scaleNotes.get(midi);
+                    const degStep = n.degree - lastNoteDegree;
                     data.push({
+                        ...n,
                         string,
                         fret,
-                        step: scaleNotes.get(midi).offset,
+                        step: n.offset,
+                        degreeStep:
+                            degStep >= 0 ? degStep : degStep + scaleNotes.size,
                     });
                 }
             }
@@ -139,6 +148,7 @@
                     fill: '#ddd',
                     r: 8,
                 }),
+                // last note
                 lastNote
                     ? Plot.cell([lastNote], {
                           x: 'fret',
@@ -149,13 +159,20 @@
                           rx: 5,
                       })
                     : null,
+                // notes
                 Plot.cell(data, {
                     x: 'fret',
                     y: 'string',
-                    fill: 'step',
+                    fill: 'degreeStep',
                     inset: 10,
                     rx: '50%',
                     tip: true,
+                }),
+                Plot.text(data, {
+                    x: 'fret',
+                    y: 'string',
+                    fill: 'white',
+                    text: showNames ? 'name' : 'degreeStep',
                 }),
             ],
         });
@@ -222,12 +239,22 @@
                 {/each}
             </select>
         </label>
+        <button
+            title="Toggle between note names and scale steps"
+            on:click="{() => {
+                showNames = !showNames;
+                draw();
+            }}"
+        >
+            note names {showNames ? toggleOnIcon : toggleOffIcon}
+        </button>
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} />

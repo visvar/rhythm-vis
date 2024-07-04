@@ -79,7 +79,7 @@
         const plot = Plot.plot({
             width,
             height: 100,
-            marginLeft: 80,
+            marginLeft: 100,
             x: {
                 label: '',
                 domain: d3.range(1, pastNoteCount),
@@ -111,9 +111,9 @@
         const plot2 = Plot.plot({
             width,
             height: 250,
-            marginLeft: 80,
+            marginLeft: 100,
             x: {
-                label: 'Note',
+                label: 'note',
                 domain: d3.range(1, pastNoteCount),
                 tickSize: 0,
                 ticks: [],

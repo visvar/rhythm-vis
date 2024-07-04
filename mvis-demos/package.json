@@ -1,7 +1,7 @@
 {
   "name": "mvis-demos",
   "private": true,
-  "version": "0.3.1",
+  "version": "0.3.2",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -15,7 +15,7 @@
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^3.1.1",
     "svelte": "^4.2.18",
-    "vite": "^5.3.1"
+    "vite": "^5.3.3"
   },
   "dependencies": {
     "@observablehq/plot": "^0.6.15",
@@ -33,7 +33,7 @@
     "npm-check-updates": "^16.14.20",
     "pitchy": "^4.1.0",
     "underscore": "^1.13.6",
-    "wavesurfer.js": "^7.7.15",
+    "wavesurfer.js": "^7.8.1",
     "webmidi": "^3.1.9"
   }
 }

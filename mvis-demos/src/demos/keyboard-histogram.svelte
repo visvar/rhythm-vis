@@ -19,7 +19,7 @@
     export let demoInfo;
 
     let width = 1200;
-    let height = 280;
+    let height = 600;
     const minPitch = 21;
     const maxPitch = 108;
     let container;
@@ -67,7 +67,9 @@
                     }
                 },
             },
-            y: {},
+            y: {
+                interval: 1,
+            },
             marks: [
                 Plot.ruleX(getCs(minPitch, maxPitch), {
                     stroke: '#ddd',

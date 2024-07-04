@@ -12,6 +12,8 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage.js';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import example from '../example-recordings/speed-up.json';
+    import { reviver } from '../lib/json.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -78,7 +80,7 @@
             console.log(`increasing bpm`);
             // go to next step
             metro.stop();
-            if (currentTempo <= targetTempo) {
+            if (currentTempo < targetTempo) {
                 currentTempo += tempoIncrease;
                 ready = false;
                 await delay(1);
@@ -235,6 +237,12 @@
                 if (quantize === '32nd') {
                     q = quarter / 8;
                 }
+                if (quantize === 'triplet') {
+                    q = quarter / 3;
+                }
+                if (quantize === 'quintuplet') {
+                    q = quarter / 5;
+                }
                 time = Math.round(time / q) * q;
             }
             return time / quarter;
@@ -247,7 +255,8 @@
         const exercises = new Map([
             ['quarter', d3.range(0, 8, 1)],
             ['eighth', d3.range(0, 8, 0.5)],
-            ['quarter-triplets', d3.range(0, 8, 1 / 3)],
+            ['triplets', d3.range(0, 8, 1 / 3)],
+            ['quintuplets', d3.range(0, 8, 1 / 5)],
             [
                 'swing',
                 d3.range(0, 8, 0.5).map((d, i) => (i % 2 === 0 ? i : i + 0.2)),
@@ -301,6 +310,9 @@
             exerciseNotes = json.exerciseNotes;
             exerciseBeatCount = json.exerciseBeatCount;
             practiceRecordings = json.practiceRecordings;
+            if (practiceRecordings.dataType) {
+                practiceRecordings = new Map(practiceRecordings.value);
+            }
             draw();
         }
     };
@@ -351,7 +363,7 @@
         <label>
             quantize exercise
             <select bind:value="{quantize}" on:change="{draw}">
-                {#each ['off', '32nd', '16th', '8th'] as d}
+                {#each ['off', '32nd', '16th', '8th', 'triplet', 'quintuplet'] as d}
                     <option value="{d}">{d}</option>
                 {/each}
             </select>
@@ -362,7 +374,7 @@
             pre-defined exercise
             <select on:change="{predefinedExercise}">
                 <option selected disabled></option>
-                {#each ['quarter', 'eighth', 'quarter-triplets', 'swing'] as d}
+                {#each ['quarter', 'eighth', 'triplets', 'quintuplets', 'swing'] as d}
                     <option>{d}</option>
                 {/each}
             </select>
@@ -418,6 +430,7 @@
         </button>
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <PcKeyboardInput

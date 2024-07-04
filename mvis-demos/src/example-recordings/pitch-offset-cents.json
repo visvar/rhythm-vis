@@ -1,0 +1,3862 @@
+{
+  "pastTime": 5,
+  "firstTimeStamp": 3532171.8,
+  "minVolumeDecibels": -25,
+  "colorArea": true,
+  "bendValues": [
+    {
+      "time": 44.39190000000037,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.3945,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.404299999999814,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.42179999999981,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.45409999999963,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.45620000000019,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.47090000000037,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.48759999999963,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.504299999999816,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.520900000000374,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.5375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.554200000000186,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.57090000000037,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.587599999999625,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.60420000000018,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.620900000000375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.63759999999963,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.65420000000019,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.670799999999815,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.6875,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.704200000000185,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.721,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.7375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.75420000000019,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.770900000000374,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.7875,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.80429999999981,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.82090000000037,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.837599999999625,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.8545,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.87079999999981,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.8875,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.90420000000019,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.921,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.93759999999963,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.954200000000185,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.971,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 44.9875,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.00420000000019,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.020900000000374,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.03759999999963,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.0545,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.070799999999814,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.087599999999625,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.10420000000018,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.120900000000375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.13759999999963,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.15420000000019,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.17090000000037,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.187700000000184,
+      "pitch": 185.43951924023062,
+      "noteMidi": 54,
+      "actualMidi": 54.04,
+      "actualMidiChroma": 6.039999999999999,
+      "centsOffset": 3.9999999999999147,
+      "clarity": 0.4608917279602114
+    },
+    {
+      "time": 45.20429999999981,
+      "pitch": 23.829770658506497,
+      "noteMidi": 19,
+      "actualMidi": 18.52,
+      "actualMidiChroma": 6.52,
+      "centsOffset": -48.00000000000004,
+      "clarity": 0.8599017457090667
+    },
+    {
+      "time": 45.221,
+      "pitch": 81.68094885714233,
+      "noteMidi": 40,
+      "actualMidi": 39.85,
+      "actualMidiChroma": 3.8500000000000014,
+      "centsOffset": -14.999999999999858,
+      "clarity": 0.8382643033165493
+    },
+    {
+      "time": 45.23770000000019,
+      "pitch": 41.750597492168126,
+      "noteMidi": 28,
+      "actualMidi": 28.23,
+      "actualMidiChroma": 4.23,
+      "centsOffset": 23.000000000000043,
+      "clarity": 0.744711574260748
+    },
+    {
+      "time": 45.25440000000037,
+      "pitch": 27.76016084998046,
+      "noteMidi": 21,
+      "actualMidi": 21.16,
+      "actualMidiChroma": 9.16,
+      "centsOffset": 16.000000000000014,
+      "clarity": 0.9217727108136842
+    },
+    {
+      "time": 45.27109999999963,
+      "pitch": 81.499869912507,
+      "noteMidi": 40,
+      "actualMidi": 39.81,
+      "actualMidiChroma": 3.8100000000000023,
+      "centsOffset": -18.999999999999773,
+      "clarity": 0.8622142739673961
+    },
+    {
+      "time": 45.287700000000186,
+      "pitch": 27.449333425034585,
+      "noteMidi": 21,
+      "actualMidi": 20.97,
+      "actualMidiChroma": 8.969999999999999,
+      "centsOffset": -3.0000000000001137,
+      "clarity": 0.9174567583022508
+    },
+    {
+      "time": 45.30440000000037,
+      "pitch": 41.29945063709222,
+      "noteMidi": 28,
+      "actualMidi": 28.04,
+      "actualMidiChroma": 4.039999999999999,
+      "centsOffset": 3.9999999999999147,
+      "clarity": 0.8051114028885991
+    },
+    {
+      "time": 45.321,
+      "pitch": 81.79704951006504,
+      "noteMidi": 40,
+      "actualMidi": 39.87,
+      "actualMidiChroma": 3.8699999999999974,
+      "centsOffset": -13.000000000000256,
+      "clarity": 0.8324586020034985
+    },
+    {
+      "time": 45.33770000000018,
+      "pitch": 81.44628214219503,
+      "noteMidi": 40,
+      "actualMidi": 39.8,
+      "actualMidiChroma": 3.799999999999997,
+      "centsOffset": -20.000000000000284,
+      "clarity": 0.7537645025891493
+    },
+    {
+      "time": 45.354400000000375,
+      "pitch": 41.283609950949746,
+      "noteMidi": 28,
+      "actualMidi": 28.03,
+      "actualMidiChroma": 4.030000000000001,
+      "centsOffset": 3.0000000000001137,
+      "clarity": 0.7768006507033078
+    },
+    {
+      "time": 45.370900000000375,
+      "pitch": 82.11641571002069,
+      "noteMidi": 40,
+      "actualMidi": 39.94,
+      "actualMidiChroma": 3.9399999999999977,
+      "centsOffset": -6.000000000000227,
+      "clarity": 0.8104123081589591
+    },
+    {
+      "time": 45.38759999999963,
+      "pitch": 81.82254413458342,
+      "noteMidi": 40,
+      "actualMidi": 39.88,
+      "actualMidiChroma": 3.8800000000000026,
+      "centsOffset": -11.999999999999744,
+      "clarity": 0.6973077568402033
+    },
+    {
+      "time": 45.40440000000037,
+      "pitch": 32.95998106221423,
+      "noteMidi": 24,
+      "actualMidi": 24.14,
+      "actualMidiChroma": 0.14000000000000057,
+      "centsOffset": 14.000000000000057,
+      "clarity": 0.709866074377544
+    },
+    {
+      "time": 45.421200000000184,
+      "pitch": 27.785785067804504,
+      "noteMidi": 21,
+      "actualMidi": 21.18,
+      "actualMidiChroma": 9.18,
+      "centsOffset": 17.99999999999997,
+      "clarity": 0.8390157450491529
+    },
+    {
+      "time": 45.437700000000184,
+      "pitch": 82.00065501131662,
+      "noteMidi": 40,
+      "actualMidi": 39.91,
+      "actualMidiChroma": 3.9099999999999966,
+      "centsOffset": -9.000000000000341,
+      "clarity": 0.7223986938011677
+    },
+    {
+      "time": 45.45440000000037,
+      "pitch": 80.67022057356623,
+      "noteMidi": 40,
+      "actualMidi": 39.63,
+      "actualMidiChroma": 3.6300000000000026,
+      "centsOffset": -36.999999999999744,
+      "clarity": 0.7196013804176857
+    },
+    {
+      "time": 45.471,
+      "pitch": 81.72079980064325,
+      "noteMidi": 40,
+      "actualMidi": 39.86,
+      "actualMidiChroma": 3.8599999999999994,
+      "centsOffset": -14.000000000000057,
+      "clarity": 0.818663180373477
+    },
+    {
+      "time": 45.48759999999963,
+      "pitch": 27.46309316951358,
+      "noteMidi": 21,
+      "actualMidi": 20.98,
+      "actualMidiChroma": 8.98,
+      "centsOffset": -1.9999999999999574,
+      "clarity": 0.9119244527992123
+    },
+    {
+      "time": 45.50440000000037,
+      "pitch": 81.76489861298191,
+      "noteMidi": 40,
+      "actualMidi": 39.86,
+      "actualMidiChroma": 3.8599999999999994,
+      "centsOffset": -14.000000000000057,
+      "clarity": 0.8121249954931784
+    },
+    {
+      "time": 45.521,
+      "pitch": 82.93672143359683,
+      "noteMidi": 40,
+      "actualMidi": 40.11,
+      "actualMidiChroma": 4.109999999999999,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.8601903265821704
+    },
+    {
+      "time": 45.537700000000186,
+      "pitch": 82.43459527832604,
+      "noteMidi": 40,
+      "actualMidi": 40.01,
+      "actualMidiChroma": 4.009999999999998,
+      "centsOffset": 0.999999999999801,
+      "clarity": 0.7858099284282787
+    },
+    {
+      "time": 45.55429999999981,
+      "pitch": 81.98267605409085,
+      "noteMidi": 40,
+      "actualMidi": 39.91,
+      "actualMidiChroma": 3.9099999999999966,
+      "centsOffset": -9.000000000000341,
+      "clarity": 0.791947042375881
+    },
+    {
+      "time": 45.571,
+      "pitch": 81.62440822223473,
+      "noteMidi": 40,
+      "actualMidi": 39.83,
+      "actualMidiChroma": 3.8299999999999983,
+      "centsOffset": -17.00000000000017,
+      "clarity": 0.8855963633021418
+    },
+    {
+      "time": 45.58770000000018,
+      "pitch": 42.10578963588161,
+      "noteMidi": 28,
+      "actualMidi": 28.38,
+      "actualMidiChroma": 4.379999999999999,
+      "centsOffset": 37.9999999999999,
+      "clarity": 0.8222323444487643
+    },
+    {
+      "time": 45.604400000000375,
+      "pitch": 55.630525727042304,
+      "noteMidi": 33,
+      "actualMidi": 33.2,
+      "actualMidiChroma": 9.200000000000003,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.7500585254082068
+    },
+    {
+      "time": 45.621,
+      "pitch": 81.33571817692186,
+      "noteMidi": 40,
+      "actualMidi": 39.77,
+      "actualMidiChroma": 3.770000000000003,
+      "centsOffset": -22.999999999999687,
+      "clarity": 0.9008519075715924
+    },
+    {
+      "time": 45.63759999999963,
+      "pitch": 82.51463313832701,
+      "noteMidi": 40,
+      "actualMidi": 40.02,
+      "actualMidiChroma": 4.020000000000003,
+      "centsOffset": 2.0000000000003126,
+      "clarity": 0.8138967972785167
+    },
+    {
+      "time": 45.654299999999814,
+      "pitch": 83.81192105192783,
+      "noteMidi": 40,
+      "actualMidi": 40.29,
+      "actualMidiChroma": 4.289999999999999,
+      "centsOffset": 28.999999999999915,
+      "clarity": 0.8061909398734741
+    },
+    {
+      "time": 45.671,
+      "pitch": 82.4632706023379,
+      "noteMidi": 40,
+      "actualMidi": 40.01,
+      "actualMidiChroma": 4.009999999999998,
+      "centsOffset": 0.999999999999801,
+      "clarity": 0.896542447248251
+    },
+    {
+      "time": 45.687700000000184,
+      "pitch": 82.05377768625411,
+      "noteMidi": 40,
+      "actualMidi": 39.93,
+      "actualMidiChroma": 3.9299999999999997,
+      "centsOffset": -7.000000000000028,
+      "clarity": 0.8942707989622676
+    },
+    {
+      "time": 45.70429999999981,
+      "pitch": 41.577562045327035,
+      "noteMidi": 28,
+      "actualMidi": 28.16,
+      "actualMidiChroma": 4.16,
+      "centsOffset": 16.000000000000014,
+      "clarity": 0.8631853593129222
+    },
+    {
+      "time": 45.721,
+      "pitch": 82.67237064006065,
+      "noteMidi": 40,
+      "actualMidi": 40.06,
+      "actualMidiChroma": 4.060000000000002,
+      "centsOffset": 6.000000000000227,
+      "clarity": 0.8565685670899938
+    },
+    {
+      "time": 45.73770000000019,
+      "pitch": 82.11806367385317,
+      "noteMidi": 40,
+      "actualMidi": 39.94,
+      "actualMidiChroma": 3.9399999999999977,
+      "centsOffset": -6.000000000000227,
+      "clarity": 0.9034506165461664
+    },
+    {
+      "time": 45.754299999999816,
+      "pitch": 81.81204591473822,
+      "noteMidi": 40,
+      "actualMidi": 39.87,
+      "actualMidiChroma": 3.8699999999999974,
+      "centsOffset": -13.000000000000256,
+      "clarity": 0.874202967623873
+    },
+    {
+      "time": 45.771,
+      "pitch": 27.702179593275396,
+      "noteMidi": 21,
+      "actualMidi": 21.13,
+      "actualMidiChroma": 9.129999999999999,
+      "centsOffset": 12.9999999999999,
+      "clarity": 0.9242669836104369
+    },
+    {
+      "time": 45.787700000000186,
+      "pitch": 82.11980696607057,
+      "noteMidi": 40,
+      "actualMidi": 39.94,
+      "actualMidiChroma": 3.9399999999999977,
+      "centsOffset": -6.000000000000227,
+      "clarity": 0.9199714059242865
+    },
+    {
+      "time": 45.80429999999981,
+      "pitch": 81.52404899168239,
+      "noteMidi": 40,
+      "actualMidi": 39.81,
+      "actualMidiChroma": 3.8100000000000023,
+      "centsOffset": -18.999999999999773,
+      "clarity": 0.8969872279631375
+    },
+    {
+      "time": 45.821,
+      "pitch": 82.53464653411253,
+      "noteMidi": 40,
+      "actualMidi": 40.03,
+      "actualMidiChroma": 4.030000000000001,
+      "centsOffset": 3.0000000000001137,
+      "clarity": 0.8646480227330784
+    },
+    {
+      "time": 45.83770000000018,
+      "pitch": 82.35827394179071,
+      "noteMidi": 40,
+      "actualMidi": 39.99,
+      "actualMidiChroma": 3.990000000000002,
+      "centsOffset": -0.999999999999801,
+      "clarity": 0.9071694937091479
+    },
+    {
+      "time": 45.854400000000375,
+      "pitch": 82.3401433143643,
+      "noteMidi": 40,
+      "actualMidi": 39.99,
+      "actualMidiChroma": 3.990000000000002,
+      "centsOffset": -0.999999999999801,
+      "clarity": 0.8982589222106014
+    },
+    {
+      "time": 45.87109999999963,
+      "pitch": 82.63975506534193,
+      "noteMidi": 40,
+      "actualMidi": 40.05,
+      "actualMidiChroma": 4.049999999999997,
+      "centsOffset": 4.999999999999716,
+      "clarity": 0.89555127195473
+    },
+    {
+      "time": 45.88759999999963,
+      "pitch": 83.20092958624716,
+      "noteMidi": 40,
+      "actualMidi": 40.17,
+      "actualMidiChroma": 4.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.7857759330011334
+    },
+    {
+      "time": 45.904299999999814,
+      "pitch": 24.02507258193011,
+      "noteMidi": 19,
+      "actualMidi": 18.66,
+      "actualMidiChroma": 6.66,
+      "centsOffset": -33.999999999999986,
+      "clarity": 0.8962765776477681
+    },
+    {
+      "time": 45.921200000000184,
+      "pitch": 81.78960264255227,
+      "noteMidi": 40,
+      "actualMidi": 39.87,
+      "actualMidiChroma": 3.8699999999999974,
+      "centsOffset": -13.000000000000256,
+      "clarity": 0.7378598861563717
+    },
+    {
+      "time": 45.937700000000184,
+      "pitch": 83.14785466616468,
+      "noteMidi": 40,
+      "actualMidi": 40.15,
+      "actualMidiChroma": 4.149999999999999,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.6709199829320198
+    },
+    {
+      "time": 45.954200000000185,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.97079999999981,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 45.9875,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.00420000000019,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.02079999999982,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.0375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.054200000000186,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.070799999999814,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.087599999999625,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.10420000000018,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.120900000000375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.1375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.154299999999814,
+      "pitch": 112.05758074439456,
+      "noteMidi": 45,
+      "actualMidi": 45.32,
+      "actualMidiChroma": 9.32,
+      "centsOffset": 32.00000000000003,
+      "clarity": 0.3672490723192894
+    },
+    {
+      "time": 46.171,
+      "pitch": 111.00180859622533,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.8054999612068201
+    },
+    {
+      "time": 46.187700000000184,
+      "pitch": 111.31353267598908,
+      "noteMidi": 45,
+      "actualMidi": 45.21,
+      "actualMidiChroma": 9.21,
+      "centsOffset": 21.000000000000085,
+      "clarity": 0.9758235911088065
+    },
+    {
+      "time": 46.20429999999981,
+      "pitch": 111.02877990526937,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9730231083361502
+    },
+    {
+      "time": 46.22109999999963,
+      "pitch": 111.20461208385282,
+      "noteMidi": 45,
+      "actualMidi": 45.19,
+      "actualMidiChroma": 9.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9672412276879356
+    },
+    {
+      "time": 46.23770000000019,
+      "pitch": 112.25420086659386,
+      "noteMidi": 45,
+      "actualMidi": 45.35,
+      "actualMidiChroma": 9.350000000000001,
+      "centsOffset": 35.00000000000014,
+      "clarity": 0.9277600028663784
+    },
+    {
+      "time": 46.254299999999816,
+      "pitch": 112.0809367805184,
+      "noteMidi": 45,
+      "actualMidi": 45.32,
+      "actualMidiChroma": 9.32,
+      "centsOffset": 32.00000000000003,
+      "clarity": 0.897187810670296
+    },
+    {
+      "time": 46.270900000000374,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.28759999999963,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.304200000000186,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.32090000000037,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.3375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.35420000000018,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.370900000000375,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 46.38770000000019,
+      "pitch": 222.41869804680059,
+      "noteMidi": 57,
+      "actualMidi": 57.19,
+      "actualMidiChroma": 9.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.3241098834972487
+    },
+    {
+      "time": 46.40440000000037,
+      "pitch": 164.43753612948808,
+      "noteMidi": 52,
+      "actualMidi": 51.96,
+      "actualMidiChroma": 3.960000000000001,
+      "centsOffset": -3.9999999999999147,
+      "clarity": 0.46213565007113644
+    },
+    {
+      "time": 46.421099999999626,
+      "pitch": 109.9276497457725,
+      "noteMidi": 45,
+      "actualMidi": 44.99,
+      "actualMidiChroma": 8.990000000000002,
+      "centsOffset": -0.999999999999801,
+      "clarity": 0.8001143730211169
+    },
+    {
+      "time": 46.437700000000184,
+      "pitch": 110.57307443274138,
+      "noteMidi": 45,
+      "actualMidi": 45.09,
+      "actualMidiChroma": 9.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9731722463921955
+    },
+    {
+      "time": 46.45429999999981,
+      "pitch": 110.7414441823263,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9995831720326862
+    },
+    {
+      "time": 46.471,
+      "pitch": 110.79279959495105,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9997066564318828
+    },
+    {
+      "time": 46.48759999999963,
+      "pitch": 110.79873165977867,
+      "noteMidi": 45,
+      "actualMidi": 45.13,
+      "actualMidiChroma": 9.130000000000003,
+      "centsOffset": 13.000000000000256,
+      "clarity": 0.9997829194281849
+    },
+    {
+      "time": 46.504299999999816,
+      "pitch": 110.79106011729297,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998038778312122
+    },
+    {
+      "time": 46.52109999999963,
+      "pitch": 110.75762205067903,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9997482196636511
+    },
+    {
+      "time": 46.53759999999963,
+      "pitch": 110.77931474370398,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9997740159150226
+    },
+    {
+      "time": 46.55429999999981,
+      "pitch": 110.77374546493145,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9997752168542604
+    },
+    {
+      "time": 46.571,
+      "pitch": 110.77002161128712,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998010292009525
+    },
+    {
+      "time": 46.587599999999625,
+      "pitch": 110.80483833865723,
+      "noteMidi": 45,
+      "actualMidi": 45.13,
+      "actualMidiChroma": 9.130000000000003,
+      "centsOffset": 13.000000000000256,
+      "clarity": 0.9998600059514615
+    },
+    {
+      "time": 46.604400000000375,
+      "pitch": 110.77741616125,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998401551412996
+    },
+    {
+      "time": 46.62120000000019,
+      "pitch": 110.80113098559312,
+      "noteMidi": 45,
+      "actualMidi": 45.13,
+      "actualMidiChroma": 9.130000000000003,
+      "centsOffset": 13.000000000000256,
+      "clarity": 0.9998399465923384
+    },
+    {
+      "time": 46.63770000000019,
+      "pitch": 110.77614484999195,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998803337899815
+    },
+    {
+      "time": 46.654299999999814,
+      "pitch": 110.77184022374502,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998563728535999
+    },
+    {
+      "time": 46.671,
+      "pitch": 110.79289604390992,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998686169321758
+    },
+    {
+      "time": 46.687700000000184,
+      "pitch": 110.78377481911772,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998952984708609
+    },
+    {
+      "time": 46.70440000000037,
+      "pitch": 110.76913411879265,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998516970586167
+    },
+    {
+      "time": 46.721,
+      "pitch": 110.73622566100634,
+      "noteMidi": 45,
+      "actualMidi": 45.12,
+      "actualMidiChroma": 9.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9998463680083205
+    },
+    {
+      "time": 46.73770000000019,
+      "pitch": 110.65971663126197,
+      "noteMidi": 45,
+      "actualMidi": 45.1,
+      "actualMidiChroma": 9.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9997998439717861
+    },
+    {
+      "time": 46.754299999999816,
+      "pitch": 110.61597655696195,
+      "noteMidi": 45,
+      "actualMidi": 45.1,
+      "actualMidiChroma": 9.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9997410043441377
+    },
+    {
+      "time": 46.770900000000374,
+      "pitch": 110.54276378919249,
+      "noteMidi": 45,
+      "actualMidi": 45.09,
+      "actualMidiChroma": 9.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9995901411264683
+    },
+    {
+      "time": 46.78759999999963,
+      "pitch": 109.3572596127681,
+      "noteMidi": 45,
+      "actualMidi": 44.9,
+      "actualMidiChroma": 8.899999999999999,
+      "centsOffset": -10.000000000000142,
+      "clarity": 0.9408481207843451
+    },
+    {
+      "time": 46.80429999999981,
+      "pitch": 112.54299084997494,
+      "noteMidi": 45,
+      "actualMidi": 45.4,
+      "actualMidiChroma": 9.399999999999999,
+      "centsOffset": 39.99999999999986,
+      "clarity": 0.8687886318552849
+    },
+    {
+      "time": 46.821,
+      "pitch": 117.64633274255071,
+      "noteMidi": 46,
+      "actualMidi": 46.16,
+      "actualMidiChroma": 10.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.8625677236604012
+    },
+    {
+      "time": 46.837599999999625,
+      "pitch": 123.05568968210137,
+      "noteMidi": 47,
+      "actualMidi": 46.94,
+      "actualMidiChroma": 10.939999999999998,
+      "centsOffset": -6.000000000000227,
+      "clarity": 0.9229949748077786
+    },
+    {
+      "time": 46.85429999999981,
+      "pitch": 124.5413900001023,
+      "noteMidi": 47,
+      "actualMidi": 47.15,
+      "actualMidiChroma": 11.149999999999999,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9606139537428859
+    },
+    {
+      "time": 46.871,
+      "pitch": 125.06478272230126,
+      "noteMidi": 47,
+      "actualMidi": 47.22,
+      "actualMidiChroma": 11.219999999999999,
+      "centsOffset": 21.999999999999886,
+      "clarity": 0.851311633811143
+    },
+    {
+      "time": 46.88770000000019,
+      "pitch": 131.44499679122566,
+      "noteMidi": 48,
+      "actualMidi": 48.08,
+      "actualMidiChroma": 0.0799999999999983,
+      "centsOffset": 7.9999999999998295,
+      "clarity": 0.7240949882415055
+    },
+    {
+      "time": 46.904299999999814,
+      "pitch": 159.41877604075995,
+      "noteMidi": 51,
+      "actualMidi": 51.42,
+      "actualMidiChroma": 3.4200000000000017,
+      "centsOffset": 42.00000000000017,
+      "clarity": 0.5946323448443849
+    },
+    {
+      "time": 46.921099999999626,
+      "pitch": 27.035229857849007,
+      "noteMidi": 21,
+      "actualMidi": 20.7,
+      "actualMidiChroma": 8.7,
+      "centsOffset": -30.00000000000007,
+      "clarity": 0.2467576068870585
+    },
+    {
+      "time": 46.93759999999963,
+      "pitch": 122.31303484699396,
+      "noteMidi": 47,
+      "actualMidi": 46.84,
+      "actualMidiChroma": 10.840000000000003,
+      "centsOffset": -15.999999999999659,
+      "clarity": 0.6722318199430433
+    },
+    {
+      "time": 46.95429999999981,
+      "pitch": 123.28116461472912,
+      "noteMidi": 47,
+      "actualMidi": 46.97,
+      "actualMidiChroma": 10.969999999999999,
+      "centsOffset": -3.0000000000001137,
+      "clarity": 0.8563543529344315
+    },
+    {
+      "time": 46.971,
+      "pitch": 123.83395811672656,
+      "noteMidi": 47,
+      "actualMidi": 47.05,
+      "actualMidiChroma": 11.049999999999997,
+      "centsOffset": 4.999999999999716,
+      "clarity": 0.9713480906895597
+    },
+    {
+      "time": 46.98770000000019,
+      "pitch": 124.22325883374147,
+      "noteMidi": 47,
+      "actualMidi": 47.11,
+      "actualMidiChroma": 11.11,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9998303273461957
+    },
+    {
+      "time": 47.004299999999816,
+      "pitch": 124.22469017764915,
+      "noteMidi": 47,
+      "actualMidi": 47.11,
+      "actualMidiChroma": 11.11,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.99985044566629
+    },
+    {
+      "time": 47.021,
+      "pitch": 124.27702604003724,
+      "noteMidi": 47,
+      "actualMidi": 47.11,
+      "actualMidiChroma": 11.11,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9998661220912766
+    },
+    {
+      "time": 47.03759999999963,
+      "pitch": 124.26487769430723,
+      "noteMidi": 47,
+      "actualMidi": 47.11,
+      "actualMidiChroma": 11.11,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.999858845182132
+    },
+    {
+      "time": 47.05429999999981,
+      "pitch": 124.2713801336934,
+      "noteMidi": 47,
+      "actualMidi": 47.11,
+      "actualMidiChroma": 11.11,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9998249789705724
+    },
+    {
+      "time": 47.071,
+      "pitch": 124.28469140585044,
+      "noteMidi": 47,
+      "actualMidi": 47.11,
+      "actualMidiChroma": 11.11,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9997749860808369
+    },
+    {
+      "time": 47.08770000000018,
+      "pitch": 124.20805351074608,
+      "noteMidi": 47,
+      "actualMidi": 47.1,
+      "actualMidiChroma": 11.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9997433000195812
+    },
+    {
+      "time": 47.10429999999981,
+      "pitch": 124.19255589946796,
+      "noteMidi": 47,
+      "actualMidi": 47.1,
+      "actualMidiChroma": 11.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9997453943534182
+    },
+    {
+      "time": 47.121,
+      "pitch": 124.19675320149865,
+      "noteMidi": 47,
+      "actualMidi": 47.1,
+      "actualMidiChroma": 11.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.999801093499066
+    },
+    {
+      "time": 47.13770000000019,
+      "pitch": 124.15976859111231,
+      "noteMidi": 47,
+      "actualMidi": 47.1,
+      "actualMidiChroma": 11.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9998340325424024
+    },
+    {
+      "time": 47.154299999999814,
+      "pitch": 124.1248025890425,
+      "noteMidi": 47,
+      "actualMidi": 47.09,
+      "actualMidiChroma": 11.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9998326424779265
+    },
+    {
+      "time": 47.17090000000037,
+      "pitch": 124.1076949019167,
+      "noteMidi": 47,
+      "actualMidi": 47.09,
+      "actualMidiChroma": 11.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.999817310144067
+    },
+    {
+      "time": 47.18759999999963,
+      "pitch": 124.09343892149158,
+      "noteMidi": 47,
+      "actualMidi": 47.09,
+      "actualMidiChroma": 11.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9997990589627861
+    },
+    {
+      "time": 47.20429999999981,
+      "pitch": 124.10211478003765,
+      "noteMidi": 47,
+      "actualMidi": 47.09,
+      "actualMidiChroma": 11.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9998169232896501
+    },
+    {
+      "time": 47.22109999999963,
+      "pitch": 124.10740162734918,
+      "noteMidi": 47,
+      "actualMidi": 47.09,
+      "actualMidiChroma": 11.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9998051440404794
+    },
+    {
+      "time": 47.23770000000019,
+      "pitch": 124.10100174619019,
+      "noteMidi": 47,
+      "actualMidi": 47.09,
+      "actualMidiChroma": 11.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9998341405314051
+    },
+    {
+      "time": 47.254299999999816,
+      "pitch": 124.05678143304284,
+      "noteMidi": 47,
+      "actualMidi": 47.08,
+      "actualMidiChroma": 11.079999999999998,
+      "centsOffset": 7.9999999999998295,
+      "clarity": 0.9998145879213567
+    },
+    {
+      "time": 47.271,
+      "pitch": 124.05079739427559,
+      "noteMidi": 47,
+      "actualMidi": 47.08,
+      "actualMidiChroma": 11.079999999999998,
+      "centsOffset": 7.9999999999998295,
+      "clarity": 0.9998004862928482
+    },
+    {
+      "time": 47.287700000000186,
+      "pitch": 123.9172268353763,
+      "noteMidi": 47,
+      "actualMidi": 47.06,
+      "actualMidiChroma": 11.060000000000002,
+      "centsOffset": 6.000000000000227,
+      "clarity": 0.999458102485292
+    },
+    {
+      "time": 47.30440000000037,
+      "pitch": 124.18596422033846,
+      "noteMidi": 47,
+      "actualMidi": 47.1,
+      "actualMidiChroma": 11.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9977454066890132
+    },
+    {
+      "time": 47.321,
+      "pitch": 127.28212200840063,
+      "noteMidi": 48,
+      "actualMidi": 47.53,
+      "actualMidiChroma": 11.530000000000001,
+      "centsOffset": -46.999999999999886,
+      "clarity": 0.9737248459787011
+    },
+    {
+      "time": 47.337599999999625,
+      "pitch": 130.89000220321284,
+      "noteMidi": 48,
+      "actualMidi": 48.01,
+      "actualMidiChroma": 0.00999999999999801,
+      "centsOffset": 0.999999999999801,
+      "clarity": 0.9935721650161291
+    },
+    {
+      "time": 47.35429999999981,
+      "pitch": 131.47109300398273,
+      "noteMidi": 48,
+      "actualMidi": 48.09,
+      "actualMidiChroma": 0.09000000000000341,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9996801627683922
+    },
+    {
+      "time": 47.371,
+      "pitch": 131.4185508690845,
+      "noteMidi": 48,
+      "actualMidi": 48.08,
+      "actualMidiChroma": 0.0799999999999983,
+      "centsOffset": 7.9999999999998295,
+      "clarity": 0.9998127004568396
+    },
+    {
+      "time": 47.38759999999963,
+      "pitch": 131.9899291321638,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9875313784163531
+    },
+    {
+      "time": 47.40440000000037,
+      "pitch": 132.4428356030352,
+      "noteMidi": 48,
+      "actualMidi": 48.21,
+      "actualMidiChroma": 0.21000000000000085,
+      "centsOffset": 21.000000000000085,
+      "clarity": 0.9697224029406861
+    },
+    {
+      "time": 47.421099999999626,
+      "pitch": 134.9158190935815,
+      "noteMidi": 49,
+      "actualMidi": 48.53,
+      "actualMidiChroma": 0.5300000000000011,
+      "centsOffset": -46.999999999999886,
+      "clarity": 0.892760027358328
+    },
+    {
+      "time": 47.437700000000184,
+      "pitch": 144.9991934288716,
+      "noteMidi": 50,
+      "actualMidi": 49.78,
+      "actualMidiChroma": 1.7800000000000011,
+      "centsOffset": -21.999999999999886,
+      "clarity": 0.7144621777142
+    },
+    {
+      "time": 47.4545,
+      "pitch": 161.9526113385436,
+      "noteMidi": 52,
+      "actualMidi": 51.7,
+      "actualMidiChroma": 3.700000000000003,
+      "centsOffset": -29.999999999999716,
+      "clarity": 0.7017359134567425
+    },
+    {
+      "time": 47.471,
+      "pitch": 89.2934572884043,
+      "noteMidi": 41,
+      "actualMidi": 41.39,
+      "actualMidiChroma": 5.390000000000001,
+      "centsOffset": 39.00000000000006,
+      "clarity": 0.32731986457661577
+    },
+    {
+      "time": 47.48770000000019,
+      "pitch": 130.61430105657402,
+      "noteMidi": 48,
+      "actualMidi": 47.97,
+      "actualMidiChroma": 11.969999999999999,
+      "centsOffset": -3.0000000000001137,
+      "clarity": 0.7217095925420232
+    },
+    {
+      "time": 47.504299999999816,
+      "pitch": 131.5347411724043,
+      "noteMidi": 48,
+      "actualMidi": 48.1,
+      "actualMidiChroma": 0.10000000000000142,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.892838905257193
+    },
+    {
+      "time": 47.521,
+      "pitch": 131.95279826157528,
+      "noteMidi": 48,
+      "actualMidi": 48.15,
+      "actualMidiChroma": 0.14999999999999858,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.999329374613275
+    },
+    {
+      "time": 47.537700000000186,
+      "pitch": 131.98759447005872,
+      "noteMidi": 48,
+      "actualMidi": 48.15,
+      "actualMidiChroma": 0.14999999999999858,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9997807057512418
+    },
+    {
+      "time": 47.55429999999981,
+      "pitch": 131.9980309910284,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9997359988922554
+    },
+    {
+      "time": 47.571,
+      "pitch": 132.0410734649569,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998027792713344
+    },
+    {
+      "time": 47.58779999999982,
+      "pitch": 132.03217203762733,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998227283918268
+    },
+    {
+      "time": 47.604400000000375,
+      "pitch": 131.97641339845617,
+      "noteMidi": 48,
+      "actualMidi": 48.15,
+      "actualMidiChroma": 0.14999999999999858,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9997866024442104
+    },
+    {
+      "time": 47.621,
+      "pitch": 131.9889482250452,
+      "noteMidi": 48,
+      "actualMidi": 48.15,
+      "actualMidiChroma": 0.14999999999999858,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9998177753612154
+    },
+    {
+      "time": 47.63770000000019,
+      "pitch": 132.0205532662401,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998203641580261
+    },
+    {
+      "time": 47.654299999999814,
+      "pitch": 131.98422302440102,
+      "noteMidi": 48,
+      "actualMidi": 48.15,
+      "actualMidiChroma": 0.14999999999999858,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9997886903842144
+    },
+    {
+      "time": 47.67090000000037,
+      "pitch": 132.02328426828817,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9997815771253968
+    },
+    {
+      "time": 47.68759999999963,
+      "pitch": 132.0698841482523,
+      "noteMidi": 48,
+      "actualMidi": 48.17,
+      "actualMidiChroma": 0.1700000000000017,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998274917142709
+    },
+    {
+      "time": 47.70440000000037,
+      "pitch": 132.0402301448011,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.999808660808192
+    },
+    {
+      "time": 47.72090000000037,
+      "pitch": 132.05166537369723,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998212479062119
+    },
+    {
+      "time": 47.73759999999963,
+      "pitch": 132.09223970826477,
+      "noteMidi": 48,
+      "actualMidi": 48.17,
+      "actualMidiChroma": 0.1700000000000017,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998376202437527
+    },
+    {
+      "time": 47.754299999999816,
+      "pitch": 132.10201073861145,
+      "noteMidi": 48,
+      "actualMidi": 48.17,
+      "actualMidiChroma": 0.1700000000000017,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998769074899201
+    },
+    {
+      "time": 47.771,
+      "pitch": 132.0863153558178,
+      "noteMidi": 48,
+      "actualMidi": 48.17,
+      "actualMidiChroma": 0.1700000000000017,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998487691142657
+    },
+    {
+      "time": 47.787700000000186,
+      "pitch": 132.06597841314718,
+      "noteMidi": 48,
+      "actualMidi": 48.17,
+      "actualMidiChroma": 0.1700000000000017,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998322282010648
+    },
+    {
+      "time": 47.80429999999981,
+      "pitch": 132.1051474129316,
+      "noteMidi": 48,
+      "actualMidi": 48.17,
+      "actualMidiChroma": 0.1700000000000017,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998830848562505
+    },
+    {
+      "time": 47.82090000000037,
+      "pitch": 132.03757759104775,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998625636648839
+    },
+    {
+      "time": 47.83770000000018,
+      "pitch": 131.9958024202899,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998637058156703
+    },
+    {
+      "time": 47.85429999999981,
+      "pitch": 132.0300770169048,
+      "noteMidi": 48,
+      "actualMidi": 48.16,
+      "actualMidiChroma": 0.1599999999999966,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998849368640492
+    },
+    {
+      "time": 47.870900000000375,
+      "pitch": 131.9469754575762,
+      "noteMidi": 48,
+      "actualMidi": 48.15,
+      "actualMidiChroma": 0.14999999999999858,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9998775282325241
+    },
+    {
+      "time": 47.88759999999963,
+      "pitch": 131.86710293975463,
+      "noteMidi": 48,
+      "actualMidi": 48.14,
+      "actualMidiChroma": 0.14000000000000057,
+      "centsOffset": 14.000000000000057,
+      "clarity": 0.9997850675977702
+    },
+    {
+      "time": 47.90440000000037,
+      "pitch": 131.7965777574152,
+      "noteMidi": 48,
+      "actualMidi": 48.13,
+      "actualMidiChroma": 0.13000000000000256,
+      "centsOffset": 13.000000000000256,
+      "clarity": 0.999715401195914
+    },
+    {
+      "time": 47.921,
+      "pitch": 131.5917231569895,
+      "noteMidi": 48,
+      "actualMidi": 48.1,
+      "actualMidiChroma": 0.10000000000000142,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9988939271290391
+    },
+    {
+      "time": 47.937700000000184,
+      "pitch": 130.1999107878259,
+      "noteMidi": 48,
+      "actualMidi": 47.92,
+      "actualMidiChroma": 11.920000000000002,
+      "centsOffset": -7.9999999999998295,
+      "clarity": 0.9851029003233762
+    },
+    {
+      "time": 47.95429999999981,
+      "pitch": 128.42290939926966,
+      "noteMidi": 48,
+      "actualMidi": 47.68,
+      "actualMidiChroma": 11.68,
+      "centsOffset": -32.00000000000003,
+      "clarity": 0.970680856198932
+    },
+    {
+      "time": 47.971,
+      "pitch": 122.54819433983079,
+      "noteMidi": 47,
+      "actualMidi": 46.87,
+      "actualMidiChroma": 10.869999999999997,
+      "centsOffset": -13.000000000000256,
+      "clarity": 0.882149933824028
+    },
+    {
+      "time": 47.98770000000019,
+      "pitch": 111.4857278922325,
+      "noteMidi": 45,
+      "actualMidi": 45.23,
+      "actualMidiChroma": 9.229999999999997,
+      "centsOffset": 22.999999999999687,
+      "clarity": 0.9658497295320103
+    },
+    {
+      "time": 48.00440000000037,
+      "pitch": 112.01746431710662,
+      "noteMidi": 45,
+      "actualMidi": 45.31,
+      "actualMidiChroma": 9.310000000000002,
+      "centsOffset": 31.000000000000227,
+      "clarity": 0.9784013603927164
+    },
+    {
+      "time": 48.021,
+      "pitch": 111.93227000289629,
+      "noteMidi": 45,
+      "actualMidi": 45.3,
+      "actualMidiChroma": 9.299999999999997,
+      "centsOffset": 29.999999999999716,
+      "clarity": 0.9504878052593284
+    },
+    {
+      "time": 48.03759999999963,
+      "pitch": 115.09849118350533,
+      "noteMidi": 46,
+      "actualMidi": 45.78,
+      "actualMidiChroma": 9.780000000000001,
+      "centsOffset": -21.999999999999886,
+      "clarity": 0.8597647795217753
+    },
+    {
+      "time": 48.05429999999981,
+      "pitch": 117.88367185970203,
+      "noteMidi": 46,
+      "actualMidi": 46.2,
+      "actualMidiChroma": 10.200000000000003,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.8253695965257375
+    },
+    {
+      "time": 48.07090000000037,
+      "pitch": 94.68622322706355,
+      "noteMidi": 42,
+      "actualMidi": 42.4,
+      "actualMidiChroma": 6.399999999999999,
+      "centsOffset": 39.99999999999986,
+      "clarity": 0.1975871072792259
+    },
+    {
+      "time": 48.08770000000018,
+      "pitch": 111.13546370144151,
+      "noteMidi": 45,
+      "actualMidi": 45.18,
+      "actualMidiChroma": 9.18,
+      "centsOffset": 17.99999999999997,
+      "clarity": 0.8180242449307542
+    },
+    {
+      "time": 48.10429999999981,
+      "pitch": 110.88011088011089,
+      "noteMidi": 45,
+      "actualMidi": 45.14,
+      "actualMidiChroma": 9.14,
+      "centsOffset": 14.000000000000057,
+      "clarity": 0.9019933149218531
+    },
+    {
+      "time": 48.120900000000375,
+      "pitch": 111.00810608364174,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998013927999025
+    },
+    {
+      "time": 48.13759999999963,
+      "pitch": 111.0668768295429,
+      "noteMidi": 45,
+      "actualMidi": 45.17,
+      "actualMidiChroma": 9.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998694713963019
+    },
+    {
+      "time": 48.15420000000019,
+      "pitch": 111.06903234560683,
+      "noteMidi": 45,
+      "actualMidi": 45.17,
+      "actualMidiChroma": 9.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.999863638227886
+    },
+    {
+      "time": 48.171,
+      "pitch": 111.06582005602382,
+      "noteMidi": 45,
+      "actualMidi": 45.17,
+      "actualMidiChroma": 9.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998686540805011
+    },
+    {
+      "time": 48.18759999999963,
+      "pitch": 111.05383224008544,
+      "noteMidi": 45,
+      "actualMidi": 45.17,
+      "actualMidiChroma": 9.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998845569499295
+    },
+    {
+      "time": 48.20429999999981,
+      "pitch": 111.06148415200867,
+      "noteMidi": 45,
+      "actualMidi": 45.17,
+      "actualMidiChroma": 9.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.999906354609621
+    },
+    {
+      "time": 48.22109999999963,
+      "pitch": 111.06888048167735,
+      "noteMidi": 45,
+      "actualMidi": 45.17,
+      "actualMidiChroma": 9.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998962110937697
+    },
+    {
+      "time": 48.23770000000019,
+      "pitch": 111.04829827234323,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.999902386873913
+    },
+    {
+      "time": 48.254299999999816,
+      "pitch": 111.04753218903012,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998951817280073
+    },
+    {
+      "time": 48.270900000000374,
+      "pitch": 111.03629290082577,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9999114091234347
+    },
+    {
+      "time": 48.28759999999963,
+      "pitch": 111.03732959184025,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9999087591910509
+    },
+    {
+      "time": 48.30429999999981,
+      "pitch": 111.03601459127114,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998977279715362
+    },
+    {
+      "time": 48.321,
+      "pitch": 111.05135782511508,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9999036563967181
+    },
+    {
+      "time": 48.337599999999625,
+      "pitch": 111.0502702828859,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998943627659287
+    },
+    {
+      "time": 48.35429999999981,
+      "pitch": 111.03748719947899,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9999089680375377
+    },
+    {
+      "time": 48.370900000000375,
+      "pitch": 110.99790589538226,
+      "noteMidi": 45,
+      "actualMidi": 45.16,
+      "actualMidiChroma": 9.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9999035791383619
+    },
+    {
+      "time": 48.387799999999814,
+      "pitch": 110.9094461238813,
+      "noteMidi": 45,
+      "actualMidi": 45.14,
+      "actualMidiChroma": 9.14,
+      "centsOffset": 14.000000000000057,
+      "clarity": 0.9999014650200593
+    },
+    {
+      "time": 48.40440000000037,
+      "pitch": 110.84161091066066,
+      "noteMidi": 45,
+      "actualMidi": 45.13,
+      "actualMidiChroma": 9.130000000000003,
+      "centsOffset": 13.000000000000256,
+      "clarity": 0.9998916753712734
+    },
+    {
+      "time": 48.421,
+      "pitch": 110.71991521973474,
+      "noteMidi": 45,
+      "actualMidi": 45.11,
+      "actualMidiChroma": 9.11,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9998901539233884
+    },
+    {
+      "time": 48.437700000000184,
+      "pitch": 110.64186717904204,
+      "noteMidi": 45,
+      "actualMidi": 45.1,
+      "actualMidiChroma": 9.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9998318457132669
+    },
+    {
+      "time": 48.45429999999981,
+      "pitch": 110.60946424300103,
+      "noteMidi": 45,
+      "actualMidi": 45.1,
+      "actualMidiChroma": 9.100000000000001,
+      "centsOffset": 10.000000000000142,
+      "clarity": 0.9996030664068201
+    },
+    {
+      "time": 48.47090000000037,
+      "pitch": 110.80643841532526,
+      "noteMidi": 45,
+      "actualMidi": 45.13,
+      "actualMidiChroma": 9.130000000000003,
+      "centsOffset": 13.000000000000256,
+      "clarity": 0.9709597503829812
+    },
+    {
+      "time": 48.48770000000019,
+      "pitch": 110.38762754525243,
+      "noteMidi": 45,
+      "actualMidi": 45.06,
+      "actualMidiChroma": 9.060000000000002,
+      "centsOffset": 6.000000000000227,
+      "clarity": 0.8415731981490282
+    },
+    {
+      "time": 48.50440000000037,
+      "pitch": 109.52726336389453,
+      "noteMidi": 45,
+      "actualMidi": 44.93,
+      "actualMidiChroma": 8.93,
+      "centsOffset": -7.000000000000028,
+      "clarity": 0.6507506236980873
+    },
+    {
+      "time": 48.520900000000374,
+      "pitch": 104.99450722628546,
+      "noteMidi": 44,
+      "actualMidi": 44.19,
+      "actualMidiChroma": 8.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.6737272905272675
+    },
+    {
+      "time": 48.537700000000186,
+      "pitch": 110.22960953020399,
+      "noteMidi": 45,
+      "actualMidi": 45.04,
+      "actualMidiChroma": 9.04,
+      "centsOffset": 3.9999999999999147,
+      "clarity": 0.7496840313771713
+    },
+    {
+      "time": 48.55440000000037,
+      "pitch": 107.74003814864224,
+      "noteMidi": 45,
+      "actualMidi": 44.64,
+      "actualMidiChroma": 8.64,
+      "centsOffset": -35.99999999999994,
+      "clarity": 0.7234940427212848
+    },
+    {
+      "time": 48.57090000000037,
+      "pitch": 1121.3231546815318,
+      "noteMidi": 85,
+      "actualMidi": 85.2,
+      "actualMidiChroma": 1.2000000000000028,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.46514258266959096
+    },
+    {
+      "time": 48.587599999999625,
+      "pitch": 1018.0377500660148,
+      "noteMidi": 84,
+      "actualMidi": 83.52,
+      "actualMidiChroma": 11.519999999999996,
+      "centsOffset": -48.0000000000004,
+      "clarity": 0.5849985463545657
+    },
+    {
+      "time": 48.60429999999981,
+      "pitch": 24.020343425028923,
+      "noteMidi": 19,
+      "actualMidi": 18.66,
+      "actualMidiChroma": 6.66,
+      "centsOffset": -33.999999999999986,
+      "clarity": 0.682632343377918
+    },
+    {
+      "time": 48.620900000000375,
+      "pitch": 125.72366433742526,
+      "noteMidi": 47,
+      "actualMidi": 47.31,
+      "actualMidiChroma": 11.310000000000002,
+      "centsOffset": 31.000000000000227,
+      "clarity": 0.372056912303421
+    },
+    {
+      "time": 48.63759999999963,
+      "pitch": 27.802554718385167,
+      "noteMidi": 21,
+      "actualMidi": 21.19,
+      "actualMidiChroma": 9.190000000000001,
+      "centsOffset": 19.000000000000128,
+      "clarity": 0.7630355544829399
+    },
+    {
+      "time": 48.654299999999814,
+      "pitch": 34.04541275483257,
+      "noteMidi": 25,
+      "actualMidi": 24.7,
+      "actualMidiChroma": 0.6999999999999993,
+      "centsOffset": -30.00000000000007,
+      "clarity": 0.6823307891786499
+    },
+    {
+      "time": 48.670799999999815,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 48.68740000000037,
+      "pitch": 0,
+      "noteMidi": null,
+      "actualMidi": null,
+      "actualMidiChroma": null,
+      "centsOffset": null,
+      "clarity": 0
+    },
+    {
+      "time": 48.704200000000185,
+      "pitch": 193.59230068289938,
+      "noteMidi": 55,
+      "actualMidi": 54.79,
+      "actualMidiChroma": 6.789999999999999,
+      "centsOffset": -21.000000000000085,
+      "clarity": 0.5198408692667762
+    },
+    {
+      "time": 48.721,
+      "pitch": 98.23633801288842,
+      "noteMidi": 43,
+      "actualMidi": 43.04,
+      "actualMidiChroma": 7.039999999999999,
+      "centsOffset": 3.9999999999999147,
+      "clarity": 0.6190728761505611
+    },
+    {
+      "time": 48.73759999999963,
+      "pitch": 98.59644218627035,
+      "noteMidi": 43,
+      "actualMidi": 43.11,
+      "actualMidiChroma": 7.109999999999999,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.8805189704319929
+    },
+    {
+      "time": 48.754299999999816,
+      "pitch": 98.64345668673725,
+      "noteMidi": 43,
+      "actualMidi": 43.11,
+      "actualMidiChroma": 7.109999999999999,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9818329528372516
+    },
+    {
+      "time": 48.770900000000374,
+      "pitch": 98.96515869033344,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9997025360446372
+    },
+    {
+      "time": 48.78759999999963,
+      "pitch": 99.07720168121537,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998145315923779
+    },
+    {
+      "time": 48.80429999999981,
+      "pitch": 99.09832822144816,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998126103214133
+    },
+    {
+      "time": 48.82090000000037,
+      "pitch": 99.11569591140623,
+      "noteMidi": 43,
+      "actualMidi": 43.2,
+      "actualMidiChroma": 7.200000000000003,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.9998430940143521
+    },
+    {
+      "time": 48.837599999999625,
+      "pitch": 99.12027939391392,
+      "noteMidi": 43,
+      "actualMidi": 43.2,
+      "actualMidiChroma": 7.200000000000003,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.999857620818446
+    },
+    {
+      "time": 48.854400000000375,
+      "pitch": 99.13001331146366,
+      "noteMidi": 43,
+      "actualMidi": 43.2,
+      "actualMidiChroma": 7.200000000000003,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.9998589510313565
+    },
+    {
+      "time": 48.87120000000019,
+      "pitch": 99.13162898726506,
+      "noteMidi": 43,
+      "actualMidi": 43.2,
+      "actualMidiChroma": 7.200000000000003,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.9998371755432203
+    },
+    {
+      "time": 48.88759999999963,
+      "pitch": 99.12587638114933,
+      "noteMidi": 43,
+      "actualMidi": 43.2,
+      "actualMidiChroma": 7.200000000000003,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.9998127139431716
+    },
+    {
+      "time": 48.904299999999814,
+      "pitch": 99.1060718281597,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998454375170098
+    },
+    {
+      "time": 48.921,
+      "pitch": 99.09824600502812,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998632621333883
+    },
+    {
+      "time": 48.93759999999963,
+      "pitch": 99.09751192928769,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998605405072567
+    },
+    {
+      "time": 48.95429999999981,
+      "pitch": 99.1121587407528,
+      "noteMidi": 43,
+      "actualMidi": 43.2,
+      "actualMidiChroma": 7.200000000000003,
+      "centsOffset": 20.000000000000284,
+      "clarity": 0.9998763540520486
+    },
+    {
+      "time": 48.97090000000037,
+      "pitch": 99.10748531107878,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998680502659312
+    },
+    {
+      "time": 48.98759999999963,
+      "pitch": 99.10204854047406,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998755049093546
+    },
+    {
+      "time": 49.00440000000037,
+      "pitch": 99.07294738161247,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998491305249075
+    },
+    {
+      "time": 49.020900000000374,
+      "pitch": 99.06284108593087,
+      "noteMidi": 43,
+      "actualMidi": 43.19,
+      "actualMidiChroma": 7.189999999999998,
+      "centsOffset": 18.999999999999773,
+      "clarity": 0.9998393704976536
+    },
+    {
+      "time": 49.03759999999963,
+      "pitch": 99.02386962601398,
+      "noteMidi": 43,
+      "actualMidi": 43.18,
+      "actualMidiChroma": 7.18,
+      "centsOffset": 17.99999999999997,
+      "clarity": 0.9998406909001858
+    },
+    {
+      "time": 49.05429999999981,
+      "pitch": 99.03201929299605,
+      "noteMidi": 43,
+      "actualMidi": 43.18,
+      "actualMidiChroma": 7.18,
+      "centsOffset": 17.99999999999997,
+      "clarity": 0.9998517704290464
+    },
+    {
+      "time": 49.071,
+      "pitch": 99.01990083559915,
+      "noteMidi": 43,
+      "actualMidi": 43.18,
+      "actualMidiChroma": 7.18,
+      "centsOffset": 17.99999999999997,
+      "clarity": 0.9998593092194596
+    },
+    {
+      "time": 49.087599999999625,
+      "pitch": 99.01119524004369,
+      "noteMidi": 43,
+      "actualMidi": 43.18,
+      "actualMidiChroma": 7.18,
+      "centsOffset": 17.99999999999997,
+      "clarity": 0.9998429448546915
+    },
+    {
+      "time": 49.10420000000018,
+      "pitch": 98.99424298322366,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.999814042445422
+    },
+    {
+      "time": 49.121,
+      "pitch": 98.98001873953253,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998192044599392
+    },
+    {
+      "time": 49.13770000000019,
+      "pitch": 98.97516929270863,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998050050314333
+    },
+    {
+      "time": 49.15420000000019,
+      "pitch": 98.99209374251302,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.999842601318079
+    },
+    {
+      "time": 49.17090000000037,
+      "pitch": 98.99088054254304,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998240080423813
+    },
+    {
+      "time": 49.18759999999963,
+      "pitch": 98.98856657046674,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998386810702016
+    },
+    {
+      "time": 49.20429999999981,
+      "pitch": 98.96096600082332,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998174999493585
+    },
+    {
+      "time": 49.221,
+      "pitch": 98.9487614153807,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998091433170373
+    },
+    {
+      "time": 49.2375,
+      "pitch": 98.93960371155157,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.999824533344821
+    },
+    {
+      "time": 49.254299999999816,
+      "pitch": 98.95217438044227,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998121744741724
+    },
+    {
+      "time": 49.271,
+      "pitch": 98.94538718674815,
+      "noteMidi": 43,
+      "actualMidi": 43.17,
+      "actualMidiChroma": 7.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9998478625893767
+    },
+    {
+      "time": 49.28759999999963,
+      "pitch": 98.92619531719053,
+      "noteMidi": 43,
+      "actualMidi": 43.16,
+      "actualMidiChroma": 7.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998154625690177
+    },
+    {
+      "time": 49.30429999999981,
+      "pitch": 98.90686027373955,
+      "noteMidi": 43,
+      "actualMidi": 43.16,
+      "actualMidiChroma": 7.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.999842930785448
+    },
+    {
+      "time": 49.321,
+      "pitch": 98.88431516736719,
+      "noteMidi": 43,
+      "actualMidi": 43.16,
+      "actualMidiChroma": 7.159999999999997,
+      "centsOffset": 15.999999999999659,
+      "clarity": 0.9998442300070991
+    },
+    {
+      "time": 49.33770000000018,
+      "pitch": 98.86190070620898,
+      "noteMidi": 43,
+      "actualMidi": 43.15,
+      "actualMidiChroma": 7.149999999999999,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9998460652496703
+    },
+    {
+      "time": 49.3545,
+      "pitch": 98.85944333165499,
+      "noteMidi": 43,
+      "actualMidi": 43.15,
+      "actualMidiChroma": 7.149999999999999,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9998117986478263
+    },
+    {
+      "time": 49.371,
+      "pitch": 98.8332751112001,
+      "noteMidi": 43,
+      "actualMidi": 43.15,
+      "actualMidiChroma": 7.149999999999999,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.9997769859362506
+    },
+    {
+      "time": 49.38759999999963,
+      "pitch": 98.80401019288358,
+      "noteMidi": 43,
+      "actualMidi": 43.14,
+      "actualMidiChroma": 7.140000000000001,
+      "centsOffset": 14.000000000000057,
+      "clarity": 0.9997546797595902
+    },
+    {
+      "time": 49.404299999999814,
+      "pitch": 98.78387981494048,
+      "noteMidi": 43,
+      "actualMidi": 43.14,
+      "actualMidiChroma": 7.140000000000001,
+      "centsOffset": 14.000000000000057,
+      "clarity": 0.9998250963351012
+    },
+    {
+      "time": 49.421,
+      "pitch": 98.73314964843905,
+      "noteMidi": 43,
+      "actualMidi": 43.13,
+      "actualMidiChroma": 7.130000000000003,
+      "centsOffset": 13.000000000000256,
+      "clarity": 0.9997774730898215
+    },
+    {
+      "time": 49.43759999999963,
+      "pitch": 98.6565648718524,
+      "noteMidi": 43,
+      "actualMidi": 43.12,
+      "actualMidiChroma": 7.119999999999997,
+      "centsOffset": 11.999999999999744,
+      "clarity": 0.9997335212057408
+    },
+    {
+      "time": 49.45429999999981,
+      "pitch": 98.60212849993825,
+      "noteMidi": 43,
+      "actualMidi": 43.11,
+      "actualMidiChroma": 7.109999999999999,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9995229254163149
+    },
+    {
+      "time": 49.471,
+      "pitch": 98.5377146347245,
+      "noteMidi": 43,
+      "actualMidi": 43.09,
+      "actualMidiChroma": 7.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9993384547778987
+    },
+    {
+      "time": 49.48759999999963,
+      "pitch": 98.44627756783616,
+      "noteMidi": 43,
+      "actualMidi": 43.08,
+      "actualMidiChroma": 7.079999999999998,
+      "centsOffset": 7.9999999999998295,
+      "clarity": 0.9991196098522721
+    },
+    {
+      "time": 49.504299999999816,
+      "pitch": 98.5270777794637,
+      "noteMidi": 43,
+      "actualMidi": 43.09,
+      "actualMidiChroma": 7.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.9968918369935551
+    },
+    {
+      "time": 49.520900000000374,
+      "pitch": 97.05714314836382,
+      "noteMidi": 43,
+      "actualMidi": 42.83,
+      "actualMidiChroma": 6.829999999999998,
+      "centsOffset": -17.00000000000017,
+      "clarity": 0.8493799044053105
+    },
+    {
+      "time": 49.53759999999963,
+      "pitch": 93.68588162242595,
+      "noteMidi": 42,
+      "actualMidi": 42.22,
+      "actualMidiChroma": 6.219999999999999,
+      "centsOffset": 21.999999999999886,
+      "clarity": 0.6919397389456421
+    },
+    {
+      "time": 49.55429999999981,
+      "pitch": 92.45286940616491,
+      "noteMidi": 42,
+      "actualMidi": 41.99,
+      "actualMidiChroma": 5.990000000000002,
+      "centsOffset": -0.999999999999801,
+      "clarity": 0.6708178248444057
+    },
+    {
+      "time": 49.57090000000037,
+      "pitch": 96.33776875137895,
+      "noteMidi": 43,
+      "actualMidi": 42.7,
+      "actualMidiChroma": 6.700000000000003,
+      "centsOffset": -29.999999999999716,
+      "clarity": 0.5063479470240395
+    },
+    {
+      "time": 49.587599999999625,
+      "pitch": 82.15807093471052,
+      "noteMidi": 40,
+      "actualMidi": 39.95,
+      "actualMidiChroma": 3.950000000000003,
+      "centsOffset": -4.999999999999716,
+      "clarity": 0.525519109092059
+    },
+    {
+      "time": 49.60429999999981,
+      "pitch": 80.67046497525945,
+      "noteMidi": 40,
+      "actualMidi": 39.63,
+      "actualMidiChroma": 3.6300000000000026,
+      "centsOffset": -36.999999999999744,
+      "clarity": 0.6985443076559648
+    },
+    {
+      "time": 49.621,
+      "pitch": 27.512857961807956,
+      "noteMidi": 21,
+      "actualMidi": 21.01,
+      "actualMidiChroma": 9.010000000000002,
+      "centsOffset": 1.0000000000001563,
+      "clarity": 0.9676705071096876
+    },
+    {
+      "time": 49.63759999999963,
+      "pitch": 27.555019785470964,
+      "noteMidi": 21,
+      "actualMidi": 21.03,
+      "actualMidiChroma": 9.030000000000001,
+      "centsOffset": 3.0000000000001137,
+      "clarity": 0.8284948738901221
+    },
+    {
+      "time": 49.654299999999814,
+      "pitch": 27.486690893473863,
+      "noteMidi": 21,
+      "actualMidi": 20.99,
+      "actualMidiChroma": 8.989999999999998,
+      "centsOffset": -1.0000000000001563,
+      "clarity": 0.9745630249740316
+    },
+    {
+      "time": 49.67090000000037,
+      "pitch": 27.486374449080444,
+      "noteMidi": 21,
+      "actualMidi": 20.99,
+      "actualMidiChroma": 8.989999999999998,
+      "centsOffset": -1.0000000000001563,
+      "clarity": 0.964434762872088
+    },
+    {
+      "time": 49.68759999999963,
+      "pitch": 27.48376386363381,
+      "noteMidi": 21,
+      "actualMidi": 20.99,
+      "actualMidiChroma": 8.989999999999998,
+      "centsOffset": -1.0000000000001563,
+      "clarity": 0.9342547410853967
+    },
+    {
+      "time": 49.70440000000037,
+      "pitch": 27.49640037630845,
+      "noteMidi": 21,
+      "actualMidi": 21,
+      "actualMidiChroma": 9,
+      "centsOffset": 0,
+      "clarity": 0.9410028229735872
+    },
+    {
+      "time": 49.72090000000037,
+      "pitch": 55.29834338922758,
+      "noteMidi": 33,
+      "actualMidi": 33.09,
+      "actualMidiChroma": 9.090000000000003,
+      "centsOffset": 9.000000000000341,
+      "clarity": 0.5851863823436929
+    },
+    {
+      "time": 49.73759999999963,
+      "pitch": 27.62286464391893,
+      "noteMidi": 21,
+      "actualMidi": 21.08,
+      "actualMidiChroma": 9.079999999999998,
+      "centsOffset": 7.9999999999998295,
+      "clarity": 0.7803478140481275
+    },
+    {
+      "time": 49.75420000000019,
+      "pitch": 27.515986838020737,
+      "noteMidi": 21,
+      "actualMidi": 21.01,
+      "actualMidiChroma": 9.010000000000002,
+      "centsOffset": 1.0000000000001563,
+      "clarity": 0.8927638481238773
+    },
+    {
+      "time": 49.770900000000374,
+      "pitch": 27.453681981229,
+      "noteMidi": 21,
+      "actualMidi": 20.97,
+      "actualMidiChroma": 8.969999999999999,
+      "centsOffset": -3.0000000000001137,
+      "clarity": 0.9670735003949176
+    },
+    {
+      "time": 49.78759999999963,
+      "pitch": 27.281430317334454,
+      "noteMidi": 21,
+      "actualMidi": 20.86,
+      "actualMidiChroma": 8.86,
+      "centsOffset": -14.000000000000057,
+      "clarity": 0.7517501053247315
+    },
+    {
+      "time": 49.80429999999981,
+      "pitch": 27.688760751940265,
+      "noteMidi": 21,
+      "actualMidi": 21.12,
+      "actualMidiChroma": 9.120000000000001,
+      "centsOffset": 12.0000000000001,
+      "clarity": 0.8619813440860753
+    },
+    {
+      "time": 49.82090000000037,
+      "pitch": 27.278866697074598,
+      "noteMidi": 21,
+      "actualMidi": 20.86,
+      "actualMidiChroma": 8.86,
+      "centsOffset": -14.000000000000057,
+      "clarity": 0.7896494033437875
+    },
+    {
+      "time": 49.83770000000018,
+      "pitch": 24.101991402574743,
+      "noteMidi": 19,
+      "actualMidi": 18.72,
+      "actualMidiChroma": 6.719999999999999,
+      "centsOffset": -28.000000000000114,
+      "clarity": 0.817204871942522
+    },
+    {
+      "time": 49.85429999999981,
+      "pitch": 27.43044098243663,
+      "noteMidi": 21,
+      "actualMidi": 20.96,
+      "actualMidiChroma": 8.96,
+      "centsOffset": -3.9999999999999147,
+      "clarity": 0.9282135975680603
+    },
+    {
+      "time": 49.871,
+      "pitch": 42.21796358774811,
+      "noteMidi": 28,
+      "actualMidi": 28.42,
+      "actualMidiChroma": 4.420000000000002,
+      "centsOffset": 42.00000000000017,
+      "clarity": 0.6262287881882571
+    },
+    {
+      "time": 49.88759999999963,
+      "pitch": 27.516169236210146,
+      "noteMidi": 21,
+      "actualMidi": 21.01,
+      "actualMidiChroma": 9.010000000000002,
+      "centsOffset": 1.0000000000001563,
+      "clarity": 0.9645944627160361
+    },
+    {
+      "time": 49.904299999999814,
+      "pitch": 27.32553021185959,
+      "noteMidi": 21,
+      "actualMidi": 20.89,
+      "actualMidiChroma": 8.89,
+      "centsOffset": -10.999999999999943,
+      "clarity": 0.8373339845504688
+    },
+    {
+      "time": 49.92090000000037,
+      "pitch": 41.523512109083576,
+      "noteMidi": 28,
+      "actualMidi": 28.13,
+      "actualMidiChroma": 4.129999999999999,
+      "centsOffset": 12.9999999999999,
+      "clarity": 0.7989038646024937
+    },
+    {
+      "time": 49.93759999999963,
+      "pitch": 41.72824233878924,
+      "noteMidi": 28,
+      "actualMidi": 28.22,
+      "actualMidiChroma": 4.219999999999999,
+      "centsOffset": 21.999999999999886,
+      "clarity": 0.8197057133921248
+    },
+    {
+      "time": 49.95429999999981,
+      "pitch": 27.49049380977377,
+      "noteMidi": 21,
+      "actualMidi": 20.99,
+      "actualMidiChroma": 8.989999999999998,
+      "centsOffset": -1.0000000000001563,
+      "clarity": 0.9439052701352466
+    },
+    {
+      "time": 49.971,
+      "pitch": 27.493031007721985,
+      "noteMidi": 21,
+      "actualMidi": 21,
+      "actualMidiChroma": 9,
+      "centsOffset": 0,
+      "clarity": 0.9159328400990034
+    },
+    {
+      "time": 49.98759999999963,
+      "pitch": 27.222506606337987,
+      "noteMidi": 21,
+      "actualMidi": 20.82,
+      "actualMidiChroma": 8.82,
+      "centsOffset": -17.99999999999997,
+      "clarity": 0.911815911408894
+    },
+    {
+      "time": 50.004299999999816,
+      "pitch": 41.474280461346474,
+      "noteMidi": 28,
+      "actualMidi": 28.11,
+      "actualMidiChroma": 4.109999999999999,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.8200051230670056
+    },
+    {
+      "time": 50.020900000000374,
+      "pitch": 41.76675257223517,
+      "noteMidi": 28,
+      "actualMidi": 28.24,
+      "actualMidiChroma": 4.239999999999998,
+      "centsOffset": 23.999999999999844,
+      "clarity": 0.9217857222216708
+    },
+    {
+      "time": 50.0375,
+      "pitch": 41.68612959579878,
+      "noteMidi": 28,
+      "actualMidi": 28.2,
+      "actualMidiChroma": 4.199999999999999,
+      "centsOffset": 19.99999999999993,
+      "clarity": 0.794264947237906
+    },
+    {
+      "time": 50.05429999999981,
+      "pitch": 27.368692704407437,
+      "noteMidi": 21,
+      "actualMidi": 20.92,
+      "actualMidiChroma": 8.920000000000002,
+      "centsOffset": -7.9999999999998295,
+      "clarity": 0.9672586919934929
+    },
+    {
+      "time": 50.07090000000037,
+      "pitch": 41.27986851597436,
+      "noteMidi": 28,
+      "actualMidi": 28.03,
+      "actualMidiChroma": 4.030000000000001,
+      "centsOffset": 3.0000000000001137,
+      "clarity": 0.9058158213482841
+    },
+    {
+      "time": 50.087599999999625,
+      "pitch": 41.66175079533624,
+      "noteMidi": 28,
+      "actualMidi": 28.19,
+      "actualMidiChroma": 4.190000000000001,
+      "centsOffset": 19.000000000000128,
+      "clarity": 0.7666442685172683
+    },
+    {
+      "time": 50.10429999999981,
+      "pitch": 41.72586965878647,
+      "noteMidi": 28,
+      "actualMidi": 28.22,
+      "actualMidiChroma": 4.219999999999999,
+      "centsOffset": 21.999999999999886,
+      "clarity": 0.8469739005911663
+    },
+    {
+      "time": 50.120900000000375,
+      "pitch": 41.63226743338369,
+      "noteMidi": 28,
+      "actualMidi": 28.18,
+      "actualMidiChroma": 4.18,
+      "centsOffset": 17.99999999999997,
+      "clarity": 0.9068151392551442
+    },
+    {
+      "time": 50.13759999999963,
+      "pitch": 41.562640253510345,
+      "noteMidi": 28,
+      "actualMidi": 28.15,
+      "actualMidiChroma": 4.149999999999999,
+      "centsOffset": 14.999999999999858,
+      "clarity": 0.8164906146460282
+    },
+    {
+      "time": 50.154299999999814,
+      "pitch": 41.23434940598347,
+      "noteMidi": 28,
+      "actualMidi": 28.01,
+      "actualMidiChroma": 4.010000000000002,
+      "centsOffset": 1.0000000000001563,
+      "clarity": 0.8182152757809718
+    },
+    {
+      "time": 50.17090000000037,
+      "pitch": 41.898003767997324,
+      "noteMidi": 28,
+      "actualMidi": 28.29,
+      "actualMidiChroma": 4.289999999999999,
+      "centsOffset": 28.999999999999915,
+      "clarity": 0.9257064279420604
+    },
+    {
+      "time": 50.18759999999963,
+      "pitch": 27.200822060727152,
+      "noteMidi": 21,
+      "actualMidi": 20.81,
+      "actualMidiChroma": 8.809999999999999,
+      "centsOffset": -19.000000000000128,
+      "clarity": 0.9058959572283811
+    },
+    {
+      "time": 50.20429999999981,
+      "pitch": 41.607698839513155,
+      "noteMidi": 28,
+      "actualMidi": 28.17,
+      "actualMidiChroma": 4.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.8403449192339281
+    },
+    {
+      "time": 50.22090000000037,
+      "pitch": 41.794345895947345,
+      "noteMidi": 28,
+      "actualMidi": 28.25,
+      "actualMidiChroma": 4.25,
+      "centsOffset": 25,
+      "clarity": 0.9005337130594171
+    },
+    {
+      "time": 50.2375,
+      "pitch": 41.63455256178321,
+      "noteMidi": 28,
+      "actualMidi": 28.18,
+      "actualMidiChroma": 4.18,
+      "centsOffset": 17.99999999999997,
+      "clarity": 0.8626158428900226
+    },
+    {
+      "time": 50.254299999999816,
+      "pitch": 27.126052939157965,
+      "noteMidi": 21,
+      "actualMidi": 20.76,
+      "actualMidiChroma": 8.760000000000002,
+      "centsOffset": -23.999999999999844,
+      "clarity": 0.9509471572703774
+    },
+    {
+      "time": 50.270900000000374,
+      "pitch": 41.84387437423569,
+      "noteMidi": 28,
+      "actualMidi": 28.27,
+      "actualMidiChroma": 4.27,
+      "centsOffset": 26.999999999999957,
+      "clarity": 0.8819961477261415
+    },
+    {
+      "time": 50.28759999999963,
+      "pitch": 41.45994019897412,
+      "noteMidi": 28,
+      "actualMidi": 28.11,
+      "actualMidiChroma": 4.109999999999999,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.8564433186957956
+    },
+    {
+      "time": 50.30440000000037,
+      "pitch": 41.545956818745836,
+      "noteMidi": 28,
+      "actualMidi": 28.14,
+      "actualMidiChroma": 4.140000000000001,
+      "centsOffset": 14.000000000000057,
+      "clarity": 0.8615060142827815
+    },
+    {
+      "time": 50.32090000000037,
+      "pitch": 41.51801049647797,
+      "noteMidi": 28,
+      "actualMidi": 28.13,
+      "actualMidiChroma": 4.129999999999999,
+      "centsOffset": 12.9999999999999,
+      "clarity": 0.8947045123293265
+    },
+    {
+      "time": 50.337599999999625,
+      "pitch": 41.927208368405935,
+      "noteMidi": 28,
+      "actualMidi": 28.3,
+      "actualMidiChroma": 4.300000000000001,
+      "centsOffset": 30.00000000000007,
+      "clarity": 0.8648358247660042
+    },
+    {
+      "time": 50.35429999999981,
+      "pitch": 41.755574950818534,
+      "noteMidi": 28,
+      "actualMidi": 28.23,
+      "actualMidiChroma": 4.23,
+      "centsOffset": 23.000000000000043,
+      "clarity": 0.8848871503199973
+    },
+    {
+      "time": 50.371,
+      "pitch": 41.71614675218202,
+      "noteMidi": 28,
+      "actualMidi": 28.21,
+      "actualMidiChroma": 4.210000000000001,
+      "centsOffset": 21.000000000000085,
+      "clarity": 0.8918896306680324
+    },
+    {
+      "time": 50.38759999999963,
+      "pitch": 26.956881617749655,
+      "noteMidi": 21,
+      "actualMidi": 20.65,
+      "actualMidiChroma": 8.649999999999999,
+      "centsOffset": -35.00000000000014,
+      "clarity": 0.929400445558997
+    },
+    {
+      "time": 50.404299999999814,
+      "pitch": 27.46407099098723,
+      "noteMidi": 21,
+      "actualMidi": 20.98,
+      "actualMidiChroma": 8.98,
+      "centsOffset": -1.9999999999999574,
+      "clarity": 0.9493537760465642
+    },
+    {
+      "time": 50.421,
+      "pitch": 42.00029049260058,
+      "noteMidi": 28,
+      "actualMidi": 28.33,
+      "actualMidiChroma": 4.329999999999998,
+      "centsOffset": 32.99999999999983,
+      "clarity": 0.9334902007159656
+    },
+    {
+      "time": 50.43759999999963,
+      "pitch": 41.41517806947664,
+      "noteMidi": 28,
+      "actualMidi": 28.09,
+      "actualMidiChroma": 4.09,
+      "centsOffset": 8.999999999999986,
+      "clarity": 0.8200600171348071
+    },
+    {
+      "time": 50.45429999999981,
+      "pitch": 27.25291330424693,
+      "noteMidi": 21,
+      "actualMidi": 20.84,
+      "actualMidiChroma": 8.84,
+      "centsOffset": -16.000000000000014,
+      "clarity": 0.9676854828146588
+    },
+    {
+      "time": 50.47090000000037,
+      "pitch": 41.48117305086256,
+      "noteMidi": 28,
+      "actualMidi": 28.12,
+      "actualMidiChroma": 4.120000000000001,
+      "centsOffset": 12.0000000000001,
+      "clarity": 0.9194293358222865
+    },
+    {
+      "time": 50.48770000000019,
+      "pitch": 41.84118142298141,
+      "noteMidi": 28,
+      "actualMidi": 28.27,
+      "actualMidiChroma": 4.27,
+      "centsOffset": 26.999999999999957,
+      "clarity": 0.8035887063861935
+    },
+    {
+      "time": 50.50420000000019,
+      "pitch": 79.46677729811391,
+      "noteMidi": 39,
+      "actualMidi": 39.37,
+      "actualMidiChroma": 3.3699999999999974,
+      "centsOffset": 36.999999999999744,
+      "clarity": 0.7834950004909054
+    },
+    {
+      "time": 50.520900000000374,
+      "pitch": 41.58623984710942,
+      "noteMidi": 28,
+      "actualMidi": 28.16,
+      "actualMidiChroma": 4.16,
+      "centsOffset": 16.000000000000014,
+      "clarity": 0.9200855646940056
+    },
+    {
+      "time": 50.5375,
+      "pitch": 41.86145427195629,
+      "noteMidi": 28,
+      "actualMidi": 28.27,
+      "actualMidiChroma": 4.27,
+      "centsOffset": 26.999999999999957,
+      "clarity": 0.8793458176819513
+    },
+    {
+      "time": 50.554200000000186,
+      "pitch": 41.38069369661244,
+      "noteMidi": 28,
+      "actualMidi": 28.07,
+      "actualMidiChroma": 4.07,
+      "centsOffset": 7.000000000000028,
+      "clarity": 0.843293244725146
+    },
+    {
+      "time": 50.57090000000037,
+      "pitch": 41.80306296899579,
+      "noteMidi": 28,
+      "actualMidi": 28.25,
+      "actualMidiChroma": 4.25,
+      "centsOffset": 25,
+      "clarity": 0.9060909475950325
+    },
+    {
+      "time": 50.587599999999625,
+      "pitch": 41.6791725866517,
+      "noteMidi": 28,
+      "actualMidi": 28.2,
+      "actualMidiChroma": 4.199999999999999,
+      "centsOffset": 19.99999999999993,
+      "clarity": 0.8577949528904583
+    },
+    {
+      "time": 50.60420000000018,
+      "pitch": 41.91289674992506,
+      "noteMidi": 28,
+      "actualMidi": 28.3,
+      "actualMidiChroma": 4.300000000000001,
+      "centsOffset": 30.00000000000007,
+      "clarity": 0.8473401205448852
+    },
+    {
+      "time": 50.621,
+      "pitch": 41.42164538020334,
+      "noteMidi": 28,
+      "actualMidi": 28.09,
+      "actualMidiChroma": 4.09,
+      "centsOffset": 8.999999999999986,
+      "clarity": 0.9053813888918114
+    },
+    {
+      "time": 50.63759999999963,
+      "pitch": 41.598626218208224,
+      "noteMidi": 28,
+      "actualMidi": 28.17,
+      "actualMidiChroma": 4.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.8944705216973148
+    },
+    {
+      "time": 50.65440000000037,
+      "pitch": 41.81047506904175,
+      "noteMidi": 28,
+      "actualMidi": 28.25,
+      "actualMidiChroma": 4.25,
+      "centsOffset": 25,
+      "clarity": 0.878689026188141
+    },
+    {
+      "time": 50.67090000000037,
+      "pitch": 41.68655134585707,
+      "noteMidi": 28,
+      "actualMidi": 28.2,
+      "actualMidiChroma": 4.199999999999999,
+      "centsOffset": 19.99999999999993,
+      "clarity": 0.8898465630733767
+    },
+    {
+      "time": 50.6875,
+      "pitch": 41.340641377552664,
+      "noteMidi": 28,
+      "actualMidi": 28.06,
+      "actualMidiChroma": 4.059999999999999,
+      "centsOffset": 5.999999999999872,
+      "clarity": 0.9070666882456351
+    },
+    {
+      "time": 50.704200000000185,
+      "pitch": 41.18601417266319,
+      "noteMidi": 28,
+      "actualMidi": 27.99,
+      "actualMidiChroma": 3.9899999999999984,
+      "centsOffset": -1.0000000000001563,
+      "clarity": 0.8774350175219894
+    },
+    {
+      "time": 50.72090000000037,
+      "pitch": 41.75561810731445,
+      "noteMidi": 28,
+      "actualMidi": 28.23,
+      "actualMidiChroma": 4.23,
+      "centsOffset": 23.000000000000043,
+      "clarity": 0.9227426165644488
+    },
+    {
+      "time": 50.73759999999963,
+      "pitch": 41.3401874252545,
+      "noteMidi": 28,
+      "actualMidi": 28.06,
+      "actualMidiChroma": 4.059999999999999,
+      "centsOffset": 5.999999999999872,
+      "clarity": 0.8949586727142389
+    },
+    {
+      "time": 50.754299999999816,
+      "pitch": 81.620930644643,
+      "noteMidi": 40,
+      "actualMidi": 39.83,
+      "actualMidiChroma": 3.8299999999999983,
+      "centsOffset": -17.00000000000017,
+      "clarity": 0.8455685135558824
+    },
+    {
+      "time": 50.770900000000374,
+      "pitch": 41.61928056539763,
+      "noteMidi": 28,
+      "actualMidi": 28.17,
+      "actualMidiChroma": 4.170000000000002,
+      "centsOffset": 17.00000000000017,
+      "clarity": 0.9004407359291378
+    },
+    {
+      "time": 50.78759999999963,
+      "pitch": 81.70724626165511,
+      "noteMidi": 40,
+      "actualMidi": 39.85,
+      "actualMidiChroma": 3.8500000000000014,
+      "centsOffset": -14.999999999999858,
+      "clarity": 0.7953403296761703
+    },
+    {
+      "time": 50.804200000000186,
+      "pitch": 41.41796699754574,
+      "noteMidi": 28,
+      "actualMidi": 28.09,
+      "actualMidiChroma": 4.09,
+      "centsOffset": 8.999999999999986,
+      "clarity": 0.8484610184995915
+    },
+    {
+      "time": 50.82090000000037,
+      "pitch": 41.870940680162335,
+      "noteMidi": 28,
+      "actualMidi": 28.28,
+      "actualMidiChroma": 4.280000000000001,
+      "centsOffset": 28.000000000000114,
+      "clarity": 0.9395171141916592
+    },
+    {
+      "time": 50.837599999999625,
+      "pitch": 41.25791334751497,
+      "noteMidi": 28,
+      "actualMidi": 28.02,
+      "actualMidiChroma": 4.02,
+      "centsOffset": 1.9999999999999574,
+      "clarity": 0.9059640853371462
+    },
+    {
+      "time": 50.8545,
+      "pitch": 27.45661059730269,
+      "noteMidi": 21,
+      "actualMidi": 20.97,
+      "actualMidiChroma": 8.969999999999999,
+      "centsOffset": -3.0000000000001137,
+      "clarity": 0.9878712885265486
+    },
+    {
+      "time": 50.870900000000375,
+      "pitch": 41.35629023381011,
+      "noteMidi": 28,
+      "actualMidi": 28.06,
+      "actualMidiChroma": 4.059999999999999,
+      "centsOffset": 5.999999999999872,
+      "clarity": 0.9316802282528727
+    },
+    {
+      "time": 50.8875,
+      "pitch": 41.91578924906622,
+      "noteMidi": 28,
+      "actualMidi": 28.3,
+      "actualMidiChroma": 4.300000000000001,
+      "centsOffset": 30.00000000000007,
+      "clarity": 0.8898415837465024
+    },
+    {
+      "time": 50.90420000000019,
+      "pitch": 80.9937133251042,
+      "noteMidi": 40,
+      "actualMidi": 39.7,
+      "actualMidiChroma": 3.700000000000003,
+      "centsOffset": -29.999999999999716,
+      "clarity": 0.7944739280461786
+    },
+    {
+      "time": 50.92090000000037,
+      "pitch": 41.238949435784285,
+      "noteMidi": 28,
+      "actualMidi": 28.01,
+      "actualMidiChroma": 4.010000000000002,
+      "centsOffset": 1.0000000000001563,
+      "clarity": 0.9269117234764508
+    },
+    {
+      "time": 50.9375,
+      "pitch": 42.155876384510115,
+      "noteMidi": 28,
+      "actualMidi": 28.4,
+      "actualMidiChroma": 4.399999999999999,
+      "centsOffset": 39.99999999999986,
+      "clarity": 0.9436893443416068
+    },
+    {
+      "time": 50.95429999999981,
+      "pitch": 41.36137991289498,
+      "noteMidi": 28,
+      "actualMidi": 28.07,
+      "actualMidiChroma": 4.07,
+      "centsOffset": 7.000000000000028,
+      "clarity": 0.8967050096414653
+    },
+    {
+      "time": 50.97090000000037,
+      "pitch": 41.90347520944429,
+      "noteMidi": 28,
+      "actualMidi": 28.29,
+      "actualMidiChroma": 4.289999999999999,
+      "centsOffset": 28.999999999999915,
+      "clarity": 0.934466015096632
+    },
+    {
+      "time": 50.98759999999963,
+      "pitch": 41.19522858886048,
+      "noteMidi": 28,
+      "actualMidi": 28,
+      "actualMidiChroma": 4,
+      "centsOffset": 0,
+      "clarity": 0.8975744274527386
+    },
+    {
+      "time": 51.00440000000037,
+      "pitch": 41.86744552278799,
+      "noteMidi": 28,
+      "actualMidi": 28.28,
+      "actualMidiChroma": 4.280000000000001,
+      "centsOffset": 28.000000000000114,
+      "clarity": 0.8873871389628931
+    },
+    {
+      "time": 51.021,
+      "pitch": 41.46181371461077,
+      "noteMidi": 28,
+      "actualMidi": 28.11,
+      "actualMidiChroma": 4.109999999999999,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9142444405651702
+    },
+    {
+      "time": 51.03759999999963,
+      "pitch": 41.58296679816389,
+      "noteMidi": 28,
+      "actualMidi": 28.16,
+      "actualMidiChroma": 4.16,
+      "centsOffset": 16.000000000000014,
+      "clarity": 0.9116467747012251
+    },
+    {
+      "time": 51.054599999999624,
+      "pitch": 81.63287066531963,
+      "noteMidi": 40,
+      "actualMidi": 39.84,
+      "actualMidiChroma": 3.8400000000000034,
+      "centsOffset": -15.999999999999659,
+      "clarity": 0.8336990476588841
+    },
+    {
+      "time": 51.07090000000037,
+      "pitch": 41.39535992338045,
+      "noteMidi": 28,
+      "actualMidi": 28.08,
+      "actualMidiChroma": 4.079999999999998,
+      "centsOffset": 7.9999999999998295,
+      "clarity": 0.9225920375492649
+    },
+    {
+      "time": 51.087599999999625,
+      "pitch": 41.7922793117334,
+      "noteMidi": 28,
+      "actualMidi": 28.25,
+      "actualMidiChroma": 4.25,
+      "centsOffset": 25,
+      "clarity": 0.9089502841234207
+    },
+    {
+      "time": 51.10420000000018,
+      "pitch": 40.98755748661423,
+      "noteMidi": 28,
+      "actualMidi": 27.91,
+      "actualMidiChroma": 3.91,
+      "centsOffset": -8.999999999999986,
+      "clarity": 0.9342860615563637
+    },
+    {
+      "time": 51.120900000000375,
+      "pitch": 42.106809536630934,
+      "noteMidi": 28,
+      "actualMidi": 28.38,
+      "actualMidiChroma": 4.379999999999999,
+      "centsOffset": 37.9999999999999,
+      "clarity": 0.9594419173320148
+    },
+    {
+      "time": 51.13759999999963,
+      "pitch": 80.26903899712886,
+      "noteMidi": 40,
+      "actualMidi": 39.54,
+      "actualMidiChroma": 3.539999999999999,
+      "centsOffset": -46.000000000000085,
+      "clarity": 0.8539247562122707
+    },
+    {
+      "time": 51.15420000000019,
+      "pitch": 81.9331798488117,
+      "noteMidi": 40,
+      "actualMidi": 39.9,
+      "actualMidiChroma": 3.8999999999999986,
+      "centsOffset": -10.000000000000142,
+      "clarity": 0.870090631282272
+    },
+    {
+      "time": 51.17090000000037,
+      "pitch": 41.3301082422737,
+      "noteMidi": 28,
+      "actualMidi": 28.05,
+      "actualMidiChroma": 4.050000000000001,
+      "centsOffset": 5.000000000000071,
+      "clarity": 0.9029008828593561
+    },
+    {
+      "time": 51.18759999999963,
+      "pitch": 83.08945832045731,
+      "noteMidi": 40,
+      "actualMidi": 40.14,
+      "actualMidiChroma": 4.140000000000001,
+      "centsOffset": 14.000000000000057,
+      "clarity": 0.8243710187662563
+    },
+    {
+      "time": 51.20429999999981,
+      "pitch": 41.66630363544308,
+      "noteMidi": 28,
+      "actualMidi": 28.19,
+      "actualMidiChroma": 4.190000000000001,
+      "centsOffset": 19.000000000000128,
+      "clarity": 0.8832970342339195
+    },
+    {
+      "time": 51.221,
+      "pitch": 41.468323911559864,
+      "noteMidi": 28,
+      "actualMidi": 28.11,
+      "actualMidiChroma": 4.109999999999999,
+      "centsOffset": 10.999999999999943,
+      "clarity": 0.9359198084563047
+    },
+    {
+      "time": 51.23759999999963,
+      "pitch": 41.50458996365191,
+      "noteMidi": 28,
+      "actualMidi": 28.13,
+      "actualMidiChroma": 4.129999999999999,
+      "centsOffset": 12.9999999999999,
+      "clarity": 0.9392858745341783
+    },
+    {
+      "time": 51.254299999999816,
+      "pitch": 41.30142183347505,
+      "noteMidi": 28,
+      "actualMidi": 28.04,
+      "actualMidiChroma": 4.039999999999999,
+      "centsOffset": 3.9999999999999147,
+      "clarity": 0.9247946529656019
+    },
+    {
+      "time": 51.270900000000374,
+      "pitch": 41.79601286386117,
+      "noteMidi": 28,
+      "actualMidi": 28.25,
+      "actualMidiChroma": 4.25,
+      "centsOffset": 25,
+      "clarity": 0.931153541928623
+    },
+    {
+      "time": 51.28759999999963,
+      "pitch": 80.04178606122439,
+      "noteMidi": 40,
+      "actualMidi": 39.5,
+      "actualMidiChroma": 3.5,
+      "centsOffset": -50,
+      "clarity": 0.847744273514742
+    },
+    {
+      "time": 51.30429999999981,
+      "pitch": 42.01582770930939,
+      "noteMidi": 28,
+      "actualMidi": 28.34,
+      "actualMidiChroma": 4.34,
+      "centsOffset": 33.999999999999986,
+      "clarity": 0.9255507178627056
+    },
+    {
+      "time": 51.32090000000037,
+      "pitch": 41.32918677650979,
+      "noteMidi": 28,
+      "actualMidi": 28.05,
+      "actualMidiChroma": 4.050000000000001,
+      "centsOffset": 5.000000000000071,
+      "clarity": 0.9087153921969247
+    },
+    {
+      "time": 51.337599999999625,
+      "pitch": 41.959366373653005,
+      "noteMidi": 28,
+      "actualMidi": 28.31,
+      "actualMidiChroma": 4.309999999999999,
+      "centsOffset": 30.999999999999872,
+      "clarity": 0.9488513612025145
+    },
+    {
+      "time": 51.35429999999981,
+      "pitch": 80.5656229576377,
+      "noteMidi": 40,
+      "actualMidi": 39.61,
+      "actualMidiChroma": 3.6099999999999994,
+      "centsOffset": -39.00000000000006,
+      "clarity": 0.8647804608387233
+    },
+    {
+      "time": 51.37079999999981,
+      "pitch": 82.22178327341683,
+      "noteMidi": 40,
+      "actualMidi": 39.96,
+      "actualMidiChroma": 3.960000000000001,
+      "centsOffset": -3.9999999999999147,
+      "clarity": 0.8583390482072453
+    },
+    {
+      "time": 51.38759999999963,
+      "pitch": 41.273924999317224,
+      "noteMidi": 28,
+      "actualMidi": 28.03,
+      "actualMidiChroma": 4.030000000000001,
+      "centsOffset": 3.0000000000001137,
+      "clarity": 0.925113369337538
+    },
+    {
+      "time": 51.404299999999814,
+      "pitch": 41.40588399404126,
+      "noteMidi": 28,
+      "actualMidi": 28.08,
+      "actualMidiChroma": 4.079999999999998,
+      "centsOffset": 7.9999999999998295,
+      "clarity": 0.9231813313122643
+    },
+    {
+      "time": 51.42090000000037,
+      "pitch": 81.93686653626945,
+      "noteMidi": 40,
+      "actualMidi": 39.9,
+      "actualMidiChroma": 3.8999999999999986,
+      "centsOffset": -10.000000000000142,
+      "clarity": 0.8697911673797343
+    },
+    {
+      "time": 51.43759999999963,
+      "pitch": 41.670829212340216,
+      "noteMidi": 28,
+      "actualMidi": 28.2,
+      "actualMidiChroma": 4.199999999999999,
+      "centsOffset": 19.99999999999993,
+      "clarity": 0.9404720322426812
+    },
+    {
+      "time": 51.45440000000037,
+      "pitch": 81.1520496694464,
+      "noteMidi": 40,
+      "actualMidi": 39.73,
+      "actualMidiChroma": 3.729999999999997,
+      "centsOffset": -27.000000000000313,
+      "clarity": 0.8649875871864623
+    },
+    {
+      "time": 51.47090000000037,
+      "pitch": 80.17794548569223,
+      "noteMidi": 40,
+      "actualMidi": 39.53,
+      "actualMidiChroma": 3.530000000000001,
+      "centsOffset": -46.999999999999886,
+      "clarity": 0.8786466520307581
+    },
+    {
+      "time": 51.48759999999963,
+      "pitch": 82.67453825954259,
+      "noteMidi": 40,
+      "actualMidi": 40.06,
+      "actualMidiChroma": 4.060000000000002,
+      "centsOffset": 6.000000000000227,
+      "clarity": 0.8800033863877044
+    }
+  ],
+  "_demoId": "pitch-offset-cents",
+  "_date": "2024-07-03T15:26:45.591Z"
+}

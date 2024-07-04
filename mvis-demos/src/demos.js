@@ -39,7 +39,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard'],
     data: ['order', 'ioi', 'velocity'],
     skills: ['accents'],
-    patterns: ['duration/ioi as symbol', 'dynamics as font-size', 'time is linear', 'time encoded non-linearly'],
+    patterns: ['duration/ioi as symbol', 'dynamics as font-size', 'time is linear', 'time encoded non-linearly', 'update after note'],
     component: Accents
   },
   {
@@ -51,7 +51,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard'],
     data: ['order', 'onset/time', 'ioi', 'pitch'],
     skills: ['chord-timing', 'arpeggio-timing'],
-    patterns: ['onset as tick', 'compressed pitches', 'chord detection', 'time is linear', 'time encoded linearly'],
+    patterns: ['onset as tick', 'compressed pitches', 'chord detection', 'time is linear', 'time encoded linearly', 'update on note'],
     component: ChordArpeggioTiming
   },
   {
@@ -63,7 +63,7 @@ export const DEMOS = [
     instruments: ['guitar/bass'],
     data: ['order', 'onset/time', 'pitch', 'velocity', 'instrument'],
     skills: ['chord-notes'],
-    patterns: ['instrument layout', 'chord detection', 'time is linear', 'time is collapsed'],
+    patterns: ['instrument layout', 'chord detection', 'time is linear', 'time is collapsed', 'update on note'],
     component: ChordDiagrams
   },
   {
@@ -74,7 +74,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard'],
     data: ['order', 'dynamics'],
     skills: ['constant-dynamics', '(de)crescendo', 'accents'],
-    patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly'],
+    patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note'],
     component: Dynamics
   },
   {
@@ -85,7 +85,7 @@ export const DEMOS = [
     instruments: ['guitar/bass'],
     data: ['instrument'],
     skills: ['instrument-layout'],
-    patterns: ['distribution as heatmap', 'instrument layout', 'time is collapsed'],
+    patterns: ['distribution as heatmap', 'instrument layout', 'time is collapsed', 'update on note'],
     component: FretboardHeatmap
   },
   {
@@ -97,7 +97,7 @@ export const DEMOS = [
     instruments: ['guitar/bass'],
     data: ['order', 'pitch', 'instrument', 'pitch-interval'],
     skills: ['instrument-layout', 'pitch-intervals'],
-    patterns: ['instrument layout', 'time is instant'],
+    patterns: ['instrument layout', 'time is instant', 'update on note'],
     component: FretboardImprovisationIntervals
   },
   {
@@ -108,18 +108,18 @@ export const DEMOS = [
     instruments: ['guitar/bass'],
     data: ['order', 'instrument'],
     skills: ['instrument-layout'],
-    patterns: ['distribution as jitter', 'instrument layout', 'time is linear', 'time encoded non-linearly'],
+    patterns: ['distribution as jitter', 'instrument layout', 'time is linear', 'time encoded non-linearly', 'update on note'],
     component: FretboardJitter
   },
   {
-    id: 'fretboard-spacetmime-cube',
+    id: 'fretboard-spacetime-cube',
     title: 'Fretboard Spacetime Cube',
     description: 'See how you play different fretboard positions over time.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
     data: ['onset/time', 'instrument'],
     skills: ['instrument-layout'],
-    patterns: ['spacetime cube', 'instrument layout', 'time is linear', 'time encoded linearly'],
+    patterns: ['spacetime cube', 'instrument layout', 'time is linear', 'time encoded linearly', 'update on note'],
     component: FretboardSpacetimeCube
   },
   {
@@ -131,7 +131,7 @@ export const DEMOS = [
     instruments: ['guitar/bass', 'keyboard'],
     data: ['order', 'pitch', 'pitch-interval'],
     skills: ['pitch-intervals'],
-    patterns: ['distribution as histogram', 'time is collapsed'],
+    patterns: ['distribution as histogram', 'time is collapsed', 'update on note'],
     component: ImprovisationIntervals
   },
   {
@@ -143,7 +143,7 @@ export const DEMOS = [
     instruments: ['guitar/bass', 'keyboard'],
     data: ['order', 'duration', 'pitch'],
     skills: ['pitch-intervals', 'scale-degrees'],
-    patterns: ['note role as color', 'duration/ioi as bar', 'time is linear', 'time encoded non-linearly'],
+    patterns: ['note role as color', 'duration/ioi as bar', 'time is linear', 'time encoded non-linearly', 'update on note'],
     component: ImprovisationNoteColors
   },
   {
@@ -155,7 +155,7 @@ export const DEMOS = [
     instruments: ['guitar/bass', 'keyboard'],
     data: ['pitch'],
     skills: ['pitch-intervals', 'scale-degrees'],
-    patterns: ['note role as color', 'distribution as histogram', 'time is collapsed'],
+    patterns: ['note role as color', 'distribution as histogram', 'time is collapsed', 'update on note'],
     component: ImprovisationScaleDegrees
   },
   {
@@ -167,7 +167,7 @@ export const DEMOS = [
     instruments: ['guitar/bass', 'keyboard'],
     data: ['pitch', 'onset/time'],
     skills: ['pitch-intervals', 'scale-degrees'],
-    patterns: ['note role as color', 'distribution as histogram', 'facets', 'time segments', 'time is linear', 'time is collapsed', 'time encoded linearly'],
+    patterns: ['note role as color', 'distribution as histogram', 'facets', 'time segments', 'time is linear', 'time is collapsed', 'time encoded linearly', 'update on note'],
     component: ImprovisationScaleDegreesBar
   },
   {
@@ -178,7 +178,7 @@ export const DEMOS = [
     instruments: ['keyboard'],
     data: ['pitch', 'instrument'],
     skills: ['instrument-layout'],
-    patterns: ['distribution as histogram', 'instrument layout', 'time is collapsed'],
+    patterns: ['distribution as histogram', 'instrument layout', 'time is collapsed', 'update on note'],
     component: KeyboardHistogram
   },
   {
@@ -189,7 +189,7 @@ export const DEMOS = [
     instruments: ['guitar/bass', 'keyboard'],
     data: ['onset/time', 'pitch'],
     skills: ['bending', 'vibrato'],
-    patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly'],
+    patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note'],
     component: PitchBend
   },
   {
@@ -200,7 +200,7 @@ export const DEMOS = [
     instruments: ['guitar/bass', 'keyboard', 'singing'],
     data: ['onset/time', 'pitch'],
     skills: ['bending', 'vibrato'],
-    patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly'],
+    patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
     component: PitchBendAudio
   },
   {
@@ -211,7 +211,7 @@ export const DEMOS = [
     instruments: ['guitar/bass', 'keyboard', 'singing'],
     data: ['onset/time', 'pitch'],
     skills: ['pitch-keeping', 'bending', 'vibrato'],
-    patterns: ['pitch as line', 'baselines as grid', 'explicit difference', 'difference as color', 'time is linear', 'time encoded linearly'],
+    patterns: ['pitch as line', 'baselines as grid', 'explicit difference', 'difference as color', 'time is linear', 'time encoded linearly', 'update real-time', 'dual encoding'],
     component: PitchOffsetCents
   },
   {
@@ -222,7 +222,7 @@ export const DEMOS = [
     instruments: ['guitar/bass', 'keyboard', 'singing'],
     data: ['onset/time', 'pitch'],
     skills: ['pitch-keeping'],
-    patterns: ['pitch as angle', 'baselines as grid', 'explicit difference', 'time is instant'],
+    patterns: ['pitch as angle', 'baselines as grid', 'explicit difference', 'time is instant', 'update real-time'],
     component: PitchOffsetCentsNeedle
   },
   {
@@ -234,7 +234,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['order', 'duration/ioi'],
     skills: ['sub-division', 'tempo-keeping'],
-    patterns: ['duration/ioi as symbol', 'time is linear', 'time encoded non-linearly'],
+    patterns: ['duration/ioi as symbol', 'time is linear', 'time encoded non-linearly', 'update after note'],
     component: RhythmSheetMusic
   },
   {
@@ -246,7 +246,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time', 'exercise', 'baselines as grid'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly'],
+    patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
     component: SpeedUp
   },
   {
@@ -258,7 +258,7 @@ export const DEMOS = [
     instruments: ['guitar/bass'],
     data: ['onset/time', 'exercise', 'baselines as grid', 'instrument'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly'],
+    patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
     component: SpeedUpTab
   },
   {
@@ -269,7 +269,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density'],
+    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'update on note'],
     component: SubDivision
   },
   {
@@ -280,7 +280,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'target areas'],
+    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'target areas', 'update on note'],
     component: SubDivisionBar
   },
   {
@@ -291,7 +291,7 @@ export const DEMOS = [
     instruments: ['drum', 'pc-key'],
     data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'synchronized-body-parts'],
-    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
+    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'update on note'],
     component: SubDivisionDrums
   },
   {
@@ -302,7 +302,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density'],
+    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'update on note'],
     component: SubDivisionLinear
   },
   {
@@ -313,7 +313,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency'],
-    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'comparison between takes'],
+    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'comparison between takes', 'update on note'],
     component: SubDivisionHistory
   },
   {
@@ -324,7 +324,7 @@ export const DEMOS = [
     instruments: ['guitar/bass'],
     data: ['onset/time', 'instrument'],
     skills: ['strumming-direction', 'strumming-strings'],
-    patterns: ['direction as arrow', 'direction as color', 'chord detection', 'time is linear', 'time encoded linearly'],
+    patterns: ['direction as arrow', 'direction as color', 'chord detection', 'time is linear', 'time encoded linearly', 'update on note'],
     component: StrummingPattern
   },
   {
@@ -335,7 +335,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['order', 'duration/ioi'],
     skills: ['tempo-keeping'],
-    patterns: ['duration/ioi as bar', 'baselines as grid', 'time is linear', 'time encoded non-linearly'],
+    patterns: ['duration/ioi as bar', 'baselines as grid', 'time is linear', 'time encoded non-linearly', 'update on note'],
     component: TempoDrift
   },
   {
@@ -347,7 +347,7 @@ export const DEMOS = [
     instruments: ['keyboard', 'pc-key'],
     data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'syncopation', 'synchronized-timing', 'synchronized-body-parts'],
-    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets'],
+    patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'update on note'],
     component: TwoHandedTiming
   }
 ]

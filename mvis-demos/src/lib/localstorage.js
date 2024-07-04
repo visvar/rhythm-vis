@@ -55,7 +55,7 @@ export function localStorageSizeKBytes() {
   // }
 
   localSt.removeItem('__test__')
-  return (characters * 2) / 1024
+  return (characters * 32) / 1024
 }
 
 export function localStorageReport() {

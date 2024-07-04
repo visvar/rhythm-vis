@@ -11,7 +11,7 @@
     import { BIN_NOTES, GRIDS } from '../lib/music';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
-    import example from '../example-recordings/sub-division.json';
+    import example from '../example-recordings/sub-division-linear.json';
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
@@ -165,15 +165,10 @@
                 label: 'time in beats',
                 domain: [0, grid1],
             },
-            color: {
-                scheme: 'viridis',
-                reverse: true,
-                domain: [0, lastNotes.length],
-            },
             marks: [
                 Plot.tickX(lastNotes, {
                     x: (d) => d,
-                    stroke: (d, i) => i,
+                    stroke: '#0002',
                     clip: true,
                 }),
             ],

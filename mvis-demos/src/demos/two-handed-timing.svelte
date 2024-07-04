@@ -16,13 +16,14 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import example from '../example-recordings/two-handed-timing.json';
 
     /**
      * contains the demo meta information defined in App.js
      */
     export let demoInfo;
 
-    let width = 1000;
+    let width = 1100;
     let containerLeft;
     let containerRight;
     // settings
@@ -114,12 +115,14 @@
 
         const plot = Plot.plot({
             width,
-            height: left ? 90 : 105,
-            marginLeft: 60,
-            marginBottom: left ? 0 : 15,
+            height: left ? 170 : 170 + 13,
+            marginTop: 5,
+            marginLeft: 10,
+            marginRight: 10,
+            marginBottom: left ? 5 : 15,
             padding: 0,
             x: {
-                label: left ? null : 'time in beats',
+                label: left ? null : 'time in beats (cyclic)',
                 domain: [0, 4],
                 ticks: [],
             },
@@ -150,7 +153,6 @@
                               },
                           ),
                       ),
-
                 Plot.ruleY([0]),
                 // beat grid
                 Plot.tickX(fineGrid, {
@@ -258,7 +260,7 @@
         <label
             title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
-            grid (left)
+            grid left
             <select bind:value="{gridLeft}" on:change="{draw}">
                 {#each GRIDS as g}
                     <option value="{g}">{g}</option>
@@ -268,7 +270,7 @@
         <label
             title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
-            grid (right)
+            right
             <select bind:value="{gridRight}" on:change="{draw}">
                 {#each GRIDS as g}
                     <option value="{g}">{g}</option>
@@ -300,7 +302,7 @@
         <label
             title="The number of past bars to be shown. Allows to 'forget' mistakes in the beginning."
         >
-            last bars
+            bars
             <input
                 type="number"
                 bind:value="{pastBars}"
@@ -331,6 +333,7 @@
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <PcKeyboardInput

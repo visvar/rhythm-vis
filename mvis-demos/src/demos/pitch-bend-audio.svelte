@@ -10,6 +10,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import example from '../example-recordings/pitch-bend-audio.json';
 
     /**
      * contains the demo meta information defined in App.js
@@ -19,17 +20,18 @@
     let width = 1200;
     let height = 500;
     let container;
-    let audioContext;
     let analyserNode;
     let detector;
     let timeout;
     const waitTime = 16;
+    let paused = false;
+    let firstTimeStamp = performance.now();
+    let audioContext = new window.AudioContext();
     // settings
     let pastTime = 10;
     let ignoreOctave = true;
-    let minVolumeDecibels = -25;
+    let minVolumeDecibels = -20;
     // data
-    let firstTimeStamp = 0;
     let bendValues = [];
     let lastValidPitch = 0;
 
@@ -53,14 +55,21 @@
             clarity,
         };
         bendValues.push(bend);
-        bendValues = bendValues.slice(-(1000 / waitTime) * pastTime);
         draw();
         timeout = requestAnimationFrame(() => updatePitch(input, sampleRate));
     }
 
     const draw = () => {
+        if (!container) {
+            return;
+        }
         container.textContent = '';
-        const now = (performance.now() - firstTimeStamp) / 1000;
+        let now;
+        if (bendValues.length > 0) {
+            now = bendValues.at(-1).time;
+        } else {
+            now = (performance.now() - firstTimeStamp) / 1000;
+        }
         const minTime = now - pastTime;
         // plot pitch as MIDI number
         const lastSecond = 1000 / waitTime;
@@ -73,10 +82,17 @@
         } else {
             lastValidPitch = medianOfLast;
         }
+        const tickFormat = (d) =>
+            Math.floor(d) === d
+                ? Midi.midiToNoteName(d, {
+                      pitchClass: ignoreOctave,
+                      sharps: true,
+                  })
+                : '';
         const plot2 = Plot.plot({
             width,
             height,
-            marginLeft: 80,
+            // marginLeft: 80,
             marginBottom: 50,
             padding: 0,
             x: {
@@ -88,13 +104,6 @@
                     ? [0, 12]
                     : [medianOfLast - 5, medianOfLast + 5],
                 label: ignoreOctave ? 'chroma' : 'pitch',
-                tickFormat: (d) =>
-                    Math.floor(d) === d
-                        ? Midi.midiToNoteName(d, {
-                              pitchClass: ignoreOctave,
-                              sharps: true,
-                          })
-                        : '',
                 grid: true,
             },
             marks: [
@@ -105,14 +114,20 @@
                     // smooth a bit
                     curve: 'basis',
                 }),
+                Plot.axisY({
+                    anchor: 'left',
+                    tickFormat,
+                }),
+                Plot.axisY({
+                    anchor: 'right',
+                    tickFormat,
+                }),
             ],
         });
         container.appendChild(plot2);
     };
 
-    onMount(() => {
-        firstTimeStamp = performance.now();
-        audioContext = new window.AudioContext();
+    const getPitchFromAudio = () => {
         analyserNode = audioContext.createAnalyser();
         navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
             audioContext.createMediaStreamSource(stream).connect(analyserNode);
@@ -122,7 +137,9 @@
             updatePitch(input, audioContext.sampleRate);
         });
         draw();
-    });
+    };
+
+    onMount(getPitchFromAudio);
 
     /**
      * Used for exporting and for automatics saving
@@ -145,6 +162,10 @@
             bendValues.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            // pause first
+            paused = true;
+            cancelAnimationFrame(timeout);
+            // load
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;
             minVolumeDecibels = json.minVolumeDecibels;
@@ -174,11 +195,25 @@
         below shows how far you bend up and down over time.
     </p>
     <div class="control">
+        <button
+            style="width: 75px"
+            on:click="{() => {
+                paused = !paused;
+                if (!paused) {
+                    getPitchFromAudio();
+                } else {
+                    cancelAnimationFrame(timeout);
+                }
+            }}"
+        >
+            {paused ? 'play' : 'pause'}
+        </button>
         <label>
             past seconds
             <input
                 type="number"
                 bind:value="{pastTime}"
+                on:change="{draw}"
                 min="5"
                 max="60"
                 step="5"
@@ -202,13 +237,17 @@
             title="When ignoring the octave, the lower visualization will only show the note's chroma from C to B"
             on:click="{() => {
                 ignoreOctave = !ignoreOctave;
+                draw();
             }}"
         >
             octave {!ignoreOctave ? toggleOnIcon : toggleOffIcon}
         </button>
         <button
             title="Press this button if your browser prevents audio access because there needs to be a user interaction first"
-            on:click="{() => audioContext.resume()}"
+            on:click="{() => {
+                audioContext.resume();
+                getPitchFromAudio();
+            }}"
         >
             resume
         </button>
@@ -218,10 +257,14 @@
         <ResetNotesButton
             bind:notes="{bendValues}"
             {saveToStorage}
-            callback="{draw}"
+            callback="{() => {
+                firstTimeStamp = performance.now();
+                draw();
+            }}"
         />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
 </main>
