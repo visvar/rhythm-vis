@@ -1,5 +1,6 @@
 /**
  * Musical grids for sub-division
+ * TODO: move to mvlib
  */
 export const GRIDS = [
   '4:2',
@@ -23,8 +24,6 @@ export const GRIDS = [
  * Note values to bin by
  */
 export const BIN_NOTES = [16, 32, 64, 128, 24, 48, 96, 192]
-
-
 
 // see https://en.wikipedia.org/wiki/Dynamics_(music)
 // TODO: move to mvlib
@@ -65,4 +64,23 @@ export const VELOCITIES_MUSESCORE = new Map([
   [112, 'ff'],
   [126, 'fff'],
   [127, 'ffff']
+])
+
+/**
+ * @see https://en.wikipedia.org/wiki/Dynamics_(music)
+ * TODO: move to mvlib
+ */
+export const VELOCITIES_MEANING = new Map([
+  ['silent', 'silent'],
+  ['ppppp', 'almost silent'],
+  ['pppp', 'soft whispering'],
+  ['ppp', 'whispering'],
+  ['pp', 'almost a whisper'],
+  ['p', 'softer than speaking'],
+  ['mp', 'speaking voice'],
+  ['mf', 'speaking voice'],
+  ['f', 'louder than speaking'],
+  ['ff', 'loud speaking'],
+  ['fff', 'yelling'],
+  ['ffff', 'loud yelling']
 ])

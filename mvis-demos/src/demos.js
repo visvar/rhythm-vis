@@ -74,7 +74,7 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard'],
     data: ['order', 'dynamics'],
     skills: ['constant-dynamics', '(de)crescendo', 'accents'],
-    patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note'],
+    patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units', ''],
     component: Dynamics
   },
   {

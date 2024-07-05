@@ -162,3 +162,39 @@ code {
   padding: 4px;
   border-radius: 4px;
 }
+
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin-top: 0.1cm;
+    margin-right: 0.1cm;
+    margin-bottom: 0.1cm;
+    margin-left: 0.1cm;
+  }
+
+  header,
+  .version-number {
+    display: none;
+  }
+
+  #app {
+    margin: 0;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    page-break-after: avoid;
+  }
+
+  table,
+  figure,
+  img,
+  svg {
+    page-break-inside: avoid;
+  }
+}

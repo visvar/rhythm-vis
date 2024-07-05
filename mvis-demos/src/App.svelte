@@ -289,7 +289,7 @@
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
   {/if}
-  <div>
+  <div class="version-number">
     version {version}
   </div>
 </main>

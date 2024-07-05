@@ -7,7 +7,7 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
-    import { VELOCITIES_LOGIC } from '../lib/music';
+    import { VELOCITIES_LOGIC, VELOCITIES_MEANING } from '../lib/music';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/dynamics.json';
     import * as d3 from 'd3';
@@ -49,15 +49,12 @@
             width,
             height,
             marginLeft: 45,
-            marginRight: 1,
+            marginRight: 120,
             x: {
                 axis: false,
             },
             y: {
-                ticks: rules,
-                tickFormat: (d) => velocities.get(d),
                 domain: [0, 128],
-                tickSize: 0,
             },
             marks: [
                 Plot.barY(binnedVelocities.slice(-barLimit), {
@@ -68,6 +65,19 @@
                     dx: 0.5,
                 }),
                 Plot.ruleY(rules, { stroke: '#888' }),
+                Plot.axisY({
+                    anchor: 'left',
+                    ticks: rules,
+                    tickFormat: (d) => velocities.get(d),
+                    tickSize: 0,
+                }),
+                Plot.axisY({
+                    anchor: 'right',
+                    ticks: rules,
+                    tickFormat: (d) =>
+                        VELOCITIES_MEANING.get(velocities.get(d)),
+                    tickSize: 0,
+                }),
             ],
         });
         container.textContent = '';
@@ -120,9 +130,13 @@
     <p class="explanation">
         Connect a MIDI instrument and start playing. The loudness of each note
         will be shown as a bar. Bar heights are either exact or rounded to the
-        <a href="https://en.wikipedia.org/wiki/Dynamics_(music)"
-            >closest rough dynamics</a
-        >, for example a forte.
+        <a
+            href="https://en.wikipedia.org/wiki/Dynamics_(music)"
+            target="_blank"
+            referrerpolicy="no-referrer"
+        >
+            closest rough dynamics
+        </a>, for example a forte.
     </p>
     <div class="control">
         <button
@@ -160,6 +174,6 @@
 
 <style>
     div :global(text) {
-        font-size: 16px;
+        font-size: 12px;
     }
 </style>
