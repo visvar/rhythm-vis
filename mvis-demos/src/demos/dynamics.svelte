@@ -10,6 +10,7 @@
     import { VELOCITIES_LOGIC } from '../lib/music';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/dynamics.json';
+    import * as d3 from 'd3';
 
     /**
      * contains the demo meta information defined in App.js
@@ -35,12 +36,12 @@
         // round bars' height to make view clearer
         let binnedVelocities = notes;
         if (isBinning) {
+            const veloBinValues = [...velocities.keys()];
             binnedVelocities = notes.map((d) => {
-                for (const v of velocities.keys()) {
-                    if (d <= v) {
-                        return v;
-                    }
-                }
+                const minIndex = d3.minIndex(veloBinValues, (v) =>
+                    Math.abs(d - v),
+                );
+                return veloBinValues[minIndex];
             });
         }
         const rules = [...velocities.keys()];
