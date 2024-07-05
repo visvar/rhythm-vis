@@ -235,12 +235,14 @@
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            if (notes.length > 0) {
+                saveToStorage();
+            }
             pastChords = json.pastChords;
             maxNoteDistance = json.maxNoteDistance;
             maxFretSpan = json.maxFretSpan;
             // data
             notes = json.notes;
-            console.log(notes);
             draw();
         }
     };

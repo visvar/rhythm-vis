@@ -298,6 +298,9 @@
             exerciseNotes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            if (exerciseNotes.length > 0) {
+                saveToStorage();
+            }
             // settings
             initialTempo = json.initialTempo;
             targetTempo = json.targetTempo;

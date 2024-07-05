@@ -188,7 +188,7 @@ export const DEMOS = [
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
     data: ['onset/time', 'pitch'],
-    skills: ['bending', 'vibrato'],
+    skills: ['pitch-keeping', 'bending', 'vibrato'],
     patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note'],
     component: PitchBend
   },
@@ -199,7 +199,7 @@ export const DEMOS = [
     input: 'audio',
     instruments: ['guitar/bass', 'keyboard', 'singing'],
     data: ['onset/time', 'pitch'],
-    skills: ['bending', 'vibrato'],
+    skills: ['pitch-keeping', 'bending', 'vibrato'],
     patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
     component: PitchBendAudio
   },
@@ -245,7 +245,7 @@ export const DEMOS = [
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key'],
     data: ['onset/time', 'exercise', 'baselines as grid'],
-    skills: ['sub-division', 'timing-consistency'],
+    skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
     component: SpeedUp
   },
@@ -257,7 +257,7 @@ export const DEMOS = [
     input: 'MIDI',
     instruments: ['guitar/bass'],
     data: ['onset/time', 'exercise', 'baselines as grid', 'instrument'],
-    skills: ['sub-division', 'timing-consistency'],
+    skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
     component: SpeedUpTab
   },

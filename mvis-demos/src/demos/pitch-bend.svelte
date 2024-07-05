@@ -97,6 +97,9 @@
             bendValues.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            if (bendValues.length > 0) {
+                saveToStorage();
+            }
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;
             bendValues = json.bendValues;

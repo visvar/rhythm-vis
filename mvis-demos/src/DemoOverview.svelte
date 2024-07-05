@@ -1,5 +1,5 @@
 <script>
-    import { SKILL_TREE, SKILL_TREE_LEAFS } from './lib/skills';
+    import { SKILL_TREE } from './lib/skills';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { onMount } from 'svelte';
@@ -35,13 +35,15 @@
             margin: 10,
             marginLeft: 60,
             marginRight: 200,
-            width: 800,
+            width: 500,
             marks: [
                 Plot.cluster(treePaths, {
                     treeSort: 'node:height',
                     // delimiter: '/',
                     fontSize: 16,
-                    textLayout: 'normal',
+                    // textLayout: 'normal',
+                    stroke: '#ddd',
+                    dot: false,
                 }),
             ],
         });

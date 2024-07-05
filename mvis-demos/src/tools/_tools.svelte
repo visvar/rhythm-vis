@@ -45,7 +45,7 @@
         {
             id: 'note-colors',
             title: 'Note Colors',
-            description: 'Different note coor schemes.',
+            description: 'Different note color schemes.',
             component: NoteColors,
         },
         {

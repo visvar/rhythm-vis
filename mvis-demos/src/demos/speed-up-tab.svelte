@@ -344,6 +344,9 @@
             exerciseNotes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            if (exerciseNotes.length > 0) {
+                saveToStorage();
+            }
             // settings
             initialTempo = json.initialTempo;
             targetTempo = json.targetTempo;
@@ -356,6 +359,9 @@
             exerciseNotes = json.exerciseNotes;
             exerciseBeatCount = json.exerciseBeatCount;
             practiceRecordings = json.practiceRecordings;
+            if (practiceRecordings.dataType) {
+                practiceRecordings = new Map(practiceRecordings.value);
+            }
             draw();
         }
     };

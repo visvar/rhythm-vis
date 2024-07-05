@@ -165,6 +165,9 @@
             // pause first
             paused = true;
             cancelAnimationFrame(timeout);
+            if (bendValues.length > 0) {
+                saveToStorage();
+            }
             // load
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;

@@ -202,6 +202,9 @@
             notes.length === 0 ||
             confirm('Import data and overwrite currently unsaved data?')
         ) {
+            if (notes.length > 0) {
+                saveToStorage();
+            }
             root = json.root;
             scale = json.scale;
             // data
