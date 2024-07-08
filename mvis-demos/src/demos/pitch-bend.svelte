@@ -79,7 +79,7 @@
     onMount(draw);
 
     /**
-     * Used for exporting and for automatics saving
+     * Used for exporting and for automatic saving
      */
     const getExportData = () => {
         return {
