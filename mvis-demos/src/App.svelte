@@ -16,15 +16,15 @@
   import Tools from './tools/_tools.svelte';
   import Settings from './Settings.svelte';
   import DemoOverview from './DemoOverview.svelte';
-  // demos
-  import { DEMOS } from './demos';
+  // APPS
+  import { APPS } from './demos';
 
   let currentDemo = null;
 
   // handle URL parameters
   const param = getUrlParam(window, 'd');
   if (param && param !== '') {
-    currentDemo = DEMOS.filter((d) => d.id === param)[0];
+    currentDemo = APPS.filter((d) => d.id === param)[0];
   }
 
   // access protection (not secure of course)
@@ -79,11 +79,11 @@
   console.log('usage data', localStorageGetUsageData());
 
   // tags
-  const allInputs = new Set(DEMOS.flatMap((d) => d.input).sort());
-  const allInstruments = new Set(DEMOS.flatMap((d) => d.instruments).sort());
-  const allData = new Set(DEMOS.flatMap((d) => d.data));
-  const allSkills = new Set(DEMOS.flatMap((d) => d.skills).sort());
-  const allPatterns = new Set(DEMOS.flatMap((d) => d.patterns).sort());
+  const allInputs = new Set(APPS.flatMap((d) => d.input).sort());
+  const allInstruments = new Set(APPS.flatMap((d) => d.instruments).sort());
+  const allData = new Set(APPS.flatMap((d) => d.data));
+  const allSkills = new Set(APPS.flatMap((d) => d.skills).sort());
+  const allPatterns = new Set(APPS.flatMap((d) => d.patterns).sort());
   // filter
   let currentInstruments = new Set(allInstruments);
   let currentInputs = new Set(allInputs);
@@ -91,7 +91,7 @@
   // search
   let currentSearch = '';
   // apply filter
-  $: filteredDemos = DEMOS.filter(
+  $: filteredAPPS = APPS.filter(
     (d) =>
       d.title.toLowerCase().includes(currentSearch) &&
       setHasAny(currentInstruments, d.instruments) &&
@@ -112,7 +112,7 @@
 
 <main>
   <header>
-    <h1>Data-Driven Music Education Demos</h1>
+    <h1>Data-Driven Music Education Apps</h1>
     <!-- back button -->
     <button
       on:click="{() => {
@@ -120,7 +120,7 @@
         setUrlParam(window, 'd', '');
       }}"
     >
-      ☰ demos
+      ☰ apps
     </button>
     <!-- DemoOverview page button -->
     <button
@@ -156,10 +156,9 @@
     <input type="password" placeholder="password" bind:value="{password}" />
   {:else if !currentDemo}
     <p class="explanation">
-      This page contains a collection of small tools (demos) that are each
-      tailored to a specific musical skill and sometimes also specific kind of
-      musical data. You can filter demos by different aspects with the sidebar
-      on the left.
+      This page contains a collection of small apps that are each tailored to a
+      specific musical skill and sometimes also specific kind of musical data.
+      You can filter apps by different aspects with the sidebar on the left.
     </p>
 
     <div class="grid-filter-demo">
@@ -221,7 +220,7 @@
 
       <!-- demo overview grid -->
       <div class="grid">
-        {#each filteredDemos as demo}
+        {#each filteredAPPS as demo}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
           <div
@@ -284,7 +283,7 @@
   {:else if currentDemo === 'settings'}
     <Settings />
   {:else if currentDemo === 'overview'}
-    <DemoOverview demos="{DEMOS}" {allInstruments} {allData} {allPatterns} />
+    <DemoOverview apps="{APPS}" {allInstruments} {allData} {allPatterns} />
   {:else}
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />

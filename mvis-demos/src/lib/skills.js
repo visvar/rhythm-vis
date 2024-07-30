@@ -5,6 +5,11 @@ export const SKILL_TREE = [
     description: 'Performing actions at the itended time',
     children: [
       {
+        id: 'duration',
+        title: 'duration',
+        description: 'Notes should be played according to the intended duration'
+      },
+      {
         id: 'sub-division',
         title: 'sub-division',
         description: 'Note onsets should follow a sub-division of beats consistently, for example playing straight eighth notes or quarter triplets'

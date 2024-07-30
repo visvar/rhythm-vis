@@ -26,11 +26,12 @@ import TwoHandedTiming from './demos/two-handed-timing.svelte'
 import SubDivisionDrums from './demos/sub-division-drums.svelte'
 import SubDivisionHistory from './demos/sub-division-history.svelte'
 import PitchOffsetCentsNeedle from './demos/pitch-offset-cents-needle.svelte'
+import DurationPies from './demos/duration-pies.svelte'
 
 /**
- * All demos defined here
+ * All apps defined here
  */
-export const DEMOS = [
+export const APPS = [
   {
     id: 'accents',
     title: 'Accents',
@@ -74,8 +75,19 @@ export const DEMOS = [
     instruments: ['drum', 'guitar/bass', 'keyboard'],
     data: ['order', 'dynamics'],
     skills: ['constant-dynamics', '(de)crescendo', 'accents'],
-    patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units', ''],
+    patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units'],
     component: Dynamics
+  },
+  {
+    id: 'duration-pies',
+    title: 'Duration Pies',
+    description: 'Check how well you control the duration of notes.',
+    input: 'MIDI',
+    instruments: ['keyboard'],
+    data: ['order', 'duration'],
+    skills: ['duration'],
+    patterns: ['duration as pie', 'baselines as angle', 'time is circular', 'time encoded ciruclar', 'update on note', 'musical units'],
+    component: DurationPies
   },
   {
     id: 'fretboard-heatmap',

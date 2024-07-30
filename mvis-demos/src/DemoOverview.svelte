@@ -4,7 +4,7 @@
     import * as Plot from '@observablehq/plot';
     import { onMount } from 'svelte';
 
-    export let demos = [];
+    export let apps = [];
     export let allInstruments = new Set();
     export let allData = new Set();
     export let allPatterns = new Set();
@@ -56,19 +56,19 @@
      */
     const drawSkillPatternMatrix = () => {
         const data = new Map();
-        for (const demo of demos) {
+        for (const app of apps) {
             // add a datum for each combination of skill and pattern
-            for (const attrib1 of demo[matrixColumn]) {
+            for (const attrib1 of app[matrixColumn]) {
                 if (!data.has(attrib1)) {
                     data.set(attrib1, new Map());
                 }
                 const s = data.get(attrib1);
-                for (const attrib2 of demo[matrixRow]) {
+                for (const attrib2 of app[matrixRow]) {
                     if (!s.has(attrib2)) {
                         s.set(attrib2, new Set());
                     }
                     const p = s.get(attrib2);
-                    p.add(demo.title);
+                    p.add(app.title);
                 }
             }
         }
@@ -78,7 +78,7 @@
                 data2.push({
                     k1,
                     k2,
-                    demos: [...v2],
+                    apps: [...v2],
                 });
             }
         }
@@ -102,7 +102,7 @@
                 label: matrixRow,
             },
             color: {
-                label: 'number of demos',
+                label: 'number of apps',
                 legend: true,
                 scheme: 'blues',
                 // scheme: 'cividis',
@@ -112,14 +112,14 @@
                 Plot.cell(data2, {
                     x: (d) => d.k1,
                     y: (d) => d.k2,
-                    fill: (d) => d.demos.length,
-                    title: (d) => `${d.k1} | ${d.k2}\n\n${d.demos.join('\n')}`,
+                    fill: (d) => d.apps.length,
+                    title: (d) => `${d.k1} | ${d.k2}\n\n${d.apps.join('\n')}`,
                     rx: 5,
                 }),
                 Plot.text(data2, {
                     x: (d) => d.k1,
                     y: (d) => d.k2,
-                    text: (d) => d.demos.length,
+                    text: (d) => d.apps.length,
                     stroke: '#fffc',
                     strokeWidth: 6,
                     fill: 'black',
@@ -140,7 +140,7 @@
     <h2>input and instrument</h2>
     <table>
         <thead>
-            <th style="min-width: 270px">demo</th>
+            <th style="min-width: 270px">app</th>
             <th
                 colspan="2"
                 style="border-bottom: 4px solid {d3.schemeObservable10[0]};"
@@ -186,7 +186,7 @@
             <th colspan="{allInstruments.size}"></th>
         </thead>
         <tbody>
-            {#each demos as d}
+            {#each apps as d}
                 <tr>
                     <td style="text-align: right;">{d.title}</td>
                     <!-- input -->
@@ -206,22 +206,22 @@
             {/each}
             <!-- counts -->
             <tr>
-                <td>{demos.length}</td>
+                <td>{apps.length}</td>
                 <!-- input -->
-                <td>{demos.filter((d) => d.input === 'MIDI').length}</td>
-                <td>{demos.filter((d) => d.input === 'audio').length}</td>
+                <td>{apps.filter((d) => d.input === 'MIDI').length}</td>
+                <td>{apps.filter((d) => d.input === 'audio').length}</td>
                 <!-- instrument -->
                 <td class="spacer"></td>
                 {#each [...allInstruments] as i}
                     <td
-                        >{demos.filter((d) => d.instruments.includes(i))
+                        >{apps.filter((d) => d.instruments.includes(i))
                             .length}</td
                     >
                 {/each}
                 <td class="spacer"></td>
                 <!-- data -->
                 {#each [...allData] as i}
-                    <td>{demos.filter((d) => d.data.includes(i)).length}</td>
+                    <td>{apps.filter((d) => d.data.includes(i)).length}</td>
                 {/each}
             </tr>
         </tbody>
@@ -230,7 +230,7 @@
     <h2>skills</h2>
     <table>
         <thead>
-            <th style="min-width: 270px">demo</th>
+            <th style="min-width: 270px">app</th>
             <!-- skill -->
             {#each SKILL_TREE as s, index}
                 <th
@@ -255,7 +255,7 @@
             {/each}
         </thead>
         <tbody>
-            {#each demos as d}
+            {#each apps as d}
                 <tr>
                     <td style="text-align: right;">{d.title}</td>
                     <!-- skill -->
@@ -265,17 +265,17 @@
                         {/each}
                         <th class="spacer"></th>
                     {/each}
-                    <!-- count of skills for this demo -->
+                    <!-- count of skills for this app -->
                     <td>{d.skills.length}</td>
                 </tr>
             {/each}
             <!-- counts -->
             <tr>
-                <td>{demos.length}</td>
+                <td>{apps.length}</td>
                 {#each SKILL_TREE as s}
                     {#each s.children as skill}
                         <td>
-                            {demos.filter((d) => d.skills.includes(skill.id))
+                            {apps.filter((d) => d.skills.includes(skill.id))
                                 .length}
                         </td>
                     {/each}
@@ -289,14 +289,14 @@
     <h2>patterns</h2>
     <table>
         <thead>
-            <th style="min-width: 270px">demo</th>
+            <th style="min-width: 270px">app</th>
             <!-- patterns -->
             {#each [...allPatterns] as d}
                 <th class="small">{d}</th>
             {/each}
         </thead>
         <tbody>
-            {#each demos as d}
+            {#each apps as d}
                 <tr>
                     <td style="text-align: right;">{d.title}</td>
                     <!-- skill -->
@@ -308,10 +308,9 @@
             {/each}
             <!-- counts -->
             <tr>
-                <td>{demos.length}</td>
+                <td>{apps.length}</td>
                 {#each [...allPatterns] as i}
-                    <td>{demos.filter((d) => d.patterns.includes(i)).length}</td
-                    >
+                    <td>{apps.filter((d) => d.patterns.includes(i)).length}</td>
                 {/each}
                 <td></td>
             </tr>
@@ -322,7 +321,7 @@
     <h2>skill tree</h2>
     <div class="visualization" bind:this="{skillTreeContainer}"></div>
 
-    <h2>demo metadata co-occurrence</h2>
+    <h2>app metadata co-occurrence</h2>
     <label>
         row
         <select bind:value="{matrixRow}" on:change="{drawSkillPatternMatrix}">

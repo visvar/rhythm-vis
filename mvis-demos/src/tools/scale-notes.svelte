@@ -5,6 +5,7 @@
     import { onMount } from 'svelte';
     import { NOTE_COLORS } from '../lib/colors';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
+    import { downloadJsonFile } from '../lib/json';
 
     export let toolInfo;
     const w = 400;
@@ -167,4 +168,30 @@
         <canvas bind:this="{canvas}" style="width: {w}px; height: {h}px"
         ></canvas>
     </div>
+    <button
+        on:click="{() => {
+            let scales = [];
+            for (const root of noteNames) {
+                const allScales = scaleNames
+                    .map((d) => Scale.get(`${root} ${d}`))
+                    .filter((d) => !d.empty)
+                    .map((d) => {
+                        d.notes = d.notes.map(
+                            (note) => Midi.flatToSharp.get(note) ?? note,
+                        );
+                        return d;
+                    });
+                scales = scales.concat(allScales);
+            }
+            const data = scales.map((d) => {
+                return {
+                    tonic: d.tonic,
+                    type: d.type,
+                    chroma: d.chroma,
+                    notes: d.notes,
+                };
+            });
+            downloadJsonFile('musical-scales', data);
+        }}">export JSON</button
+    >
 </main>
