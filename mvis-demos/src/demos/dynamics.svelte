@@ -22,7 +22,7 @@
     let container;
     const velocities = VELOCITIES_LOGIC;
     // settings
-    let isBinning = true;
+    let isBinning = false;
     let barLimit = 50;
     // data
     let notes = [];
@@ -146,7 +146,7 @@
                 draw();
             }}"
         >
-            binning {isBinning ? toggleOnIcon : toggleOffIcon}
+            rounding {isBinning ? toggleOnIcon : toggleOffIcon}
         </button>
         <label title="The number of most recent notes that are shown as bars.">
             bars

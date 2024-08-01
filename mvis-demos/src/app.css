@@ -41,6 +41,7 @@ h3,
 h4,
 h5 {
   color: #3c4c5a;
+  user-select: none;
 }
 
 h1 {
@@ -147,12 +148,14 @@ div.card .description {
 div.control,
 div.visualization {
   margin: 10px 5px;
+  user-select: none;
 }
 
 p.explanation {
   max-width: 850px;
   margin: auto;
   text-align: justify;
+  user-select: none;
 }
 
 

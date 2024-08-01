@@ -35,7 +35,7 @@ export const noteDurations = [
   {
     name: 'eight-triplet',
     beats: 1 / 3,
-    symbol: '𝅘𝅥⅓',
+    symbol: '𝅘𝅥𝅘𝅥𝅘𝅥',
     tuplet: true
   },
   {

@@ -14,6 +14,7 @@
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/speed-up.json';
     import { reviver } from '../lib/json.js';
+    import TouchInput from './common/touch-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -436,9 +437,13 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <MidiInput {noteOn} />
     <PcKeyboardInput
         key=" "
-        callback="{() => noteOn({ timestamp: performance.now() })}"
+        keyDown="{() => noteOn({ timestamp: performance.now() })}"
     />
-    <MidiInput {noteOn} />
+    <TouchInput
+        element="{container}"
+        touchStart="{() => noteOn({ timestamp: performance.now() })}"
+    />
 </main>

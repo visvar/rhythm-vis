@@ -56,7 +56,7 @@
             marginBottom: 50,
             padding: 0,
             x: {
-                domain: d3.range(minPitch, maxPitch),
+                domain: d3.range(minPitch, maxPitch + 1),
                 tickFormat: (d) => {
                     if (Midi.isSharp(d)) {
                         return '';
@@ -71,7 +71,7 @@
                 interval: 1,
             },
             marks: [
-                Plot.ruleX(getCs(minPitch, maxPitch), {
+                Plot.ruleX(getCs(minPitch, maxPitch + 1), {
                     stroke: '#ddd',
                 }),
                 Plot.ruleY([0], {
@@ -79,7 +79,9 @@
                 }),
                 // background bars
                 Plot.barY(
-                    d3.range(minPitch, maxPitch).filter((d) => Midi.isSharp(d)),
+                    d3
+                        .range(minPitch, maxPitch + 1)
+                        .filter((d) => Midi.isSharp(d)),
                     {
                         x: (d) => d,
                         y: () => maxCount,

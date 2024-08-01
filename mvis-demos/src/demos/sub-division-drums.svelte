@@ -329,22 +329,22 @@
     </div>
     <PcKeyboardInput
         key="s"
-        callback="{() =>
+        keyDown="{() =>
             noteOn({ timestamp: performance.now(), note: { number: 38 } })}"
     />
     <PcKeyboardInput
         key="h"
-        callback="{() =>
+        keyDown="{() =>
             noteOn({ timestamp: performance.now(), note: { number: 46 } })}"
     />
     <PcKeyboardInput
         key="t"
-        callback="{() =>
+        keyDown="{() =>
             noteOn({ timestamp: performance.now(), note: { number: 48 } })}"
     />
     <PcKeyboardInput
         key="k"
-        callback="{() =>
+        keyDown="{() =>
             noteOn({ timestamp: performance.now(), note: { number: 36 } })}"
     />
     <MidiInput {noteOn} {controlChange} />

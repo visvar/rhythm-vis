@@ -14,6 +14,7 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import TouchInput from './common/touch-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -25,7 +26,7 @@
     let container;
     // settings
     let tempo = 120;
-    let binNote = 64;
+    let binNote = 'off';
     let filterNote = 0;
     let barLimit = 50;
     // data
@@ -48,10 +49,8 @@
         const eighth = quarter / 2;
         const half = quarter * 2;
         const whole = quarter * 4;
-        const qTriplet = quarter / 3;
         const rules = [
             0,
-            qTriplet,
             sixteenth,
             eighth,
             eighth * 1.5,
@@ -60,7 +59,7 @@
             half,
             half * 1.5,
         ];
-        const rulesText = ['0', '𝅘𝅥𝅘𝅥𝅘𝅥', '𝅘𝅥𝅯', '𝅘𝅥𝅮', '𝅘𝅥𝅮.', '𝅘𝅥', '𝅘𝅥.', '𝅗𝅥', '𝅗𝅥.'];
+        const rulesText = ['0', '𝅘𝅥𝅯', '𝅘𝅥𝅮', '𝅘𝅥𝅮.', '𝅘𝅥', '𝅘𝅥.', '𝅗𝅥', '𝅗𝅥.'];
         // get inter-onset intervals
         let iois = notes.map((d, i) => (i === 0 ? 0 : d - notes[i - 1]));
         if (filterNote !== 0) {
@@ -69,7 +68,7 @@
         }
         // round bars' height to make view clearer
         let binnedIois = iois;
-        if (binNote !== 0) {
+        if (binNote !== 'off') {
             const binSize = whole / binNote;
             binnedIois = iois.map((d) => Math.round(d / binSize) * binSize);
         }
@@ -201,9 +200,9 @@
         <label
             title="You can change between seeing exact bar heights and binned (rounded) heights."
         >
-            binning
+            rounding
             <select bind:value="{binNote}" on:change="{draw}">
-                <option value="{0}">off</option>
+                <option value="off">off</option>
                 {#each BIN_NOTES as g}
                     <option value="{g}">1/{g} note</option>
                 {/each}
@@ -245,11 +244,15 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <MidiInput {noteOn} />
     <PcKeyboardInput
         key=" "
-        callback="{() => noteOn({ timestamp: performance.now() })}"
+        keyDown="{() => noteOn({ timestamp: performance.now() })}"
     />
-    <MidiInput {noteOn} />
+    <TouchInput
+        element="{container}"
+        touchStart="{() => noteOn({ timestamp: performance.now() })}"
+    />
 </main>
 
 <style>

@@ -341,12 +341,12 @@
     </div>
     <PcKeyboardInput
         key="f"
-        callback="{() =>
+        keyDown="{() =>
             noteOn({ timestamp: performance.now(), note: { number: 0 } })}"
     />
     <PcKeyboardInput
         key="j"
-        callback="{() =>
+        keyDown="{() =>
             noteOn({ timestamp: performance.now(), note: { number: 127 } })}"
     />
     <MidiInput {noteOn} {controlChange} />

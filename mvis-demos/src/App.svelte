@@ -112,7 +112,7 @@
 
 <main>
   <header>
-    <h1>Data-Driven Music Education Apps</h1>
+    <h1>Music Instrument Learning Apps</h1>
     <!-- back button -->
     <button
       on:click="{() => {
@@ -246,6 +246,7 @@
               {demo.instruments.includes('singing') ? '🎤' : ''}
               {demo.instruments.includes('strings') ? '🎻' : ''}
               {demo.instruments.includes('pc-key') ? '⌨️' : ''}
+              {demo.instruments.includes('touch') ? '👇' : ''}
             </div>
           </div>
         {/each}

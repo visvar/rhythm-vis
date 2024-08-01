@@ -12,6 +12,9 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
     import { noteDurations } from '../lib/note-durations';
+    import example from '../example-recordings/duration-pies.json';
+    import PcKeyboardInput from './common/pc-keyboard-input.svelte';
+    import TouchInput from './common/touch-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -24,8 +27,9 @@
     const TWO_PI = 2 * Math.PI;
     // settings
     let tempo = 60;
-    let pastNoteCount = 6;
+    let pastNoteCount = 1;
     // data
+    let isKeyDown = false;
     $: wholeDuration = Utils.bpmToSecondsPerBeat(tempo) * 4;
     $: durations = noteDurations
         .filter((d) => !d.tuplet)
@@ -37,16 +41,14 @@
     let openNoteMap = new Map();
 
     const noteOn = (e) => {
+        console.log(e);
         if (notes.length === 0) {
             firstTimeStamp = e.timestamp;
         }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
-            name: e.note.name,
             number: e.note.number,
-            velocity: e.rawVelocity,
             time: noteInSeconds,
-            channel: e.message.channel,
             duration: 0,
         };
         // fix old note if its end was missed
@@ -57,6 +59,7 @@
             }
         }
         notes = [...notes, note];
+        console.log(note);
         openNoteMap.set(e.note.number, note);
         draw();
     };
@@ -67,8 +70,8 @@
             const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
             note.end = noteInSeconds;
             note.duration = note.end - note.time;
+            console.log(note);
         }
-        notes = [...notes];
         draw();
     };
 
@@ -81,9 +84,9 @@
     const draw = () => {
         const cy = height / 2;
         const xStep = width / pastNoteCount;
-        const r = xStep * 0.4;
-        const r2 = xStep * 0.2;
-        const r3 = xStep * 0.35;
+        const r = Math.min(xStep * 0.4, height * 0.3);
+        const r2 = r * 0.5;
+        const r3 = r * 0.75;
         const ctx = canvas.getContext('2d');
         // scale to DPR
         // Get the DPR and size of the canvas
@@ -219,15 +222,20 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Notes that you play are shown as bars. The color shows which scale
-        subset a note belongs to. The bars' height encodes the notes' durations.
+        Set a tempo and try to play different note durations (whole, half,
+        quarter, eighth). You can also try dotted notes. Each note will be shown
+        as a pie chart, that shows how much of a whole note you played. For
+        example, if you tried to play a half note, the pie chart should be half
+        full. If you play longer than a whole note, the addtional time will be
+        shown in red.
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <NoteCountInput
             bind:value="{pastNoteCount}"
             callback="{draw}"
-            step="{2}"
+            step="{1}"
+            min="{1}"
         />
     </div>
     <div class="visualization">
@@ -253,7 +261,45 @@
         </button>
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} {noteOff} {controlChange} />
+    <PcKeyboardInput
+        key=" "
+        keyDown="{() => {
+            if (isKeyDown) {
+                return;
+            }
+            isKeyDown = true;
+            console.log('keydown');
+            noteOn({
+                note: { number: 0 },
+                timestamp: performance.now(),
+            });
+        }}"
+        keyUp="{() => {
+            console.log('keyup');
+            isKeyDown = false;
+            noteOff({
+                note: { number: 0 },
+                timestamp: performance.now(),
+            });
+        }}"
+    />
+    <TouchInput
+        element="{canvas}"
+        touchStart="{() => {
+            noteOn({
+                note: { number: 0 },
+                timestamp: performance.now(),
+            });
+        }}"
+        touchEnd="{() => {
+            noteOff({
+                note: { number: 0 },
+                timestamp: performance.now(),
+            });
+        }}"
+    />
 </main>

@@ -1,0 +1,107 @@
+{
+  "tempo": 60,
+  "pastNoteCount": 6,
+  "notes": [
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 98,
+      "time": 0,
+      "channel": 1,
+      "duration": 3.0520999999996277,
+      "end": 3.0520999999996277
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 34,
+      "time": 3.906,
+      "channel": 1,
+      "duration": 1.6430000000000002,
+      "end": 5.549
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 88,
+      "time": 7.998,
+      "channel": 1,
+      "duration": 1.7090000000000005,
+      "end": 9.707
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 17,
+      "time": 11.546,
+      "channel": 1,
+      "duration": 2.567,
+      "end": 14.113
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 19,
+      "time": 15.727,
+      "channel": 1,
+      "duration": 1.6819999999999986,
+      "end": 17.409
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 62,
+      "time": 20.067,
+      "channel": 1,
+      "duration": 1.6660000000000004,
+      "end": 21.733
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 110,
+      "time": 24.074,
+      "channel": 1,
+      "duration": 2.0180999999996274,
+      "end": 26.09209999999963
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 104,
+      "time": 28.147,
+      "channel": 1,
+      "duration": 0.990000000000002,
+      "end": 29.137
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 112,
+      "time": 32.05509999999963,
+      "channel": 1,
+      "duration": 3.1989000000003713,
+      "end": 35.254
+    },
+    {
+      "name": "C",
+      "number": 60,
+      "velocity": 96,
+      "time": 40.084,
+      "channel": 1,
+      "duration": 4.016999999999996,
+      "end": 44.101
+    },
+    {
+      "name": "D",
+      "number": 62,
+      "velocity": 24,
+      "time": 52.125,
+      "channel": 1,
+      "duration": 0.4269999999999996,
+      "end": 52.552
+    }
+  ],
+  "_demoId": "duration-pies",
+  "_date": "2024-07-30T16:39:24.514Z"
+}

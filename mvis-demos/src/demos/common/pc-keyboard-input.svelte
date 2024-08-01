@@ -5,20 +5,30 @@
     import { onDestroy, onMount } from 'svelte';
 
     export let key = ' ';
-    export let callback = () => {};
+    export let keyDown = () => {};
+    export let keyUp = () => {};
 
-    const keyDown = (e) => {
+    const keyDownFn = (e) => {
         if (e.key === key) {
             e.preventDefault();
-            callback();
+            keyDown();
+        }
+    };
+
+    const keyUpFn = (e) => {
+        if (e.key === key) {
+            e.preventDefault();
+            keyUp();
         }
     };
 
     onMount(() => {
-        document.addEventListener('keydown', keyDown);
+        document.addEventListener('keydown', keyDownFn);
+        document.addEventListener('keyup', keyUpFn);
     });
 
     onDestroy(() => {
-        document.removeEventListener('keydown', keyDown);
+        document.removeEventListener('keydown', keyDownFn);
+        document.removeEventListener('keyup', keyUpFn);
     });
 </script>

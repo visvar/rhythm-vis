@@ -15,6 +15,7 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import TouchInput from './common/touch-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -334,9 +335,13 @@
             style="width: {width}px; height: {height}px"
         ></canvas>
     </div>
+    <MidiInput {noteOn} />
     <PcKeyboardInput
         key=" "
-        callback="{() => noteOn({ timestamp: performance.now() })}"
+        keyDown="{() => noteOn({ timestamp: performance.now() })}"
     />
-    <MidiInput {noteOn} />
+    <TouchInput
+        element="{canvas}"
+        touchStart="{() => noteOn({ timestamp: performance.now() })}"
+    />
 </main>

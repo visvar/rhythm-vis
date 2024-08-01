@@ -16,6 +16,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import TouchInput from './common/touch-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -295,7 +296,11 @@
     </div>
     <PcKeyboardInput
         key=" "
-        callback="{() => noteOn({ timestamp: performance.now() })}"
+        keyDown="{() => noteOn({ timestamp: performance.now() })}"
+    />
+    <TouchInput
+        element="{container}"
+        touchStart="{() => noteOn({ timestamp: performance.now() })}"
     />
     <MidiInput {noteOn} {controlChange} />
 </main>
