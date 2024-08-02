@@ -27,6 +27,7 @@ import SubDivisionDrums from './demos/sub-division-drums.svelte'
 import SubDivisionHistory from './demos/sub-division-history.svelte'
 import PitchOffsetCentsNeedle from './demos/pitch-offset-cents-needle.svelte'
 import DurationPies from './demos/duration-pies.svelte'
+import DurationBars from './demos/duration-bars.svelte'
 
 /**
  * All apps defined here
@@ -79,11 +80,22 @@ export const APPS = [
     component: Dynamics
   },
   {
+    id: 'duration-bars',
+    title: 'Duration Bars',
+    description: 'Check how well you control the duration of notes.',
+    input: 'MIDI',
+    instruments: ['guitar/bass', 'keyboard', 'pc-key', 'touch'],
+    data: ['order', 'duration'],
+    skills: ['duration'],
+    patterns: ['duration as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units'],
+    component: DurationBars
+  },
+  {
     id: 'duration-pies',
     title: 'Duration Pies',
     description: 'Check how well you control the duration of notes.',
     input: 'MIDI',
-    instruments: ['keyboard', 'pc-key', 'touch'],
+    instruments: ['guitar/bass', 'keyboard', 'pc-key', 'touch'],
     data: ['order', 'duration'],
     skills: ['duration'],
     patterns: ['duration as pie', 'baselines as angle', 'time is circular', 'time encoded ciruclar', 'update on note', 'musical units'],
@@ -211,7 +223,7 @@ export const APPS = [
     input: 'audio',
     instruments: ['guitar/bass', 'keyboard', 'singing'],
     data: ['onset/time', 'pitch'],
-    skills: ['pitch-keeping', 'bending', 'vibrato'],
+    skills: ['pitch-keeping', 'bending', 'vibrato', 'on-pitch'],
     patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
     component: PitchBendAudio
   },
@@ -222,7 +234,7 @@ export const APPS = [
     input: 'audio',
     instruments: ['guitar/bass', 'keyboard', 'singing'],
     data: ['onset/time', 'pitch'],
-    skills: ['pitch-keeping', 'bending', 'vibrato'],
+    skills: ['pitch-keeping', 'bending', 'vibrato', 'on-pitch'],
     patterns: ['pitch as line', 'baselines as grid', 'explicit difference', 'difference as color', 'time is linear', 'time encoded linearly', 'update real-time', 'dual encoding'],
     component: PitchOffsetCents
   },
@@ -233,7 +245,7 @@ export const APPS = [
     input: 'audio',
     instruments: ['guitar/bass', 'keyboard', 'singing'],
     data: ['onset/time', 'pitch'],
-    skills: ['pitch-keeping'],
+    skills: ['pitch-keeping', 'on-pitch'],
     patterns: ['pitch as angle', 'baselines as grid', 'explicit difference', 'time is instant', 'update real-time'],
     component: PitchOffsetCentsNeedle
   },

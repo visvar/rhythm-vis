@@ -195,6 +195,10 @@
         for notes that were too long (playing too slow) and
         <span style="color:{orange}">orange</span> for short (fast) ones.
     </p>
+    <p>
+        Exercises: 1) Switch back and fort between quarters and eighths. 2)
+        Switch between eighths and eighth triplets.
+    </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />

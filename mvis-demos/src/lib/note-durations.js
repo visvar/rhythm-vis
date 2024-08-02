@@ -1,10 +1,10 @@
 export const noteDurations = [
-  {
-    name: 'dotted-whole',
-    beats: 6,
-    symbol: '𝅝.',
-    dotted: true
-  },
+  // {
+  //   name: 'dotted-whole',
+  //   beats: 6,
+  //   symbol: '𝅝.',
+  //   dotted: true
+  // },
   {
     name: 'whole',
     beats: 4,

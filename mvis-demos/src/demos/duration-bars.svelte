@@ -2,7 +2,7 @@
     import { onDestroy } from 'svelte';
     import * as d3 from 'd3';
     import { clamp } from '../lib/lib';
-    import { Canvas, Utils } from 'musicvis-lib';
+    import { Utils } from 'musicvis-lib';
     import NoteCountInput from './common/note-count-input.svelte';
     import MidiInput from './common/midi-input.svelte';
     import ExportButton2 from './common/export-button2.svelte';
@@ -15,7 +15,7 @@
     import example from '../example-recordings/duration-pies.json';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import TouchInput from './common/touch-input.svelte';
-    import { noteHalf, noteQuarter, noteWhole } from '../lib/icons';
+    import { noteEighth, noteHalf, noteQuarter, noteWhole } from '../lib/icons';
     import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
@@ -26,10 +26,9 @@
     let width = 1200;
     let height = 400;
     let canvas;
-    const TWO_PI = 2 * Math.PI;
     // settings
     let tempo = 60;
-    let pastNoteCount = 1;
+    let pastNoteCount = 10;
     // data
     let isKeyDown = false;
     $: wholeDuration = Utils.bpmToSecondsPerBeat(tempo) * 4;
@@ -84,12 +83,11 @@
     };
 
     const draw = () => {
-        const cy = (height - 50) / 2;
-        const xStep = width / pastNoteCount;
-        const r = Math.min(xStep * 0.4, height * 0.3);
-        const r2 = r * 0.5;
-        const r3 = r * 0.75;
-        const r4 = r * 1.1;
+        const xStep = (width - 10) / pastNoteCount;
+        const w = xStep * 0.8;
+        const h = height * 0.7;
+        const top = 10;
+        const bottom = top + h;
         const ctx = canvas.getContext('2d');
         // scale to DPR
         // Get the DPR and size of the canvas
@@ -108,15 +106,12 @@
 
         for (const [index, note] of notes.slice(-pastNoteCount).entries()) {
             // one pie chart per note
-            const cx = xStep * (index + 0.5);
+            const x = xStep * (index + 0.1) + 10;
             // data part
             ctx.fillStyle = '#d5f3fe';
             const ratio = Math.min(note.duration / wholeDuration, 1);
-            ctx.beginPath();
-            ctx.moveTo(cx, cy);
-            ctx.arc(cx, cy, r, -Math.PI / 2, ratio * TWO_PI - Math.PI / 2);
-            ctx.closePath();
-            ctx.fill();
+            const filled = h * ratio;
+            ctx.fillRect(x, bottom - filled, w, filled);
             //  if longer than a whole, show in red how much too long
             if (note.duration > wholeDuration) {
                 ctx.fillStyle = 'crimson';
@@ -124,34 +119,22 @@
                     (note.duration - wholeDuration) / wholeDuration,
                     1,
                 );
-                ctx.beginPath();
-                ctx.moveTo(cx, cy);
-                ctx.arc(cx, cy, r, -Math.PI / 2, ratio2 * TWO_PI - Math.PI / 2);
-                ctx.closePath();
-                ctx.fill();
+                const filled2 = h * ratio2;
+                ctx.fillRect(x, bottom - filled2, w, filled2);
             }
             // frame
             ctx.lineWidth = 2;
             ctx.strokeStyle = '#aaa';
-            Canvas.drawCircle(ctx, cx, cy, r);
+            ctx.fillStyle = '#aaa';
+            ctx.strokeRect(x, top, w, h);
             // grid
-            const coarseGridAngles = d3.range(4).map((d) => (d * TWO_PI) / 4);
-            const fineGridAngles = d3.range(8).map((d) => (d * TWO_PI) / 8);
-            ctx.beginPath();
-            for (const g of coarseGridAngles) {
-                const dx = Math.cos(g);
-                const dy = Math.sin(g);
-                ctx.moveTo(cx + dx * r2, cy + dy * r2);
-                ctx.lineTo(cx + dx * r, cy + dy * r);
+            ctx.fillRect(x, top + h / 2, w * 0.4, 1);
+            for (const g of d3.range(top, top + h, h / 4)) {
+                ctx.fillRect(x, g, w * 0.2, 1);
             }
-            ctx.lineWidth = 1;
-            for (const g of fineGridAngles) {
-                const dx = Math.cos(g);
-                const dy = Math.sin(g);
-                ctx.moveTo(cx + dx * r3, cy + dy * r3);
-                ctx.lineTo(cx + dx * r, cy + dy * r);
+            for (const g of d3.range(top, top + h, h / 8)) {
+                ctx.fillRect(x, g, w * 0.1, 1);
             }
-            ctx.stroke();
             // text
             if (note.duration === 0) {
                 continue;
@@ -160,33 +143,35 @@
                 Math.abs(note.duration - d.seconds),
             );
             const bestFitDuration = durations[bestFit];
-            ctx.fillStyle = '#666';
             ctx.font = '20px sans-serif';
+            ctx.fillStyle = '#666';
             ctx.textAlign = 'center';
-            ctx.textBaseline = 'bottom';
-            ctx.fillText(`closest: ${bestFitDuration.symbol}`, cx, height - 45);
+            const cx = x + w / 2;
+            ctx.fillText(`closest: ${bestFitDuration.symbol}`, cx, height - 50);
             const percent = (note.duration / bestFitDuration.seconds) * 100;
-            ctx.fillText(`${percent.toFixed()}%`, cx, height - 25);
+            ctx.fillText(`${percent.toFixed()}%`, cx, height - 30);
             let rating = '';
             if (percent < 80) {
                 rating = 'too short';
             } else if (percent < 90) {
-                rating = 'a bit short';
+                rating = 'short';
             } else if (percent < 110) {
                 rating = 'good!';
             } else if (percent < 120) {
-                rating = 'a bit long';
+                rating = 'long';
             } else {
                 rating = 'too long';
             }
-            ctx.fillText(`${rating}`, cx, height - 5);
+            ctx.fillText(`${rating}`, cx, height - 10);
             // labels
             ctx.textBaseline = 'middle';
             if (index === 0) {
-                ctx.fillText(noteWhole, cx, cy - r4);
-                ctx.fillText(noteQuarter, cx + r4, cy);
-                ctx.fillText(noteHalf, cx, cy + r4);
-                ctx.fillText(noteHalf + '.', cx - r4, cy);
+                ctx.textAlign = 'right';
+                ctx.fillText(noteWhole, x - 5, top);
+                ctx.fillText(noteHalf + '.', x - 5, top + h * 0.25);
+                ctx.fillText(noteHalf, x - 5, top + h * 0.5);
+                ctx.fillText(noteQuarter, x - 5, top + h * 0.75);
+                ctx.fillText(noteEighth, x - 5, top + h * 0.875);
             }
         }
     };
@@ -236,14 +221,14 @@
     <p class="explanation">
         Set a tempo and try to play different note durations (whole, half,
         quarter, eighth). You can also try dotted notes. Each note will be shown
-        as a pie chart, that shows how much of a whole note you played. For
-        example, if you tried to play a half note, the pie chart should be half
-        full. If you play longer than a whole note, the addtional time will be
-        shown in red.
+        as a partially filled bar, that shows how much of a whole note you
+        played. For example, if you tried to play a half note, the bar should be
+        half full. If you play longer than a whole note, the addtional time will
+        be shown in red.
     </p>
     <p>
-        Exercise: Play a quarter note 𝅘𝅥 ◔, a half note 𝅗𝅥 ◑, a dotted half note
-        𝅗𝅥. ◕, and a whole note 𝅝 ⬤.
+        Exercise: Play a quarter note 𝅘𝅥, a half note 𝅗𝅥, a dotted half note 𝅗𝅥.,
+        and a whole note 𝅝.
     </p>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />

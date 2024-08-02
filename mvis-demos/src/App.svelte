@@ -17,7 +17,7 @@
   import Settings from './Settings.svelte';
   import DemoOverview from './DemoOverview.svelte';
   // APPS
-  import { APPS } from './demos';
+  import { APPS } from './apps';
 
   let currentDemo = null;
 
@@ -122,15 +122,6 @@
     >
       ☰ apps
     </button>
-    <!-- DemoOverview page button -->
-    <button
-      on:click="{() => {
-        currentDemo = 'overview';
-        setUrlParam(window, 'd', 'overview');
-      }}"
-    >
-      📋 overview
-    </button>
     <!-- Tools page button -->
     <button
       on:click="{() => {
@@ -149,6 +140,15 @@
       }}"
     >
       ⚙️ settings
+    </button>
+    <!-- DemoOverview page button -->
+    <button
+      on:click="{() => {
+        currentDemo = 'overview';
+        setUrlParam(window, 'd', 'overview');
+      }}"
+    >
+      📋 overview
     </button>
   </header>
 

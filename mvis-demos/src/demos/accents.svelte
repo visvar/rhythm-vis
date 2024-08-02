@@ -44,6 +44,7 @@
             time: noteInSeconds,
             velocity: e.velocity,
         };
+
         notes.push(note);
         draw();
     };

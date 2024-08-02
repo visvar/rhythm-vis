@@ -136,6 +136,11 @@ export const SKILL_TREE = [
         id: 'strumming-strings',
         title: 'strumming strings',
         description: 'Only the intended strings should be strummed'
+      },
+      {
+        id: 'sweep-picking',
+        title: 'sweep-picking',
+        description: 'Consecutive strings should be picked fast and fluidly while fretting notes'
       }
     ]
   },

@@ -1,5 +1,7 @@
 /**
+ * @see https://www.htmlsymbols.xyz/musical-symbols
  * @see https://www.unicode.org/emoji/charts/full-emoji-list.html
+ * TODO: move to mvlib
  */
 
 export const toggleOnIcon = '🔵'
@@ -31,3 +33,21 @@ export const stopIcon = '⏹'
 export const recordIcon = '⏺'
 export const forwardIcon = '⏩'
 export const backwardIcon = '⏪'
+
+// note durations
+export const noteWhole = '𝅝'
+export const noteHalf = '𝅗𝅥'
+export const noteQuarter = '𝅘𝅥'
+export const noteEighth = '𝅘𝅥𝅮'
+export const noteSixteenth = '𝅘𝅥𝅯'
+export const noteThirtysecond = '𝅘𝅥𝅰'
+export const noteSixtyfourth = '𝅘𝅥𝅱'
+
+// rest durations
+export const restWhole = '𝄻'
+export const restHalf = '𝄼'
+export const restQuarter = '𝄽'
+export const restEighth = '𝄾'
+export const restSixteenth = '𝄿'
+export const restThirtysecond = '𝅀'
+export const restSixtyfourth = '𝅁'
