@@ -34,7 +34,7 @@
         }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
-            name: e.note.name,
+            name: e.note.name + (e.note.accidental ?? ''),
             number: e.note.number,
             velocity: e.rawVelocity,
             time: noteInSeconds,
@@ -96,7 +96,10 @@
             x: {
                 axis: false,
             },
-            y: {},
+            y: {
+                domain: [0, 2],
+                label: 'duration in seconds',
+            },
             color: {
                 legend: true,
                 domain: d3.range(12),
@@ -119,10 +122,10 @@
                 }),
                 Plot.text(limited, {
                     x: (d, i) => i,
-                    y: 'duration',
+                    y: 0,
                     text: 'name',
                     fontSize: 14,
-                    dy: -10,
+                    dy: 16,
                 }),
             ],
         });

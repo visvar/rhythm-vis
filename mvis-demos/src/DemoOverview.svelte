@@ -36,6 +36,7 @@
             marginLeft: 60,
             marginRight: 200,
             width: 500,
+            height: 580,
             marks: [
                 Plot.cluster(treePaths, {
                     treeSort: 'node:height',

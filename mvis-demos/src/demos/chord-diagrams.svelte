@@ -49,7 +49,7 @@
             const note = {
                 time: noteInSeconds,
                 number: e.note.number,
-                note: e.note.name,
+                note: e.note.name + (e.note.accidental ?? ''),
                 velocity: e.rawVelocity,
                 string,
                 fret: e.note.number - tuningPitches[string],

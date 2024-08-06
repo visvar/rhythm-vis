@@ -84,6 +84,7 @@
                     y: 'number',
                     fill: '#ddd',
                     stroke: '#ccc',
+                    strokeWidth: 2.5,
                 }),
             ],
         });

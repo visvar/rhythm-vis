@@ -320,4 +320,8 @@
   .card .tags {
     font-size: 18px;
   }
+
+  .version-number {
+    color: #aaa;
+  }
 </style>

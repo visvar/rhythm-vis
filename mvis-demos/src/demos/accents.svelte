@@ -15,6 +15,7 @@
     import { localStorageAddRecording } from '../lib/localstorage.js';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/accents.json';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -175,19 +176,20 @@
         be displayed as note symbols, so you can see whether you play, for
         example, correct quarter notes. The note's velocity is encoded as font
         size, so you can see whether you accent the correct notes, for example
-        the first note in each triplet, or the the first in each group of 4. You
-        can also try different accent patterns such as:
+        the first note in each triplet, or the the first in each group of 4.
     </p>
-    <p>
-        <b>1</b>e+<b>a</b> 2e+a 3<b>e</b>+a <b>4</b>e+a
-    </p>
-    <p>
-        <span class="acc">𝅘𝅥</span> 𝅘𝅥 𝅘𝅥 <span class="acc">𝅘𝅥</span> | 𝅘𝅥 𝅘𝅥 𝅘𝅥 𝅘𝅥 | 𝅘𝅥
-        <span class="acc">𝅘𝅥</span>
-        𝅘𝅥 𝅘𝅥 |
-        <span class="acc">𝅘𝅥</span>
-        𝅘𝅥 𝅘𝅥 𝅘𝅥
-    </p>
+    <ExerciseDrawer>
+        <p>You can try different accent patterns such as:</p>
+        <p>
+            <b>1</b>e+<b>a</b> 2e+a 3<b>e</b>+a <b>4</b>e+a
+            <span class="acc">𝅘𝅥</span> 𝅘𝅥 𝅘𝅥 <span class="acc">𝅘𝅥</span> | 𝅘𝅥 𝅘𝅥 𝅘𝅥 𝅘𝅥
+            | 𝅘𝅥
+            <span class="acc">𝅘𝅥</span>
+            𝅘𝅥 𝅘𝅥 |
+            <span class="acc">𝅘𝅥</span>
+            𝅘𝅥 𝅘𝅥 𝅘𝅥
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />

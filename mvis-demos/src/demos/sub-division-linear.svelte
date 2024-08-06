@@ -30,7 +30,8 @@
     let grid = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
-    let noteTickLimit = 100;
+    let noteTickLimit = 500;
+    let pastBars = 8;
     // data
     let firstTimeStamp = 0;
     let notes = [];
@@ -77,6 +78,7 @@
         const [grid1, grid2] = grid.split(':').map((d) => +d);
         const quarter = Utils.bpmToSecondsPerBeat(tempo);
         const notesInBeats = notes.map((d) => (d + adjustTime) / quarter);
+        const maxBar = Math.ceil((notesInBeats.at(-1) ?? 0) / grid1);
         const clamped = notesInBeats.map((d) => d % grid1);
 
         // KDE
@@ -113,6 +115,7 @@
         const plotOptions = {
             width,
             height: 90,
+            marginTop: 0,
             marginLeft: 60,
             marginBottom: 10,
             padding: 0,
@@ -158,8 +161,9 @@
             ],
         });
 
-        const tickPlot = Plot.plot({
+        const tickPlotSum = Plot.plot({
             ...plotOptions,
+            height: 60,
             marginBottom: 30,
             x: {
                 ticks: [...fineGrid, grid1],
@@ -167,9 +171,42 @@
                 domain: [0, grid1],
             },
             marks: [
-                Plot.tickX(lastNotes, {
-                    x: (d) => d,
+                // ticks
+                Plot.tickX(notesInBeats.slice(-noteTickLimit), {
+                    x: (d) => d % grid1,
                     stroke: '#0002',
+                    clip: true,
+                }),
+            ],
+        });
+
+        const tickPlotRows = Plot.plot({
+            ...plotOptions,
+            height: 180,
+            marginBottom: 30,
+            x: {
+                ticks: [...fineGrid, grid1],
+                label: 'time in beats',
+                domain: [0, grid1],
+            },
+            y: {
+                domain: d3.range(maxBar - pastBars, maxBar),
+            },
+            marks: [
+                // OK areas
+                Plot.rectY([...fineGrid, grid1], {
+                    x1: (d) => d - grid1 / binNote,
+                    x2: (d) => d + grid1 / binNote,
+                    y1: maxBar - pastBars,
+                    y2: maxBar,
+                    fill: '#eee',
+                    clip: true,
+                }),
+                // ticks
+                Plot.tickX(notesInBeats.slice(-noteTickLimit), {
+                    x: (d) => d % grid1,
+                    y: (d, i) => Math.floor(d / grid1),
+                    // stroke: '#0002',
                     clip: true,
                 }),
             ],
@@ -178,7 +215,8 @@
         container.textContent = '';
         container.appendChild(histoPlot);
         container.appendChild(kdePlot);
-        container.appendChild(tickPlot);
+        container.appendChild(tickPlotSum);
+        container.appendChild(tickPlotRows);
     };
 
     onMount(draw);
