@@ -19,7 +19,7 @@
 
     let width = 1000;
     let height = 300;
-    const random = () => (Math.random() - 0.5) * 0.5;
+    const random = () => (Math.random() - 0.5) * 0.4;
     let stringCount = 6;
     let fretCount = 24;
     // E standard tuning, strings start at high E
@@ -93,7 +93,7 @@
                 scheme: 'viridis',
                 reverse: true,
                 domain: [0, pastNoteCount],
-                label: 'note index',
+                label: 'note index: old (yellow) to new (purple)',
             },
             r: {
                 domain: [0, 127],
@@ -183,8 +183,9 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI guitar and start playing. The fretboard scatterplot below
-        shows you where you played, color-coded by time.
+        Connect a MIDI guitar and start improvising. The fretboard scatterplot
+        below shows you where you played the notes, color-coded by how recently
+        you played them.
     </p>
     <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />

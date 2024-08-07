@@ -19,7 +19,7 @@
     export let demoInfo;
 
     let width = 1200;
-    let height = 600;
+    let height = 500;
     const minPitch = 21;
     const maxPitch = 108;
     let container;
@@ -52,10 +52,11 @@
         const plot = Plot.plot({
             width,
             height,
-            marginLeft: 80,
+            // marginLeft: 80,
             marginBottom: 50,
             padding: 0,
             x: {
+                label: 'key',
                 domain: d3.range(minPitch, maxPitch + 1),
                 tickFormat: (d) => {
                     if (Midi.isSharp(d)) {
@@ -68,12 +69,14 @@
                 },
             },
             y: {
+                label: 'count',
                 interval: 1,
             },
             marks: [
-                Plot.ruleX(getCs(minPitch, maxPitch + 1), {
-                    stroke: '#ddd',
-                }),
+                // C lines
+                // Plot.ruleX(getCs(minPitch, maxPitch + 1), {
+                //     stroke: '#ddd',
+                // }),
                 Plot.ruleY([0], {
                     stroke: '#ddd',
                 }),
@@ -99,7 +102,7 @@
                             fill: (d) =>
                                 Midi.isSharp(d.number) ? '#444' : '#ccc',
                             inset: 0.5,
-                            rx: 4,
+                            ry1: 4,
                             tip: true,
                         },
                     ),

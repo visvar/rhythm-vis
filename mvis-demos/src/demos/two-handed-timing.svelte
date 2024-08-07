@@ -17,20 +17,21 @@
     import ImportButton2 from './common/import-button2.svelte';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/two-handed-timing.json';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
      */
     export let demoInfo;
 
-    let width = 1100;
+    let width = 1000;
     let containerLeft;
     let containerRight;
     // settings
     let tempo = 60;
-    let gridLeft = GRIDS[1];
-    let gridRight = GRIDS[0];
-    let binNote = 64;
+    let gridLeft = GRIDS[0];
+    let gridRight = GRIDS[1];
+    let binNote = 96;
     let adjustTime = 0;
     let middleNote = 69;
     let showKde = true;
@@ -116,19 +117,24 @@
         const plot = Plot.plot({
             width,
             height: left ? 170 : 170 + 13,
-            marginTop: 5,
-            marginLeft: 10,
+            marginTop: 15,
+            marginLeft: 30,
             marginRight: 10,
-            marginBottom: left ? 5 : 15,
+            marginBottom: 15,
             padding: 0,
             x: {
-                label: left ? null : 'time in beats (cyclic)',
+                label: 'time in beats',
                 domain: [0, 4],
                 ticks: [],
             },
             y: {
-                axis: false,
-                reverse: !left,
+                label: left ? 'left hand' : 'right hand',
+                // axis: false,
+                reverse: left,
+                ticks: [],
+                labelOffset: -10,
+                labelAnchor: 'top',
+                labelArrow: null,
             },
             marks: [
                 showKde
@@ -171,8 +177,8 @@
     };
 
     const draw = () => {
-        drawHand(true);
         drawHand(false);
+        drawHand(true);
     };
 
     /**
@@ -226,11 +232,9 @@
             return [];
         }
         const quarter = Utils.bpmToSecondsPerBeat(tempo);
-
         let beats = [gridLeft, gridRight].flatMap((grid, isRight) => {
             const [grid1, grid2] = grid.split(':').map((d) => +d);
             const fineGrid = d3.range(0, grid1, 1 / grid2);
-            console.log({ grid1, grid2, fineGrid });
             return fineGrid.map((d) => {
                 return {
                     time: d * quarter,
@@ -240,7 +244,6 @@
             });
         });
         beats.sort((a, b) => a.time - b.time);
-        console.log(beats);
         return beats;
     };
 </script>
@@ -250,14 +253,17 @@
     <p class="explanation">
         Connect a MIDI keyboard and start playing to the metronome. The chart
         will show you how a summary of where your notes started, the top one is
-        for your left hand (keys left of the middle A) and the bottom one for
-        your right hand. For example, you can try to play triplets with your
-        left and eighths with your right hand. If you do not have a MIDI
-        keyboard, you can press the
+        for your right hand (keys right of the middle A) and the bottom one for
+        your left hand. If you do not have a MIDI keyboard, you can press the
         <code>f</code>
         key on your PC keyboard for left and <code>j</code> for right.
-        <i> Try playing without looking, focus on the metronome. </i>
     </p>
+    <ExerciseDrawer>
+        <p>
+            Play triplets with your left and eighths with your right hand.
+            <i> Try playing without looking, focus on the metronome. </i>
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label
@@ -326,8 +332,8 @@
             {showKde ? 'density area' : 'histogram'}
         </button>
     </div>
-    <div class="visualization" bind:this="{containerLeft}"></div>
     <div class="visualization" bind:this="{containerRight}"></div>
+    <div class="visualization" bind:this="{containerLeft}"></div>
     <div class="control">
         <MetronomeButton {tempo} accent="{+gridLeft.split(':')[0]}" />
         <RhythmPlayerButton

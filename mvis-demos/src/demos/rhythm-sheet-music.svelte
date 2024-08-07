@@ -33,7 +33,7 @@
     let filterNote = 16;
     let targetDuration = 'auto';
     // data
-    $: minIOI = Utils.bpmToSecondsPerBeat(tempo) / filterNote;
+    $: minIOI = (Utils.bpmToSecondsPerBeat(tempo) * 4) / filterNote;
     let firstTimeStamp = 0;
     let notes = [];
     // colors

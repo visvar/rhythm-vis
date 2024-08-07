@@ -31,7 +31,7 @@
     let useDotted = true;
     let filterNote = 16;
     // data
-    $: minIOI = Utils.bpmToSecondsPerBeat(tempo) / filterNote;
+    $: minIOI = (Utils.bpmToSecondsPerBeat(tempo) * 4) / filterNote;
     let firstTimeStamp = 0;
     let notes = [];
     // domain knowledge

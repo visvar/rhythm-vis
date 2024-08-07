@@ -16,6 +16,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import TouchInput from './common/touch-input.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -310,16 +311,25 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI instrument, choose your tempo and subdivision, and start
-        playing. The bar chart will show you how often you hit each time bin and
-        the notes will be shown as ticks, one layer per bar. You can play
-        freely, use the integrated metronome, or play a song in the background
-        (in another tab). Light gray wedges show if you stayed within on bin
-        size of your defined timing grid. All notes will be timed relative to
-        the first one, but you can adjust all notes to make them earlier or
-        later in case you messed up the first one.
-        <i> Try playing without looking, focus on the metronome. </i>
+        Choose your tempo and subdivision, and start playing. The bar or area
+        chart will show you a summary of when you played notes. Use the
+        integrated metronome. All notes will be timed relative to the first one,
+        but you can adjust all notes to make them earlier or later in case you
+        messed up the first. Each bar you play will be shown its own layer
+        around the circle. The lightgray areas show where a note would have to
+        be to be timed well (depending on the binning setting).
     </p>
+    <p>
+        <i> Try playing without looking, focus on the metronome. </i>
+        <i> Try to play all notes such that they are within a gray area! </i>
+    </p>
+    <ExerciseDrawer>
+        <p>1) Play triplets.</p>
+        <p>
+            2) Switch back and forth between a half bar of eighths and a half
+            bar of triplets.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label

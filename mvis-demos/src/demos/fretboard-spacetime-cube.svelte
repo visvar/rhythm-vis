@@ -36,7 +36,7 @@
     // const stringColors = tuningNotes.map(()=>'#aaa')
     const stringColors = d3.schemeObservable10;
     // settings
-    let timeFactor = 0.5;
+    let timeFactor = 1;
     let pastSeconds = 60;
     // data
     let firstTimeStamp = 0;

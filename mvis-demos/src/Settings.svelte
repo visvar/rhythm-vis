@@ -41,7 +41,7 @@
     <h3>Usage Data</h3>
     <p>
         The website tracks usage data locally in your browser, but does not send
-        it anywhere. You can exprt or reset it here.
+        it anywhere. You can export or reset it here.
     </p>
     <!-- export usage button -->
     <button

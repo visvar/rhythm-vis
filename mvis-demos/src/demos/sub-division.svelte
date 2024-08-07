@@ -16,6 +16,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import TouchInput from './common/touch-input.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * TODO:
@@ -294,16 +295,22 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI instrument, choose your tempo and subdivision, and start
-        playing. The bar chart will show you how often you hit each time bin and
-        the last notes will be shown as ticks that fade out one new notes come
-        in (from red for new to blue for old). You can play freely, use the
-        integrated metronome, or play a song in the background (in another tab).
-        All notes will be timed relative to the first one, but you can adjust
-        all notes to make them earlier or later in case you messed up the first
-        one.
+        Choose your tempo and subdivision, and start playing. The bar or area
+        chart will show you a summary of when you played notes. Use the
+        integrated metronome. All notes will be timed relative to the first one,
+        but you can adjust all notes to make them earlier or later in case you
+        messed up the first.
+    </p>
+    <p>
         <i> Try playing without looking, focus on the metronome. </i>
     </p>
+    <ExerciseDrawer>
+        <p>1) Play triplets.</p>
+        <p>
+            2) Switch back and forth between a half bar of eighths and a half
+            bar of triplets.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label
