@@ -343,6 +343,15 @@
         </select>
     </label>
     <div class="visualization" bind:this="{matrixContainer}"></div>
+
+    <div>
+        <h3>App List</h3>
+        <ul>
+            {#each apps as d}
+                <li>{d.title}</li>
+            {/each}
+        </ul>
+    </div>
 </main>
 
 <style>
@@ -366,5 +375,11 @@
 
     .small {
         font-size: smaller;
+    }
+
+    ul {
+        margin: auto;
+        width: max-content;
+        text-align: left;
     }
 </style>

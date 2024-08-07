@@ -17,6 +17,7 @@
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/rhythm-sheet-music.json';
     import TouchInput from './common/touch-input.svelte';
+    import { FILTER_NOTES } from '../lib/music.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -29,7 +30,10 @@
     let tempo = 120;
     let pastNoteCount = 10;
     let useDotted = true;
+    let filterNote = 16;
+    let targetDuration = 'auto';
     // data
+    $: minIOI = Utils.bpmToSecondsPerBeat(tempo) / filterNote;
     let firstTimeStamp = 0;
     let notes = [];
     // colors
@@ -45,8 +49,11 @@
             firstTimeStamp = e.timestamp;
         }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        const note = noteInSeconds;
-        notes.push(note);
+        // check if note is too close to prior and skip if so
+        if (notes.length > 0 && noteInSeconds - notes.at(-1) < minIOI) {
+            return;
+        }
+        notes.push(noteInSeconds);
         draw();
     };
 
@@ -62,24 +69,43 @@
         const sliced = notes.slice(-(pastNoteCount + 1));
         const deltas = sliced.map((d, i) => (i === 0 ? 0 : d - sliced[i - 1]));
         const inBeats = deltas.map((d) => d / quarter);
-        // use dotted notes or not?
-        const poss = useDotted ? possibilities : possibilitiesNonDotted;
-        const bestFit = inBeats.map((delta) => {
-            const bestIndex = d3.minIndex(poss, (d) =>
-                Math.abs(delta - d.beats),
-            );
-            const best = poss[bestIndex];
-            return {
-                ...best,
-                beats: delta,
-                offsetPercent: ((delta / best.beats) * 100).toFixed(),
-            };
-        });
+        // for each IOI, determine the closest duration
+        let bestFit;
+        if (targetDuration === 'auto') {
+            // use dotted notes or not?
+            const poss = useDotted ? possibilities : possibilitiesNonDotted;
+            bestFit = inBeats.map((delta) => {
+                const bestIndex = d3.minIndex(poss, (d) =>
+                    Math.abs(delta - d.beats),
+                );
+                const best = poss[bestIndex];
+                return {
+                    ...best,
+                    beats: delta,
+                    offsetPercent: ((delta / best.beats) * 100).toFixed(),
+                };
+            });
+        } else {
+            // ...or, if target is set, use it for all notes
+            const targetObj = noteDurations.filter(
+                (d) => d.name === targetDuration,
+            )[0];
+            console.log(targetObj);
+            bestFit = inBeats.map((delta) => {
+                return {
+                    ...targetObj,
+                    beats: delta,
+                    offsetPercent: ((delta / targetObj.beats) * 100).toFixed(),
+                };
+            });
+        }
+        console.log(bestFit);
 
         // plot
         const plot = Plot.plot({
             width,
             height: 100,
+            marginTop: 30,
             marginLeft: 100,
             x: {
                 label: '',
@@ -211,6 +237,27 @@
         >
             dotted notes {useDotted ? toggleOnIcon : toggleOffIcon}
         </button>
+        <label
+            title="You can filter out notes that are shorter than a given note duration."
+        >
+            filtering
+            <select bind:value="{filterNote}" on:change="{draw}">
+                {#each FILTER_NOTES as g}
+                    <option value="{g}">1/{g} note</option>
+                {/each}
+            </select>
+        </label>
+        <label
+            title="You can choose a single duration you want to practice and turn of automaticly guessing the closest one."
+        >
+            target
+            <select bind:value="{targetDuration}" on:change="{draw}">
+                <option value="auto">auto</option>
+                {#each noteDurations as d}
+                    <option value="{d.name}">{d.symbol} {d.name}</option>
+                {/each}
+            </select>
+        </label>
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

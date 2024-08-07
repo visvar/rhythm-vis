@@ -25,7 +25,7 @@
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
     let container;
     // settings
-    let pastNoteCount = 200;
+    let pastNoteCount = 50;
     // data
     let firstTimeStamp = 0;
     let notes = [];
@@ -73,7 +73,9 @@
                 legend: true,
                 marginLeft: 100,
                 width: 400,
-                scheme: 'blues',
+                // scheme: 'blues',
+                scheme: 'viridis',
+                reverse: true,
                 label: 'count',
             },
             marks: [
@@ -114,6 +116,24 @@
                             inset: 5,
                             rx: '50%',
                             tip: true,
+                        },
+                    ),
+                ),
+                Plot.text(
+                    data,
+                    Plot.group(
+                        {
+                            text: (d) => d.length,
+                        },
+                        {
+                            x: 'fret',
+                            y: 'string',
+                            tip: true,
+                            fill: 'black',
+                            stroke: 'white',
+                            strokeWidth: 2,
+                            paintOrder: 'stroke',
+                            // text: (d) => d.length,
                         },
                     ),
                 ),

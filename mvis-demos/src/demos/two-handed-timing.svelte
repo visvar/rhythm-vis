@@ -251,8 +251,8 @@
         Connect a MIDI keyboard and start playing to the metronome. The chart
         will show you how a summary of where your notes started, the top one is
         for your left hand (keys left of the middle A) and the bottom one for
-        your right hand. For example, you can try to play quarter triplets with
-        your left and eighths with your right hand. If you do not have a MIDI
+        your right hand. For example, you can try to play triplets with your
+        left and eighths with your right hand. If you do not have a MIDI
         keyboard, you can press the
         <code>f</code>
         key on your PC keyboard for left and <code>j</code> for right.

@@ -17,6 +17,7 @@
     import TouchInput from './common/touch-input.svelte';
     import { noteEighth, noteHalf, noteQuarter, noteWhole } from '../lib/icons';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -226,10 +227,12 @@
         half full. If you play longer than a whole note, the addtional time will
         be shown in red.
     </p>
-    <p>
-        Exercise: Play a quarter note 𝅘𝅥, a half note 𝅗𝅥, a dotted half note 𝅗𝅥.,
-        and a whole note 𝅝.
-    </p>
+    <ExerciseDrawer>
+        <p>
+            Exercise: Play a quarter note 𝅘𝅥, a half note 𝅗𝅥, a dotted half note
+            𝅗𝅥., and a whole note 𝅝.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <NoteCountInput

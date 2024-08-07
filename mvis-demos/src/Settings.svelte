@@ -1,4 +1,5 @@
 <script>
+    import saveAs from 'file-saver';
     import { SETTINGS_KEY } from './lib/localstorage';
     let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}');
 
@@ -36,6 +37,39 @@
                 updateSetting('guitarMidiMinDuration', +e.target.value)}"
         />
     </label>
+
+    <h3>Usage Data</h3>
+    <p>
+        The website tracks usage data locally in your browser, but does not send
+        it anywhere. You can exprt or reset it here.
+    </p>
+    <!-- export usage button -->
+    <button
+        title="Export usage statistics"
+        on:click="{() => {
+            const usage = localStorage.getItem('usage');
+            const blob = new Blob([usage], {
+                type: 'text/plain;charset=utf-8',
+            });
+            saveAs(blob, 'usage.json');
+        }}"
+    >
+        💾 export usage
+    </button>
+    <button
+        title="Reset usage statistics"
+        on:click="{() => {
+            if (
+                confirm(
+                    'Please only do this after exporting usage data! Do you really want to delete now?',
+                )
+            ) {
+                localStorage.removeItem('usage');
+            }
+        }}"
+    >
+        🚮 delete usage
+    </button>
 </main>
 
 <style>

@@ -18,6 +18,8 @@ export const audioIcon = 'Ⓐ'
 
 export const sheetIcon = '🎼'
 
+export const metronomeIcon = '⏱'
+
 
 export const mutedIcon = '🔇'
 export const levelSliderIcon = '🎚'
@@ -51,3 +53,9 @@ export const restEighth = '𝄾'
 export const restSixteenth = '𝄿'
 export const restThirtysecond = '𝅀'
 export const restSixtyfourth = '𝅁'
+
+// augmentation dot for dotted notes
+export const augmentationDot = ''
+
+// time signatures
+export const timeSignature1 = ''

@@ -16,6 +16,7 @@
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/accents.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import { FILTER_NOTES } from '../lib/music.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -28,7 +29,9 @@
     let tempo = 120;
     let pastNoteCount = 12;
     let useDotted = true;
+    let filterNote = 16;
     // data
+    $: minIOI = Utils.bpmToSecondsPerBeat(tempo) / filterNote;
     let firstTimeStamp = 0;
     let notes = [];
     // domain knowledge
@@ -41,11 +44,14 @@
             firstTimeStamp = e.timestamp;
         }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
+        // check if note is too close to prior and skip if so
+        if (notes.length > 0 && noteInSeconds - notes.at(-1).time < minIOI) {
+            return;
+        }
         const note = {
             time: noteInSeconds,
             velocity: e.velocity,
         };
-
         notes.push(note);
         draw();
     };
@@ -134,6 +140,8 @@
             tempo,
             pastNoteCount,
             useDotted,
+            filterNote,
+            // data
             notes,
         };
     };
@@ -152,6 +160,7 @@
             tempo = json.tempo;
             pastNoteCount = json.pastNoteCount;
             useDotted = json.useDotted;
+            filterNote = json.filterNote;
             // data
             notes = json.notes;
             draw();
@@ -202,6 +211,16 @@
         >
             dotted notes {useDotted ? toggleOnIcon : toggleOffIcon}
         </button>
+        <label
+            title="You can filter out notes that are shorter than a given note duration."
+        >
+            filtering
+            <select bind:value="{filterNote}" on:change="{draw}">
+                {#each FILTER_NOTES as g}
+                    <option value="{g}">1/{g} note</option>
+                {/each}
+            </select>
+        </label>
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

@@ -298,7 +298,7 @@
         const exercises = new Map([
             ['quarter', d3.range(0, 8, 1)],
             ['eighth', d3.range(0, 8, 0.5)],
-            ['quarter-triplets', d3.range(0, 8, 1 / 3)],
+            ['triplets', d3.range(0, 8, 1 / 3)],
             [
                 'swing',
                 d3.range(0, 8, 0.5).map((d, i) => (i % 2 === 0 ? i : i + 0.2)),
@@ -426,7 +426,7 @@
             pre-defined exercise
             <select on:change="{predefinedExercise}">
                 <option selected disabled></option>
-                {#each ['quarter', 'eighth', 'quarter-triplets', 'swing'] as d}
+                {#each ['quarter', 'eighth', 'triplets', 'swing'] as d}
                     <option>{d}</option>
                 {/each}
             </select>

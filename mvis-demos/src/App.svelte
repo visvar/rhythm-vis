@@ -7,7 +7,6 @@
     localStorageReport,
   } from './lib/localstorage';
   import { audioIcon, midiIcon } from './lib/icons';
-  import saveAs from 'file-saver';
   import * as d3 from 'd3';
   import { SKILL_TREE_LEAFS } from './lib/skills';
   // side bar for skill filtering
@@ -18,6 +17,7 @@
   import DemoOverview from './DemoOverview.svelte';
   // APPS
   import { APPS } from './apps';
+  import Help from './Help.svelte';
 
   let currentDemo = null;
 
@@ -45,7 +45,7 @@
   window.onbeforeunload = function () {
     if (
       currentDemo &&
-      !['tools', 'settings', 'overview'].includes(currentDemo)
+      !['tools', 'settings', 'overview', 'help'].includes(currentDemo)
     ) {
       // alert('Please go back to the main page first to prevent data loss');
       return true;
@@ -54,10 +54,7 @@
 
   // track how often and when each demo is used
   $: {
-    if (
-      currentDemo &&
-      !['tools', 'settings', 'overview'].includes(currentDemo)
-    ) {
+    if (currentDemo) {
       let usage;
       if (localStorage.getItem('usage') !== null) {
         usage = localStorage.getItem('usage');
@@ -113,54 +110,59 @@
 <main>
   <header>
     <h1>Music Instrument Learning Apps</h1>
-    <!-- back button -->
-    <button
-      on:click="{() => {
-        currentDemo = null;
-        setUrlParam(window, 'd', '');
-      }}"
-    >
-      ☰ apps
-    </button>
-    <!-- Tools page button -->
-    <button
-      on:click="{() => {
-        currentDemo = 'tools';
-        currentTool = null;
-        setUrlParam(window, 'd', 'tools');
-      }}"
-    >
-      🛠️ tools
-    </button>
-    <!-- Settings page button -->
-    <button
-      on:click="{() => {
-        currentDemo = 'settings';
-        setUrlParam(window, 'd', 'settings');
-      }}"
-    >
-      ⚙️ settings
-    </button>
-    <!-- DemoOverview page button -->
-    <button
-      on:click="{() => {
-        currentDemo = 'overview';
-        setUrlParam(window, 'd', 'overview');
-      }}"
-    >
-      📋 overview
-    </button>
+    <nav>
+      <!-- main page button -->
+      <button
+        on:click="{() => {
+          currentDemo = null;
+          setUrlParam(window, 'd', '');
+        }}"
+      >
+        ☰ apps
+      </button>
+      <!-- Tools page button -->
+      <button
+        on:click="{() => {
+          currentDemo = 'tools';
+          currentTool = null;
+          setUrlParam(window, 'd', 'tools');
+        }}"
+      >
+        🛠️ tools
+      </button>
+      <!-- Settings page button -->
+      <button
+        on:click="{() => {
+          currentDemo = 'settings';
+          setUrlParam(window, 'd', 'settings');
+        }}"
+      >
+        ⚙️ settings
+      </button>
+      <!-- DemoOverview page button -->
+      <button
+        on:click="{() => {
+          currentDemo = 'overview';
+          setUrlParam(window, 'd', 'overview');
+        }}"
+      >
+        📋 overview
+      </button>
+      <!-- Help page button -->
+      <button
+        on:click="{() => {
+          currentDemo = 'help';
+          setUrlParam(window, 'd', 'help');
+        }}"
+      >
+        ❓help
+      </button>
+    </nav>
   </header>
 
   {#if password !== corrP}
     <input type="password" placeholder="password" bind:value="{password}" />
   {:else if !currentDemo}
-    <p class="explanation">
-      This page contains a collection of small apps that are each tailored to a
-      specific musical skill and sometimes also specific kind of musical data.
-      You can filter apps by different aspects with the sidebar on the left.
-    </p>
-
     <div class="grid-filter-demo">
       <!-- filter -->
       <div class="filter">
@@ -252,39 +254,14 @@
         {/each}
       </div>
     </div>
-    <!-- export usage button -->
-    <button
-      title="Export usage statistics"
-      on:click="{() => {
-        const usage = localStorage.getItem('usage');
-        const blob = new Blob([usage], {
-          type: 'text/plain;charset=utf-8',
-        });
-        saveAs(blob, 'usage.json');
-      }}"
-    >
-      💾 export usage
-    </button>
-    <button
-      title="Reset usage statistics"
-      on:click="{() => {
-        if (
-          confirm(
-            'Please only do this after exporting usage data! Do you really want to delete now?',
-          )
-        ) {
-          localStorage.removeItem('usage');
-        }
-      }}"
-    >
-      🚮 delete usage
-    </button>
   {:else if currentDemo === 'tools'}
     <Tools bind:currentTool />
   {:else if currentDemo === 'settings'}
     <Settings />
   {:else if currentDemo === 'overview'}
     <DemoOverview apps="{APPS}" {allInstruments} {allData} {allPatterns} />
+  {:else if currentDemo === 'help'}
+    <Help />
   {:else}
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
@@ -297,7 +274,7 @@
 <style>
   .grid-filter-demo {
     display: grid;
-    grid-template-columns: 210px 1040px;
+    grid-template-columns: 210px auto;
   }
 
   .filter {
@@ -322,6 +299,7 @@
   }
 
   .version-number {
+    margin-top: 30px;
     color: #aaa;
   }
 </style>

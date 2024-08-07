@@ -25,6 +25,8 @@ export const GRIDS = [
  */
 export const BIN_NOTES = [16, 32, 64, 128, 24, 48, 96, 192]
 
+export const FILTER_NOTES = [4, 8, 16, 32, 64, 128]
+
 // see https://en.wikipedia.org/wiki/Dynamics_(music)
 // TODO: move to mvlib
 export const VELOCITIES_LOGIC = new Map([

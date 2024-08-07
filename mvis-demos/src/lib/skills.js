@@ -12,7 +12,7 @@ export const SKILL_TREE = [
       {
         id: 'sub-division',
         title: 'sub-division',
-        description: 'Note onsets should follow a sub-division of beats consistently, for example playing straight eighth notes or quarter triplets'
+        description: 'Note onsets should follow a sub-division of beats consistently, for example playing straight eighth notes or triplets'
       },
       {
         id: 'tempo-keeping',

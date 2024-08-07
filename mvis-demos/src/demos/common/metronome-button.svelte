@@ -2,6 +2,7 @@
     import { onDestroy } from 'svelte';
     import Metronome from '../../lib/Metronome.js';
     import PcKeyboardInput from './pc-keyboard-input.svelte';
+    import { metronomeIcon } from '../../lib/icons.js';
 
     export let tempo = 120;
     export let accent = 4;
@@ -28,7 +29,7 @@
     title="Toggle metronome (shortcut: m)"
     on:click="{toggle}"
 >
-    metronome
+    {metronomeIcon} metronome
 </button>
 <PcKeyboardInput key="m" keyDown="{toggle}" />
 

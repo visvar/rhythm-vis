@@ -16,6 +16,7 @@
     } from '../lib/localstorage';
     import example from '../example-recordings/chord-diagrams.json';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -261,6 +262,9 @@
     <p class="explanation">
         Play chords on a guitar and see the chord names and diagrams.
     </p>
+    <ExerciseDrawer>
+        <p>Play an A minor chord.</p>
+    </ExerciseDrawer>
     <div class="control">
         <label
             title="maximum distance between notes such that they still count as beloning to the same chord/arpeggio"

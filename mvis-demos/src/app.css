@@ -26,13 +26,29 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  /* place-items: center; */
-  min-width: 320px;
+  min-width: 800px;
   min-height: 100vh;
+}
+
+#app {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1rem;
+  text-align: center;
 }
 
 header {
   margin-bottom: 15px;
+  padding: 5px;
+  background-color: #daecfb;
+  border-radius: 6px;
+  display: flex;
+}
+
+header nav {
+  display: flex;
+  justify-content: center;
 }
 
 h1,
@@ -95,30 +111,20 @@ svg text {
 
 /* main page */
 
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
 div.grid {
   margin-top: 20px;
   margin-bottom: 20px;
-  /* width: 1200px; */
   display: grid;
   grid-template-columns: repeat(3, auto);
   gap: 18px;
-  /* grid-auto-rows: max-content; */
   align-content: start;
   justify-content: start;
 }
 
 div.card {
-  padding: 20px 25px;
-  width: 280px;
-  height: 200px;
+  padding: 15px 20px;
+  width: 290px;
+  height: 175px;
   background-color: #fefefe;
   border: 1px solid #ddd;
   border-radius: 12px;
@@ -134,13 +140,14 @@ div.card:hover {
 
 div.card h2 {
   margin-top: 0;
-  min-height: 60px;
+  min-height: 30px;
   font-size: 18px;
 }
 
 div.card .description {
   text-align: left;
   margin-bottom: 5px;
+  height: 95px;
 }
 
 /* demo */
@@ -167,6 +174,19 @@ code {
 }
 
 
+/* mobile style */
+@media only screen and (max-width: 1300px) {
+  header {
+    display: block;
+  }
+
+  div.grid {
+    grid-template-columns: repeat(2, auto);
+  }
+}
+
+
+/* printing style */
 @media print {
   @page {
     size: A4 landscape;
