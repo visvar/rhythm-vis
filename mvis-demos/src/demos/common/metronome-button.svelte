@@ -6,13 +6,14 @@
 
     export let tempo = 120;
     export let accent = 4;
-    export let maxBeeps = Infinity;
+    export let beepCount = Infinity;
+    export let showBeepCountInput = false;
 
     const metro = new Metronome();
     let button;
 
     const toggle = () => {
-        metro.toggle(tempo, accent, maxBeeps);
+        metro.toggle(tempo, accent, beepCount > 0 ? beepCount : Infinity);
         // animate button to show toggle
         button.style = 'background: lightblue';
         setTimeout(() => (button.style = ''), 500);
@@ -31,10 +32,23 @@
 >
     {metronomeIcon} metronome
 </button>
+{#if showBeepCountInput}
+    <input
+        type="number"
+        step="1"
+        min="0"
+        bind:value="{beepCount}"
+        title="The number of beeps for count-in, set to 0 for infinite beeps"
+    />
+{/if}
 <PcKeyboardInput key="m" keyDown="{toggle}" />
 
 <style>
     button {
         transition: all 250ms;
+    }
+    input {
+        width: 30px;
+        margin-left: -12px;
     }
 </style>

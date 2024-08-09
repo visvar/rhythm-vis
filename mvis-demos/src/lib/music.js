@@ -71,7 +71,7 @@ export const VELOCITIES_MUSESCORE = new Map([
 /**
  * @see https://en.wikipedia.org/wiki/Dynamics_(music)
  * TODO: move to mvlib
- */
+*/
 export const VELOCITIES_MEANING = new Map([
   ['silent', 'silent'],
   ['ppppp', 'almost silent'],
@@ -85,4 +85,22 @@ export const VELOCITIES_MEANING = new Map([
   ['ff', 'loud speaking'],
   ['fff', 'yelling'],
   ['ffff', 'loud yelling']
+])
+
+/**
+// @see https://en.wikipedia.org/wiki/Tempo
+ * Each given as upper end of the BPM range
+ * TODO: move to mvlib
+ */
+export const TEMPO_NAMES = new Map([
+  ['Larghissimo', 24],
+  ['Adagissimo', 40],
+  ['Largo', 66],
+  ['Marcia moderato', 80],
+  ['Andante moderato', 108],
+  ['Moderato', 120],
+  ['Allegro', 156],
+  ['Vivace', 176],
+  ['Presto', 200],
+  ['Prestissimo', 400]
 ])

@@ -94,7 +94,7 @@
                 .map((n, i) => n.string - chord[i].string);
             let direction;
             if (stringExtent[0] === stringExtent[1]) {
-                direction = 'single';
+                direction = 'single note';
             } else {
                 direction = d3.median(timeDelta) > 0 ? 'up' : 'down';
             }
@@ -168,7 +168,7 @@
                 legend: true,
                 marginLeft: 100,
                 width: 300,
-                domain: ['up', 'down', 'single'],
+                domain: ['up', 'down', 'single note'],
             },
             marks: [
                 Plot.rect(chordInfo, {

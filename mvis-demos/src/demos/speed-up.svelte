@@ -15,6 +15,7 @@
     import example from '../example-recordings/speed-up.json';
     import { reviver } from '../lib/json.js';
     import TouchInput from './common/touch-input.svelte';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -22,7 +23,7 @@
     export let demoInfo;
 
     let width = 1000;
-    let height = 60;
+    let height = 50;
     let container;
     let metro = new Metronome();
     // settings
@@ -85,6 +86,8 @@
                 currentTempo += tempoIncrease;
                 ready = false;
                 await delay(1);
+                metro.start(240, 1, 3);
+                await delay(3);
                 metro.start(currentTempo, 4);
                 // make sure we have a clean start, ie reset current recording
                 if (practiceRecordings.has(currentTempo)) {
@@ -153,7 +156,7 @@
             quantize,
             quarter,
         );
-        let maxBeat = Math.ceil((d3.max(quantized) / 4) * 4) + 0.5;
+        let maxBeat = Math.ceil((d3.max(quantized) / 4) * 4) + 1;
         console.log(quantized, maxBeat);
         // plot
         const plot = Plot.plot({
@@ -168,15 +171,16 @@
             marks: [
                 // beat marks
                 Plot.ruleX(d3.range(0, maxBeat, 1), {
-                    stroke: '#ddd',
+                    stroke: '#ccc',
                 }),
                 // bar marks
-                Plot.ruleX(d3.range(0, maxBeat, 4)),
+                Plot.ruleX(d3.range(0, maxBeat + 1, 4)),
+                // notes
                 Plot.dot(quantized, {
                     symbol: 'times',
-                    stroke: '#333',
+                    stroke: '#666',
                     x: (d) => d,
-                    r: 5,
+                    r: 4,
                 }),
             ],
         });
@@ -192,7 +196,6 @@
                 height: 70,
                 marginLeft: 40,
                 x: {
-                    label: 'time in beats',
                     domain: [0, maxBeat],
                 },
                 y: {
@@ -200,18 +203,21 @@
                     ticks: [],
                 },
                 marks: [
+                    Plot.text([0], {
+                        text: `${tempo} BPM`,
+                    }),
                     // beat marks
                     Plot.ruleX(d3.range(0, maxBeat, 1), {
-                        stroke: '#ddd',
+                        stroke: '#ccc',
                     }),
                     // bar marks
-                    Plot.ruleX(d3.range(0, maxBeat, 4)),
+                    Plot.ruleX(d3.range(0, maxBeat + 1, 4)),
+                    // notes
                     Plot.dot(inBeats, {
                         symbol: 'times',
-                        stroke: '#333',
+                        stroke: '#666',
                         x: (d) => d,
-                        y: 0,
-                        r: 5,
+                        r: 4,
                     }),
                 ],
             });
@@ -253,14 +259,17 @@
 
     const predefinedExercise = (e) => {
         const ex = e.target.value;
+        const beatCount = 8;
         const exercises = new Map([
-            ['quarter', d3.range(0, 8, 1)],
-            ['eighth', d3.range(0, 8, 0.5)],
-            ['triplets', d3.range(0, 8, 1 / 3)],
-            ['quintuplets', d3.range(0, 8, 1 / 5)],
+            ['quarter', d3.range(0, beatCount, 1)],
+            ['eighth', d3.range(0, beatCount, 0.5)],
+            ['triplets', d3.range(0, beatCount, 1 / 3)],
+            ['quintuplets', d3.range(0, beatCount, 1 / 5)],
             [
                 'swing',
-                d3.range(0, 8, 0.5).map((d, i) => (i % 2 === 0 ? i : i + 0.2)),
+                d3
+                    .range(0, beatCount, 0.5)
+                    .map((d, i) => (i % 2 === 0 ? i : i + 0.2)),
             ],
         ]);
         const quarter = Utils.bpmToSecondsPerBeat(initialTempo);
@@ -418,10 +427,11 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
+        <ResetNotesButton
+            {saveToStorage}
             title="Clear practice but not exercise"
             disabled="{currentStep !== ''}"
-            on:click="{() => {
+            callback="{() => {
                 if (confirm('Reset practice?')) {
                     saveToStorage();
                     practiceRecordings = new Map();
@@ -429,9 +439,7 @@
                     draw();
                 }
             }}"
-        >
-            reset practice
-        </button>
+        />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>

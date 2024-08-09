@@ -263,7 +263,11 @@
         Play chords on a guitar and see the chord names and diagrams.
     </p>
     <ExerciseDrawer>
-        <p>Play an A minor chord.</p>
+        <p>1) Play an A minor chord.</p>
+        <p>
+            2) Play chords you don't know by playing your fingers in different
+            positions.
+        </p>
     </ExerciseDrawer>
     <div class="control">
         <label

@@ -80,6 +80,7 @@
         const r2 = r * 0.8;
         const r3 = r * 0.9;
         const r5 = r * 0.95;
+        const r6 = r * 0.68;
         // offset in radians for 0 on top
         const topOffs = Math.PI / 2;
         const ctx = canvas.getContext('2d');
@@ -243,11 +244,17 @@
         // draw grid ticks
         ctx.beginPath();
         ctx.lineWidth = 2;
-        for (const g of coarseGridAngles) {
+        ctx.fillStyle = '#ccc';
+        ctx.font = '18px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'center';
+        for (const [index, g] of coarseGridAngles.entries()) {
             const dx = Math.cos(g);
             const dy = Math.sin(g);
             ctx.moveTo(cx + dx * r2, cy + dy * r2);
             ctx.lineTo(cx + dx * r5, cy + dy * r5);
+            // grid labels (beat numbers)
+            ctx.fillText(index + 1, cx + dx * r6, cy + dy * r6 + 7);
         }
         ctx.stroke();
         ctx.lineWidth = 1;

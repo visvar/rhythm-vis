@@ -26,7 +26,7 @@
     let width = 1000;
     let container;
     // settings
-    let tempo = 120;
+    let tempo = 90;
     let pastNoteCount = 12;
     let useDotted = true;
     let filterNote = 16;

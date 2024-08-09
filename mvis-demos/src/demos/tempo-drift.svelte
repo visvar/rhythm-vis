@@ -237,7 +237,12 @@
         <div>estimated: {estimatedTempo.toFixed(1)} bpm</div>
     {/if}
     <div class="control">
-        <MetronomeButton {tempo} accent="{4}" maxBeeps="{8}" />
+        <MetronomeButton
+            {tempo}
+            accent="{4}"
+            beepCount="{8}"
+            showBeepCountInput
+        />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />

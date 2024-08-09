@@ -18,6 +18,7 @@
   // APPS
   import { APPS } from './apps';
   import Help from './Help.svelte';
+  import PcKeyboardInput from './demos/common/pc-keyboard-input.svelte';
 
   let currentDemo = null;
 
@@ -270,6 +271,23 @@
     version {version}
   </div>
 </main>
+<!-- shortcut for app menu -->
+<PcKeyboardInput
+  key="a"
+  ctrlKey
+  keyDown="{() => {
+    currentDemo = null;
+    setUrlParam(window, 'd', '');
+  }}"
+/>
+<!-- shortcut for search -->
+<PcKeyboardInput
+  key="f"
+  ctrlKey
+  keyDown="{() => {
+    document.querySelector('.search-box').focus();
+  }}"
+/>
 
 <style>
   .grid-filter-demo {

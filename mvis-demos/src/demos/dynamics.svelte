@@ -11,6 +11,7 @@
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/dynamics.json';
     import * as d3 from 'd3';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -138,6 +139,14 @@
             closest rough dynamics
         </a>, for example a forte.
     </p>
+    <ExerciseDrawer>
+        <p>1) Play all notes between a mezzo-piano (mp) and a forte (f).</p>
+        <p>
+            2) Play a crescendo, starting at below pp and rising until above ff
+            smoothly.
+        </p>
+        <p>3) Play a descrescendo from above ff to below pp.</p>
+    </ExerciseDrawer>
     <div class="control">
         <button
             title="You can change between seeing exact bar heights and binned (rounded) heights."

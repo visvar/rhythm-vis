@@ -4,6 +4,8 @@
     export let notes = [];
     export let saveToStorage;
     export let callback = () => {};
+    export let title = 'Clear all played notes (shortcut: r)';
+    export let disabled = false;
 
     const reset = () => {
         if (notes.length === 0 || confirm('Reset played notes?')) {
@@ -14,7 +16,5 @@
     };
 </script>
 
-<button title="Clear all played notes (shortcut: r)" on:click="{reset}">
-    reset
-</button>
+<button {title} {disabled} on:click="{reset}"> reset </button>
 <PcKeyboardInput key="r" keyDown="{reset}" />

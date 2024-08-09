@@ -18,7 +18,7 @@
     export let demoInfo;
 
     let width = 1200;
-    let height = 500;
+    let height = 600;
     let container;
     let analyserNode;
     let detector;
@@ -165,9 +165,9 @@
             // pause first
             paused = true;
             cancelAnimationFrame(timeout);
-            if (bendValues.length > 0) {
-                saveToStorage();
-            }
+            // if (bendValues.length > 0) {
+            //     saveToStorage();
+            // }
             // load
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;
@@ -178,16 +178,17 @@
         }
     };
 
-    const saveToStorage = () => {
-        if (bendValues.length > 0) {
-            localStorageAddRecording(demoInfo.id, getExportData());
-        }
-    };
+    // too much data
+    // const saveToStorage = () => {
+    //     if (bendValues.length > 0) {
+    //         localStorageAddRecording(demoInfo.id, getExportData());
+    //     }
+    // };
 
     onDestroy(() => {
         clearTimeout(timeout);
         cancelAnimationFrame(timeout);
-        saveToStorage();
+        // saveToStorage();
     });
 </script>
 
@@ -259,7 +260,8 @@
     <div class="control">
         <ResetNotesButton
             bind:notes="{bendValues}"
-            {saveToStorage}
+            saveToStorage="{// otherwise too much data
+            () => {}}"
             callback="{() => {
                 firstTimeStamp = performance.now();
                 draw();
@@ -268,6 +270,6 @@
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
-        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
+        <!-- <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} /> -->
     </div>
 </main>

@@ -20,7 +20,7 @@
     let container;
     // settings
     let filterUnison = true;
-    let useColors = false;
+    let useColors = true;
     let useSemitones = false;
     // data
     let notes = [];
@@ -111,7 +111,7 @@
             },
             marks: [
                 Plot.ruleY([-12, 0, 12], { stroke: '#888', strokeWidth: 1.5 }),
-                Plot.barX(grouped, {
+                Plot.waffleX(grouped, {
                     x: 'count',
                     y: 'interval',
                     // fill: '#ddd',

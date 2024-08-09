@@ -11,6 +11,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/chord-arpeggio-timing.json';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -217,6 +218,13 @@
         first and last note of each chord/arpeggio was and how much time lies
         between consecutive chords/arpeggios.
     </p>
+    <ExerciseDrawer>
+        <p>1) Play a chord progression that is tricky for you.</p>
+        <p>
+            2) Play an arpeggio of this chord progression (with a pause after
+            each).
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <label
             title="maximum distance between notes such that they still count as beloning to the same chord/arpeggio"

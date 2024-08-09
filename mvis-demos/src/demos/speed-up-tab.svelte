@@ -12,6 +12,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage.js';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -177,22 +178,31 @@
                 tickSize: 0,
             },
             marks: [
-                // beat marks
-                Plot.ruleX(d3.range(0, maxBeat, 1), {
-                    stroke: '#ddd',
-                }),
                 // strings
                 Plot.ruleY(d3.range(0, stringCount), {
-                    stroke: '#ddd',
+                    stroke: '#eee',
+                }),
+                // beat marks
+                Plot.ruleX(d3.range(0, maxBeat, 1), {
+                    stroke: '#ccc',
                 }),
                 // bar marks
                 Plot.ruleX(d3.range(0, maxBeat, 4)),
+                // notes
                 Plot.dot(quantized, {
                     symbol: 'times',
                     stroke: '#333',
                     x: (d) => d.time,
                     y: (d) => d.string,
-                    r: 5,
+                    r: 4,
+                }),
+                Plot.text(quantized, {
+                    text: 'fret',
+                    fill: 'velocity',
+                    x: (d) => d.time,
+                    y: (d) => d.string,
+                    textAnchor: 'middle',
+                    dy: -10,
                 }),
             ],
         });
@@ -227,20 +237,20 @@
                 },
                 color: {
                     // legend: true,
-                    domain: [0, 127],
+                    domain: [0, 100], // no need for differentiating loud notes
                     scheme: 'Greys',
                 },
                 marks: [
+                    // strings
+                    Plot.ruleY(d3.range(0, stringCount), {
+                        stroke: '#eee',
+                    }),
                     // beat marks
                     Plot.ruleX(d3.range(0, maxBeat, 1), {
-                        stroke: '#ddd',
+                        stroke: '#ccc',
                     }),
                     // bar marks
                     Plot.ruleX(d3.range(0, maxBeat, 4)),
-                    // strings
-                    Plot.ruleY(d3.range(0, stringCount), {
-                        stroke: '#ddd',
-                    }),
                     // notes
                     Plot.dot(inBeats, {
                         symbol: 'times',
@@ -311,7 +321,7 @@
         exerciseBeatCount = Math.ceil(d3.max(beats) + 1);
         // make into a tab
         exerciseNotes = exerciseNotes.map((d) => {
-            return { time: d, string: 5, fret: 5 };
+            return { time: d, string: 5, fret: 0 };
         });
         draw();
     };
@@ -466,10 +476,11 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
+        <ResetNotesButton
+            {saveToStorage}
             title="Clear practice but not exercise"
             disabled="{currentStep !== ''}"
-            on:click="{() => {
+            callback="{() => {
                 if (confirm('Reset practice?')) {
                     saveToStorage();
                     practiceRecordings = new Map();
@@ -477,9 +488,7 @@
                     draw();
                 }
             }}"
-        >
-            reset practice
-        </button>
+        />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />

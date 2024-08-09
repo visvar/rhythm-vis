@@ -7,9 +7,11 @@
     export let key = ' ';
     export let keyDown = () => {};
     export let keyUp = () => {};
+    export let ctrlKey = false;
 
     const keyDownFn = (e) => {
-        if (e.key === key) {
+        console.log(e);
+        if (e.key === key && (!ctrlKey || e.ctrlKey)) {
             e.preventDefault();
             keyDown();
         }

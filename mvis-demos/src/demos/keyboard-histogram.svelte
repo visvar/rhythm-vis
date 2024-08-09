@@ -93,7 +93,8 @@
                     },
                 ),
                 // data
-                Plot.barY(
+                // Plot.barY(
+                Plot.waffleY(
                     limited,
                     Plot.groupX(
                         { y: 'count' },
@@ -102,7 +103,7 @@
                             fill: (d) =>
                                 Midi.isSharp(d.number) ? '#444' : '#ccc',
                             inset: 0.5,
-                            ry1: 4,
+                            rx: 4,
                             tip: true,
                         },
                     ),

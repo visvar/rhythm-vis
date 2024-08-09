@@ -12,6 +12,7 @@
     import { toggleOnIcon, toggleOffIcon } from '../lib/icons.js';
     import example from '../example-recordings/fretboard-improvisation-intervals.json';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ToggleButton from './common/toggle-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -25,6 +26,7 @@
     let root = 'A';
     let scale = 'minor pentatonic';
     let showNames = false;
+    let limitFrets = false;
     // data
     let notes = [];
     // domain knowledge
@@ -75,9 +77,16 @@
                 }),
             );
             const lastNoteDegree = scaleNotes.get(lastNote.number % 12).degree;
+            // if frets are limited to within reach
+            let minFret = 0;
+            let maxFret = fretCount;
+            if (limitFrets) {
+                minFret = lastNote.fret - 4;
+                maxFret = lastNote.fret + 4;
+            }
             // get interval positions
             for (let string = 0; string < stringCount; string++) {
-                for (let fret = 0; fret < fretCount + 1; fret++) {
+                for (let fret = minFret; fret < maxFret + 1; fret++) {
                     const midi = (tuningPitches[string] + fret) % 12;
                     // only consider notes in scale
                     if (!scaleNotes.has(midi)) {
@@ -242,15 +251,18 @@
                 {/each}
             </select>
         </label>
-        <button
+        <ToggleButton
+            bind:checked="{showNames}"
             title="Toggle between note names and scale steps"
-            on:click="{() => {
-                showNames = !showNames;
-                draw();
-            }}"
-        >
-            note names {showNames ? toggleOnIcon : toggleOffIcon}
-        </button>
+            label="note names"
+            callback="{draw}"
+        />
+        <ToggleButton
+            bind:checked="{limitFrets}"
+            title="Limit frets to those that are in reach"
+            label="limit frets"
+            callback="{draw}"
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

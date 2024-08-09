@@ -33,14 +33,16 @@
         margin: 5px auto;
         max-width: 850px;
         display: grid;
-        grid-template-columns: 145px auto;
+        grid-template-columns: max-content auto;
         gap: 5px;
     }
 
     div.exercise-content {
         display: inline-block;
+        padding: 0 10px;
         border: 2px solid #eee;
         border-radius: 6px;
         transition: all 500ms;
+        text-align: left;
     }
 </style>

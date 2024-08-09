@@ -141,6 +141,11 @@ export const SKILL_TREE = [
         id: 'sweep-picking',
         title: 'sweep-picking',
         description: 'Consecutive strings should be picked fast and fluidly while fretting notes'
+      },
+      {
+        id: 'piano-cross-over-pass-under',
+        title: 'piano cross-over and pass-under',
+        description: 'When moving the hand to a new position while playing, notes should be played with out change in timing'
       }
     ]
   },
