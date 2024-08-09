@@ -81,7 +81,11 @@
         });
 
         // limit
-        chords = chords.filter((d) => d.length > 2).slice(-pastChords);
+        chords = chords
+            .filter((d) => d.length > 2)
+            .slice(-pastChords)
+            // newwest on top so you don't have to scroll
+            .reverse();
 
         // assign chord ID to all notes
         for (const [index, chord] of chords.entries()) {
@@ -265,8 +269,8 @@
     <ExerciseDrawer>
         <p>1) Play an A minor chord.</p>
         <p>
-            2) Play chords you don't know by playing your fingers in different
-            positions.
+            2) Play chords you don't know by placing your fingers in different
+            positions. If they sound good, look what they are called.
         </p>
     </ExerciseDrawer>
     <div class="control">
