@@ -18,6 +18,7 @@
     import { noteHalf, noteQuarter, noteWhole } from '../lib/icons';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import ToggleButton from './common/toggle-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -31,6 +32,7 @@
     // settings
     let tempo = 60;
     let pastNoteCount = 1;
+    let showClosestDuration = false;
     // data
     let isKeyDown = false;
     $: wholeDuration = Utils.bpmToSecondsPerBeat(tempo) * 4;
@@ -86,11 +88,11 @@
 
     const draw = () => {
         const cy = (height - 50) / 2;
-        const xStep = width / pastNoteCount;
+        const xStep = (width - 30) / pastNoteCount;
         const r = Math.min(xStep * 0.4, height * 0.3);
         const r2 = r * 0.5;
         const r3 = r * 0.75;
-        const r4 = r * 1.1;
+        const r4 = r + 15;
         const ctx = canvas.getContext('2d');
         // scale to DPR
         // Get the DPR and size of the canvas
@@ -109,7 +111,7 @@
 
         for (const [index, note] of notes.slice(-pastNoteCount).entries()) {
             // one pie chart per note
-            const cx = xStep * (index + 0.5);
+            const cx = xStep * (index + 0.5) + 15;
             // data part
             ctx.fillStyle = '#d5f3fe';
             const ratio = Math.min(note.duration / wholeDuration, 1);
@@ -118,6 +120,33 @@
             ctx.arc(cx, cy, r, -Math.PI / 2, ratio * TWO_PI - Math.PI / 2);
             ctx.closePath();
             ctx.fill();
+            // get duration of closest note
+            let bestFitDuration = null;
+            if (note.duration > 0) {
+                const bestFit = d3.minIndex(durations, (d) =>
+                    Math.abs(note.duration - d.seconds),
+                );
+                bestFitDuration = durations[bestFit];
+                if (showClosestDuration) {
+                    // draw closest note
+                    ctx.fillStyle = '#c5e3ee';
+                    const ratio = Math.min(
+                        bestFitDuration.seconds / wholeDuration,
+                        1,
+                    );
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(
+                        cx,
+                        cy,
+                        r3,
+                        -Math.PI / 2,
+                        ratio * TWO_PI - Math.PI / 2,
+                    );
+                    ctx.closePath();
+                    ctx.fill();
+                }
+            }
             //  if longer than a whole, show in red how much too long
             if (note.duration > wholeDuration) {
                 ctx.fillStyle = 'crimson';
@@ -153,41 +182,41 @@
                 ctx.lineTo(cx + dx * r, cy + dy * r);
             }
             ctx.stroke();
-            // text
-            if (note.duration === 0) {
-                continue;
-            }
-            const bestFit = d3.minIndex(durations, (d) =>
-                Math.abs(note.duration - d.seconds),
-            );
-            const bestFitDuration = durations[bestFit];
+            // labels
             ctx.fillStyle = '#666';
             ctx.font = '20px sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
-            ctx.fillText(`closest: ${bestFitDuration.symbol}`, cx, height - 45);
-            const percent = (note.duration / bestFitDuration.seconds) * 100;
-            ctx.fillText(`${percent.toFixed()}%`, cx, height - 25);
-            let rating = '';
-            if (percent < 80) {
-                rating = 'too short';
-            } else if (percent < 90) {
-                rating = 'a bit short';
-            } else if (percent < 110) {
-                rating = 'good!';
-            } else if (percent < 120) {
-                rating = 'a bit long';
-            } else {
-                rating = 'too long';
-            }
-            ctx.fillText(`${rating}`, cx, height - 5);
-            // labels
             ctx.textBaseline = 'middle';
             if (index === 0) {
                 ctx.fillText(noteWhole, cx, cy - r4);
                 ctx.fillText(noteQuarter, cx + r4, cy);
                 ctx.fillText(noteHalf, cx, cy + r4);
                 ctx.fillText(noteHalf + '.', cx - r4, cy);
+            }
+            // text
+            ctx.font = '18px sans-serif';
+            if (note.duration > 0) {
+                ctx.fillText(
+                    `closest: ${bestFitDuration.symbol}`,
+                    cx,
+                    height - 50,
+                );
+                const percent = (note.duration / bestFitDuration.seconds) * 100;
+                ctx.fillText(`${percent.toFixed()}%`, cx, height - 30);
+                let rating = '';
+                if (percent < 80) {
+                    rating = 'too short';
+                } else if (percent < 90) {
+                    rating = 'a bit short';
+                } else if (percent < 110) {
+                    rating = 'good!';
+                } else if (percent < 120) {
+                    rating = 'a bit long';
+                } else {
+                    rating = 'too long';
+                }
+                ctx.fillText(`${rating}`, cx, height - 10);
             }
         }
     };
@@ -199,6 +228,7 @@
         return {
             tempo,
             pastNoteCount,
+            showClosestDuration,
             // data
             notes,
         };
@@ -217,6 +247,7 @@
             }
             tempo = json.tempo;
             pastNoteCount = json.pastNoteCount;
+            showClosestDuration = json.showClosestDuration;
             // data
             notes = json.notes;
             draw();
@@ -255,6 +286,13 @@
             callback="{draw}"
             step="{1}"
             min="{1}"
+            max="{12}"
+        />
+        <ToggleButton
+            bind:checked="{showClosestDuration}"
+            callback="{draw}"
+            label="show closest duration"
+            title="Show the closest note duration as an inner piece"
         />
     </div>
     <div class="visualization">
@@ -286,14 +324,12 @@
                 return;
             }
             isKeyDown = true;
-            console.log('keydown');
             noteOn({
                 note: { number: 0 },
                 timestamp: performance.now(),
             });
         }}"
         keyUp="{() => {
-            console.log('keyup');
             isKeyDown = false;
             noteOff({
                 note: { number: 0 },

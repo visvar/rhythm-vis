@@ -29,7 +29,7 @@
     let notes = [];
     // domain knowledge
     const noteNames = Midi.NOTE_NAMES_FLAT;
-    const scales = Scale.names();
+    const scales = Scale.names().sort();
 
     const noteOn = (e) => {
         const note = {

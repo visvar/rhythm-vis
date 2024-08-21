@@ -10,7 +10,7 @@
     let scale = 'minor';
     // domain knowledge
     const noteNames = Midi.NOTE_NAMES_FLAT;
-    const scales = Scale.names();
+    const scales = Scale.names().sort();
     // data
     $: currentScale = Scale.get(`${root} ${scale}`);
     $: reducedScales = Scale.reduced(currentScale.name).map((d) =>

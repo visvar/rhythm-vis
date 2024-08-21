@@ -10,7 +10,7 @@
     export let ctrlKey = false;
 
     const keyDownFn = (e) => {
-        console.log(e);
+        // console.log(e);
         if (e.key === key && (!ctrlKey || e.ctrlKey)) {
             e.preventDefault();
             keyDown();

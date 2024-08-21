@@ -43,7 +43,7 @@
     let binNote = 64;
     let adjustTime = 0;
     let noteTickLimit = 1;
-    let showKde = false;
+    let showKde = true;
     // data
     let firstTimeStamp = 0;
     let notes = [];

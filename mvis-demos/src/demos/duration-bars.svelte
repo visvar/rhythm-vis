@@ -18,6 +18,7 @@
     import { noteEighth, noteHalf, noteQuarter, noteWhole } from '../lib/icons';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import ToggleButton from './common/toggle-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -30,6 +31,7 @@
     // settings
     let tempo = 60;
     let pastNoteCount = 10;
+    let showClosestDuration = false;
     // data
     let isKeyDown = false;
     $: wholeDuration = Utils.bpmToSecondsPerBeat(tempo) * 4;
@@ -113,6 +115,23 @@
             const ratio = Math.min(note.duration / wholeDuration, 1);
             const filled = h * ratio;
             ctx.fillRect(x, bottom - filled, w, filled);
+            // get closest duration
+            let bestFitDuration = null;
+            if (note.duration > 0) {
+                const bestFit = d3.minIndex(durations, (d) =>
+                    Math.abs(note.duration - d.seconds),
+                );
+                bestFitDuration = durations[bestFit];
+                if (showClosestDuration) {
+                    ctx.fillStyle = '#c5e3ee';
+                    const ratio = Math.min(
+                        bestFitDuration.seconds / wholeDuration,
+                        1,
+                    );
+                    const filled = h * ratio;
+                    ctx.fillRect(x, bottom - filled, w / 2, filled);
+                }
+            }
             //  if longer than a whole, show in red how much too long
             if (note.duration > wholeDuration) {
                 ctx.fillStyle = 'crimson';
@@ -137,34 +156,38 @@
                 ctx.fillRect(x, g, w * 0.1, 1);
             }
             // text
-            if (note.duration === 0) {
-                continue;
-            }
-            const bestFit = d3.minIndex(durations, (d) =>
-                Math.abs(note.duration - d.seconds),
-            );
-            const bestFitDuration = durations[bestFit];
-            ctx.font = '20px sans-serif';
+            ctx.font = '18px sans-serif';
             ctx.fillStyle = '#666';
-            ctx.textAlign = 'center';
-            const cx = x + w / 2;
-            ctx.fillText(`closest: ${bestFitDuration.symbol}`, cx, height - 50);
-            const percent = (note.duration / bestFitDuration.seconds) * 100;
-            ctx.fillText(`${percent.toFixed()}%`, cx, height - 30);
-            let rating = '';
-            if (percent < 80) {
-                rating = 'too short';
-            } else if (percent < 90) {
-                rating = 'short';
-            } else if (percent < 110) {
-                rating = 'good!';
-            } else if (percent < 120) {
-                rating = 'long';
-            } else {
-                rating = 'too long';
+            if (note.duration > 0) {
+                const bestFit = d3.minIndex(durations, (d) =>
+                    Math.abs(note.duration - d.seconds),
+                );
+                const bestFitDuration = durations[bestFit];
+                ctx.textAlign = 'center';
+                const cx = x + w / 2;
+                ctx.fillText(
+                    `closest: ${bestFitDuration.symbol}`,
+                    cx,
+                    height - 50,
+                );
+                const percent = (note.duration / bestFitDuration.seconds) * 100;
+                ctx.fillText(`${percent.toFixed()}%`, cx, height - 30);
+                let rating = '';
+                if (percent < 80) {
+                    rating = 'too short';
+                } else if (percent < 90) {
+                    rating = 'short';
+                } else if (percent < 110) {
+                    rating = 'good!';
+                } else if (percent < 120) {
+                    rating = 'long';
+                } else {
+                    rating = 'too long';
+                }
+                ctx.fillText(`${rating}`, cx, height - 10);
             }
-            ctx.fillText(`${rating}`, cx, height - 10);
             // labels
+            ctx.font = '20px sans-serif';
             ctx.textBaseline = 'middle';
             if (index === 0) {
                 ctx.textAlign = 'right';
@@ -184,6 +207,7 @@
         return {
             tempo,
             pastNoteCount,
+            showClosestDuration,
             // data
             notes,
         };
@@ -202,6 +226,7 @@
             }
             tempo = json.tempo;
             pastNoteCount = json.pastNoteCount;
+            showClosestDuration = json.showClosestDuration;
             // data
             notes = json.notes;
             draw();
@@ -240,6 +265,12 @@
             callback="{draw}"
             step="{1}"
             min="{1}"
+        />
+        <ToggleButton
+            bind:checked="{showClosestDuration}"
+            callback="{draw}"
+            label="show closest duration"
+            title="Show the closest note duration as a second bar"
         />
     </div>
     <div class="visualization">

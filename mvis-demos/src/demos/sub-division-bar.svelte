@@ -33,7 +33,7 @@
     let grid = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
-    let showKde = false;
+    let showKde = true;
     // data
     let firstTimeStamp = 0;
     let notes = [];

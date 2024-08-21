@@ -36,7 +36,7 @@
     let tuningPitches = [64, 59, 55, 50, 45, 40];
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
     const noteNames = Midi.NOTE_NAMES_FLAT;
-    const scales = Scale.names();
+    const scales = Scale.names().sort();
 
     const noteOn = (e) => {
         const string = e.message.channel - 1;

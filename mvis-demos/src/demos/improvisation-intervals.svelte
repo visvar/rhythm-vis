@@ -21,7 +21,6 @@
     // settings
     let filterUnison = true;
     let useColors = true;
-    let useSemitones = false;
     // data
     let notes = [];
 
@@ -98,12 +97,10 @@
             },
             y: {
                 // ticks: rules,
-                tickFormat: useSemitones
-                    ? (d) => d
-                    : (d) =>
-                          d >= 0
-                              ? intervalNames[d].name
-                              : intervalNames[-d].name,
+                tickFormat: (d) =>
+                    d >= 0
+                        ? `${intervalNames[d].name} (${d})`
+                        : `${intervalNames[-d].name} (${d})`,
                 domain: d3.range(-12, 13, 1),
                 label: `🡸 going down ${' '.repeat(75)} going up 🡺     `,
                 reverse: true,
@@ -136,7 +133,6 @@
         return {
             filterUnison,
             useColors,
-            useSemitones,
             // data
             notes,
         };
@@ -155,7 +151,6 @@
             }
             filterUnison = json.filterUnison;
             useColors = json.useColors;
-            useSemitones = json.useSemitones;
             // data
             notes = json.notes;
             draw();
@@ -179,7 +174,8 @@
         the played interval in the top half will increase. If you go down, it
         will show up in the bottom half. Colors denote the type of interval, so
         you can quickly see if you play, for example, more major or minor
-        intervals.
+        intervals. The intervals are labelled by their name and the number of
+        semitones (negative when going from higher to lower notes).
     </p>
     <div class="control">
         <button
@@ -199,15 +195,6 @@
             }}"
         >
             colors {useColors ? toggleOnIcon : toggleOffIcon}
-        </button>
-        <button
-            title="Show number of semitones instead of musical names for intervals on the y axis"
-            on:click="{() => {
-                useSemitones = !useSemitones;
-                draw();
-            }}"
-        >
-            semitones {useSemitones ? toggleOnIcon : toggleOffIcon}
         </button>
     </div>
     <div class="visualization" bind:this="{container}"></div>

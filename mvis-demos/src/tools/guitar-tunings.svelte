@@ -1,5 +1,6 @@
 <script>
     import { Guitar, Midi } from 'musicvis-lib';
+    import ToggleButton from '../demos/common/toggle-button.svelte';
 
     export let toolInfo;
     let stringCount = 6;
@@ -45,20 +46,8 @@
         tune up/down (semitones)
         <input type="number" bind:value="{tune}" min="-12" max="12" step="1" />
     </label>
-    <button
-        on:click="{() => {
-            drop = !drop;
-        }}"
-    >
-        {drop ? '☑' : '☐'} dropped
-    </button>
-    <button
-        on:click="{() => {
-            showOctave = !showOctave;
-        }}"
-    >
-        {showOctave ? '☑' : '☐'} octave shown
-    </button>
+    <ToggleButton bind:checked="{drop}" label="dropped" />
+    <ToggleButton bind:checked="{showOctave}" label="octave" />
     <div>
         <p>
             You selected a {stringCount} string {stringCount >= 6

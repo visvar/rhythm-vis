@@ -179,26 +179,6 @@
         <SkillTree bind:currentSkills {allSkills} />
         <!-- task, instrument, input filters -->
         <div>
-          <h2>input</h2>
-          <button
-            on:click="{() => {
-              currentInputs = new Set(allInputs);
-            }}"
-          >
-            show all
-          </button>
-          {#each allInputs.values() as d}
-            <button
-              on:click="{() => (currentInputs = updSet(currentInputs, d))}"
-              on:dblclick="{() => (currentInputs = new Set([d]))}"
-              class="{currentInputs.has(d) ? 'active' : 'hidden'}"
-              title="click to toggle, double-click to only show this"
-            >
-              {d}
-            </button>
-          {/each}
-        </div>
-        <div>
           <h2>instrument</h2>
           <button
             on:click="{() => {
@@ -213,6 +193,26 @@
                 (currentInstruments = updSet(currentInstruments, d))}"
               on:dblclick="{() => (currentInstruments = new Set([d]))}"
               class="{currentInstruments.has(d) ? 'active' : 'hidden'}"
+              title="click to toggle, double-click to only show this"
+            >
+              {d}
+            </button>
+          {/each}
+        </div>
+        <div>
+          <h2>input</h2>
+          <button
+            on:click="{() => {
+              currentInputs = new Set(allInputs);
+            }}"
+          >
+            show all
+          </button>
+          {#each allInputs.values() as d}
+            <button
+              on:click="{() => (currentInputs = updSet(currentInputs, d))}"
+              on:dblclick="{() => (currentInputs = new Set([d]))}"
+              class="{currentInputs.has(d) ? 'active' : 'hidden'}"
               title="click to toggle, double-click to only show this"
             >
               {d}
