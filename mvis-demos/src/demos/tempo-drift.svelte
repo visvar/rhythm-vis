@@ -15,6 +15,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import TouchInput from './common/touch-input.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -162,16 +163,21 @@
         Connect a MIDI instrument, choose your tempo, and start playing. The
         time between two note onsets will be shown as a bar, so you can see how
         well you still hit, for example, quarter notes after playing for some
-        time. Bar heights are either exact or rounded to the closest, for
-        example, 64th note (binning dropdown). You can filter very short
-        inter-note times, which happen whan playing two notes at roughly the
-        same time as in a chord.
+        time. Bar heights are either exact or rounded to a certain duration
+        precision. You can filter very short inter-note times, which happen when
+        playing two notes at roughly the same time, for example in a chord.
         <i> Try playing without looking! </i>
     </p>
-    <p class="explanation">
-        One possible exercise is trying to play at a given tempo without any
-        count in. You can use the randomize tempo button (⚂) to get challenged.
-    </p>
+    <ExerciseDrawer>
+        <p>
+            1) Try to play at a given tempo without count-in. You can use the
+            randomize tempo button (⚂) to get challenged for a random tempo.
+        </p>
+        <p>
+            2) After the count-in, keep the tempo as constant as possible for a
+            few minutes.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <label title="The tempo in beats per minute (bpm)">
             tempo
@@ -190,7 +196,7 @@
             on:click="{() => {
                 let newTempo = tempo;
                 while (newTempo === tempo) {
-                    newTempo = Math.round(Math.random() * 24 + 12) * 5;
+                    newTempo = Math.round(Math.random() * 12 + 6) * 10;
                 }
                 tempo = newTempo;
             }}"
@@ -234,7 +240,9 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     {#if estimatedTempo}
-        <div>estimated: {estimatedTempo.toFixed(1)} bpm</div>
+        <div>
+            estimated: {estimatedTempo.toFixed()} bpm (assuming quarter notes)
+        </div>
     {/if}
     <div class="control">
         <MetronomeButton

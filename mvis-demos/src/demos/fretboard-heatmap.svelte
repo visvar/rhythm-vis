@@ -10,6 +10,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -188,6 +189,11 @@
         Connect a MIDI guitar and start playing. The heatmap below shows how
         often you played each fretboard position.
     </p>
+    <ExerciseDrawer>
+        <p>1) Play the note A over the whole fretboard.</p>
+        <p>2) Play the A minor pentatonic scale over the whole fretboard.</p>
+        <p>3) Improvise in A minor pentatonic over the whole fretboard.</p>
+    </ExerciseDrawer>
     <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
     </div>

@@ -12,6 +12,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -158,6 +159,16 @@
         Connect a MIDI keyboard and start playing. The heatmap below shows how
         often you played each keyboard key.
     </p>
+    <ExerciseDrawer>
+        <p>
+            1) Improvise something while trying to use the whole range of the
+            keyboard.
+        </p>
+        <p>
+            2) Improvise something while trying to use both hands (far enough
+            apart) for the same amount of notes.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
     </div>

@@ -18,6 +18,7 @@
     import example from '../example-recordings/rhythm-sheet-music.json';
     import TouchInput from './common/touch-input.svelte';
     import { FILTER_NOTES } from '../lib/music.js';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -27,7 +28,7 @@
     let width = 1000;
     let container;
     // settings
-    let tempo = 120;
+    let tempo = 90;
     let pastNoteCount = 10;
     let useDotted = true;
     let filterNote = 16;
@@ -221,10 +222,11 @@
         for notes that were too long (playing too slow) and
         <span style="color:{orange}">orange</span> for short (fast) ones.
     </p>
-    <p>
-        Exercises: 1) Switch back and fort between quarters and eighths. 2)
-        Switch between eighths and eighth triplets.
-    </p>
+    <ExerciseDrawer>
+        <p>1) Switch back and forth between quarters and eighths.</p>
+        <p>2) Switch between eighths and eighth triplets.</p>
+        <p>3) Set the target to dotted-half and try to play them accurately.</p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />

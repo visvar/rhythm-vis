@@ -13,6 +13,7 @@
     import example from '../example-recordings/fretboard-improvisation-intervals.json';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import ToggleButton from './common/toggle-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -237,6 +238,12 @@
         Each time you play a note, the fretboard below shows you how far each
         note of the scale is away from the note you just played.
     </p>
+    <ExerciseDrawer>
+        <p>1) Go through the scale in steps of 1.</p>
+        <p>2) Go through the scale in steps of 2.</p>
+        <p>3) Go through the scale in steps of 3.</p>
+        <p>4) Go through the scale in steps of 4.</p>
+    </ExerciseDrawer>
     <div class="control">
         <label>
             scale

@@ -8,6 +8,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -122,6 +123,18 @@
         Connect a MIDI device and play pitch bends or vibratos. The line chart
         below shows how far you bend up and down over time.
     </p>
+    <ExerciseDrawer>
+        <p>1) Play a bend by one semitone (for example, A to A#).</p>
+        <p>2) Play a bend by two semitones (for example, A to B).</p>
+        <p>3) Play a vibrato where you always bend by one semitone.</p>
+        <p>
+            4) Play a vibrato and then a second one with twice the frequency of
+            modulation.
+        </p>
+        <p>
+            5) Slide from one note to a much higher one as smoothly as possible.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <label>
             past seconds

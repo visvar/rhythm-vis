@@ -10,6 +10,7 @@
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
     import example from '../example-recordings/pitch-offset-cents.json';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -182,6 +183,10 @@
         Allow microphone access and play pitch bends or vibratos. The line chart
         below shows how far you bend up and down over time.
     </p>
+    <ExerciseDrawer>
+        <p>1) Play or sing a note as accurately as possible.</p>
+        <p>2) Bend/sing a note 25 cents higher (for example as a vibrato).</p>
+    </ExerciseDrawer>
     {#if bendValues.length > 0}
         <p>
             Current closest note: {Midi.midiToNoteName(

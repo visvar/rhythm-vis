@@ -254,8 +254,8 @@
     </p>
     <ExerciseDrawer>
         <p>
-            Play a quarter note 𝅘𝅥, a half note 𝅗𝅥, a dotted half note 𝅗𝅥., and a
-            whole note 𝅝.
+            1) Play a quarter note 𝅘𝅥, a half note 𝅗𝅥, a dotted half note 𝅗𝅥., and
+            a whole note 𝅝.
         </p>
     </ExerciseDrawer>
     <div class="control">

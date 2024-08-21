@@ -12,6 +12,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -182,6 +183,16 @@
         Notes that you play are shown as bars. The color shows which scale
         subset a note belongs to. The bars' height encodes the notes' durations.
     </p>
+    <ExerciseDrawer>
+        <p>
+            1) Improvise something in the scale of A minor pentatonic. Check if
+            you only used this scale's notes using the colors.
+        </p>
+        <p>
+            2) Improvise in A minor blues, see how often and when you used the
+            blue note (D#).
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <label>
             root note

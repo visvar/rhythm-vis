@@ -272,6 +272,7 @@
             2) Play chords you don't know by placing your fingers in different
             positions. If they sound good, look what they are called.
         </p>
+        <p>3) Play an A minor chord in three different positions.</p>
     </ExerciseDrawer>
     <div class="control">
         <label

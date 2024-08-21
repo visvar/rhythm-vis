@@ -4,6 +4,7 @@
     import { PitchDetector } from 'pitchy';
     import { Midi, Note } from '@tonaljs/tonal';
     import { Canvas } from 'musicvis-lib';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -176,6 +177,10 @@
         cents (0 is perfectly on the note, +/-50% is extactly between two valid
         notes).
     </p>
+    <ExerciseDrawer>
+        <p>1) Play or sing a note as accurately as possible.</p>
+        <p>2) Bend/sing a note 25 cents higher (for example as a vibrato).</p>
+    </ExerciseDrawer>
     <div class="control">
         <label>
             past seconds

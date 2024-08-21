@@ -11,6 +11,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -174,6 +175,10 @@
         Connect a MIDI instrument and start playing. The bar chart below shows
         how often you played each scale degree.
     </p>
+    <ExerciseDrawer>
+        <p>1) Improvise in A minor pentatonic.</p>
+        <p>2) Improvise in a scale you did not know before.</p>
+    </ExerciseDrawer>
     <div class="control">
         <label>
             scale

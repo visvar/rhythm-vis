@@ -260,8 +260,13 @@
     </p>
     <ExerciseDrawer>
         <p>
-            Play triplets with your left and eighths with your right hand.
+            1) Only single notes. Play triplets with your right and eighths with
+            your left hand.
             <i> Try playing without looking, focus on the metronome. </i>
+        </p>
+        <p>
+            2) Play the same rhythm as in 1) but using different notes, to form
+            a melody.
         </p>
     </ExerciseDrawer>
     <div class="control">

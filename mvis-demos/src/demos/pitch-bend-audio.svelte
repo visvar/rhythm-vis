@@ -11,6 +11,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/pitch-bend-audio.json';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -198,6 +199,18 @@
         Allow microphone access and play pitch bends or vibratos. The line chart
         below shows how far you bend up and down over time.
     </p>
+    <ExerciseDrawer>
+        <p>1) Play/sing a bend by one semitone (for example, A to A#).</p>
+        <p>2) Play/sing a bend by two semitones (for example, A to B).</p>
+        <p>3) Play/sing a vibrato where you always bend by one semitone.</p>
+        <p>
+            4) Play/sing a vibrato and then a second one with twice the
+            frequency of modulation.
+        </p>
+        <p>
+            5) Slide from one note to a much higher one as smoothly as possible.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <button
             style="width: 75px"

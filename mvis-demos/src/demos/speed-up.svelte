@@ -16,6 +16,7 @@
     import { reviver } from '../lib/json.js';
     import TouchInput from './common/touch-input.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -350,6 +351,12 @@
         tempo, and then practice it with increasing speed until you reach your
         target tempo.
     </p>
+    <ExerciseDrawer>
+        <p>1) Select a pre-defined below and play it from 60 to 120 bpm.</p>
+        <p>
+            2) Input your own exercise, optionally quantize it, and practice it.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput
             label="initial tempo"

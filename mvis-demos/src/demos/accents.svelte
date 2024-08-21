@@ -188,7 +188,15 @@
         the first note in each triplet, or the the first in each group of 4.
     </p>
     <ExerciseDrawer>
-        <p>You can try different accent patterns such as:</p>
+        <p>
+            1) Play quarter notes and accent the first one in each group of 4.
+        </p>
+        <p>2) Play triplets and accent the first note in each triplet.</p>
+        <p>
+            3) Play triplets and accent the first note in each odd triplet and
+            the second in each even triplet.
+        </p>
+        <p>4) Try different accent patterns such as:</p>
         <p>
             <b>1</b>e+<b>a</b> 2e+a 3<b>e</b>+a <b>4</b>e+a
             <span class="acc">𝅘𝅥</span> 𝅘𝅥 𝅘𝅥 <span class="acc">𝅘𝅥</span> | 𝅘𝅥 𝅘𝅥 𝅘𝅥 𝅘𝅥

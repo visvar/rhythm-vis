@@ -9,6 +9,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -177,6 +178,12 @@
         intervals. The intervals are labelled by their name and the number of
         semitones (negative when going from higher to lower notes).
     </p>
+    <ExerciseDrawer>
+        <p>1) Play different notes and see which intervals are between them.</p>
+        <p>2) Try to play only perfect 5ths.</p>
+        <p>3) Try to play only perfect 5ths and major intervals.</p>
+        <p>4) Try to play only perfect 5ths and minor intervals.</p>
+    </ExerciseDrawer>
     <div class="control">
         <button
             title="Toggle filtering unison intervals"

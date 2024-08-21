@@ -13,6 +13,7 @@
     import { localStorageAddRecording } from '../lib/localstorage.js';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -399,6 +400,12 @@
         darkness (white to black) encodes the notes' velocities, so eventual
         noise (unintended notes) is less distracting.
     </p>
+    <ExerciseDrawer>
+        <p>1) Select a pre-defined below and play it from 60 to 120 bpm.</p>
+        <p>
+            2) Input your own exercise, optionally quantize it, and practice it.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput
             label="initial tempo"
@@ -433,7 +440,7 @@
     </div>
     <div class="control">
         <label>
-            pre-defined exercise
+            exercise
             <select on:change="{predefinedExercise}">
                 <option selected disabled></option>
                 {#each ['quarter', 'eighth', 'triplets', 'swing'] as d}

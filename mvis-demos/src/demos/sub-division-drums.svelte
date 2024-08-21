@@ -15,6 +15,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -107,7 +108,7 @@
         draw();
     };
 
-    const drawDrum = (drum = 'KD', xLabel = null) => {
+    const drawDrum = (drum = 'KD', label = 'Kick Drum', xLabel = null) => {
         const [grid1, grid2] = grid.split(':').map((d) => +d);
         const quarter = Utils.bpmToSecondsPerBeat(tempo);
         // only look at one drum part
@@ -140,14 +141,16 @@
 
         const plot = Plot.plot({
             width,
-            height: 90,
-            marginLeft: 60,
-            marginBottom: 10,
+            height: xLabel ? 110 : 100,
+            marginLeft: 20,
+            marginBottom: xLabel ? 30 : 20,
             padding: 0,
             x: {
                 label: xLabel,
                 domain: [0, 4],
-                ticks: [],
+                ticks: coarseGrid.slice(0, -1),
+                round: true,
+                tickFormat: (d) => (d + 1).toFixed(),
             },
             y: {
                 axis: false,
@@ -189,17 +192,17 @@
         });
 
         const title = document.createElement('span');
-        title.innerText = drum;
+        title.innerText = label;
         container.appendChild(title);
         container.appendChild(plot);
     };
 
     const draw = () => {
         container.textContent = '';
-        drawDrum('HH');
-        drawDrum('SN');
-        drawDrum('TO');
-        drawDrum('KD', 'time in beats');
+        drawDrum('HH', 'Hi-Hat');
+        drawDrum('SN', 'Snare');
+        drawDrum('TO', 'Toms');
+        drawDrum('KD', 'Kick Drum', 'beats');
     };
 
     onMount(draw);
@@ -256,11 +259,16 @@
     <p class="explanation">
         Connect a MIDI drum kit and start playing to the metronome. The chart
         will show you how a summary of where your notes started, one for each
-        type of drum. If you do not have a MIDI keyboard, you can press keys:
+        type of drum. If you do not have a MIDI drum kit, you can press keys:
         <code>h</code>, <code>s</code>, <code>t</code>, and <code>k</code> for
         hi-hat, snare, tom, and kick drum.
         <i> Try playing without looking, focus on the metronome. </i>
     </p>
+    <ExerciseDrawer>
+        <p>1) Play the kick on beat 1 and 3 and the snare on 2 and 4.</p>
+        <p>2) Play 1) and add the hi-hat on beat 1, 2, 3, 4.</p>
+        <p>3) Play 2) and sometimes add a fill on the toms.</p>
+    </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label

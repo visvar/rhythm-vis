@@ -14,6 +14,7 @@
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/strumming-pattern.json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
+    import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     export let demoInfo;
     let width = 1000;
@@ -245,17 +246,29 @@
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         This demo shows you how you strummed (up or down? which strings?), so
-        you can make sure you strumm a pattern as intended. For example, try
-        strumming <code>D U U D</code>. The upper chart shows you the when you
-        played a note on which string. The lower chart shows you the time
-        between the start of the first and last note of the chord (rectangle
-        width) and which strings it spanned (rectangle y and height). Blue
-        chords were strummed upward and orange ones downward. The strummin
-        direction is further indicated by arrow heads. Due to how guitar tabs
-        are drawn from the point of view of the guitarist, downward strumming
-        will result in upward arrows in the lower visualization. Single notes
-        are drawn in red.
+        you can make sure you strumm a pattern as intended. The upper chart
+        shows you the when you played a note on which string. The lower chart
+        shows you the time between the start of the first and last note of the
+        chord (rectangle width) and which strings it spanned (rectangle y and
+        height). Blue chords were strummed upward and orange ones downward. The
+        strumming direction is further indicated by arrow heads. Due to how
+        guitar tabs are drawn from the point of view of the guitarist, downward
+        strumming will result in upward arrows in the lower visualization.
+        Single notes are drawn in red.
     </p>
+    <ExerciseDrawer>
+        <p>
+            1) Strum up and down alternating: <code>U D U D</code>.
+        </p>
+        <p>
+            2) Strumming a pattern like <code>D U U D</code> or
+            <code>D D U D</code>.
+        </p>
+        <p>
+            3) Strum chords like Am, E, G, D and make sure you only strum the
+            strings you intend.
+        </p>
+    </ExerciseDrawer>
     <div class="control">
         <label title="time in seconds for past notes to be shown">
             time
