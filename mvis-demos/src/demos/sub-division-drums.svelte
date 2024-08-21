@@ -321,10 +321,10 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
+        <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
-        <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <PcKeyboardInput

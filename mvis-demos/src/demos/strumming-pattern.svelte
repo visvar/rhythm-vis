@@ -13,6 +13,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
     import example from '../example-recordings/strumming-pattern.json';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     export let demoInfo;
     let width = 1000;
@@ -283,20 +284,15 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
-            title="Clear all played notes"
-            on:click="{() => {
-                if (confirm('Reset played notes?')) {
-                    saveToStorage();
-                    notes = [];
-                    openNoteMap = new Map();
-                    firstTimeStamp = performance.now();
-                    draw();
-                }
+        <ResetNotesButton
+            {saveToStorage}
+            bind:notes
+            callback="{() => {
+                openNoteMap = new Map();
+                firstTimeStamp = performance.now();
+                draw();
             }}"
-        >
-            reset
-        </button>
+        />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>

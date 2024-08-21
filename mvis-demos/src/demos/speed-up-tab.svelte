@@ -481,12 +481,9 @@
             title="Clear practice but not exercise"
             disabled="{currentStep !== ''}"
             callback="{() => {
-                if (confirm('Reset practice?')) {
-                    saveToStorage();
-                    practiceRecordings = new Map();
-                    firstTimeStamp = performance.now();
-                    draw();
-                }
+                practiceRecordings = new Map();
+                firstTimeStamp = performance.now();
+                draw();
             }}"
         />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />

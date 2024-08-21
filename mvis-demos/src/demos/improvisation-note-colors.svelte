@@ -11,6 +11,7 @@
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import ResetNotesButton from './common/reset-notes-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -194,19 +195,14 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
-        <button
-            title="Clear all played notes"
-            on:click="{() => {
-                if (confirm('Reset played notes?')) {
-                    saveToStorage();
-                    notes = [];
-                    openNoteMap = new Map();
-                    draw();
-                }
+        <ResetNotesButton
+            bind:notes
+            {saveToStorage}
+            callback="{() => {
+                openNoteMap = new Map();
+                draw();
             }}"
-        >
-            reset
-        </button>
+        />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
