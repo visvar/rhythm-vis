@@ -2,16 +2,17 @@
     import { onDestroy, onMount } from 'svelte';
     import * as Plot from '@observablehq/plot';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
-    import ResetNotesButton from './common/reset-notes-button.svelte';
-    import MidiInput from './common/midi-input.svelte';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ResetNotesButton from '../demos/common/reset-notes-button.svelte';
+    import MidiInput from '../demos/common/midi-input.svelte';
+    import ExportButton2 from '../demos/common/export-button2.svelte';
+    import ImportButton2 from '../demos/common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import { VELOCITIES_LOGIC, VELOCITIES_MEANING } from '../lib/music';
-    import LoadFromStorageButton from './common/history-button.svelte';
+    import LoadFromStorageButton from '../demos/common/history-button.svelte';
     import example from '../example-recordings/dynamics.json';
     import * as d3 from 'd3';
-    import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import ExerciseDrawer from '../demos/common/exercise-drawer.svelte';
+    import { drumPitchReplacementMapMD90 } from '../lib/drums';
 
     /**
      * contains the demo meta information defined in App.js
@@ -29,16 +30,14 @@
     let notes = [];
 
     const noteOn = (e) => {
-        notes.push(e.rawVelocity);
-        // TODO: more data so we can color bars by, eg, channel or drum part
-        // const note = {
-        // velocity: e.rawVelocity,
-        //     number: e.note.number,
-        //     note: e.note.name + (e.note.accidental ?? ''),
-        //     isSharp: e.note.accidental?true:false,
-        //     channel: e.message.channel,
-        // };
-        // notes.push(note);
+        const note = {
+            number: e.note.number,
+            drum:
+                drumPitchReplacementMapMD90.get(e.note.number)?.label ??
+                e.note.number,
+            velocity: e.rawVelocity,
+        };
+        notes.push(note);
         draw();
     };
 

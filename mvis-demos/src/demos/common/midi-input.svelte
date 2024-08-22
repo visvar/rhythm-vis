@@ -11,7 +11,7 @@
     export let controlChange = null;
     export let pitchBend = null;
 
-    export let errorCallback = (err) => alert(err);
+    export let errorCallback = (err) => console.error(err);
 
     // allow access to MIDI device list
     export let midiDevices = [];

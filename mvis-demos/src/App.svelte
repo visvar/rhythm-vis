@@ -1,7 +1,7 @@
 <script>
   import { version } from '../package.json';
   import { getUrlParam, setUrlParam } from './lib/url';
-  import { setHasAny, updSet } from './lib/lib';
+  import { getNumberOfDaysPassed, setHasAny, updSet } from './lib/lib';
   import {
     localStorageGetUsageData,
     localStorageReport,
@@ -20,12 +20,12 @@
   import Help from './Help.svelte';
   import PcKeyboardInput from './demos/common/pc-keyboard-input.svelte';
 
-  let currentDemo = null;
+  let currentApp = null;
 
   // handle URL parameters
   const param = getUrlParam(window, 'd');
   if (param && param !== '') {
-    currentDemo = APPS.filter((d) => d.id === param)[0];
+    currentApp = APPS.filter((d) => d.id === param)[0];
   }
 
   // access protection (not secure of course)
@@ -37,16 +37,16 @@
 
   // allow to go back to main page with history
   window.onpopstate = (e) => {
-    if (currentDemo !== null) {
-      currentDemo = null;
+    if (currentApp !== null) {
+      currentApp = null;
     }
   };
 
   // warn user to not quit window before leaving demo
   window.onbeforeunload = function () {
     if (
-      currentDemo &&
-      !['tools', 'settings', 'overview', 'help'].includes(currentDemo)
+      currentApp &&
+      !['tools', 'settings', 'overview', 'help'].includes(currentApp)
     ) {
       // alert('Please go back to the main page first to prevent data loss');
       return true;
@@ -54,23 +54,36 @@
   };
 
   // track how often and when each demo is used
+  let appUsageCount = new Map();
+  let appUsageRecent = new Map();
   $: {
-    if (currentDemo) {
-      let usage;
-      if (localStorage.getItem('usage') !== null) {
-        usage = localStorage.getItem('usage');
-        usage = JSON.parse(usage);
-      } else {
-        usage = {
-          demoClicks: {},
-        };
-      }
-      const demoClicks = usage.demoClicks;
-      const thisDemoUsage = demoClicks[currentDemo.id] ?? [];
-      thisDemoUsage.push(new Date().toUTCString());
-      demoClicks[currentDemo.id] = thisDemoUsage;
-      localStorage.setItem('usage', JSON.stringify(usage));
+    let usage;
+    if (localStorage.getItem('usage') !== null) {
+      usage = localStorage.getItem('usage');
+      usage = JSON.parse(usage);
+    } else {
+      usage = {
+        demoClicks: {},
+      };
     }
+    const appClicks = usage.demoClicks;
+    if (currentApp) {
+      const thisAppUsage = appClicks[currentApp.id] ?? [];
+      thisAppUsage.push(new Date().toISOString());
+      appClicks[currentApp.id] = thisAppUsage;
+      localStorage.setItem('usage', JSON.stringify(usage));
+    } else {
+      appUsageCount = new Map(
+        APPS.map((d) => [d.id, appClicks[d.id]?.length ?? 0]),
+      );
+      appUsageRecent = new Map(
+        APPS.map((d) => {
+          const lastTime = appClicks[d.id]?.at(-1);
+          return [d.id, lastTime ? lastTime : 'never'];
+        }),
+      );
+    }
+    console.log({ appUsageRecent });
   }
   // log data usage
   console.log('localStorage space', localStorageReport());
@@ -89,13 +102,34 @@
   // search
   let currentSearch = '';
   // apply filter
-  $: filteredAPPS = APPS.filter(
+  $: filteredApps = APPS.filter(
     (d) =>
       d.title.toLowerCase().includes(currentSearch) &&
       setHasAny(currentInstruments, d.instruments) &&
       setHasAny(currentSkills, d.skills) &&
       currentInputs.has(d.input),
   );
+  // apply sorting
+  let sortAppsBy = 'title';
+  $: sortedApps = filteredApps.sort((a, b) => {
+    if (sortAppsBy === 'title') {
+      return a.title < b.title ? -1 : 1;
+    }
+    if (sortAppsBy === 'used') {
+      return appUsageCount.get(b.id) - appUsageCount.get(a.id);
+    }
+    if (sortAppsBy === 'recent') {
+      const recentA = appUsageRecent.get(a.id);
+      const recentB = appUsageRecent.get(b.id);
+      if (recentA === 'never') {
+        return 1;
+      }
+      if (recentB === 'never') {
+        return -1;
+      }
+      return recentA > recentB ? -1 : 1;
+    }
+  });
 
   // allow to reset current tool with tools button
   let currentTool = null;
@@ -115,7 +149,7 @@
       <!-- main page button -->
       <button
         on:click="{() => {
-          currentDemo = null;
+          currentApp = null;
           setUrlParam(window, 'd', '');
         }}"
       >
@@ -124,7 +158,7 @@
       <!-- Tools page button -->
       <button
         on:click="{() => {
-          currentDemo = 'tools';
+          currentApp = 'tools';
           currentTool = null;
           setUrlParam(window, 'd', 'tools');
         }}"
@@ -134,7 +168,7 @@
       <!-- Settings page button -->
       <button
         on:click="{() => {
-          currentDemo = 'settings';
+          currentApp = 'settings';
           setUrlParam(window, 'd', 'settings');
         }}"
       >
@@ -143,7 +177,7 @@
       <!-- DemoOverview page button -->
       <button
         on:click="{() => {
-          currentDemo = 'overview';
+          currentApp = 'overview';
           setUrlParam(window, 'd', 'overview');
         }}"
       >
@@ -152,7 +186,7 @@
       <!-- Help page button -->
       <button
         on:click="{() => {
-          currentDemo = 'help';
+          currentApp = 'help';
           setUrlParam(window, 'd', 'help');
         }}"
       >
@@ -163,7 +197,7 @@
 
   {#if password !== corrP}
     <input type="password" placeholder="password" bind:value="{password}" />
-  {:else if !currentDemo}
+  {:else if !currentApp}
     <div class="grid-filter-demo">
       <!-- filter -->
       <div class="filter">
@@ -219,53 +253,71 @@
             </button>
           {/each}
         </div>
+        <div>
+          <h2>sort by</h2>
+          <select bind:value="{sortAppsBy}">
+            <option value="title">title (A-Z)</option>
+            <option value="used">most used</option>
+            <option value="recent">recently used</option>
+          </select>
+        </div>
       </div>
 
-      <!-- demo overview grid -->
+      <!-- app overview grid -->
       <div class="grid">
-        {#each filteredAPPS as demo}
+        {#each sortedApps as app}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
           <div
-            class="card"
+            class="card {appUsageCount.get(app.id) ? '' : 'never-used'}"
             on:click="{() => {
-              currentDemo = demo;
-              setUrlParam(window, 'd', demo.id);
+              currentApp = app;
+              setUrlParam(window, 'd', app.id);
             }}"
           >
-            <h2>{demo.title}</h2>
+            <h2>{app.title}</h2>
             <div class="description">
-              {demo.description}
+              {app.description}
+            </div>
+            <div class="usage">
+              {#if appUsageCount.get(app.id) > 0}
+                Used {appUsageCount.get(app.id)} times.
+              {/if}
+              {#if appUsageCount.get(app.id) > 0}
+                Last used {getNumberOfDaysPassed(
+                  new Date(appUsageRecent.get(app.id)),
+                )}.
+              {/if}
             </div>
             <div class="tags">
               <!-- input -->
-              {demo.input === 'audio' ? audioIcon : ''}
-              {demo.input === 'MIDI' ? midiIcon : ''}
+              {app.input === 'audio' ? audioIcon : ''}
+              {app.input === 'MIDI' ? midiIcon : ''}
               <!-- instrument -->
-              {demo.instruments.includes('guitar/bass') ? '🎸' : ''}
-              {demo.instruments.includes('drum') ? '🥁' : ''}
-              {demo.instruments.includes('keyboard') ? '🎹' : ''}
-              {demo.instruments.includes('wind') ? '🪈' : ''}
-              {demo.instruments.includes('singing') ? '🎤' : ''}
-              {demo.instruments.includes('strings') ? '🎻' : ''}
-              {demo.instruments.includes('pc-key') ? '⌨️' : ''}
-              {demo.instruments.includes('touch') ? '👇' : ''}
+              {app.instruments.includes('guitar/bass') ? '🎸' : ''}
+              {app.instruments.includes('drum') ? '🥁' : ''}
+              {app.instruments.includes('keyboard') ? '🎹' : ''}
+              {app.instruments.includes('wind') ? '🪈' : ''}
+              {app.instruments.includes('singing') ? '🎤' : ''}
+              {app.instruments.includes('strings') ? '🎻' : ''}
+              {app.instruments.includes('pc-key') ? '⌨️' : ''}
+              {app.instruments.includes('touch') ? '👇' : ''}
             </div>
           </div>
         {/each}
       </div>
     </div>
-  {:else if currentDemo === 'tools'}
+  {:else if currentApp === 'tools'}
     <Tools bind:currentTool />
-  {:else if currentDemo === 'settings'}
+  {:else if currentApp === 'settings'}
     <Settings />
-  {:else if currentDemo === 'overview'}
+  {:else if currentApp === 'overview'}
     <DemoOverview apps="{APPS}" {allInstruments} {allData} {allPatterns} />
-  {:else if currentDemo === 'help'}
+  {:else if currentApp === 'help'}
     <Help />
   {:else}
     <!-- show demo by importing dynamically -->
-    <svelte:component this="{currentDemo.component}" demoInfo="{currentDemo}" />
+    <svelte:component this="{currentApp.component}" demoInfo="{currentApp}" />
   {/if}
   <div class="version-number">
     version {version}
@@ -276,7 +328,7 @@
   key="a"
   ctrlKey
   keyDown="{() => {
-    currentDemo = null;
+    currentApp = null;
     setUrlParam(window, 'd', '');
   }}"
 />
@@ -285,7 +337,9 @@
   key="f"
   ctrlKey
   keyDown="{() => {
-    document.querySelector('.search-box').focus();
+    if (!currentApp) {
+      document.querySelector('.search-box').focus();
+    }
   }}"
 />
 
@@ -319,5 +373,6 @@
   .version-number {
     margin-top: 30px;
     color: #aaa;
+    user-select: none;
   }
 </style>

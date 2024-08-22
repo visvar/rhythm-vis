@@ -15,7 +15,7 @@
         localStorageGetSetting,
     } from '../lib/localstorage';
     import example from '../example-recordings/chord-diagrams.json';
-    import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import LoadFromStorageButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**

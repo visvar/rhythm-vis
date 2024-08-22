@@ -159,6 +159,11 @@ export const SKILL_TREE = [
         description: 'Multiple musicians playing together should play to the same timing grid'
       },
       {
+        id: 'entrance-pause',
+        title: 'entrance and pause',
+        description: 'Everyone should start and stop playing at the same time'
+      },
+      {
         id: 'same-key',
         title: 'same key',
         description: 'Multiple musicians playing together should play in the same key and change it at the same time'

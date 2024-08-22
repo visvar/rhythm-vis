@@ -25,3 +25,9 @@
         <option value="{i}">{r.date.substring(0, 16)}</option>
     {/each}
 </select>
+
+<style>
+    select {
+        width: 170px;
+    }
+</style>

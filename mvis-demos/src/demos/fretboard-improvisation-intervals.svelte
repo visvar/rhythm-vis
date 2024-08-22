@@ -11,7 +11,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import { toggleOnIcon, toggleOffIcon } from '../lib/icons.js';
     import example from '../example-recordings/fretboard-improvisation-intervals.json';
-    import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import LoadFromStorageButton from './common/history-button.svelte';
     import ToggleButton from './common/toggle-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
 

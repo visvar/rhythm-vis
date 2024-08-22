@@ -75,9 +75,6 @@
 
 <main>
     {#if !currentTool}
-        <p class="explanation">
-            This page contains a collection of simple but useful tools.
-        </p>
         <div class="grid">
             {#each TOOLS as tool}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->

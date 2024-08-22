@@ -8,7 +8,7 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
-    import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import LoadFromStorageButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
 
     /**

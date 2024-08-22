@@ -79,6 +79,17 @@ export const APPS = [
     patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units'],
     component: Dynamics
   },
+  // {
+  //   id: 'dynamics-drums',
+  //   title: 'Dynamics (Drums)',
+  //   description: 'Check how well you control the loudness of notes.',
+  //   input: 'MIDI',
+  //   instruments: ['drum'],
+  //   data: ['order', 'dynamics', 'instrument'],
+  //   skills: ['constant-dynamics', '(de)crescendo', 'accents'],
+  //   patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units', 'instrument as color'],
+  //   component: DynamicsDrums
+  // },
   {
     id: 'duration-bars',
     title: 'Duration Bars',
@@ -202,7 +213,7 @@ export const APPS = [
     instruments: ['keyboard'],
     data: ['pitch', 'instrument'],
     skills: ['instrument-layout'],
-    patterns: ['distribution as histogram', 'instrument layout', 'time is collapsed', 'update on note'],
+    patterns: ['distribution as histogram', 'instrument layout', 'time is collapsed', 'update on note', 'instrument as color'],
     component: KeyboardHistogram
   },
   {

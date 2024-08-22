@@ -13,7 +13,7 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage.js';
-    import LoadFromStorageButton from './common/load-from-storage-button.svelte';
+    import LoadFromStorageButton from './common/history-button.svelte';
     import example from '../example-recordings/accents.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import { FILTER_NOTES } from '../lib/music.js';
@@ -27,7 +27,7 @@
     let container;
     // settings
     let tempo = 90;
-    let pastNoteCount = 12;
+    let pastNoteCount = 20;
     let useDotted = true;
     let filterNote = 16;
     // data
@@ -115,14 +115,15 @@
             subtitle: 'size legend',
             width: width,
             height: 100,
-            marginLeft: width / 3,
-            marginRight: width / 3,
+            marginLeft: width * 0.4,
+            marginRight: width * 0.4,
             x: {
                 label: 'loudness',
                 labelAnchor: 'center',
+                ticks: [0, 0.5, 1],
             },
             marks: [
-                Plot.text(d3.range(0.1, 1.1, 0.1), {
+                Plot.text(d3.range(0, 1.2, 0.2), {
                     text: (d) => '𝅘𝅥',
                     x: (d, i) => d,
                     fontSize: (d) => d * 60 + 10,
@@ -186,6 +187,7 @@
         example, correct quarter notes. The note's velocity is encoded as font
         size, so you can see whether you accent the correct notes, for example
         the first note in each triplet, or the the first in each group of 4.
+        <i>Note: the display is always one note behind.</i>
     </p>
     <ExerciseDrawer>
         <p>

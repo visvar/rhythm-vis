@@ -100,3 +100,18 @@ export function roundToStep(value, step) {
 export function floorToStep(value, step) {
   return Math.round(value / step) * step
 }
+
+export function getNumberOfDaysPassed(someDate) {
+  const now = new Date()
+  const oneDay = 1000 * 60 * 60 * 24 // One day in milliseconds
+
+  const diffInTime = now.getTime() - someDate.getTime()
+  const diffInDays = Math.round(diffInTime / oneDay)
+  if (diffInDays === 0) {
+    return 'today'
+  }
+  if (diffInDays === 1) {
+    return 'yesterday'
+  }
+  return diffInDays + ' days ago'
+}

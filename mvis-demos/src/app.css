@@ -100,6 +100,11 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+button,
+label {
+  user-select: none;
+}
+
 
 svg text {
   user-select: none;
@@ -128,6 +133,12 @@ div.card {
   box-shadow: #eaeaea 0 0 8px;
   cursor: pointer;
   transition: all 250ms;
+  user-select: none;
+}
+
+div.card.never-used {
+  /* box-shadow: rgba(255, 217, 0, 0.573) 0 0 8px; */
+  opacity: 0.4;
 }
 
 
@@ -142,9 +153,15 @@ div.card h2 {
 }
 
 div.card .description {
-  text-align: left;
   margin-bottom: 5px;
-  height: 95px;
+  text-align: left;
+  height: 80px;
+}
+
+div.card .usage {
+  margin-bottom: 5px;
+  text-align: left;
+  font-size: 12px;
 }
 
 /* demo */
