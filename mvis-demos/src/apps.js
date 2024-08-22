@@ -50,7 +50,7 @@ export const APPS = [
     description:
       'See how spaced out the notes in a chord or arpeggio are, and how much time lies between these.',
     input: 'MIDI',
-    instruments: ['drum', 'guitar/bass', 'keyboard'],
+    instruments: ['guitar/bass', 'keyboard'],
     data: ['order', 'onset/time', 'ioi', 'pitch'],
     skills: ['chord-timing', 'arpeggio-timing'],
     patterns: ['onset as tick', 'compressed pitches', 'chord detection', 'time is linear', 'time encoded linearly', 'update on note'],
@@ -386,3 +386,9 @@ export const APPS = [
     component: TwoHandedTiming
   }
 ]
+
+/**
+ * Allows accessing app information by app id
+ * @type{Map<string,object>}
+ */
+export const APP_MAP = new Map(APPS.map(d => [d.id, d]))

@@ -83,10 +83,9 @@
         }),
       );
     }
-    console.log({ appUsageRecent });
   }
   // log data usage
-  console.log('localStorage space', localStorageReport());
+  // console.log('localStorage space', localStorageReport());
   console.log('usage data', localStorageGetUsageData());
 
   // tags

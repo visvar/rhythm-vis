@@ -86,7 +86,7 @@ select {
   font-family: inherit;
   background-color: #f8f8f8;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 500ms;
 }
 
 button:hover,
@@ -132,10 +132,11 @@ div.card {
   border-radius: 12px;
   box-shadow: #eaeaea 0 0 8px;
   cursor: pointer;
-  transition: all 250ms;
+  transition: all 500ms;
   user-select: none;
 }
 
+/* slightly gray out apps that have not been used */
 div.card.never-used {
   /* box-shadow: rgba(255, 217, 0, 0.573) 0 0 8px; */
   opacity: 0.4;
@@ -160,11 +161,10 @@ div.card .description {
 
 div.card .usage {
   margin-bottom: 5px;
-  text-align: left;
   font-size: 12px;
 }
 
-/* demo */
+/* app */
 
 div.control,
 div.visualization {
@@ -174,6 +174,7 @@ div.visualization {
 }
 
 p.explanation {
+  width: fit-content;
   max-width: 850px;
   margin: auto;
   text-align: justify;

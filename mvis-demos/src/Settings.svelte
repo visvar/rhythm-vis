@@ -1,12 +1,14 @@
 <script>
     import saveAs from 'file-saver';
-    import { SETTINGS_KEY } from './lib/localstorage';
+    import { localStorageReport, SETTINGS_KEY } from './lib/localstorage';
     let settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '{}');
 
     const updateSetting = (key, value) => {
         settings[key] = value;
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
     };
+
+    const localStorageRep = localStorageReport();
 </script>
 
 <main>
@@ -42,6 +44,10 @@
     <p>
         The website tracks usage data locally in your browser, but does not send
         it anywhere. You can export or reset it here.
+    </p>
+    <p>
+        Currently {localStorageRep.currentKb.toFixed()} of {localStorageRep.limitKb}
+        KB used ({localStorageRep.percentFull.toFixed(1)}%).
     </p>
     <!-- export usage button -->
     <button

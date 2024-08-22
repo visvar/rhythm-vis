@@ -8,14 +8,28 @@
     import PitchDetection from './tuner.svelte';
     import ScaleSets from './scale-sets.svelte';
     import ScaleNotes from './scale-notes.svelte';
+    import ActivityTracker from './activity-tracker.svelte';
+    import MidiNotes from './midi-notes.svelte';
 
     let TOOLS = [
+        {
+            id: 'activity-tracker',
+            title: 'Activity Tracker',
+            description: 'Shows your activity on this website.',
+            component: ActivityTracker,
+        },
         {
             id: 'midi-logger',
             title: 'MIDI Logger',
             description:
                 'Logs all incoming MIDI messages. Useful for getting to know a device or debugging MIDI issues.',
             component: MidiLogger,
+        },
+        {
+            id: 'midi-notes',
+            title: 'MIDI Notes',
+            description: 'Information on the MIDI standard note numbers.',
+            component: MidiNotes,
         },
         {
             id: 'piano-roll',
