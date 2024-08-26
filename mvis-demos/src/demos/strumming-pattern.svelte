@@ -15,6 +15,7 @@
     import example from '../example-recordings/strumming-pattern.json';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import RatingButton from './common/rating-button.svelte';
 
     export let demoInfo;
     let width = 1000;
@@ -311,5 +312,6 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} {noteOff} />
 </main>

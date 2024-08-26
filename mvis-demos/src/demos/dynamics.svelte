@@ -12,6 +12,7 @@
     import example from '../example-recordings/dynamics.json';
     import * as d3 from 'd3';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -192,6 +193,7 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />
 </main>
 

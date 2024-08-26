@@ -12,6 +12,7 @@
     import LoadFromStorageButton from './common/history-button.svelte';
     import example from '../example-recordings/chord-arpeggio-timing.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -118,7 +119,7 @@
                     clip: true,
                     x: (d) => d[0],
                     y: 0,
-                    text: (d, i) => (d[1] - d[0]).toFixed(2),
+                    text: (d, i) => (d[1] - d[0]).toFixed(1),
                     dy: 10,
                     textAnchor: 'start',
                 }),
@@ -156,7 +157,7 @@
                     clip: true,
                     x: (d) => d[0],
                     y: 0,
-                    text: (d, i) => (d[1] - d[0]).toFixed(2),
+                    text: (d, i) => (d[1] - d[0]).toFixed(1),
                     dx: 2,
                     dy: 10,
                     textAnchor: 'start',
@@ -259,5 +260,6 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />
 </main>

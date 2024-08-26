@@ -12,6 +12,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import LoadFromStorageButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -99,6 +100,7 @@
             r: {
                 domain: [0, 127],
                 range: [0, 5],
+                legend: true,
             },
             marks: [
                 // frets
@@ -190,7 +192,10 @@
     </p>
     <ExerciseDrawer>
         <p>1) Play the note A over the whole fretboard.</p>
-        <p>2) Play the A minor pentatonic scale over the whole fretboard.</p>
+        <p>
+            2) Play the A minor pentatonic scale over the whole fretboard,
+            string by string. Check if you played wrong notes.
+        </p>
         <p>3) Improvise in A minor pentatonic over the whole fretboard.</p>
     </ExerciseDrawer>
     <div class="control">
@@ -203,5 +208,6 @@
         <ImportButton2 {loadData} />
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} {controlChange} />
 </main>

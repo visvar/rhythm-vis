@@ -86,7 +86,7 @@ select {
   font-family: inherit;
   background-color: #f8f8f8;
   cursor: pointer;
-  transition: all 500ms;
+  transition: all 300ms;
 }
 
 button:hover,

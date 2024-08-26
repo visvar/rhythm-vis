@@ -37,6 +37,13 @@
         <li>
             <code>CTRL</code>+<code>F</code> focuses the search bar in the app menu
         </li>
+        <li>
+            <code>CTRL</code>+<code>+</code> and <code>CTRL</code>+<code>-</code
+            > zooms in and out
+        </li>
+        <li>
+            <code>F11</code> toggles fullscreen.
+        </li>
     </ul>
 
     <h4>App</h4>

@@ -18,6 +18,8 @@
     import LoadFromStorageButton from './common/history-button.svelte';
     import TouchInput from './common/touch-input.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import { COLORS } from '../lib/colors';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -154,7 +156,7 @@
                 Plot.areaY(kdePoints, {
                     x: 'x',
                     y: 'y',
-                    fill: (d) => '#e4f0fa',
+                    fill: (d) => COLORS.accent,
                     clip: true,
                 }),
                 Plot.ruleY([0]),
@@ -283,6 +285,10 @@
             2) Switch back and forth between a half bar of eighths and a half
             bar of triplets.
         </p>
+        <p>
+            3) Play a swing feel, where you shift every second note a bit late.
+            Try to do this consistently!
+        </p>
     </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
@@ -340,6 +346,7 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <PcKeyboardInput
         key=" "
         keyDown="{() => noteOn({ timestamp: performance.now() })}"

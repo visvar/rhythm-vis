@@ -17,6 +17,8 @@
     import LoadFromStorageButton from './common/history-button.svelte';
     import TouchInput from './common/touch-input.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import { COLORS } from '../lib/colors';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -35,7 +37,7 @@
     let grid = GRIDS[0];
     let binNote = 64;
     let adjustTime = 0;
-    let showKde = true;
+    let showKde = false;
     // data
     let firstTimeStamp = 0;
     let notes = [];
@@ -134,7 +136,7 @@
         }
 
         // draw KDE
-        if (showKde && noteAngles.length > 0) {
+        if (showKde && noteAngles.length > 1) {
             let bandwidth = 4 / binNote;
             let pad = 0;
             let bins = 360;
@@ -146,9 +148,7 @@
             const points = density1d.bandwidth(bandwidth);
             const maxValue = d3.max([...points], (d) => d.y);
             // smooth around first and last point
-            // console.log([...points]);
             ctx.beginPath();
-            let i = 0;
             for (const p of points) {
                 const angle = p.x - topOffs;
                 const rp = r + (p.y / maxValue) * maxBinHeight;
@@ -157,7 +157,7 @@
                 ctx.lineTo(cx + dx * rp, cy + dy * rp);
             }
             ctx.closePath();
-            ctx.fillStyle = '#e4f0fa';
+            ctx.fillStyle = COLORS.accent;
             ctx.fill();
             ctx.strokeStyle = '#aaa';
             ctx.stroke();
@@ -266,6 +266,10 @@
             2) Switch back and forth between a half bar of eighths and a half
             bar of triplets.
         </p>
+        <p>
+            3) Play a swing feel, where you shift every second note a bit late.
+            Try to do this consistently!
+        </p>
     </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
@@ -342,6 +346,7 @@
             style="width: {width}px; height: {height}px"
         ></canvas>
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />
     <PcKeyboardInput
         key=" "

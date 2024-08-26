@@ -4,6 +4,7 @@
     import { localStorageGetUsageData } from '../lib/localstorage';
     import { APP_MAP } from '../apps';
     import { onMount } from 'svelte';
+    import { star } from '../lib/icons';
 
     /**
      * TODO: show number of played notes
@@ -14,8 +15,8 @@
     let height = 500;
     let container1;
     let container2;
+    let container3;
     const usage = localStorageGetUsageData();
-    console.log(usage);
 
     let appUsage = [];
     for (const key in usage.demoClicks) {
@@ -40,15 +41,28 @@
         }),
     );
 
+    let appRatings = [];
+    for (const key in usage.ratings) {
+        if (Object.hasOwnProperty.call(usage.ratings, key)) {
+            if (key !== 'undefined') {
+                const element = usage.ratings[key];
+                appRatings.push({
+                    id: key,
+                    meanRating: d3.mean(element, (d) => d.value),
+                });
+            }
+        }
+    }
+    appRatings = appRatings.sort((a, b) => b.meanRating - a.meanRating);
+
     /**
      * Draw visualization
      */
     const draw = () => {
         container1.textContent = '';
-        // plot
+        // usage count plot
         const plot1 = Plot.plot({
             width,
-            height,
             marginLeft: 200,
             x: {
                 label: 'times used',
@@ -64,7 +78,7 @@
                     x: 'useCount',
                     y: 'id',
                     tip: true,
-                    rx: 4,
+                    rx: 8,
                 }),
                 Plot.text(appUsage, {
                     x: 'useCount',
@@ -80,7 +94,7 @@
             ],
         });
         container1.appendChild(plot1);
-        // plot
+        // usage dates plot
         container2.textContent = '';
         const plot2 = Plot.plot({
             width,
@@ -103,6 +117,43 @@
             ],
         });
         container2.appendChild(plot2);
+        // app rating plot
+        container3.textContent = '';
+        const plot3 = Plot.plot({
+            width,
+            marginLeft: 200,
+            marginRight: 40,
+            x: {
+                label: 'times used',
+            },
+            y: {
+                label: 'app',
+                grid: true,
+                domain: appRatings.map((d) => d.id),
+                // interval: d3.timeDays,
+            },
+            marks: [
+                Plot.waffleX(appRatings, {
+                    x: 'meanRating',
+                    y: 'id',
+                    tip: true,
+                    rx: 8,
+                    fill: 'gold',
+                }),
+                Plot.text(appRatings, {
+                    x: 'meanRating',
+                    y: 'id',
+                    text: (d) => `${d.meanRating.toFixed(1)} ${star}`,
+                    textAnchor: 'start',
+                    dx: 7,
+                    paintOrder: 'stroke',
+                    fill: '#333',
+                    stroke: 'white',
+                    strokeWidth: 10,
+                }),
+            ],
+        });
+        container3.appendChild(plot3);
     };
 
     onMount(draw);
@@ -119,4 +170,6 @@
     <div class="visualization" bind:this="{container1}"></div>
     <h3>Usage Dates</h3>
     <div class="visualization" bind:this="{container2}"></div>
+    <h3>App Ratings</h3>
+    <div class="visualization" bind:this="{container3}"></div>
 </main>

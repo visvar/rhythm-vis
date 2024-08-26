@@ -5,6 +5,7 @@
     import { Midi, Note } from '@tonaljs/tonal';
     import { Canvas } from 'musicvis-lib';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -219,4 +220,5 @@
             style="width: {width}px; height: {height}px"
         ></canvas>
     </div>
+    <RatingButton appId="{demoInfo.id}" />
 </main>

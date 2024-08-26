@@ -19,6 +19,8 @@
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import ToggleButton from './common/toggle-button.svelte';
+    import { COLORS } from '../lib/colors';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -31,7 +33,7 @@
     const TWO_PI = 2 * Math.PI;
     // settings
     let tempo = 60;
-    let pastNoteCount = 1;
+    let pastNoteCount = 4;
     let showClosestDuration = false;
     // data
     let isKeyDown = false;
@@ -46,7 +48,6 @@
     let openNoteMap = new Map();
 
     const noteOn = (e) => {
-        console.log(e);
         if (notes.length === 0) {
             firstTimeStamp = e.timestamp;
         }
@@ -113,7 +114,7 @@
             // one pie chart per note
             const cx = xStep * (index + 0.5) + 15;
             // data part
-            ctx.fillStyle = '#d5f3fe';
+            ctx.fillStyle = COLORS.accent;
             const ratio = Math.min(note.duration / wholeDuration, 1);
             ctx.beginPath();
             ctx.moveTo(cx, cy);
@@ -129,7 +130,7 @@
                 bestFitDuration = durations[bestFit];
                 if (showClosestDuration) {
                     // draw closest note
-                    ctx.fillStyle = '#c5e3ee';
+                    ctx.fillStyle = COLORS.accentDark;
                     const ratio = Math.min(
                         bestFitDuration.seconds / wholeDuration,
                         1,
@@ -149,7 +150,7 @@
             }
             //  if longer than a whole, show in red how much too long
             if (note.duration > wholeDuration) {
-                ctx.fillStyle = 'crimson';
+                ctx.fillStyle = COLORS.wrong;
                 const ratio2 = Math.min(
                     (note.duration - wholeDuration) / wholeDuration,
                     1,
@@ -316,6 +317,7 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} {noteOff} {controlChange} />
     <PcKeyboardInput
         key=" "

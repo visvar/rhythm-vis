@@ -19,6 +19,7 @@
     import TouchInput from './common/touch-input.svelte';
     import { FILTER_NOTES } from '../lib/music.js';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -30,7 +31,7 @@
     // settings
     let tempo = 90;
     let pastNoteCount = 10;
-    let useDotted = true;
+    let useDotted = false;
     let filterNote = 16;
     let targetDuration = 'auto';
     // data
@@ -270,6 +271,7 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />
     <PcKeyboardInput
         key=" "

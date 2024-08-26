@@ -91,7 +91,8 @@ export function localStorageGetUsageData() {
   } else {
     usage = {
       demoClicks: {},
-      demoRecordedData: {}
+      demoRecordedData: {},
+      ratings: {}
     }
   }
   return usage

@@ -42,6 +42,7 @@ export const APPS = [
     data: ['order', 'ioi', 'velocity'],
     skills: ['accents'],
     patterns: ['duration/ioi as symbol', 'dynamics as font-size', 'time is linear', 'time encoded non-linearly', 'update after note'],
+    timeScale: [''],
     component: Accents
   },
   {
@@ -303,7 +304,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
     data: ['onset/time'],
-    skills: ['sub-division', 'timing-consistency'],
+    skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'update on note'],
     component: SubDivision
   },
@@ -314,7 +315,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
     data: ['onset/time'],
-    skills: ['sub-division', 'timing-consistency'],
+    skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'target areas', 'update on note'],
     component: SubDivisionBar
   },
@@ -325,7 +326,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['drum', 'pc-key'],
     data: ['onset/time', 'instrument'],
-    skills: ['sub-division', 'timing-consistency', 'synchronized-body-parts'],
+    skills: ['sub-division', 'timing-consistency', 'synchronized-body-parts', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'update on note'],
     component: SubDivisionDrums
   },
@@ -336,7 +337,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
     data: ['onset/time'],
-    skills: ['sub-division', 'timing-consistency'],
+    skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'update on note'],
     component: SubDivisionLinear
   },
@@ -347,7 +348,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
     data: ['onset/time'],
-    skills: ['sub-division', 'timing-consistency'],
+    skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'comparison between takes', 'update on note'],
     component: SubDivisionHistory
   },
@@ -379,7 +380,7 @@ export const APPS = [
     description:
       'Play the same or a different rhythm with each hand and see your timing seperately.',
     input: 'MIDI',
-    instruments: ['keyboard', 'pc-key'],
+    instruments: ['keyboard', 'drum', 'pc-key'],
     data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'syncopation', 'synchronized-timing', 'synchronized-body-parts'],
     patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'update on note'],

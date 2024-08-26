@@ -17,6 +17,7 @@
     import example from '../example-recordings/chord-diagrams.json';
     import LoadFromStorageButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -79,6 +80,8 @@
             const maxFret = minFret + maxFretSpan;
             return notes.filter((d) => d.fret <= maxFret);
         });
+
+        // TODO: if multiple notes are one the same string, only keep the loudest
 
         // limit
         chords = chords
@@ -319,5 +322,6 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />
 </main>

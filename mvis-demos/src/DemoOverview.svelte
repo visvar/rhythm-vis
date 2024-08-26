@@ -122,7 +122,7 @@
                     y: (d) => d.k2,
                     text: (d) => d.apps.length,
                     stroke: '#fffc',
-                    strokeWidth: 6,
+                    strokeWidth: 2.5,
                     fill: 'black',
                 }),
             ],

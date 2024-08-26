@@ -17,6 +17,8 @@
     import LoadFromStorageButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import { drumPitchReplacementMapMD90 } from '../lib/drums';
+    import { COLORS } from '../lib/colors';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -128,7 +130,7 @@
                     ? Plot.areaY(kdePoints, {
                           x: 'x',
                           y: 'y',
-                          fill: (d) => '#e4f0fa',
+                          fill: (d) => COLORS.accent,
                           clip: true,
                       })
                     : Plot.rectY(
@@ -236,6 +238,10 @@
         <p>1) Play the kick on beat 1 and 3 and the snare on 2 and 4.</p>
         <p>2) Play 1) and add the hi-hat on beat 1, 2, 3, 4.</p>
         <p>3) Play 2) and sometimes add a fill on the toms.</p>
+        <p>
+            4) Play a swing feel, where you shift every second note a bit late.
+            Try to do this consistently!
+        </p>
     </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
@@ -303,6 +309,7 @@
         <ImportButton2 {loadData} />
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <PcKeyboardInput
         key="s"
         keyDown="{() =>

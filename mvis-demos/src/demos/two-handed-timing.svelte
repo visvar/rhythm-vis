@@ -18,6 +18,8 @@
     import LoadFromStorageButton from './common/history-button.svelte';
     import example from '../example-recordings/two-handed-timing.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import ToggleButton from './common/toggle-button.svelte';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -33,7 +35,9 @@
     let gridRight = GRIDS[1];
     let binNote = 96;
     let adjustTime = 0;
-    let middleNote = 69;
+    let drumMode = false;
+    // keyboard: middle A, drum: snare is left, rest is right
+    let middleNote = drumMode ? 40 : 69;
     let showKde = true;
     let pastBars = 4;
     // data
@@ -81,29 +85,29 @@
         const grid = left ? gridLeft : gridRight;
         const [grid1, grid2] = grid.split(':').map((d) => +d);
         const quarter = Utils.bpmToSecondsPerBeat(tempo);
-        let clamped = notes.filter(
+        let notesHand = notes.filter(
             (d) =>
                 // only look at left OR right hand
                 (left && d.number < middleNote) ||
                 (!left && d.number >= middleNote),
         );
 
-        clamped = clamped.map((d) => (d.time + adjustTime) / quarter);
-        if (pastBars > 0 && clamped.length > 0) {
+        notesHand = notesHand.map((d) => (d.time + adjustTime) / quarter);
+        if (pastBars > 0 && notesHand.length > 0) {
             // only show most recent bars
             const lastBeat = (notes.at(-1).time + adjustTime) / quarter;
             const maxBar = Math.ceil(lastBeat / grid1);
-            clamped = clamped.filter((d) => d / grid1 >= maxBar - pastBars);
+            notesHand = notesHand.filter((d) => d / grid1 >= maxBar - pastBars);
         }
-        clamped = clamped.map((d) => d % grid1);
+        notesHand = notesHand.map((d) => d % grid1);
 
         // KDE
         let kdePoints = [];
-        if (clamped.length > 0) {
+        if (notesHand.length > 0) {
             let bandwidth = 4 / binNote;
             let pad = 1;
             let bins = width / 2;
-            const density1d = kde.density1d(clamped, {
+            const density1d = kde.density1d(notesHand, {
                 bandwidth,
                 pad,
                 bins,
@@ -145,7 +149,7 @@
                           clip: true,
                       })
                     : Plot.rectY(
-                          clamped,
+                          notesHand,
                           Plot.binX(
                               { y: 'count' },
                               {
@@ -251,12 +255,15 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI keyboard and start playing to the metronome. The chart
-        will show you how a summary of where your notes started, the top one is
-        for your right hand (keys right of the middle A) and the bottom one for
-        your left hand. If you do not have a MIDI keyboard, you can press the
-        <code>f</code>
-        key on your PC keyboard for left and <code>j</code> for right.
+        Connect a MIDI keyboard or drum kit and start playing to the metronome.
+        The chart will show you how a summary of where your notes started, the
+        top one is for your right hand and the bottom one for your left hand.
+    </p>
+    <p class="explanation">
+        Keyboard: Left hand plays keys left of the middle A, right hand others.
+        Drums: Left hand plays snare, right hand any other drum (turn on drum
+        mode). PC keyboard: <code>f</code>
+        for left and <code>j</code> for right.
     </p>
     <ExerciseDrawer>
         <p>
@@ -271,6 +278,11 @@
     </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
+        <ToggleButton
+            bind:checked="{drumMode}"
+            label="drum mode"
+            title="Toggle between piano keyboard and drum mode"
+        />
         <label
             title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
@@ -291,6 +303,8 @@
                 {/each}
             </select>
         </label>
+    </div>
+    <div class="control">
         <label
             title="The width of each bar in rhythmic units. For example, each bin could be a 32nd note wide."
         >
@@ -350,6 +364,7 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <PcKeyboardInput
         key="f"
         keyDown="{() =>

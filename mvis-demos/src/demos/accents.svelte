@@ -17,6 +17,7 @@
     import example from '../example-recordings/accents.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import { FILTER_NOTES } from '../lib/music.js';
+    import RatingButton from './common/rating-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -28,7 +29,7 @@
     // settings
     let tempo = 90;
     let pastNoteCount = 20;
-    let useDotted = true;
+    let useDotted = false;
     let filterNote = 16;
     // data
     $: minIOI = (Utils.bpmToSecondsPerBeat(tempo) * 4) / filterNote;
@@ -195,12 +196,16 @@
         </p>
         <p>2) Play triplets and accent the first note in each triplet.</p>
         <p>
-            3) Play triplets and accent the first note in each odd triplet and
+            3) Switch between triplets and sixteenth notes and accent the first
+            note in each group of 3 and 4.
+        </p>
+        <p>
+            4) Play triplets and accent the first note in each odd triplet and
             the second in each even triplet.
         </p>
-        <p>4) Try different accent patterns such as:</p>
         <p>
-            <b>1</b>e+<b>a</b> 2e+a 3<b>e</b>+a <b>4</b>e+a
+            5) Try different accent patterns such as:<br />
+            <b>1</b> e + <b>a</b> 2 e + a 3 <b>e</b> + a <b>4</b> e + a<br />
             <span class="acc">𝅘𝅥</span> 𝅘𝅥 𝅘𝅥 <span class="acc">𝅘𝅥</span> | 𝅘𝅥 𝅘𝅥 𝅘𝅥 𝅘𝅥
             | 𝅘𝅥
             <span class="acc">𝅘𝅥</span>
@@ -241,6 +246,7 @@
         <button on:click="{() => loadData(example)}"> example </button>
         <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
+    <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />
 </main>
 
