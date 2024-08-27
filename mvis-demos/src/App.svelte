@@ -209,8 +209,18 @@
             bind:value="{currentSearch}"
           />
         </div>
+        <!-- sort -->
+        <div>
+          <h2>sort by</h2>
+          <select bind:value="{sortAppsBy}">
+            <option value="title">title (A-Z)</option>
+            <option value="used">most used</option>
+            <option value="recent">recently used</option>
+          </select>
+        </div>
+        <!-- skill filter -->
         <SkillTree bind:currentSkills {allSkills} />
-        <!-- task, instrument, input filters -->
+        <!-- instrument filters -->
         <div>
           <h2>instrument</h2>
           <button
@@ -232,6 +242,7 @@
             </button>
           {/each}
         </div>
+        <!-- input type filter -->
         <div>
           <h2>input</h2>
           <button
@@ -252,18 +263,46 @@
             </button>
           {/each}
         </div>
-        <div>
-          <h2>sort by</h2>
-          <select bind:value="{sortAppsBy}">
-            <option value="title">title (A-Z)</option>
-            <option value="used">most used</option>
-            <option value="recent">recently used</option>
-          </select>
-        </div>
       </div>
 
       <!-- app overview grid -->
       <div class="grid">
+        <!-- current filters -->
+        {#if currentSkills.size === 1 || currentInstruments.size < allInstruments.size || currentInputs.size < allInputs.size}
+          <div class="current-filters">
+            current filters:
+            {#if currentSkills.size === 1}
+              <button
+                title="remove this filter"
+                on:click="{() => {
+                  currentSkills = new Set(allSkills);
+                }}"
+              >
+                skill: {[...currentSkills]} &times;
+              </button>
+            {/if}
+            {#if currentInstruments.size < allInstruments.size}
+              <button
+                title="remove this filter"
+                on:click="{() => {
+                  currentInstruments = new Set(allInstruments);
+                }}"
+              >
+                {currentInstruments.size} instruments &times;
+              </button>
+            {/if}
+            {#if currentInputs.size < allInputs.size}
+              <button
+                title="remove this filter"
+                on:click="{() => {
+                  currentInputs = new Set(allInputs);
+                }}"
+              >
+                input: {[...currentInputs]} &times;
+              </button>
+            {/if}
+          </div>
+        {/if}
         {#each sortedApps as app}
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
@@ -363,6 +402,10 @@
 
   .filter button.active {
     background-color: rgb(218, 236, 251);
+  }
+
+  .current-filters {
+    grid-column: span 3;
   }
 
   .card .tags {

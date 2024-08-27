@@ -28,6 +28,7 @@ import SubDivisionHistory from './demos/sub-division-history.svelte'
 import PitchOffsetCentsNeedle from './demos/pitch-offset-cents-needle.svelte'
 import DurationPies from './demos/duration-pies.svelte'
 import DurationBars from './demos/duration-bars.svelte'
+import TempoChange from './demos/tempo-change.svelte'
 
 /**
  * All apps defined here
@@ -39,7 +40,7 @@ export const APPS = [
     description: 'See if you accent the right notes.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard'],
-    data: ['order', 'ioi', 'velocity'],
+    data: ['order', 'ioi', 'dynamics'],
     skills: ['accents'],
     patterns: ['duration/ioi as symbol', 'dynamics as font-size', 'time is linear', 'time encoded non-linearly', 'update after note'],
     timeScale: [''],
@@ -64,7 +65,7 @@ export const APPS = [
       'See what chords you play on a guitar/bass as chord diagrams.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
-    data: ['order', 'onset/time', 'pitch', 'velocity', 'instrument'],
+    data: ['order', 'onset/time', 'pitch', 'dynamics', 'instrument'],
     skills: ['chord-notes'],
     patterns: ['instrument layout', 'chord detection', 'time is linear', 'time is collapsed', 'update on note'],
     component: ChordDiagrams
@@ -97,7 +98,7 @@ export const APPS = [
     description: 'Check how well you control the duration of notes.',
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard', 'pc-key', 'touch'],
-    data: ['order', 'duration'],
+    data: ['order', 'duration/ioi'],
     skills: ['duration'],
     patterns: ['duration as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units'],
     component: DurationBars
@@ -108,7 +109,7 @@ export const APPS = [
     description: 'Check how well you control the duration of notes.',
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard', 'pc-key', 'touch'],
-    data: ['order', 'duration'],
+    data: ['order', 'duration/ioi'],
     skills: ['duration'],
     patterns: ['duration as pie', 'baselines as angle', 'time is circular', 'time encoded ciruclar', 'update on note', 'musical units'],
     component: DurationPies
@@ -177,7 +178,7 @@ export const APPS = [
       'See how often you use different kinds of notes in improvisation.',
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
-    data: ['order', 'duration', 'pitch'],
+    data: ['order', 'duration/ioi', 'pitch'],
     skills: ['pitch-intervals', 'scale-degrees'],
     patterns: ['note role as color', 'duration/ioi as bar', 'time is linear', 'time encoded non-linearly', 'update on note'],
     component: ImprovisationNoteColors
@@ -280,7 +281,7 @@ export const APPS = [
       'Record a short exercise at a slow tempo, then practice it with steadily increasing tempo.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
-    data: ['onset/time', 'exercise', 'baselines as grid'],
+    data: ['onset/time', 'exercise'],
     skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
     component: SpeedUp
@@ -292,7 +293,7 @@ export const APPS = [
       'Record a short guitar exercise at a slow tempo, then practice it with steadily increasing tempo.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
-    data: ['onset/time', 'exercise', 'baselines as grid', 'instrument'],
+    data: ['onset/time', 'exercise', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
     component: SpeedUpTab
@@ -373,6 +374,17 @@ export const APPS = [
     skills: ['tempo-keeping'],
     patterns: ['duration/ioi as bar', 'baselines as grid', 'time is linear', 'time encoded non-linearly', 'update on note'],
     component: TempoDrift
+  },
+  {
+    id: 'tempo-change',
+    title: 'Tempo Change',
+    description: 'See if you can change the tempo as intended.',
+    input: 'MIDI',
+    instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
+    data: ['onset/time'],
+    skills: ['tempo-changing', 'tempo-keeping'],
+    patterns: ['baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
+    component: TempoChange
   },
   {
     id: 'two-handed-timing',

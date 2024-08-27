@@ -20,6 +20,11 @@ export const SKILL_TREE = [
         description: 'The tempo should be kept same over a longer stretch of time without the help of a metronome'
       },
       {
+        id: 'tempo-changing',
+        title: 'tempo changing',
+        description: 'The tempo should be changed as intended'
+      },
+      {
         id: 'chord-timing',
         title: 'chord timing',
         description: 'Notes in a chord should start at the same time and the time between chords should be consistent'
@@ -39,11 +44,12 @@ export const SKILL_TREE = [
         title: 'timing consistency',
         description: 'When playing the same musical pattern multiple times, the timing should be similar'
       },
-      {
-        id: 'rests',
-        title: 'rests',
-        description: 'Notes should stop in time for a rest'
-      },
+      // TODO: not supported for now
+      // {
+      //   id: 'rests',
+      //   title: 'rests',
+      //   description: 'Notes should stop in time for a rest'
+      // },
       {
         id: 'syncopation',
         title: 'syncopation',
@@ -150,27 +156,28 @@ export const SKILL_TREE = [
       // }
     ]
   },
-  {
-    title: 'ensemble',
-    description: 'Playing together with other musicians that use the same or a different type of instrument',
-    children: [
-      {
-        id: 'synchronized-timing',
-        title: 'synchronized timing',
-        description: 'Multiple musicians playing together should play to the same timing grid'
-      },
-      {
-        id: 'entrance-pause',
-        title: 'entrance and pause',
-        description: 'Everyone should start and stop playing at the same time'
-      },
-      {
-        id: 'same-key',
-        title: 'same key',
-        description: 'Multiple musicians playing together should play in the same key and change it at the same time'
-      }
-    ]
-  }
+  // TODO: ensemble is out of scope for now
+  // {
+  //   title: 'ensemble',
+  //   description: 'Playing together with other musicians that use the same or a different type of instrument',
+  //   children: [
+  //     {
+  //       id: 'synchronized-timing',
+  //       title: 'synchronized timing',
+  //       description: 'Multiple musicians playing together should play to the same timing grid'
+  //     },
+  //     {
+  //       id: 'entrance-pause',
+  //       title: 'entrance and pause',
+  //       description: 'Everyone should start and stop playing at the same time'
+  //     },
+  //     {
+  //       id: 'same-key',
+  //       title: 'same key',
+  //       description: 'Multiple musicians playing together should play in the same key and change it at the same time'
+  //     }
+  //   ]
+  // }
 ]
 
 // assign numbering
