@@ -19,6 +19,7 @@
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import { COLORS } from '../lib/colors';
     import RatingButton from './common/rating-button.svelte';
+    import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -211,7 +212,7 @@
                 const angle = (n / circleSeconds) * TWO_PI - topOffs;
                 const dx = Math.cos(angle);
                 const dy = Math.sin(angle);
-                const layer = Math.floor(n / circleSeconds);
+                const layer = Math.max(0, Math.floor(n / circleSeconds));
                 const layerR1 = r + maxBinHeight + layer * layerSize + 5;
                 const layerR2 = layerR1 + layerSize;
                 ctx.beginPath();
@@ -364,18 +365,13 @@
                 {/each}
             </select>
         </label>
-        <label title="Shift all notes by an amount in seconds">
-            adjust
-            <input
-                type="number"
-                bind:value="{adjustTime}"
-                on:change="{draw}"
-                step="0.01"
-                min="-2"
-                max="2"
-                style="width: 55px"
-            />
-        </label>
+        <SubDivisionAdjustButton
+            bind:adjustTime
+            {tempo}
+            {grid}
+            {notes}
+            {draw}
+        />
         <button
             title="Toggle between bars and area"
             on:click="{() => {

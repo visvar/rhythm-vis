@@ -29,6 +29,7 @@
     bind:this="{button}"
     title="Toggle metronome (shortcut: m)"
     on:click="{toggle}"
+    style="{showBeepCountInput ? 'border-radius: 8px 0 0 8px;' : ''}"
 >
     {metronomeIcon} metronome
 </button>
@@ -45,13 +46,11 @@
 
 <style>
     button {
-        margin-right: -2px;
         transition: all 250ms;
-        border-radius: 8px 0 0 8px;
     }
     input {
         width: 30px;
-        margin-left: -2px;
+        margin-left: -10px;
         border-radius: 0 8px 8px 0;
     }
 </style>

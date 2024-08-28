@@ -19,6 +19,7 @@
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import { COLORS } from '../lib/colors';
     import RatingButton from './common/rating-button.svelte';
+    import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -299,21 +300,13 @@
                 {/each}
             </select>
         </label>
-        <label title="Shift all notes by an amount in seconds">
-            adjust
-            <input
-                type="number"
-                bind:value="{adjustTime}"
-                on:change="{() => {
-                    draw();
-                    drawLoaded();
-                }}"
-                step="0.01"
-                min="-2"
-                max="2"
-                style="width: 55px"
-            />
-        </label>
+        <SubDivisionAdjustButton
+            bind:adjustTime
+            {tempo}
+            {grid}
+            {notes}
+            {draw}
+        />
         <button
             title="Toggle between bars and area"
             on:click="{() => {

@@ -19,6 +19,7 @@
     import { drumPitchReplacementMapMD90 } from '../lib/drums';
     import { COLORS } from '../lib/colors';
     import RatingButton from './common/rating-button.svelte';
+    import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -277,6 +278,14 @@
                 style="width: 55px"
             />
         </label>
+        <!-- TODO: currently broken for drums -->
+        <!-- <SubDivisionAdjustButton
+            bind:adjustTime
+            {tempo}
+            {grid}
+            notes="{notes.map((d) => d.time)}"
+            {draw}
+        /> -->
         <label
             title="The number of past bars to be shown. Allows to 'forget' mistakes in the beginning."
         >
