@@ -25,7 +25,6 @@
     export let demoInfo;
 
     let width = 1000;
-    let height = 50;
     let container;
     let metro = new Metronome();
     // settings
@@ -163,14 +162,24 @@
         // plot
         const plot = Plot.plot({
             width,
-            height,
+            height: 60,
+            marginTop: 0,
             marginLeft: 40,
+            marginBottom: 35,
             x: {
                 label: 'time in beats',
                 domain: [0, maxBeat],
+                tickSize: 0,
             },
-            y: {},
+            y: {
+                label: `exercise`,
+                ticks: [],
+                labelAnchor: 'center',
+            },
             marks: [
+                Plot.text([0], {
+                    text: ``,
+                }),
                 // beat marks
                 Plot.ruleX(d3.range(0, maxBeat, 1), {
                     stroke: '#ccc',
@@ -181,8 +190,9 @@
                 Plot.dot(quantized, {
                     symbol: 'times',
                     stroke: '#666',
+                    strokeWidth: 1,
                     x: (d) => d,
-                    r: 4,
+                    r: 3,
                 }),
             ],
         });
@@ -195,31 +205,47 @@
             const inBeats = notes.map((d) => (d - firstNoteTime) / quarter);
             const plot = Plot.plot({
                 width,
-                height: 70,
+                height: 50,
+                marginTop: 0,
                 marginLeft: 40,
+                marginBottom: 5,
                 x: {
                     domain: [0, maxBeat],
+                    tickSize: 0,
+                    ticks: [],
                 },
                 y: {
-                    label: `${tempo} BPM`,
+                    label: `${tempo}\nbpm`,
                     ticks: [],
+                    labelAnchor: 'center',
                 },
                 marks: [
                     Plot.text([0], {
-                        text: `${tempo} BPM`,
+                        text: ``,
                     }),
                     // beat marks
                     Plot.ruleX(d3.range(0, maxBeat, 1), {
-                        stroke: '#ccc',
+                        stroke: '#d8d8d8',
+                        strokeWidth: 5,
                     }),
                     // bar marks
-                    Plot.ruleX(d3.range(0, maxBeat + 1, 4)),
+                    Plot.ruleX(d3.range(0, maxBeat + 1, 4), {
+                        stroke: '#c8c8c8',
+                        strokeWidth: 5,
+                    }),
                     // notes
-                    Plot.dot(inBeats, {
-                        symbol: 'times',
-                        stroke: '#666',
+                    // Plot.dot(inBeats, {
+                    //     symbol: 'times',
+                    //     stroke: '#666',
+                    //     strokeWidth: 1,
+                    //     x: (d) => d,
+                    //     r: 3,
+                    // }),
+                    Plot.tickX(inBeats, {
+                        stroke: '#000',
+                        strokeWidth: 0.8,
                         x: (d) => d,
-                        r: 4,
+                        inset: 8,
                     }),
                 ],
             });

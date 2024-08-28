@@ -6,6 +6,7 @@
     export let scaleType = 'major';
     export let scaleInfo = null;
     export let callback = () => {};
+    export let disabled = false;
 
     const noteNames = Midi.NOTE_NAMES_FLAT;
     const scales = Scale.names().sort();
@@ -19,12 +20,22 @@
 
 <label>
     scale
-    <select bind:value="{scaleRoot}" on:change="{callback}" class="select1">
+    <select
+        bind:value="{scaleRoot}"
+        on:change="{callback}"
+        class="select1"
+        {disabled}
+    >
         {#each noteNames as n}
             <option value="{n}">{n}</option>
         {/each}
     </select>
-    <select bind:value="{scaleType}" on:change="{callback}" class="select2">
+    <select
+        bind:value="{scaleType}"
+        on:change="{callback}"
+        class="select2"
+        {disabled}
+    >
         {#each scales as s}
             <option value="{s}">{s}</option>
         {/each}

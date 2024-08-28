@@ -209,11 +209,11 @@
                 if (percent < 80) {
                     rating = 'too short';
                 } else if (percent < 90) {
-                    rating = 'a bit short';
+                    rating = 'short';
                 } else if (percent < 110) {
                     rating = 'good!';
                 } else if (percent < 120) {
-                    rating = 'a bit long';
+                    rating = 'long';
                 } else {
                     rating = 'too long';
                 }

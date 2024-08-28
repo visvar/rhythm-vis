@@ -14,6 +14,9 @@
     import LoadFromStorageButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
+    import { NOTE_TO_CHROMA_MAP } from '../lib/music';
+    import ScaleSelect from './common/scale-select.svelte';
+    import ToggleButton from './common/toggle-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -25,8 +28,13 @@
     const minPitch = 21;
     const maxPitch = 108;
     let container;
+    let scaleInfo;
+    $: scaleChromaSet = new Set(
+        scaleInfo ? scaleInfo.notes.map((d) => NOTE_TO_CHROMA_MAP.get(d)) : [],
+    );
     // settings
     let pastNoteCount = 500;
+    let showScale;
     // data
     let notes = [];
 
@@ -75,6 +83,12 @@
                 label: 'count',
                 interval: 1,
             },
+            color: {
+                legend: showScale,
+                domain: ['in scale', 'not in scale'],
+                range: d3.schemeTableau10,
+                marginLeft: 500,
+            },
             marks: [
                 Plot.ruleY([0], {
                     stroke: '#ddd',
@@ -98,8 +112,13 @@
                         { y: 'count' },
                         {
                             x: 'number',
-                            fill: (d) =>
-                                Midi.isSharp(d.number) ? '#444' : '#ccc',
+                            fill: showScale
+                                ? (d) =>
+                                      scaleChromaSet.has(d.number % 12)
+                                          ? 'in scale'
+                                          : 'not in scale'
+                                : (d) =>
+                                      Midi.isSharp(d.number) ? '#444' : '#ccc',
                             inset: 0.5,
                             rx: 4,
                             tip: true,
@@ -109,6 +128,7 @@
             ],
         });
         container.appendChild(plot);
+        // mini keyboard for
         const plot2 = Plot.plot({
             width,
             height: 60,
@@ -121,7 +141,6 @@
                 axis: false,
             },
             marks: [
-                // background bars
                 Plot.rectY(d3.range(minPitch, maxPitch + 1), {
                     x: (d) => d,
                     y1: (d) => (Midi.isSharp(d) ? 2 : 1.5),
@@ -192,6 +211,13 @@
     </ExerciseDrawer>
     <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
+        <ToggleButton
+            bind:checked="{showScale}"
+            label="show scale"
+            title="If active, the color hue will show whether notes are in the selected scale or not"
+            callback="{draw}"
+        />
+        <ScaleSelect bind:scaleInfo disabled="{!showScale}" callback="{draw}" />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

@@ -107,13 +107,8 @@
                 legend: showScale,
                 marginLeft: 100,
                 width: 400,
-                // scheme: 'blues',
-                // scheme: 'viridis',
-                // reverse: true,
-                scheme: 'Observable10',
+                scheme: 'tableau10',
                 domain: ['in scale', 'not in scale'],
-                // range: d3.schemeTableau10.slice(2),
-                // label: 'count',
             },
             marks: [
                 // frets
@@ -145,7 +140,6 @@
                 Plot.cell(aggregated, {
                     x: 'fret',
                     y: 'string',
-                    // fill: 'count',
                     fill: (d) =>
                         showScale
                             ? isInScale(
@@ -250,6 +244,7 @@
             bind:scaleType
             callback="{draw}"
             bind:scaleInfo
+            disabled="{!showScale}"
         />
     </div>
     <div class="visualization" bind:this="{container}"></div>

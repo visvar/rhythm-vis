@@ -5,6 +5,7 @@
     import { Midi } from 'musicvis-lib';
     import { getCs } from '../lib/lib';
     import MidiInput from '../demos/common/midi-input.svelte';
+    import ToggleButton from '../demos/common/toggle-button.svelte';
 
     export let toolInfo;
     let width = 1000;
@@ -13,7 +14,7 @@
     // settings
     let pastSeconds = 30;
     let colorMap = 'velocity';
-
+    let onlyChroma = true;
     // data
     let firstTimeStamp = 0;
     let notes = [];
@@ -63,7 +64,9 @@
         const filtered = notes.filter(
             (d) => d.end > minTime || d.end === undefined,
         );
-        const pitchExtent = d3.extent(filtered, (d) => d.number);
+        const pitchExtent = onlyChroma
+            ? [0, 11]
+            : d3.extent(filtered, (d) => d.number);
         // color
         let color;
         let fill;
@@ -78,7 +81,7 @@
             color = {
                 label: 'Piano key color',
                 domain: ['black', 'white'],
-                range: ['black', 'white'],
+                range: ['black', '#f8f8f8'],
             };
             fill = (d) => (Midi.isSharp(d.number) ? 'black' : 'white');
         } else if (colorMap === 'channel') {
@@ -108,7 +111,9 @@
                 reverse: true,
                 domain: d3.range(pitchExtent[0] - 1, pitchExtent[1] + 2),
                 // type: 'linear',
-                tickFormat: (d) => Midi.MIDI_NOTES[d].label,
+                tickFormat: onlyChroma
+                    ? (d) => Midi.MIDI_NOTES[d]?.name ?? ''
+                    : (d) => Midi.MIDI_NOTES[d]?.label ?? '',
             },
             color: {
                 ...color,
@@ -130,7 +135,7 @@
                         }
                         return Math.max(d.end, d.time + 0.025);
                     },
-                    y: 'number',
+                    y: onlyChroma ? (d) => d.number % 12 : (d) => d.number,
                     fill,
                     stroke: '#ccc',
                     rx: 5,
@@ -161,6 +166,11 @@
         hard/loud a note was played.
     </p>
     <div class="control">
+        <ToggleButton
+            bind:checked="{onlyChroma}"
+            label="ignore octave"
+            title="If active, only the note's chroma will be considered which reduces the y axis to the twelve notes"
+        />
         <label>
             color
             <select bind:value="{colorMap}">
