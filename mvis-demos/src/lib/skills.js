@@ -72,6 +72,11 @@ export const SKILL_TREE = [
         description: 'In improvisation, the intervals between consecutive notes should match the intended harmony or dissonance'
       },
       {
+        id: 'scale-notes',
+        title: 'scale notes',
+        description: 'The musicians should know which notes belong to a scale'
+      },
+      {
         id: 'scale-degrees',
         title: 'scale degrees',
         description: 'In improvisation, scale degrees should be used to appropriate amounts'

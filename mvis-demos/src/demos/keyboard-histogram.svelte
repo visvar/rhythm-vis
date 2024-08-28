@@ -51,14 +51,15 @@
         const limited = notes.slice(-pastNoteCount);
         const counts = d3.groups(limited, (d) => d.number);
         const maxCount = d3.max(counts, (d) => d[1].length);
+        container.textContent = '';
         const plot = Plot.plot({
             width,
             height,
             // marginLeft: 80,
-            marginBottom: 50,
+            marginBottom: 28,
             padding: 0,
             x: {
-                label: 'key',
+                label: '',
                 domain: d3.range(minPitch, maxPitch + 1),
                 tickFormat: (d) => {
                     if (Midi.isSharp(d)) {
@@ -75,10 +76,6 @@
                 interval: 1,
             },
             marks: [
-                // C lines
-                // Plot.ruleX(getCs(minPitch, maxPitch + 1), {
-                //     stroke: '#ddd',
-                // }),
                 Plot.ruleY([0], {
                     stroke: '#ddd',
                 }),
@@ -95,7 +92,6 @@
                     },
                 ),
                 // data
-                // Plot.barY(
                 Plot.waffleY(
                     limited,
                     Plot.groupX(
@@ -112,8 +108,32 @@
                 ),
             ],
         });
-        container.textContent = '';
         container.appendChild(plot);
+        const plot2 = Plot.plot({
+            width,
+            height: 60,
+            marginLeft: 40,
+            marginRight: 20,
+            marginBottom: 10,
+            padding: 0,
+            x: { axis: false, interval: 1 },
+            y: {
+                axis: false,
+            },
+            marks: [
+                // background bars
+                Plot.rectY(d3.range(minPitch, maxPitch + 1), {
+                    x: (d) => d,
+                    y1: (d) => (Midi.isSharp(d) ? 2 : 1.5),
+                    y2: (d) => (Midi.isSharp(d) ? 0.5 : 0),
+                    fill: (d) => (Midi.isSharp(d) ? '#333' : 'white'),
+                    stroke: '#bbb',
+                    inset: 1,
+                    rx: 4,
+                }),
+            ],
+        });
+        container.appendChild(plot2);
     };
 
     onMount(draw);

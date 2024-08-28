@@ -5,6 +5,7 @@
     import { APP_MAP } from '../apps';
     import { onMount } from 'svelte';
     import { star } from '../lib/icons';
+    import { COLORS } from '../lib/colors';
 
     /**
      * TODO: show number of played notes
@@ -91,7 +92,8 @@
                     x: 'useCount',
                     y: 'id',
                     tip: true,
-                    rx: 8,
+                    rx: 4,
+                    fill: (d) => COLORS.accent,
                 }),
                 Plot.text(appUsage, {
                     x: 'useCount',

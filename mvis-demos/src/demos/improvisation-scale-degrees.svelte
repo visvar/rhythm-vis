@@ -13,6 +13,8 @@
     import LoadFromStorageButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
+    import ScaleSelect from './common/scale-select.svelte';
+    import { NOTE_TO_CHROMA_MAP } from '../lib/music';
 
     /**
      * contains the demo meta information defined in App.js
@@ -31,7 +33,6 @@
     let notes = [];
     // domain knowledge
     const noteNames = Midi.NOTE_NAMES_FLAT;
-    const scales = Scale.names().sort();
 
     const noteOn = (e) => {
         const note = {
@@ -55,7 +56,7 @@
         const scaleInfo = Scale.get(`${root} ${scale}`);
         const scaleNotes = scaleInfo.notes.map((note, i) => {
             // note chroma from 0 to 11 (C to B)
-            const chroma = noteNames.indexOf(note);
+            const chroma = NOTE_TO_CHROMA_MAP.get(note);
             let offset = chroma - rootNr;
             offset = offset >= 0 ? offset : offset + 12;
             return {
@@ -181,21 +182,12 @@
         <p>2) Improvise in a scale you did not know before.</p>
     </ExerciseDrawer>
     <div class="control">
-        <label>
-            scale
-            <select bind:value="{root}" on:change="{draw}">
-                {#each noteNames as n}
-                    <option value="{n}">{n}</option>
-                {/each}
-            </select>
-            <select bind:value="{scale}" on:change="{draw}">
-                {#each scales as s}
-                    <option value="{s}">{s}</option>
-                {/each}
-            </select>
-        </label>
+        <ScaleSelect
+            bind:scaleRoot="{root}"
+            bind:scaleType="{scale}"
+            callback="{draw}"
+        />
     </div>
-
     <div class="control">
         <button
             title="Use colors for root, in-scale, outside-scale"

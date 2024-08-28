@@ -21,7 +21,6 @@
 
 <main>
     <h2>skills</h2>
-    <button on:click="{() => (currentSkills = allSkills)}"> show all </button>
     {#each skillTree as node}
         <button class="node" on:click="{() => toggleNode(node)}">
             📁

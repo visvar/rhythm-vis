@@ -107,6 +107,7 @@
                 minTime: timeExtent[0],
                 maxTime: timeExtent[1],
                 direction,
+                meanVelocity: d3.mean(chord, (d) => d.velocity),
             };
         });
         // plot
@@ -181,6 +182,7 @@
                     y1: 'minString',
                     y2: 'maxString',
                     fill: 'direction',
+                    opacity: 'meanVelocity',
                     rx: 5,
                 }),
                 Plot.dot(chordInfo, {
@@ -255,7 +257,8 @@
         strumming direction is further indicated by arrow heads. Due to how
         guitar tabs are drawn from the point of view of the guitarist, downward
         strumming will result in upward arrows in the lower visualization.
-        Single notes are drawn in red.
+        Single notes are drawn in red. The opactiy encodes the notes' mean
+        velocity (loudness).
     </p>
     <ExerciseDrawer>
         <p>

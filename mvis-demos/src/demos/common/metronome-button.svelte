@@ -45,10 +45,13 @@
 
 <style>
     button {
+        margin-right: -2px;
         transition: all 250ms;
+        border-radius: 8px 0 0 8px;
     }
     input {
         width: 30px;
-        margin-left: -12px;
+        margin-left: -2px;
+        border-radius: 0 8px 8px 0;
     }
 </style>

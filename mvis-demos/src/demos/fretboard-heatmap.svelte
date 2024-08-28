@@ -12,6 +12,9 @@
     import LoadFromStorageButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
+    import ScaleSelect from './common/scale-select.svelte';
+    import ToggleButton from './common/toggle-button.svelte';
+    import { NOTE_TO_CHROMA_MAP } from '../lib/music';
 
     /**
      * contains the demo meta information defined in App.js
@@ -26,11 +29,26 @@
     let tuningPitches = [64, 59, 55, 50, 45, 40];
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
     let container;
+    let scaleInfo;
+    $: scaleChromaSet = new Set(
+        scaleInfo ? scaleInfo.notes.map((d) => NOTE_TO_CHROMA_MAP.get(d)) : [],
+    );
     // settings
     let pastNoteCount = 200;
+    let showScale = true;
+    let scaleRoot = 'A';
+    let scaleType = 'minor pentatonic';
     // data
     let firstTimeStamp = 0;
     let notes = [];
+
+    const isInScale = (string, fret, tuningPitches, scaleInfo) => {
+        if (!scaleInfo) {
+            return false;
+        }
+        const chroma = (tuningPitches[string] + fret) % 12;
+        return scaleChromaSet.has(chroma);
+    };
 
     const noteOn = (e) => {
         if (notes.length === 0) {
@@ -55,6 +73,20 @@
         // TODO: filter notes with low velocity
         const data = notes.slice(-pastNoteCount);
         const cellSize = (width - 100) / 25;
+
+        // count notes for each string, fret position
+        const aggregated = d3
+            .groups(
+                data,
+                (d) => d.string,
+                (d) => d.fret,
+            )
+            .flatMap(([string, grp]) =>
+                grp.map(([fret, grp2]) => {
+                    return { string, fret, count: grp2.length };
+                }),
+            );
+
         const plot = Plot.plot({
             width,
             height,
@@ -72,13 +104,16 @@
                 tickSize: 0,
             },
             color: {
-                legend: true,
+                legend: showScale,
                 marginLeft: 100,
                 width: 400,
                 // scheme: 'blues',
-                scheme: 'viridis',
-                reverse: true,
-                label: 'count',
+                // scheme: 'viridis',
+                // reverse: true,
+                scheme: 'Observable10',
+                domain: ['in scale', 'not in scale'],
+                // range: d3.schemeTableau10.slice(2),
+                // label: 'count',
             },
             marks: [
                 // frets
@@ -107,38 +142,35 @@
                     r: 8,
                 }),
                 // heatmap
-                Plot.cell(
-                    data,
-                    Plot.group(
-                        { fill: 'count' },
-                        {
-                            x: 'fret',
-                            y: 'string',
-                            fill: 'count',
-                            inset: 5,
-                            rx: '50%',
-                            tip: true,
-                        },
-                    ),
-                ),
-                Plot.text(
-                    data,
-                    Plot.group(
-                        {
-                            text: (d) => d.length,
-                        },
-                        {
-                            x: 'fret',
-                            y: 'string',
-                            tip: true,
-                            fill: 'black',
-                            stroke: 'white',
-                            strokeWidth: 2,
-                            paintOrder: 'stroke',
-                            // text: (d) => d.length,
-                        },
-                    ),
-                ),
+                Plot.cell(aggregated, {
+                    x: 'fret',
+                    y: 'string',
+                    // fill: 'count',
+                    fill: (d) =>
+                        showScale
+                            ? isInScale(
+                                  d.string,
+                                  d.fret,
+                                  tuningPitches,
+                                  scaleInfo,
+                              )
+                                ? 'in scale'
+                                : 'not in scale'
+                            : '#222',
+                    opacity: 'count',
+                    inset: 5,
+                    rx: '50%',
+                    tip: true,
+                }),
+                Plot.text(aggregated, {
+                    text: (d) => d.count,
+                    x: 'fret',
+                    y: 'string',
+                    fill: 'black',
+                    stroke: 'white',
+                    strokeWidth: 3,
+                    paintOrder: 'stroke',
+                }),
             ],
         });
 
@@ -154,6 +186,9 @@
     const getExportData = () => {
         return {
             pastNoteCount,
+            showScale,
+            scaleRoot,
+            scaleType,
             notes,
         };
     };
@@ -170,6 +205,9 @@
                 saveToStorage();
             }
             pastNoteCount = json.pastNoteCount;
+            showScale = json.showScale;
+            scaleRoot = json.scaleRoot;
+            scaleType = json.scaleType;
             notes = json.notes;
             draw();
         }
@@ -188,7 +226,8 @@
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI guitar and start playing. The heatmap below shows how
-        often you played each fretboard position.
+        often you played each fretboard position. If a scale is shown, the color
+        hue will tell you whether a note you played belongs to the scale or not.
     </p>
     <ExerciseDrawer>
         <p>1) Play the note A over the whole fretboard.</p>
@@ -200,6 +239,18 @@
     </ExerciseDrawer>
     <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
+        <ToggleButton
+            bind:checked="{showScale}"
+            label="show scale"
+            title="If active, the color hue will show whether notes are in the selected scale or not"
+            callback="{draw}"
+        />
+        <ScaleSelect
+            bind:scaleRoot
+            bind:scaleType
+            callback="{draw}"
+            bind:scaleInfo
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

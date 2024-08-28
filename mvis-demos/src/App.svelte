@@ -223,13 +223,6 @@
         <!-- instrument filters -->
         <div>
           <h2>instrument</h2>
-          <button
-            on:click="{() => {
-              currentInstruments = new Set(allInstruments);
-            }}"
-          >
-            show all
-          </button>
           {#each allInstruments.values() as d}
             <button
               on:click="{() =>
@@ -245,13 +238,6 @@
         <!-- input type filter -->
         <div>
           <h2>input</h2>
-          <button
-            on:click="{() => {
-              currentInputs = new Set(allInputs);
-            }}"
-          >
-            show all
-          </button>
           {#each allInputs.values() as d}
             <button
               on:click="{() => (currentInputs = updSet(currentInputs, d))}"
@@ -268,9 +254,19 @@
       <!-- app overview grid -->
       <div class="grid">
         <!-- current filters -->
-        {#if currentSkills.size === 1 || currentInstruments.size < allInstruments.size || currentInputs.size < allInputs.size}
+        {#if currentSearch !== '' || currentSkills.size === 1 || currentInstruments.size < allInstruments.size || currentInputs.size < allInputs.size}
           <div class="current-filters">
             current filters:
+            {#if currentSearch !== ''}
+              <button
+                title="remove this filter"
+                on:click="{() => {
+                  currentSearch = '';
+                }}"
+              >
+                search: {currentSearch} &times;
+              </button>
+            {/if}
             {#if currentSkills.size === 1}
               <button
                 title="remove this filter"
@@ -402,10 +398,6 @@
 
   .filter button.active {
     background-color: rgb(218, 236, 251);
-  }
-
-  .current-filters {
-    grid-column: span 3;
   }
 
   .card .tags {

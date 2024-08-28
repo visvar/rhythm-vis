@@ -3,18 +3,18 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { Note, Scale } from '@tonaljs/tonal';
-    import { Midi } from 'musicvis-lib';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import MidiInput from './common/midi-input.svelte';
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
-    import { toggleOnIcon, toggleOffIcon } from '../lib/icons.js';
     import example from '../example-recordings/fretboard-improvisation-intervals.json';
     import LoadFromStorageButton from './common/history-button.svelte';
     import ToggleButton from './common/toggle-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
+    import ScaleSelect from './common/scale-select.svelte';
+    import { NOTE_TO_CHROMA_MAP } from '../lib/music';
 
     /**
      * contains the demo meta information defined in App.js
@@ -37,8 +37,6 @@
     // E standard tuning, strings start at high E
     let tuningPitches = [64, 59, 55, 50, 45, 40];
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
-    const noteNames = Midi.NOTE_NAMES_FLAT;
-    const scales = Scale.names().sort();
 
     const noteOn = (e) => {
         const string = e.message.channel - 1;
@@ -65,7 +63,7 @@
             const scaleNotes = new Map(
                 scaleInfo.notes.map((note, i) => {
                     // note chroma from 0 to 11 (C to B)
-                    const chroma = noteNames.indexOf(note);
+                    const chroma = NOTE_TO_CHROMA_MAP.get(note);
                     let offset = chroma - lastNoteChroma;
                     offset = offset >= 0 ? offset : offset + 12;
                     const info = {
@@ -78,7 +76,10 @@
                     return [chroma, info];
                 }),
             );
-            const lastNoteDegree = scaleNotes.get(lastNote.number % 12).degree;
+            if (!scaleNotes.has(lastNoteChroma)) {
+                return;
+            }
+            const lastNoteDegree = scaleNotes.get(lastNoteChroma).degree;
             // if frets are limited to within reach
             let minFret = 0;
             let maxFret = fretCount;
@@ -243,22 +244,14 @@
         <p>1) Go through the scale in steps of 1.</p>
         <p>2) Go through the scale in steps of 2.</p>
         <p>3) Go through the scale in steps of 3.</p>
-        <p>4) Go through the scale in steps of 4.</p>
+        <p>4) ...</p>
     </ExerciseDrawer>
     <div class="control">
-        <label>
-            scale
-            <select bind:value="{root}" on:change="{draw}">
-                {#each noteNames as n}
-                    <option value="{n}">{n}</option>
-                {/each}
-            </select>
-            <select bind:value="{scale}" on:change="{draw}">
-                {#each scales as s}
-                    <option value="{s}">{s}</option>
-                {/each}
-            </select>
-        </label>
+        <ScaleSelect
+            bind:scaleRoot="{root}"
+            bind:scaleType="{scale}"
+            callback="{draw}"
+        />
         <ToggleButton
             bind:checked="{showNames}"
             title="Toggle between note names and scale steps"

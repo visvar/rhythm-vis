@@ -120,8 +120,8 @@ export const APPS = [
     description: 'See how often you play different fretboard positions.',
     input: 'MIDI',
     instruments: ['guitar/bass'],
-    data: ['instrument'],
-    skills: ['instrument-layout'],
+    data: ['instrument', 'pitch'],
+    skills: ['instrument-layout', 'scale-notes'],
     patterns: ['distribution as heatmap', 'instrument layout', 'time is collapsed', 'update on note'],
     component: FretboardHeatmap
   },
@@ -179,7 +179,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
     data: ['order', 'duration/ioi', 'pitch'],
-    skills: ['pitch-intervals', 'scale-degrees'],
+    skills: ['pitch-intervals', 'scale-degrees', 'scale-notes'],
     patterns: ['note role as color', 'duration/ioi as bar', 'time is linear', 'time encoded non-linearly', 'update on note'],
     component: ImprovisationNoteColors
   },
@@ -191,7 +191,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
     data: ['pitch'],
-    skills: ['pitch-intervals', 'scale-degrees'],
+    skills: ['pitch-intervals', 'scale-degrees', 'scale-notes'],
     patterns: ['note role as color', 'distribution as histogram', 'time is collapsed', 'update on note'],
     component: ImprovisationScaleDegrees
   },
@@ -203,7 +203,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['guitar/bass', 'keyboard'],
     data: ['pitch', 'onset/time'],
-    skills: ['pitch-intervals', 'scale-degrees'],
+    skills: ['pitch-intervals', 'scale-degrees', 'scale-notes'],
     patterns: ['note role as color', 'distribution as histogram', 'facets', 'time segments', 'time is linear', 'time is collapsed', 'time encoded linearly', 'update on note'],
     component: ImprovisationScaleDegreesBar
   },

@@ -114,6 +114,8 @@ svg text {
 /* main page */
 
 div.grid {
+  width: fit-content;
+  margin: auto;
   margin-top: 20px;
   margin-bottom: 20px;
   display: grid;
@@ -121,6 +123,10 @@ div.grid {
   gap: 18px;
   align-content: start;
   justify-content: start;
+}
+
+div.current-filters {
+  grid-column: span 3;
 }
 
 div.card {
@@ -150,7 +156,7 @@ div.card:hover {
 div.card h2 {
   margin-top: 0;
   min-height: 30px;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 div.card .description {
@@ -198,6 +204,10 @@ code {
 
   div.grid {
     grid-template-columns: repeat(2, auto);
+  }
+
+  div.current-filters {
+    grid-column: span 2;
   }
 }
 
