@@ -9,6 +9,10 @@
     export let draw;
 
     const autoAdjust = () => {
+        if (!notes || notes.length === 0) {
+            adjustTime = 0;
+            return;
+        }
         // get times of grid
         const [grid1, grid2] = grid.split(':').map((d) => +d);
         const circleSeconds = Utils.bpmToSecondsPerBeat(tempo) * grid1;

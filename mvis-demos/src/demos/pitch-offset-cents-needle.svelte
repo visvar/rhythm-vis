@@ -146,7 +146,8 @@
         // note
         ctx.font = '60px Arial';
         if (bendValues.length > 0) {
-            ctx.fillText(bendValues.at(-1).note, cx, cy - 20);
+            const note = d3.mode(bendValues, (d) => d.note);
+            ctx.fillText(note, cx, cy - 20);
         }
     };
 

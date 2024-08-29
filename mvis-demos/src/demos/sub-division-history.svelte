@@ -6,15 +6,14 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
-    import { clamp } from '../lib/lib';
     import { BIN_NOTES, GRIDS } from '../lib/music';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
-    import example from '../example-recordings/sub-division.json';
-    import { localStorageAddRecording } from '../lib/localstorage';
+    import {
+        localSorageGetRecordings,
+        localStorageAddRecording,
+    } from '../lib/localstorage';
     import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
-    import LoadFromStorageButton from './common/history-button.svelte';
     import TouchInput from './common/touch-input.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import { COLORS } from '../lib/colors';
@@ -61,32 +60,21 @@
         binNote,
         adjustTime,
         showKde,
+        size,
+        x,
+        y,
     ) => {
-        const cx = width / 2;
-        const cy = height / 2;
+        const width = size;
+        const height = size;
+        const cx = x + width / 2;
+        const cy = y + height / 2;
         const r = width * 0.4;
         const r2 = r * 0.8;
         const r3 = r * 0.9;
-        const r4 = r * 1.1;
         const r5 = r * 0.95;
         // offset in radians for 0 on top
         const topOffs = Math.PI / 2;
         const ctx = canvas.getContext('2d');
-        // scale to DPR
-        // Get the DPR and size of the canvas
-        const dpr = window.devicePixelRatio;
-        const rect = canvas.getBoundingClientRect();
-        // Set the "actual" size of the canvas
-        canvas.width = rect.width * dpr;
-        canvas.height = rect.height * dpr;
-        // Scale the context to ensure correct drawing operations
-        ctx.scale(dpr, dpr);
-        // Set the "drawn" size of the canvas
-        canvas.style.width = `${rect.width}px`;
-        canvas.style.height = `${rect.height}px`;
-        // fade-out old data
-        ctx.clearRect(0, 0, width, height);
-        // ctx.fillRect(0, 0, width, height);
 
         const [grid1, grid2] = grid.split(':').map((d) => +d);
 
@@ -200,23 +188,97 @@
     };
 
     const draw = () => {
-        drawOne(canvas, notes, tempo, grid, binNote, adjustTime, showKde);
+        const ctx = canvas.getContext('2d');
+        // scale to DPR
+        // Get the DPR and size of the canvas
+        const dpr = window.devicePixelRatio;
+        const rect = canvas.getBoundingClientRect();
+        // Set the "actual" size of the canvas
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        // Scale the context to ensure correct drawing operations
+        ctx.scale(dpr, dpr);
+        // Set the "drawn" size of the canvas
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+        // fade-out old data
+        ctx.clearRect(0, 0, width, height);
+        drawOne(
+            canvas,
+            notes,
+            tempo,
+            grid,
+            binNote,
+            adjustTime,
+            showKde,
+            width,
+            0,
+            0,
+        );
     };
 
     const drawLoaded = () => {
-        const json = loadedComparison;
-        const tempo = json.tempo;
-        const grid = json.grid;
-        // const binNote = json.binNote;
-        const adjustTime = json.adjustTime;
-        // const showKde = json.showKde ?? false;
-        // data
-        const notes = json.notes;
-        drawOne(canvas2, notes, tempo, grid, binNote, adjustTime, showKde);
-        metaData.innerText = `tempo: ${tempo} grid: ${grid} adjust: ${adjustTime}`;
+        const recordings = localSorageGetRecordings(demoInfo.id)
+            .slice(-16)
+            .reverse();
+
+        //  reset canvas
+        const ctx = canvas2.getContext('2d');
+        // scale to DPR
+        // Get the DPR and size of the canvas
+        const dpr = window.devicePixelRatio;
+        const rect = canvas2.getBoundingClientRect();
+        // Set the "actual" size of the canvas
+        canvas2.width = rect.width * dpr;
+        canvas2.height = rect.height * dpr;
+        // Scale the context to ensure correct drawing operations
+        ctx.scale(dpr, dpr);
+        // Set the "drawn" size of the canvas
+        canvas2.style.width = `${rect.width}px`;
+        canvas2.style.height = `${rect.height}px`;
+        // fade-out old data
+        ctx.clearRect(0, 0, width, height);
+
+        const columns = 4;
+        for (const [index, recording] of recordings.entries()) {
+            const json = recording.data;
+            const tempo = json.tempo;
+            const grid = json.grid;
+            const adjustTime = json.adjustTime;
+            // data
+            const notes = json.notes;
+            const size = width / columns;
+            const x = (index % columns) * size;
+            const y = Math.floor(index / columns) * size;
+            // title
+            ctx.textBaseline = 'top';
+            ctx.textAlign = 'center';
+            ctx.fillStyle = '#333';
+            ctx.fillText(recording.date.slice(0, 16), x + size / 2, y);
+            ctx.fillText(
+                `tempo: ${tempo} grid: ${grid} adjust: ${adjustTime}`,
+                x + size / 2,
+                y + 12,
+            );
+            drawOne(
+                canvas2,
+                notes,
+                tempo,
+                grid,
+                binNote,
+                adjustTime,
+                showKde,
+                size * 0.9,
+                x,
+                y + 22,
+            );
+        }
     };
 
-    onMount(draw);
+    onMount(() => {
+        draw();
+        drawLoaded();
+    });
 
     /**
      * Used for exporting and for automatics saving
@@ -230,14 +292,6 @@
             showKde,
             notes,
         };
-    };
-
-    /**
-     * Import data from file or example
-     */
-    const loadData = (json) => {
-        loadedComparison = json;
-        drawLoaded();
     };
 
     const saveToStorage = () => {
@@ -256,7 +310,8 @@
         chart will show you a summary of when you played notes. Use the
         integrated metronome. All notes will be timed relative to the first one,
         but you can adjust all notes to make them earlier or later in case you
-        messed up the first.
+        messed up the first. Your most recent earlier takes will be shown
+        smaller below (new to old, left to right and top to bottom).
     </p>
     <p>
         <i> Try playing without looking, focus on the metronome. </i>
@@ -326,14 +381,18 @@
     </div>
     <div class="control">
         <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
-        <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
+        <ResetNotesButton
+            bind:notes
+            {saveToStorage}
+            callback="{() => {
+                draw();
+                drawLoaded();
+            }}"
+        />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
-        <button on:click="{() => loadData(example)}"> example </button>
-        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <div class="visualization">
-        <div bind:this="{metaData}"></div>
+        <h3>History</h3>
         <canvas
             bind:this="{canvas2}"
             style="width: {width}px; height: {height}px"

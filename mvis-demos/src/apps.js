@@ -18,7 +18,6 @@ import RhythmSheetMusic from './demos/rhythm-sheet-music.svelte'
 import SpeedUp from './demos/speed-up.svelte'
 import SpeedUpTab from './demos/speed-up-tab.svelte'
 import StrummingPattern from './demos/strumming-pattern.svelte'
-import SubDivision from './demos/sub-division.svelte'
 import SubDivisionBar from './demos/sub-division-bar.svelte'
 import SubDivisionLinear from './demos/sub-division-linear.svelte'
 import TempoDrift from './demos/tempo-drift.svelte'
@@ -297,17 +296,6 @@ export const APPS = [
     skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
     component: SpeedUpTab
-  },
-  {
-    id: 'sub-division',
-    title: 'Sub-Division',
-    description: 'Learn rhythmic playing in different sub-divisions.',
-    input: 'MIDI',
-    instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
-    data: ['onset/time'],
-    skills: ['sub-division', 'timing-consistency', 'swing-feel'],
-    patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'update on note'],
-    component: SubDivision
   },
   {
     id: 'sub-division-bar',

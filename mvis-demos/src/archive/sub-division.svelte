@@ -3,23 +3,23 @@
     import { Canvas, Utils } from 'musicvis-lib';
     import * as kde from 'fast-kde';
     import * as d3 from 'd3';
-    import MetronomeButton from './common/metronome-button.svelte';
-    import TempoInput from './common/tempo-input.svelte';
-    import ResetNotesButton from './common/reset-notes-button.svelte';
+    import MetronomeButton from '../demos/common/metronome-button.svelte';
+    import TempoInput from '../demos/common/tempo-input.svelte';
+    import ResetNotesButton from '../demos/common/reset-notes-button.svelte';
     import { clamp } from '../lib/lib';
     import { BIN_NOTES, GRIDS } from '../lib/music';
-    import PcKeyboardInput from './common/pc-keyboard-input.svelte';
-    import MidiInput from './common/midi-input.svelte';
+    import PcKeyboardInput from '../demos/common/pc-keyboard-input.svelte';
+    import MidiInput from '../demos/common/midi-input.svelte';
     import example from '../example-recordings/sub-division.json';
     import { localStorageAddRecording } from '../lib/localstorage';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
-    import LoadFromStorageButton from './common/history-button.svelte';
-    import TouchInput from './common/touch-input.svelte';
-    import ExerciseDrawer from './common/exercise-drawer.svelte';
+    import ExportButton2 from '../demos/common/export-button2.svelte';
+    import ImportButton2 from '../demos/common/import-button2.svelte';
+    import LoadFromStorageButton from '../demos/common/history-button.svelte';
+    import TouchInput from '../demos/common/touch-input.svelte';
+    import ExerciseDrawer from '../demos/common/exercise-drawer.svelte';
     import { COLORS } from '../lib/colors';
-    import RatingButton from './common/rating-button.svelte';
-    import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
+    import RatingButton from '../demos/common/rating-button.svelte';
+    import SubDivisionAdjustButton from '../demos/common/sub-division-adjust-button.svelte';
 
     /**
      * TODO:

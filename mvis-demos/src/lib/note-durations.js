@@ -1,20 +1,9 @@
 export const noteDurations = [
-  // {
-  //   name: 'dotted-whole',
-  //   beats: 6,
-  //   symbol: '𝅝.',
-  //   dotted: true
-  // },
+  // normal
   {
     name: 'whole',
     beats: 4,
     symbol: '𝅝'
-  },
-  {
-    name: 'dotted-half',
-    beats: 3,
-    symbol: '𝅗𝅥.',
-    dotted: true
   },
   {
     name: 'half',
@@ -22,38 +11,14 @@ export const noteDurations = [
     symbol: '𝅗𝅥'
   },
   {
-    name: 'dotted-quarter',
-    beats: 1.5,
-    symbol: '𝅘𝅥.',
-    dotted: true
-  },
-  {
     name: 'quarter',
     beats: 1,
     symbol: '𝅘𝅥'
   },
   {
-    name: 'eighth-triplet',
-    beats: 1 / 3,
-    symbol: '𝅘𝅥³',
-    tuplet: true
-  },
-  {
-    name: 'dotted-eighth',
-    beats: 0.75,
-    symbol: '𝅘𝅥𝅮.',
-    dotted: true
-  },
-  {
     name: 'eighth',
     beats: 0.5,
     symbol: '𝅘𝅥𝅮'
-  },
-  {
-    name: 'dotted-sixteenth',
-    beats: 0.375,
-    symbol: '𝅘𝅥𝅯.',
-    dotted: true
   },
   {
     name: 'sixteenth',
@@ -70,4 +35,48 @@ export const noteDurations = [
     beats: 0.0625,
     symbol: '𝅘𝅥𝅱'
   },
+  // dotted
+  {
+    name: 'dotted-half',
+    beats: 3,
+    symbol: '𝅗𝅥.',
+    dotted: true
+  },
+  {
+    name: 'dotted-quarter',
+    beats: 1.5,
+    symbol: '𝅘𝅥.',
+    dotted: true
+  },
+  {
+    name: 'dotted-eighth',
+    beats: 0.75,
+    symbol: '𝅘𝅥𝅮.',
+    dotted: true
+  },
+  {
+    name: 'dotted-sixteenth',
+    beats: 0.375,
+    symbol: '𝅘𝅥𝅯.',
+    dotted: true
+  },
+  // tuplets
+  {
+    name: 'eighth-triplet',
+    beats: 1 / 3,
+    symbol: '𝅘𝅥³',
+    tuplet: true
+  },
+  {
+    name: 'eighth-quintuplet',
+    beats: 1 / 5,
+    symbol: '𝅘𝅥⁵',
+    tuplet: true
+  },
+  {
+    name: 'eighth-sixtuplet',
+    beats: 1 / 6,
+    symbol: '𝅘𝅥⁶',
+    tuplet: true
+  }
 ]

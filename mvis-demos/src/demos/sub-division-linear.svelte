@@ -198,13 +198,11 @@
             },
             marks: [
                 // OK areas
-                Plot.rectY([...fineGrid, grid1], {
-                    x1: (d) => d - grid1 / binNote,
-                    x2: (d) => d + grid1 / binNote,
-                    y1: maxBar - pastBars,
-                    y2: maxBar,
-                    fill: '#eee',
+                Plot.tickX([...fineGrid, grid1], {
+                    x: (d) => d,
+                    stroke: '#eee',
                     clip: true,
+                    strokeWidth: (width / binNote) * 2,
                 }),
                 // ticks
                 Plot.tickX(notesInBeats.slice(-noteTickLimit), {

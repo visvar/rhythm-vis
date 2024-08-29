@@ -2,10 +2,7 @@
   import { version } from '../package.json';
   import { getUrlParam, setUrlParam } from './lib/url';
   import { getNumberOfDaysPassed, setHasAny, updSet } from './lib/lib';
-  import {
-    localStorageGetUsageData,
-    localStorageReport,
-  } from './lib/localstorage';
+  import { localStorageGetUsageData } from './lib/localstorage';
   import { audioIcon, midiIcon } from './lib/icons';
   import * as d3 from 'd3';
   import { SKILL_TREE_LEAFS } from './lib/skills';

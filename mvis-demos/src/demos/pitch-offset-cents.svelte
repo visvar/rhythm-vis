@@ -1,13 +1,12 @@
 <script>
     import { onDestroy, onMount } from 'svelte';
     import * as Plot from '@observablehq/plot';
+    import * as d3 from 'd3';
     import { PitchDetector } from 'pitchy';
     import { Midi, Note } from '@tonaljs/tonal';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
-    import { localStorageAddRecording } from '../lib/localstorage';
-    import LoadFromStorageButton from './common/history-button.svelte';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
     import example from '../example-recordings/pitch-offset-cents.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
@@ -27,6 +26,7 @@
     let paused = false;
     let firstTimeStamp = performance.now();
     let audioContext = new window.AudioContext();
+    let closestNote;
     // settings
     let pastTime = 10;
     let minVolumeDecibels = -25;
@@ -46,6 +46,7 @@
         const noteInSeconds = (performance.now() - firstTimeStamp) / 1000;
         const bend = {
             time: noteInSeconds,
+            note,
             pitch,
             noteMidi,
             actualMidi,
@@ -54,6 +55,7 @@
             clarity,
         };
         bendValues.push(bend);
+        closestNote = d3.mode(bendValues.slice(-30), (d) => d.note);
         draw();
         timeout = requestAnimationFrame(() => updatePitch(input, sampleRate));
     }
@@ -151,9 +153,6 @@
             // pause first
             paused = true;
             cancelAnimationFrame(timeout);
-            // if (bendValues.length > 0) {
-            //     saveToStorage();
-            // }
             // load
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;
@@ -164,17 +163,9 @@
         }
     };
 
-    // too much data
-    // const saveToStorage = () => {
-    //     if (bendValues.length > 0) {
-    //         localStorageAddRecording(demoInfo.id, getExportData());
-    //     }
-    // };
-
     onDestroy(() => {
         clearTimeout(timeout);
         cancelAnimationFrame(timeout);
-        // saveToStorage();
     });
 </script>
 
@@ -190,9 +181,7 @@
     </ExerciseDrawer>
     {#if bendValues.length > 0}
         <p>
-            Current closest note: {Midi.midiToNoteName(
-                bendValues.at(-1).noteMidi,
-            )}
+            Current closest note: {closestNote}
         </p>
     {/if}
     <div class="control">
