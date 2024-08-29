@@ -8,7 +8,7 @@
     import ToggleButton from '../demos/common/toggle-button.svelte';
 
     export let toolInfo;
-    let width = 1000;
+    let width = 900;
     let height = 500;
     let container;
     // settings

@@ -12,7 +12,7 @@
      */
     export let demoInfo;
 
-    let width = 1200;
+    let width = 900;
     let height = 600;
     let container;
     let canvas;

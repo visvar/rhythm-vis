@@ -26,7 +26,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  min-width: 800px;
+  min-width: 960px;
   min-height: 100vh;
 }
 
@@ -115,9 +115,8 @@ svg text {
 
 div.grid {
   width: fit-content;
-  margin: auto;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin: 20px auto;
+  padding: 0 10px;
   display: grid;
   grid-template-columns: repeat(3, auto);
   gap: 18px;
@@ -161,7 +160,7 @@ div.card h2 {
 
 div.card .description {
   margin-bottom: 5px;
-  text-align: left;
+  /* text-align: justify; */
   height: 80px;
 }
 
@@ -175,6 +174,7 @@ div.card .usage {
 div.control,
 div.visualization {
   margin: 10px auto;
+  padding: 0 10px;
   width: max-content;
   user-select: none;
 }
@@ -183,6 +183,7 @@ p.explanation {
   width: fit-content;
   max-width: 850px;
   margin: auto;
+  padding: 0 10px;
   text-align: justify;
   user-select: none;
 }
@@ -209,6 +210,21 @@ code {
 
   div.current-filters {
     grid-column: span 2;
+  }
+}
+
+@media only screen and (max-width: 960px) {
+
+  div.grid {
+    grid-template-columns: auto;
+  }
+
+  div.current-filters {
+    grid-column: span 1;
+  }
+
+  div.card {
+    width: 90%;
   }
 }
 

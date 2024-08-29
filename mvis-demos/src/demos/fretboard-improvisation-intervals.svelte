@@ -21,8 +21,8 @@
      */
     export let demoInfo;
 
-    let width = 1000;
-    let height = 280;
+    let width = 900;
+    let height = 250;
     let container;
     // settings
     let root = 'A';
@@ -113,8 +113,8 @@
         const plot = Plot.plot({
             width,
             height,
-            marginLeft: 60,
-            marginBottom: 50,
+            marginLeft: 50,
+            marginBottom: 40,
             padding: 0,
             x: {
                 domain: d3.range(0, fretCount + 1),
@@ -167,7 +167,7 @@
                           y: 'string',
                           fill: 'black',
                           tip: true,
-                          inset: 5,
+                          inset: 2,
                           rx: 5,
                       })
                     : null,
@@ -176,8 +176,8 @@
                     x: 'fret',
                     y: 'string',
                     fill: 'degreeStep',
-                    inset: 10,
-                    rx: '50%',
+                    inset: 6,
+                    rx: 10,
                     tip: true,
                 }),
                 Plot.text(data, {

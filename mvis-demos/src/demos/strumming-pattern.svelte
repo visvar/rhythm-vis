@@ -18,7 +18,7 @@
     import RatingButton from './common/rating-button.svelte';
 
     export let demoInfo;
-    let width = 1000;
+    let width = 900;
     let height = 200;
     let stringCount = 6;
     // E standard tuning, strings start at high E

@@ -27,7 +27,7 @@
      */
     export let demoInfo;
 
-    let width = 1200;
+    let width = 900;
     let height = 400;
     let canvas;
     // settings
@@ -158,7 +158,7 @@
                 ctx.fillRect(x, g, w * 0.1, 1);
             }
             // text
-            ctx.font = '18px sans-serif';
+            ctx.font = '16px sans-serif';
             ctx.fillStyle = '#666';
             if (note.duration > 0) {
                 const bestFit = d3.minIndex(durations, (d) =>

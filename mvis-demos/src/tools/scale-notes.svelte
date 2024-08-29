@@ -129,13 +129,6 @@
         >
             tonaljs.
         </a>
-        Ported from
-        <a
-            href="https://observablehq.com/@fheyen/musical-scales"
-            target="_blank"
-        >
-            here.
-        </a>
     </p>
     <div class="control">
         <label>

@@ -29,9 +29,8 @@
 
     let canvas;
     let canvas2;
-    let metaData;
-    let width = 1000;
-    let height = 1000;
+    let width = 900;
+    let height = 900;
     // settings
     let tempo = 120;
     let grid = GRIDS[0];
@@ -41,7 +40,6 @@
     // data
     let firstTimeStamp = 0;
     let notes = [];
-    let loadedComparison;
 
     const noteOn = (e) => {
         if (notes.length === 0) {

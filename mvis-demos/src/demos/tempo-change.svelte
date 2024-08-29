@@ -18,7 +18,7 @@
      */
     export let demoInfo;
 
-    let width = 1000;
+    let width = 900;
     let height = 600;
     let container;
     let firstTimeStamp;

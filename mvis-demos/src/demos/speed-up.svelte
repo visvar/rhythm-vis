@@ -24,7 +24,7 @@
      */
     export let demoInfo;
 
-    let width = 1000;
+    let width = 900;
     let container;
     let metro = new Metronome();
     // settings

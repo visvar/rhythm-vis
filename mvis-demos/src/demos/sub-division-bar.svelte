@@ -29,8 +29,8 @@
     const TWO_PI = Math.PI * 2;
 
     let canvas;
-    let width = 1000;
-    let height = 1000;
+    let width = 900;
+    let height = 900;
     // settings
     let tempo = 120;
     let grid = GRIDS[0];

@@ -2,7 +2,6 @@
     import { caretDownIcon, caretUpIcon } from './lib/icons';
     import { SKILL_TREE } from './lib/skills';
 
-    export let allSkills = new Set();
     export let currentSkills = new Set();
 
     let skillTree = SKILL_TREE;
@@ -53,6 +52,7 @@
     }
 
     button.skill {
+        background: none;
         font-weight: normal;
         text-align: left;
     }
@@ -60,6 +60,5 @@
     button.node,
     button.skill {
         display: block;
-        background: none;
     }
 </style>

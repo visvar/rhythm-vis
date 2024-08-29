@@ -17,7 +17,7 @@
      */
     export let demoInfo;
 
-    let width = 1200;
+    let width = 900;
     let height = 500;
     let container;
     let analyserNode;

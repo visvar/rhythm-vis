@@ -21,8 +21,8 @@
      */
     export let demoInfo;
 
-    let width = 1000;
-    let height = 280;
+    let width = 900;
+    let height = 250;
     let stringCount = 6;
     let fretCount = 24;
     // E standard tuning, strings start at high E
@@ -90,8 +90,8 @@
         const plot = Plot.plot({
             width,
             height,
-            marginLeft: 60,
-            marginBottom: 50,
+            marginLeft: 50,
+            marginBottom: 40,
             padding: 0,
             x: {
                 domain: d3.range(0, fretCount + 1),
@@ -153,7 +153,7 @@
                             : '#222',
                     opacity: 'count',
                     inset: 5,
-                    rx: '50%',
+                    rx: 10,
                     tip: true,
                 }),
                 Plot.text(aggregated, {

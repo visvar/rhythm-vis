@@ -14,18 +14,21 @@
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
+    import ToggleButton from './common/toggle-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
      */
     export let demoInfo;
 
-    let width = 1200;
-    let height = 400;
+    let width = 900;
+    let height = 300;
     let container;
     // settings
-    let root = 'A';
+    // let root = 'A';
+    let root = 'C';
     let pastNoteCount = 50;
+    let showDuration = false;
     // data
     let notes = [];
     let firstTimeStamp;
@@ -73,16 +76,18 @@
     };
 
     const draw = () => {
-        const scale1 = new Set(Scale.get(`${root} minor`).notes);
-        const scale2 = new Set(Scale.get(`${root} minor blues`).notes);
-        const scale3 = new Set(Scale.get(`${root} minor pentatonic`).notes);
+        // const scale1 = new Set(Scale.get(`${root} minor`).notes);
+        // const scale2 = new Set(Scale.get(`${root} minor blues`).notes);
+        // const scale3 = new Set(Scale.get(`${root} minor pentatonic`).notes);
+        const scale1 = new Set(Scale.get(`${root} major`).notes);
+        const scale3 = new Set(Scale.get(`${root} major pentatonic`).notes);
         const colorMap = Midi.NOTE_NAMES_FLAT.map((note) => {
             if (note === root) {
                 return '#1B5E20';
             } else if (scale3.has(note)) {
                 return '#689F38';
-            } else if (scale2.has(note)) {
-                return 'cornflowerblue';
+                // } else if (scale2.has(note)) {
+                //     return 'cornflowerblue';
             } else if (scale1.has(note)) {
                 return '#D4E157';
             } else {
@@ -98,9 +103,11 @@
             padding: 0,
             x: {
                 axis: false,
+                // domain: [0, pastNoteCount],
             },
             y: {
-                domain: [0, 2],
+                axis: showDuration,
+                domain: [0, 1],
                 label: 'duration in seconds',
             },
             color: {
@@ -110,6 +117,10 @@
                 tickFormat: (d) => Midi.NOTE_NAMES[d],
                 marginLeft: 290,
             },
+            opacity: {
+                domain: [0, 127],
+                range: [0.2, 1],
+            },
             marks: [
                 Plot.ruleY([0], {
                     stroke: '#ddd',
@@ -117,8 +128,9 @@
                 // data
                 Plot.barY(limited, {
                     x: (d, i) => i,
-                    y: 'duration',
+                    y: showDuration ? 'duration' : 1,
                     fill: (d) => d.number % 12,
+                    // opacity: (d) => d.velocity,
                     inset: 0.5,
                     rx: 4,
                     tip: true,
@@ -127,7 +139,7 @@
                     x: (d, i) => i,
                     y: 0,
                     text: 'name',
-                    fontSize: 14,
+                    fontSize: 12,
                     dy: 16,
                 }),
             ],
@@ -204,6 +216,12 @@
             </select>
         </label>
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
+        <ToggleButton
+            bind:checked="{showDuration}"
+            label="duration"
+            title="Show duration in the bar's height?"
+            callback="{draw}"
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

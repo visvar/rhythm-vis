@@ -216,7 +216,7 @@
           </select>
         </div>
         <!-- skill filter -->
-        <SkillTree bind:currentSkills {allSkills} />
+        <SkillTree bind:currentSkills />
         <!-- instrument filters -->
         <div>
           <h2>instrument</h2>
@@ -256,7 +256,7 @@
             current filters:
             {#if currentSearch !== ''}
               <button
-                title="remove this filter"
+                title="click to remove this filter"
                 on:click="{() => {
                   currentSearch = '';
                 }}"
@@ -266,7 +266,7 @@
             {/if}
             {#if currentSkills.size === 1}
               <button
-                title="remove this filter"
+                title="click to remove this filter"
                 on:click="{() => {
                   currentSkills = new Set(allSkills);
                 }}"
@@ -276,7 +276,7 @@
             {/if}
             {#if currentInstruments.size < allInstruments.size}
               <button
-                title="remove this filter"
+                title="click to remove this filter"
                 on:click="{() => {
                   currentInstruments = new Set(allInstruments);
                 }}"
@@ -286,7 +286,7 @@
             {/if}
             {#if currentInputs.size < allInputs.size}
               <button
-                title="remove this filter"
+                title="click to remove this filter"
                 on:click="{() => {
                   currentInputs = new Set(allInputs);
                 }}"
@@ -376,6 +376,7 @@
 
 <style>
   .grid-filter-demo {
+    margin-left: 20px;
     display: grid;
     grid-template-columns: 210px auto;
   }

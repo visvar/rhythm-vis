@@ -23,7 +23,7 @@
      */
     export let demoInfo;
 
-    let width = 1200;
+    let width = 900;
     let height = 500;
     const minPitch = 21;
     const maxPitch = 108;
@@ -63,8 +63,9 @@
         const plot = Plot.plot({
             width,
             height,
-            // marginLeft: 80,
+            marginLeft: 30,
             marginBottom: 28,
+            marginRight: 40,
             padding: 0,
             x: {
                 label: '',
@@ -82,12 +83,13 @@
             y: {
                 label: 'count',
                 interval: 1,
+                nice: true,
             },
             color: {
                 legend: showScale,
                 domain: ['in scale', 'not in scale'],
                 range: d3.schemeTableau10,
-                marginLeft: 500,
+                marginLeft: 380,
             },
             marks: [
                 Plot.ruleY([0], {
@@ -132,8 +134,8 @@
         const plot2 = Plot.plot({
             width,
             height: 60,
-            marginLeft: 40,
-            marginRight: 20,
+            marginLeft: showScale ? 65 : 30,
+            marginRight: showScale ? 0 : 40,
             marginBottom: 10,
             padding: 0,
             x: { axis: false, interval: 1 },
@@ -149,6 +151,7 @@
                     stroke: '#bbb',
                     inset: 1,
                     rx: 4,
+                    clip: false,
                 }),
             ],
         });
@@ -197,7 +200,7 @@
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI keyboard and start playing. The heatmap below shows how
-        often you played each keyboard key.
+        often you played each keyboard key. You can color notes depending
     </p>
     <ExerciseDrawer>
         <p>

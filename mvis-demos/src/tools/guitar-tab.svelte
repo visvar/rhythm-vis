@@ -7,7 +7,7 @@
     import MidiInput from '../demos/common/midi-input.svelte';
 
     export let toolInfo;
-    let width = 1000;
+    let width = 900;
     let height = 500;
     let stringCount = 6;
     // E standard tuning, strings start at high E

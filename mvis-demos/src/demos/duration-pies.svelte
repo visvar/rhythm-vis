@@ -27,7 +27,7 @@
      */
     export let demoInfo;
 
-    let width = 1200;
+    let width = 900;
     let height = 400;
     let canvas;
     const TWO_PI = 2 * Math.PI;

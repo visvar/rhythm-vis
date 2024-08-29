@@ -9,7 +9,7 @@
      */
 
     export let toolInfo;
-    let width = 1000;
+    let width = 900;
     let height = 300;
     let container;
     let audioContext;

@@ -21,8 +21,8 @@
      */
     export let demoInfo;
 
-    let width = 1000;
-    let height = 650;
+    let width = 900;
+    let height = 500;
     let container;
     // settings
     let root = 'A';
@@ -88,7 +88,7 @@
             color: {
                 legend: useColors,
                 domain: ['root', 'scale', 'outside scale'],
-                range: ['#666', '#aaa', '#eee'],
+                range: ['#666', '#aaa', '#ddd'],
                 marginLeft: 100,
             },
             y: {
@@ -97,7 +97,7 @@
                     ? d3.range(0, 12, 1)
                     : [...scaleOffsets],
                 reverse: true,
-                label: 'notes, increasing semitones from root 🡺',
+                label: 'notes, increasing from tonic 🡺',
             },
             marks: [
                 Plot.barX(grouped, {

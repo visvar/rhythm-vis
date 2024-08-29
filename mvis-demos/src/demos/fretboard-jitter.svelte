@@ -19,8 +19,8 @@
      */
     export let demoInfo;
 
-    let width = 1000;
-    let height = 300;
+    let width = 900;
+    let height = 260;
     const random = () => (Math.random() - 0.5) * 0.4;
     let stringCount = 6;
     let fretCount = 24;
@@ -71,8 +71,8 @@
         const plot = Plot.plot({
             width,
             height,
-            marginLeft: 60,
-            marginBottom: 50,
+            marginLeft: 50,
+            marginBottom: 40,
             padding: 0,
             x: {
                 // domain: d3.range(0, fretCount + 1),
@@ -100,7 +100,6 @@
             r: {
                 domain: [0, 127],
                 range: [0, 5],
-                legend: true,
             },
             marks: [
                 // frets
@@ -134,14 +133,39 @@
                     y: 'stringJitter',
                     // dy: cellSize / 2,
                     fill: (d, i) => i,
+                    stroke: '#888',
+                    strokeWidth: 0.5,
                     r: 'velocity',
                     opacity: 0.5,
                 }),
             ],
         });
 
+        // area legend
+        const plot2 = Plot.plot({
+            subtitle: 'loudness',
+            width,
+            height: 50,
+            marginLeft: width / 3,
+            marginRight: width / 3,
+            padding: 0,
+            r: {
+                domain: [0, 127],
+                range: [0, 5],
+            },
+            x: { domain: d3.range(16, 129, 16), tickSize: 0 },
+            marks: [
+                Plot.dotX(d3.range(16, 129, 16), {
+                    x: (d, i) => d,
+                    fill: '#888',
+                    r: (d) => d,
+                }),
+            ],
+        });
+
         container.textContent = '';
         container.appendChild(plot);
+        container.appendChild(plot2);
     };
 
     onMount(draw);

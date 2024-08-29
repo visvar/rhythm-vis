@@ -19,7 +19,7 @@
      */
     export let demoInfo;
 
-    let width = 1000;
+    let width = 900;
     let height = 400;
     let container;
     // settings

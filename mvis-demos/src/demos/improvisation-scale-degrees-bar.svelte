@@ -23,8 +23,8 @@
      */
     export let demoInfo;
 
-    let width = 1000;
-    let height = 650;
+    let width = 900;
+    let height = 500;
     let container;
     // settings
     let root = 'A';
@@ -100,7 +100,7 @@
 
         // TODO: allow setting
         const maxBar = Math.floor(notes.at(-1).time / barDuration);
-        const minBar = maxBar - 9;
+        const minBar = maxBar - 7;
         data = data.filter((d) => d.barId >= minBar);
 
         const plot = Plot.plot({
@@ -111,7 +111,7 @@
             color: {
                 legend: useColors,
                 domain: ['root', 'scale', 'outside scale'],
-                range: ['#666', '#aaa', '#eee'],
+                range: ['#666', '#aaa', '#ddd'],
             },
             y: {
                 tickFormat: (d) => noteNames[(d + rootNr) % 12],
@@ -119,7 +119,11 @@
                     ? d3.range(0, 12, 1)
                     : [...scaleOffsets],
                 reverse: true,
-                label: 'notes, increasing semitones from root 🡺',
+                label: 'notes, increasing from tonic 🡺',
+            },
+            fx: {
+                label: null,
+                axis: false,
             },
             marks: [
                 // bar line

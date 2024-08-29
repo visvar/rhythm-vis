@@ -24,7 +24,7 @@
      */
     export let demoInfo;
 
-    let width = 1000;
+    let width = 900;
     let container;
     // settings
     let tempo = 90;
@@ -113,7 +113,7 @@
         container.appendChild(plot);
         // legend
         const plot2 = Plot.plot({
-            subtitle: 'size legend',
+            subtitle: 'loudness',
             width: width,
             height: 100,
             marginLeft: width * 0.4,
