@@ -238,22 +238,17 @@
     };
 
     const loadData = (json) => {
-        if (
-            notes.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            if (notes.length > 0) {
-                saveToStorage();
-            }
-            tempo = json.tempo;
-            grid = json.grid;
-            binNote = json.binNote;
-            adjustTime = json.adjustTime;
-            noteTickLimit = json.noteTickLimit ?? 0;
-            // data
-            notes = json.notes;
-            draw();
+        if (notes.length > 0) {
+            saveToStorage();
         }
+        tempo = json.tempo;
+        grid = json.grid;
+        binNote = json.binNote;
+        adjustTime = json.adjustTime;
+        noteTickLimit = json.noteTickLimit ?? 0;
+        // data
+        notes = json.notes;
+        draw();
     };
 
     const saveToStorage = () => {

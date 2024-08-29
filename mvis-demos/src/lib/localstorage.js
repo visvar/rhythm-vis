@@ -124,19 +124,45 @@ export function localStorageGetSetting(key) {
 export function localStorageAddRecording(demoId, data) {
   console.log(`saving recording for ${demoId}`, data)
   const usage = localStorageGetUsageData()
-  console.log(usage)
   if (!usage.demoRecordedData) {
     usage.demoRecordedData = {}
   }
   if (!usage.demoRecordedData[demoId]) {
     usage.demoRecordedData[demoId] = []
   }
-  console.log(usage)
-  usage.demoRecordedData[demoId].push({
+  const recordings = usage.demoRecordedData[demoId]
+  // check if the same recording already exists
+  const string = JSON.stringify(data)
+  for (const recording of recordings) {
+    if (string === JSON.stringify(recording.data)) {
+      console.log('the recording already exists')
+      return
+    }
+  }
+  // save
+  recordings.push({
     date: (new Date()).toISOString(),
     softwareVersion: version,
     data
   })
+  localStorageSetUsageData(usage)
+}
+
+/**
+ * Deletes a recording from the usage data
+ * @param {string} demoId demo ID
+ * @param {string} date the date for which the recording should be deleted
+ */
+export function localStorageDeleteRecording(demoId, date) {
+  console.log(`deleting recording for ${demoId}`, date)
+  const usage = localStorageGetUsageData()
+  if (!usage.demoRecordedData) {
+    return
+  }
+  if (!usage.demoRecordedData[demoId]) {
+    return
+  }
+  usage.demoRecordedData[demoId] = usage.demoRecordedData[demoId].filter(d => d.date !== date)
   localStorageSetUsageData(usage)
 }
 

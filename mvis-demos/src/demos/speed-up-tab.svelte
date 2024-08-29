@@ -352,30 +352,25 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (
-            exerciseNotes.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            if (exerciseNotes.length > 0) {
-                saveToStorage();
-            }
-            // settings
-            initialTempo = json.initialTempo;
-            targetTempo = json.targetTempo;
-            tempoIncrease = json.tempoIncrease;
-            quantize = json.quantize;
-            // data
-            currentStep = json.currentStep;
-            currentTempo = json.currentTempo;
-            firstTimeStamp = json.firstTimeStamp;
-            exerciseNotes = json.exerciseNotes;
-            exerciseBeatCount = json.exerciseBeatCount;
-            practiceRecordings = json.practiceRecordings;
-            if (practiceRecordings.dataType) {
-                practiceRecordings = new Map(practiceRecordings.value);
-            }
-            draw();
+        if (exerciseNotes.length > 0) {
+            saveToStorage();
         }
+        // settings
+        initialTempo = json.initialTempo;
+        targetTempo = json.targetTempo;
+        tempoIncrease = json.tempoIncrease;
+        quantize = json.quantize;
+        // data
+        currentStep = json.currentStep;
+        currentTempo = json.currentTempo;
+        firstTimeStamp = json.firstTimeStamp;
+        exerciseNotes = json.exerciseNotes;
+        exerciseBeatCount = json.exerciseBeatCount;
+        practiceRecordings = json.practiceRecordings;
+        if (practiceRecordings.dataType) {
+            practiceRecordings = new Map(practiceRecordings.value);
+        }
+        draw();
     };
 
     const saveToStorage = () => {

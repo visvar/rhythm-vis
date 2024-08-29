@@ -27,6 +27,14 @@
         Global settings that apply to multiple (but not all) apps.
     </p>
 
+    <h3>Saving</h3>
+    <p class="explanation">
+        You can export and import a take in most apps. Whenever you leave an
+        app, reset, or load from the history, your current take will be
+        auto-saved and added to the history. Use the history button too see the
+        modal with the auto-saved takes where you can load or delete them.
+    </p>
+
     <h3>Keyboard Shortcuts</h3>
 
     <h4>General</h4>

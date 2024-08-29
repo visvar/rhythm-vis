@@ -213,21 +213,6 @@ code {
   }
 }
 
-@media only screen and (max-width: 960px) {
-
-  div.grid {
-    grid-template-columns: auto;
-  }
-
-  div.current-filters {
-    grid-column: span 1;
-  }
-
-  div.card {
-    width: 90%;
-  }
-}
-
 
 /* printing style */
 @media print {

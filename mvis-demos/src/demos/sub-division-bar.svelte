@@ -290,22 +290,17 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (
-            notes.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            if (notes.length > 0) {
-                saveToStorage();
-            }
-            tempo = json.tempo;
-            grid = json.grid;
-            binNote = json.binNote;
-            adjustTime = json.adjustTime;
-            showKde = json.showKde ?? false;
-            // data
-            notes = json.notes;
-            draw();
+        if (notes.length > 0) {
+            saveToStorage();
         }
+        tempo = json.tempo;
+        grid = json.grid;
+        binNote = json.binNote;
+        adjustTime = json.adjustTime;
+        showKde = json.showKde ?? false;
+        // data
+        notes = json.notes;
+        draw();
     };
 
     const saveToStorage = () => {

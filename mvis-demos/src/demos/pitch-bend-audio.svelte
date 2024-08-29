@@ -167,9 +167,6 @@
             // pause first
             paused = true;
             cancelAnimationFrame(timeout);
-            // if (bendValues.length > 0) {
-            //     saveToStorage();
-            // }
             // load
             pastTime = json.pastTime;
             firstTimeStamp = json.firstTimeStamp;
@@ -180,17 +177,9 @@
         }
     };
 
-    // too much data
-    // const saveToStorage = () => {
-    //     if (bendValues.length > 0) {
-    //         localStorageAddRecording(demoInfo.id, getExportData());
-    //     }
-    // };
-
     onDestroy(() => {
         clearTimeout(timeout);
         cancelAnimationFrame(timeout);
-        // saveToStorage();
     });
 </script>
 
@@ -284,7 +273,6 @@
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
-        <!-- <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} /> -->
     </div>
     <RatingButton appId="{demoInfo.id}" />
 </main>

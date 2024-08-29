@@ -219,20 +219,15 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (
-            notes.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            if (notes.length > 0) {
-                saveToStorage();
-            }
-            tempo = json.tempo;
-            pastNoteCount = json.pastNoteCount;
-            showClosestDuration = json.showClosestDuration;
-            // data
-            notes = json.notes;
-            draw();
+        if (notes.length > 0) {
+            saveToStorage();
         }
+        tempo = json.tempo;
+        pastNoteCount = json.pastNoteCount;
+        showClosestDuration = json.showClosestDuration;
+        // data
+        notes = json.notes;
+        draw();
     };
 
     const saveToStorage = () => {

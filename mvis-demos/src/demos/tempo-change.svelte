@@ -157,16 +157,11 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (
-            notes.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            // load
-            // pastTime = json.pastTime;
-            firstTimeStamp = json.firstTimeStamp;
-            notes = json.notes;
-            draw();
-        }
+        // load
+        // pastTime = json.pastTime;
+        firstTimeStamp = json.firstTimeStamp;
+        notes = json.notes;
+        draw();
     };
 </script>
 
