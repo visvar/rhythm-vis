@@ -11,7 +11,7 @@
   // tools etc
   import Tools from './tools/_tools.svelte';
   import Settings from './Settings.svelte';
-  import DemoOverview from './DemoOverview.svelte';
+  import Overview from './Overview.svelte';
   // APPS
   import { APPS } from './apps';
   import Help from './Help.svelte';
@@ -136,6 +136,9 @@
     extraSkills: [...d3.difference(allSkills, skillTreeSkills)],
     missingSkills: [...d3.difference(skillTreeSkills, allSkills)],
   });
+
+  // row layout?
+  let rows = true;
 </script>
 
 <main>
@@ -208,12 +211,16 @@
         </div>
         <!-- sort -->
         <div>
-          <h2>sort by</h2>
+          <h2>sorting and layout</h2>
           <select bind:value="{sortAppsBy}">
             <option value="title">title (A-Z)</option>
             <option value="used">most used</option>
             <option value="recent">recently used</option>
           </select>
+          <!-- layout -->
+          <button on:click="{() => (rows = !rows)}" class="row-button">
+            {rows ? '☰ rows' : '᎒᎒᎒ grid'}
+          </button>
         </div>
         <!-- skill filter -->
         <SkillTree bind:currentSkills />
@@ -249,7 +256,7 @@
       </div>
 
       <!-- app overview grid -->
-      <div class="grid">
+      <div class="grid {rows ? 'rows' : ''}">
         <!-- current filters -->
         {#if currentSearch !== '' || currentSkills.size === 1 || currentInstruments.size < allInstruments.size || currentInputs.size < allInputs.size}
           <div class="current-filters">
@@ -343,7 +350,7 @@
   {:else if currentApp === 'settings'}
     <Settings />
   {:else if currentApp === 'overview'}
-    <DemoOverview apps="{APPS}" {allInstruments} {allData} {allPatterns} />
+    <Overview apps="{APPS}" {allInstruments} {allData} {allPatterns} />
   {:else if currentApp === 'help'}
     <Help />
   {:else}
@@ -386,8 +393,14 @@
     text-align: left;
   }
 
-  .filter .search-box {
+  .filter input,
+  .filter select,
+  .filter .row-button {
     width: 180px;
+  }
+
+  .filter select {
+    text-align: center;
   }
 
   .filter button {

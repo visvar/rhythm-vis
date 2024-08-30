@@ -2,7 +2,7 @@
     import { onDestroy, onMount } from 'svelte';
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
-    import { Midi } from 'musicvis-lib';
+    import { Midi, Utils } from 'musicvis-lib';
     import MidiInput from './common/midi-input.svelte';
     import { detectChords } from '../lib/chords';
     import ResetNotesButton from './common/reset-notes-button.svelte';
@@ -14,6 +14,8 @@
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import MetronomeButton from './common/metronome-button.svelte';
+    import TempoInput from './common/tempo-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -24,8 +26,9 @@
     let height = 400;
     let container;
     // settings
-    let pastSeconds = 10;
+    let pastBeats = 10;
     let maxNoteDistance = 0.2;
+    let tempo = 90;
     // data
     let firstTimeStamp = 0;
     let notes = [];
@@ -47,14 +50,22 @@
     };
 
     const draw = () => {
-        const maxTime = d3.max(notes, (d) => d.time) + 0.5;
-        const minTime = maxTime - pastSeconds;
+        const quarter = Utils.bpmToSecondsPerBeat(tempo);
+
+        const maxTime = d3.max(notes, (d) => d.time) / quarter + 0.5;
+        const minTime = maxTime - pastBeats;
         // only handle recent notes
-        const filtered = notes.filter(
-            (d) => d.end > minTime || d.end === undefined,
-        );
+        const filtered = notes
+            .filter((d) => d.time / quarter > minTime)
+            .map((d) => {
+                // convert time to beats
+                return { ...d, time: d.time / quarter };
+            });
+
         // clustering to chords
         const chords = detectChords(filtered, maxNoteDistance);
+
+        // get extends and gaps
         const chordExtents = chords.map((c) => d3.extent(c, (d) => d.time));
         const chordGaps = chordExtents
             .slice(1)
@@ -69,7 +80,7 @@
             marginBottom: 40,
             padding: 0,
             x: {
-                label: 'Time in seconds',
+                label: 'Time in beats',
                 domain: [minTime, maxTime],
             },
             y: {
@@ -136,7 +147,7 @@
             marginBottom: 40,
             padding: 0,
             x: {
-                label: 'Time in seconds',
+                label: 'Time in beats',
                 domain: [minTime, maxTime],
             },
             y: {
@@ -178,8 +189,10 @@
      */
     const getExportData = () => {
         return {
-            pastSeconds,
+            pastBeats,
             maxNoteDistance,
+            tempo,
+            // data
             notes,
         };
     };
@@ -191,8 +204,9 @@
         if (notes.length > 0) {
             saveToStorage();
         }
-        pastSeconds = json.pastSeconds;
+        pastBeats = json.pastBeats;
         maxNoteDistance = json.maxNoteDistance;
+        tempo = json.tempo;
         // data
         notes = json.notes;
         draw();
@@ -216,15 +230,19 @@
         between consecutive chords/arpeggios.
     </p>
     <ExerciseDrawer>
-        <p>1) Play a chord progression that is tricky for you.</p>
+        <p>
+            1) Play a chord progression that is tricky for you. Make sure the
+            time between each chord and the previous is always roughly the same.
+        </p>
         <p>
             2) Play an arpeggio of this chord progression (with a pause after
             each).
         </p>
     </ExerciseDrawer>
     <div class="control">
+        <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label
-            title="maximum distance between notes such that they still count as beloning to the same chord/arpeggio"
+            title="maximum distance between notes such that they still count as beloning to the same chord/arpeggio (in beats)"
         >
             max. note distance
             <input
@@ -236,11 +254,11 @@
                 step="0.05"
             />
         </label>
-        <label title="time in seconds for past notes to be shown">
-            time
+        <label title="time in beats that is shown">
+            beats shown
             <input
                 type="number"
-                bind:value="{pastSeconds}"
+                bind:value="{pastBeats}"
                 on:change="{draw}"
                 min="10"
                 max="300"
@@ -250,6 +268,7 @@
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
+        <MetronomeButton {tempo} accent="{4}" />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />

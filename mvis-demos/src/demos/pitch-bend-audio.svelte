@@ -43,21 +43,34 @@
         const detected = detector.findPitch(input, sampleRate);
         const pitch = detected[0];
         const clarity = detected[1];
-        const note = Note.fromFreq(pitch);
-        const noteMidi = Note.midi(note);
+        // const note = Note.fromFreq(pitch);
+        // const noteMidi = Note.midi(note);
         const actualMidi = Midi.freqToMidi(pitch);
-        const centsOffset = (actualMidi - noteMidi) * 100;
+        // const centsOffset = (actualMidi - noteMidi) * 100;
         const noteInSeconds = (performance.now() - firstTimeStamp) / 1000;
         const bend = {
             time: noteInSeconds,
             pitch,
-            noteMidi,
+            // noteMidi,
             actualMidi,
             actualMidiChroma: actualMidi % 12,
-            centsOffset,
+            // centsOffset,
             clarity,
         };
         bendValues.push(bend);
+        if (bendValues.length > 3) {
+            // removes spikes
+            const current = actualMidi;
+            const oneAgo = bendValues.at(-2).actualMidi;
+            const twoAgo = bendValues.at(-3).actualMidi;
+            if (
+                Math.abs(current - twoAgo) < 1.5 &&
+                Math.abs(current - oneAgo) > 1.5
+            ) {
+                bendValues.splice(-2, 1);
+            }
+        }
+        // draw
         draw();
         timeout = requestAnimationFrame(() => updatePitch(input, sampleRate));
     }
@@ -99,7 +112,7 @@
             marginBottom: 50,
             padding: 0,
             x: {
-                domain: [minTime, now],
+                domain: [minTime, now - waitTime / 1000],
                 label: 'time in seconds',
             },
             y: {

@@ -60,5 +60,7 @@
     button.node,
     button.skill {
         display: block;
+        width: 180px;
+        text-align: left;
     }
 </style>

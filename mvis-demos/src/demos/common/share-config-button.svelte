@@ -29,14 +29,15 @@
     // when mounted, check if URL contains settings and load them
     onMount(() => {
         const param = getUrlParam(window, 'json');
-        console.log({ param });
-
         if (param !== '') {
-            const decoded = decodeURI(param);
-            const json = JSON.parse(decoded);
-            console.log(json);
-
-            loadData(json);
+            try {
+                const decoded = decodeURI(param);
+                const json = JSON.parse(decoded);
+                loadData(json);
+            } catch (e) {
+                alert(`Error: Cannot open shared app settings ${e.message}`);
+                console.error(e);
+            }
         }
     });
 

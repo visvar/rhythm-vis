@@ -3,6 +3,7 @@
     import * as d3 from 'd3';
     import * as Plot from '@observablehq/plot';
     import { onMount } from 'svelte';
+    import { APPS } from './apps';
 
     export let apps = [];
     export let allInstruments = new Set();
@@ -322,6 +323,31 @@
     <h2>skill tree</h2>
     <div class="visualization" bind:this="{skillTreeContainer}"></div>
 
+    <!-- list by skill -->
+    <h2>listed by skill</h2>
+    <ul class="list">
+        {#each SKILL_TREE as s}
+            <li>
+                <b>{s.title}</b>
+                <ul>
+                    {#each s.children as skill}
+                        <li>
+                            <b>{skill.title}</b>
+                            <ul>
+                                {#each APPS.filter( (d) => d.skills.includes(skill.id), ) as app}
+                                    <li style="font-size: 12px;">
+                                        {app.title}
+                                    </li>
+                                {/each}
+                            </ul>
+                        </li>
+                    {/each}
+                </ul>
+            </li>
+        {/each}
+    </ul>
+
+    <!-- matrix -->
     <h2>app metadata co-occurrence</h2>
     <label>
         row
@@ -346,7 +372,7 @@
 
     <div>
         <h3>App List</h3>
-        <ul>
+        <ul class="list">
             {#each apps as d}
                 <li>{d.title}</li>
             {/each}
@@ -377,7 +403,7 @@
         font-size: smaller;
     }
 
-    ul {
+    ul.list {
         margin: auto;
         width: max-content;
         text-align: left;
