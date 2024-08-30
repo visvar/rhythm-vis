@@ -35,7 +35,7 @@
                 const json = JSON.parse(decoded);
                 loadData(json);
             } catch (e) {
-                alert(`Error: Cannot open shared app settings ${e.message}`);
+                console.error(`Error: Cannot open shared app settings`);
                 console.error(e);
             }
         }

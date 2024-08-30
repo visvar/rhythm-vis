@@ -30,7 +30,10 @@
                 return [`${tree.label} ${tree.title}`];
             }
         };
-        const treePaths = getPaths({ title: 'skills', children: SKILL_TREE });
+        const treePaths = getPaths({
+            title: 'skills',
+            children: SKILL_TREE,
+        });
         const plot = Plot.plot({
             axis: null,
             margin: 10,

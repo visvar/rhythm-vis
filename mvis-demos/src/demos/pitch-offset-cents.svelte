@@ -12,6 +12,7 @@
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import PcKeyboardInput from './common/pc-keyboard-input.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -168,6 +169,15 @@
         clearTimeout(timeout);
         cancelAnimationFrame(timeout);
     });
+
+    const pause = () => {
+        paused = !paused;
+        if (!paused) {
+            getPitchFromAudio();
+        } else {
+            cancelAnimationFrame(timeout);
+        }
+    };
 </script>
 
 <main class="demo">
@@ -187,15 +197,9 @@
     {/if}
     <div class="control">
         <button
+            title="Pause the moving visualization (shortcut: space)"
             style="width: 75px"
-            on:click="{() => {
-                paused = !paused;
-                if (!paused) {
-                    getPitchFromAudio();
-                } else {
-                    cancelAnimationFrame(timeout);
-                }
-            }}"
+            on:click="{pause}"
         >
             {paused ? 'play' : 'pause'}
         </button>
@@ -261,4 +265,5 @@
         <ShareConfigButton {getExportData} {loadData} />
     </div>
     <RatingButton appId="{demoInfo.id}" />
+    <PcKeyboardInput key=" " keyDown="{pause}" />
 </main>

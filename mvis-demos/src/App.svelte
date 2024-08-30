@@ -138,7 +138,7 @@
   });
 
   // row layout?
-  let rows = true;
+  let rows = localStorage.getItem('display-app-rows') === 'true' ?? true;
 </script>
 
 <main>
@@ -172,15 +172,6 @@
         }}"
       >
         ⚙️ settings
-      </button>
-      <!-- DemoOverview page button -->
-      <button
-        on:click="{() => {
-          currentApp = 'overview';
-          setUrlParam(window, 'd', 'overview');
-        }}"
-      >
-        📋 overview
       </button>
       <!-- Help page button -->
       <button
@@ -218,7 +209,13 @@
             <option value="recent">recently used</option>
           </select>
           <!-- layout -->
-          <button on:click="{() => (rows = !rows)}" class="row-button">
+          <button
+            on:click="{() => {
+              rows = !rows;
+              localStorage.setItem('display-app-rows', rows.toString());
+            }}"
+            class="row-button"
+          >
             {rows ? '☰ rows' : '᎒᎒᎒ grid'}
           </button>
         </div>
@@ -307,13 +304,13 @@
           <!-- svelte-ignore a11y-click-events-have-key-events -->
           <!-- svelte-ignore a11y-no-static-element-interactions -->
           <div
-            class="card {appUsageCount.get(app.id) ? '' : 'never-used'}"
+            class="card"
             on:click="{() => {
               currentApp = app;
               setUrlParam(window, 'd', app.id);
             }}"
           >
-            <h2>{app.title}</h2>
+            <h2>{app.title}{appUsageCount.get(app.id) ? '' : ' ✨'}</h2>
             <div class="description">
               {app.description}
             </div>
@@ -346,7 +343,7 @@
       </div>
     </div>
   {:else if currentApp === 'tools'}
-    <Tools bind:currentTool />
+    <Tools bind:currentTool {rows} />
   {:else if currentApp === 'settings'}
     <Settings />
   {:else if currentApp === 'overview'}
@@ -358,7 +355,17 @@
     <svelte:component this="{currentApp.component}" demoInfo="{currentApp}" />
   {/if}
   <div class="version-number">
-    version {version}
+    <span> </span>
+    <!-- DemoOverview page button -->
+    <button
+      on:click="{() => {
+        currentApp = 'overview';
+        setUrlParam(window, 'd', 'overview');
+      }}"
+      style="background: none; color: #aaa; font-weight: normal"
+    >
+      version {version} | overview
+    </button>
   </div>
 </main>
 <!-- shortcut for app menu -->
@@ -399,6 +406,10 @@
     width: 180px;
   }
 
+  .filter .row-button {
+    height: 40px;
+  }
+
   .filter select {
     text-align: center;
   }
@@ -416,7 +427,7 @@
   }
 
   .version-number {
-    margin-top: 30px;
+    margin-top: 50px;
     color: #aaa;
     user-select: none;
   }

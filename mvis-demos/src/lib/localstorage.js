@@ -10,7 +10,7 @@ const localSt = window.localStorage
  * @returns {number} current localStorage usage in KB
  */
 export function localStorageKBytes() {
-  let _lsTotal = 0
+  let byteTotal = 0
   let entryLength
   let entry
   for (entry in localSt) {
@@ -18,9 +18,9 @@ export function localStorageKBytes() {
       continue
     }
     entryLength = ((localSt[entry].length + entry.length) * 2)
-    _lsTotal += entryLength
+    byteTotal += entryLength
   };
-  const total = _lsTotal / 1024
+  const total = byteTotal / 1024
   return total
 }
 

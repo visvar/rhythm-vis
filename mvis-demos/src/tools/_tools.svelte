@@ -85,11 +85,12 @@
     ];
 
     export let currentTool;
+    export let rows;
 </script>
 
 <main>
     {#if !currentTool}
-        <div class="grid">
+        <div class="grid {rows ? 'rows' : ''}">
             {#each TOOLS as tool}
                 <!-- svelte-ignore a11y-click-events-have-key-events -->
                 <!-- svelte-ignore a11y-no-static-element-interactions -->
