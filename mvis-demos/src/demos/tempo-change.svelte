@@ -12,6 +12,7 @@
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import TouchInput from './common/touch-input.svelte';
     import { secondsPerBeatToBpm } from '../lib/lib';
+    import ShareConfigButton from './common/share-config-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -217,6 +218,7 @@
         />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <ShareConfigButton {getExportData} {loadData} />
     </div>
     <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />

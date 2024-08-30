@@ -8,7 +8,7 @@
     import ImportButton2 from '../demos/common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import { VELOCITIES_LOGIC, VELOCITIES_MEANING } from '../lib/music';
-    import LoadFromStorageButton from '../demos/common/history-button.svelte';
+    import HistoryButton from '../demos/common/history-button.svelte';
     import example from '../example-recordings/dynamics.json';
     import * as d3 from 'd3';
     import ExerciseDrawer from '../demos/common/exercise-drawer.svelte';
@@ -189,7 +189,7 @@
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
-        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
+        <HistoryButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} />
 </main>

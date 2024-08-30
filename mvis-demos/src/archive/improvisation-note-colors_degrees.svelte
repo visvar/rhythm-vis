@@ -10,7 +10,7 @@
     import ExportButton2 from '../demos/common/export-button2.svelte';
     import ImportButton2 from '../demos/common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
-    import LoadFromStorageButton from '../demos/common/history-button.svelte';
+    import HistoryButton from '../demos/common/history-button.svelte';
 
     /**
      * TODO: support minor, see https://en.wikipedia.org/wiki/Degree_(music)
@@ -224,7 +224,7 @@
         </button>
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
-        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
+        <HistoryButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} {noteOff} {controlChange} />
 </main>

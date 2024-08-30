@@ -11,12 +11,13 @@
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
     import { localStorageAddRecording } from '../lib/localstorage.js';
-    import LoadFromStorageButton from './common/history-button.svelte';
+    import HistoryButton from './common/history-button.svelte';
     import example from '../example-recordings/speed-up.json';
     import TouchInput from './common/touch-input.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
+    import ShareConfigButton from './common/share-config-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -468,7 +469,8 @@
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
-        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
+        <HistoryButton demoId="{demoInfo.id}" {loadData} />
+        <ShareConfigButton {getExportData} {loadData} />
     </div>
     <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />

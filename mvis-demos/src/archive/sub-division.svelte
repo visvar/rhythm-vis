@@ -14,7 +14,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import ExportButton2 from '../demos/common/export-button2.svelte';
     import ImportButton2 from '../demos/common/import-button2.svelte';
-    import LoadFromStorageButton from '../demos/common/history-button.svelte';
+    import HistoryButton from '../demos/common/history-button.svelte';
     import TouchInput from '../demos/common/touch-input.svelte';
     import ExerciseDrawer from '../demos/common/exercise-drawer.svelte';
     import { COLORS } from '../lib/colors';
@@ -380,7 +380,7 @@
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
-        <LoadFromStorageButton demoId="{demoInfo.id}" {loadData} />
+        <HistoryButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} {controlChange} />
