@@ -16,9 +16,14 @@
     import HistoryButton from './common/history-button.svelte';
     import example from '../example-recordings/accents.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
-    import { FILTER_NOTES } from '../lib/music.js';
+    import {
+        FILTER_NOTES,
+        VELOCITIES_LOGIC,
+        VELOCITIES_MEANING,
+    } from '../lib/music.js';
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import ToggleButton from './common/toggle-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -31,15 +36,13 @@
     let tempo = 90;
     let pastNoteCount = 20;
     let useDotted = false;
+    let useTuplets = false;
     let filterNote = 16;
+    let loudnessThreshold = 0;
     // data
     $: minIOI = (Utils.bpmToSecondsPerBeat(tempo) * 4) / filterNote;
     let firstTimeStamp = 0;
     let notes = [];
-    // domain knowledge
-    // 𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯
-    const possibilities = noteDurations;
-    const possibilitiesNonDotted = possibilities.filter((d) => !d.dotted);
 
     const noteOn = async (e) => {
         if (notes.length === 0) {
@@ -79,12 +82,14 @@
             };
         });
 
-        const poss = useDotted ? possibilities : possibilitiesNonDotted;
+        const possible = noteDurations
+            .filter((d) => useDotted || !d.dotted)
+            .filter((d) => useTuplets || !d.tuplet);
         const bestFit = deltas.slice(1).map((delta) => {
-            const bestIndex = d3.minIndex(poss, (d) =>
+            const bestIndex = d3.minIndex(possible, (d) =>
                 Math.abs(delta.delta - d.beats),
             );
-            const best = poss[bestIndex];
+            const best = possible[bestIndex];
             return {
                 ...best,
                 beats: delta,
@@ -107,25 +112,32 @@
                 Plot.text(bestFit, {
                     text: 'symbol',
                     x: (d, i) => i,
-                    fontSize: (d) => d.velocity * 60 + 10,
+                    fontSize:
+                        loudnessThreshold > 0
+                            ? (d) => (d.velocity < loudnessThreshold ? 35 : 70)
+                            : (d) => d.velocity * 60 + 10,
                 }),
             ],
         });
         container.appendChild(plot);
         // legend
+        const legendTicks = [...VELOCITIES_LOGIC.keys()].map((d) => d / 127);
         const plot2 = Plot.plot({
-            subtitle: 'loudness',
+            // subtitle: 'loudness',
             width: width,
             height: 100,
-            marginLeft: width * 0.4,
-            marginRight: width * 0.4,
+            marginTop: 0,
+            marginLeft: width * 0.35,
+            marginRight: width * 0.35,
+            marginBottom: 35,
             x: {
                 label: 'loudness',
                 labelAnchor: 'center',
-                ticks: [0, 0.5, 1],
+                ticks: legendTicks,
+                tickFormat: (d, i) => [...VELOCITIES_LOGIC.values()][i],
             },
             marks: [
-                Plot.text(d3.range(0, 1.2, 0.2), {
+                Plot.text(legendTicks, {
                     text: (d) => '𝅘𝅥',
                     x: (d, i) => d,
                     fontSize: (d) => d * 60 + 10,
@@ -222,6 +234,15 @@
         >
             dotted notes {useDotted ? toggleOnIcon : toggleOffIcon}
         </button>
+
+        <ToggleButton
+            label="tuplets"
+            title="Use tuplets? If not, the closest non-tuplet note will be taken."
+            bind:checked="{useTuplets}"
+            callback="{draw}"
+        />
+    </div>
+    <div class="control">
         <label
             title="You can filter out notes that are shorter than a given note duration."
         >
@@ -229,6 +250,19 @@
             <select bind:value="{filterNote}" on:change="{draw}">
                 {#each FILTER_NOTES as g}
                     <option value="{g}">1/{g} note</option>
+                {/each}
+            </select>
+        </label>
+        <label
+            title="You can choose a value for loudness to only show loud and quiet notes in two different sizes instead of exactly sizing notes by loudness. Set to 0 to use smooth sizing."
+        >
+            loudness threshold
+            <select bind:value="{loudnessThreshold}" on:change="{draw}">
+                {#each VELOCITIES_LOGIC.entries() as [velocity, label]}
+                    <option value="{velocity / 127}">
+                        {(velocity / 127).toFixed(1)}
+                        {label}
+                    </option>
                 {/each}
             </select>
         </label>

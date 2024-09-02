@@ -31,7 +31,7 @@
     on:click="{undo}"
     class="left"
 >
-    undo
+    ↺
 </button>
 <button
     title="redo the last undone note (shortcut: CTRL+Y)"
@@ -39,7 +39,7 @@
     on:click="{redo}"
     class="right"
 >
-    redo
+    ↻
 </button>
 
 <PcKeyboardInput key="z" ctrlKey="{true}" keyDown="{undo}" />
