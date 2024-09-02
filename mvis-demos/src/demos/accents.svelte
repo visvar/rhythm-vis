@@ -16,11 +16,7 @@
     import HistoryButton from './common/history-button.svelte';
     import example from '../example-recordings/accents.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
-    import {
-        FILTER_NOTES,
-        VELOCITIES_LOGIC,
-        VELOCITIES_MEANING,
-    } from '../lib/music.js';
+    import { FILTER_NOTES, VELOCITIES_LOGIC } from '../lib/music.js';
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
     import ToggleButton from './common/toggle-button.svelte';
@@ -38,7 +34,7 @@
     let useDotted = false;
     let useTuplets = false;
     let filterNote = 16;
-    let loudnessThreshold = 0;
+    let velocityThreshold = 0;
     // data
     $: minIOI = (Utils.bpmToSecondsPerBeat(tempo) * 4) / filterNote;
     let firstTimeStamp = 0;
@@ -113,8 +109,8 @@
                     text: 'symbol',
                     x: (d, i) => i,
                     fontSize:
-                        loudnessThreshold > 0
-                            ? (d) => (d.velocity < loudnessThreshold ? 35 : 70)
+                        velocityThreshold > 0
+                            ? (d) => (d.velocity < velocityThreshold ? 35 : 70)
                             : (d) => d.velocity * 60 + 10,
                 }),
             ],
@@ -155,6 +151,8 @@
             tempo,
             pastNoteCount,
             useDotted,
+            useTuplets,
+            velocityThreshold,
             filterNote,
             // data
             notes,
@@ -171,7 +169,9 @@
         tempo = json.tempo;
         pastNoteCount = json.pastNoteCount;
         useDotted = json.useDotted;
-        filterNote = json.filterNote;
+        useTuplets = json.useTuplets;
+        velocityThreshold = json.velocityThreshold ?? 0;
+        filterNote = json.filterNote ?? 32;
         // data
         notes = json.notes;
         draw();
@@ -257,7 +257,7 @@
             title="You can choose a value for loudness to only show loud and quiet notes in two different sizes instead of exactly sizing notes by loudness. Set to 0 to use smooth sizing."
         >
             loudness threshold
-            <select bind:value="{loudnessThreshold}" on:change="{draw}">
+            <select bind:value="{velocityThreshold}" on:change="{draw}">
                 {#each VELOCITIES_LOGIC.entries() as [velocity, label]}
                     <option value="{velocity / 127}">
                         {(velocity / 127).toFixed(1)}

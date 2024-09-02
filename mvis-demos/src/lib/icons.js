@@ -31,6 +31,8 @@ export const downArrowIcon = '⬇'
 
 export const star = '⭐'
 
+export const link = '🔗'
+
 // media controls
 export const playIcon = '▶'
 export const stopIcon = '⏹'

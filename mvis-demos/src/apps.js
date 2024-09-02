@@ -31,6 +31,8 @@ import TempoChange from './demos/tempo-change.svelte'
 
 /**
  * All apps defined here
+ *
+ * difficulty: beginner, intermediate, advanced
  */
 export const APPS = [
   {
@@ -42,7 +44,8 @@ export const APPS = [
     data: ['order', 'ioi', 'dynamics'],
     skills: ['accents'],
     patterns: ['duration/ioi as symbol', 'dynamics as font-size', 'time is linear', 'time encoded non-linearly', 'update after note'],
-    timeScale: [''],
+    timeScale: ['a few bars'],
+    difficulty: ['intermediate', 'advanced'],
     component: Accents
   },
   {
@@ -55,6 +58,8 @@ export const APPS = [
     data: ['order', 'onset/time', 'ioi', 'pitch'],
     skills: ['chord-timing', 'arpeggio-timing'],
     patterns: ['onset as tick', 'compressed pitches', 'chord detection', 'time is linear', 'time encoded linearly', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['intermediate', 'advanced'],
     component: ChordArpeggioTiming
   },
   {
@@ -67,6 +72,8 @@ export const APPS = [
     data: ['order', 'onset/time', 'pitch', 'dynamics', 'instrument'],
     skills: ['chord-notes'],
     patterns: ['instrument layout', 'chord detection', 'time is linear', 'time is collapsed', 'update on note'],
+    timeScale: ['a few notes'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: ChordDiagrams
   },
   {
@@ -78,6 +85,8 @@ export const APPS = [
     data: ['order', 'dynamics'],
     skills: ['constant-dynamics', '(de)crescendo', 'accents'],
     patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units'],
+    timeScale: ['a few notes', 'a few bars'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: Dynamics
   },
   // {
@@ -100,6 +109,8 @@ export const APPS = [
     data: ['order', 'duration/ioi'],
     skills: ['duration'],
     patterns: ['duration as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units'],
+    timeScale: ['a single note', 'a few notes'],
+    difficulty: ['beginner'],
     component: DurationBars
   },
   {
@@ -111,6 +122,8 @@ export const APPS = [
     data: ['order', 'duration/ioi'],
     skills: ['duration'],
     patterns: ['duration as pie', 'baselines as angle', 'time is circular', 'time encoded ciruclar', 'update on note', 'musical units'],
+    timeScale: ['a single note', 'a few notes'],
+    difficulty: ['beginner'],
     component: DurationPies
   },
   {
@@ -122,6 +135,8 @@ export const APPS = [
     data: ['instrument', 'pitch'],
     skills: ['instrument-layout', 'scale-notes'],
     patterns: ['distribution as heatmap', 'instrument layout', 'time is collapsed', 'update on note'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['intermediate', 'advanced'],
     component: FretboardHeatmap
   },
   {
@@ -134,6 +149,8 @@ export const APPS = [
     data: ['order', 'pitch', 'instrument', 'pitch-interval'],
     skills: ['instrument-layout', 'pitch-intervals'],
     patterns: ['instrument layout', 'time is instant', 'update on note'],
+    timeScale: ['a few notes'],
+    difficulty: ['advanced'],
     component: FretboardImprovisationIntervals
   },
   {
@@ -145,6 +162,8 @@ export const APPS = [
     data: ['order', 'instrument'],
     skills: ['instrument-layout'],
     patterns: ['distribution as jitter', 'instrument layout', 'time is linear', 'time encoded non-linearly', 'update on note'],
+    timeScale: ['a full song'],
+    difficulty: ['intermediate', 'advanced'],
     component: FretboardJitter
   },
   {
@@ -156,6 +175,8 @@ export const APPS = [
     data: ['onset/time', 'instrument'],
     skills: ['instrument-layout'],
     patterns: ['spacetime cube', 'instrument layout', 'time is linear', 'time encoded linearly', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['intermediate', 'advanced'],
     component: FretboardSpacetimeCube
   },
   {
@@ -168,6 +189,8 @@ export const APPS = [
     data: ['order', 'pitch', 'pitch-interval'],
     skills: ['pitch-intervals'],
     patterns: ['distribution as histogram', 'time is collapsed', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['advanced'],
     component: ImprovisationIntervals
   },
   {
@@ -180,6 +203,8 @@ export const APPS = [
     data: ['order', 'duration/ioi', 'pitch'],
     skills: ['pitch-intervals', 'scale-degrees', 'scale-notes'],
     patterns: ['note role as color', 'duration/ioi as bar', 'time is linear', 'time encoded non-linearly', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['intermediate', 'advanced'],
     component: ImprovisationNoteColors
   },
   {
@@ -192,6 +217,8 @@ export const APPS = [
     data: ['pitch'],
     skills: ['pitch-intervals', 'scale-degrees', 'scale-notes'],
     patterns: ['note role as color', 'distribution as histogram', 'time is collapsed', 'update on note'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['advanced'],
     component: ImprovisationScaleDegrees
   },
   {
@@ -204,6 +231,8 @@ export const APPS = [
     data: ['pitch', 'onset/time'],
     skills: ['pitch-intervals', 'scale-degrees', 'scale-notes'],
     patterns: ['note role as color', 'distribution as histogram', 'facets', 'time segments', 'time is linear', 'time is collapsed', 'time encoded linearly', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['advanced'],
     component: ImprovisationScaleDegreesBar
   },
   {
@@ -215,6 +244,8 @@ export const APPS = [
     data: ['pitch', 'instrument'],
     skills: ['instrument-layout'],
     patterns: ['distribution as histogram', 'instrument layout', 'time is collapsed', 'update on note', 'instrument as color'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['intermediate', 'advanced'],
     component: KeyboardHistogram
   },
   {
@@ -226,6 +257,8 @@ export const APPS = [
     data: ['onset/time', 'pitch'],
     skills: ['pitch-keeping', 'bending', 'vibrato'],
     patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note'],
+    timeScale: ['a few notes'],
+    difficulty: ['intermediate', 'advanced'],
     component: PitchBend
   },
   {
@@ -237,6 +270,8 @@ export const APPS = [
     data: ['onset/time', 'pitch'],
     skills: ['pitch-keeping', 'bending', 'vibrato', 'on-pitch'],
     patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
+    timeScale: ['a few notes'],
+    difficulty: ['intermediate', 'advanced'],
     component: PitchBendAudio
   },
   {
@@ -248,6 +283,8 @@ export const APPS = [
     data: ['onset/time', 'pitch'],
     skills: ['pitch-keeping', 'bending', 'vibrato', 'on-pitch'],
     patterns: ['pitch as line', 'baselines as grid', 'explicit difference', 'difference as color', 'time is linear', 'time encoded linearly', 'update real-time', 'dual encoding'],
+    timeScale: ['a few notes'],
+    difficulty: ['intermediate', 'advanced'],
     component: PitchOffsetCents
   },
   {
@@ -259,6 +296,8 @@ export const APPS = [
     data: ['onset/time', 'pitch'],
     skills: ['pitch-keeping', 'on-pitch'],
     patterns: ['pitch as angle', 'baselines as grid', 'explicit difference', 'time is instant', 'update real-time'],
+    timeScale: ['a single note'],
+    difficulty: ['intermediate', 'advanced'],
     component: PitchOffsetCentsNeedle
   },
   {
@@ -271,6 +310,8 @@ export const APPS = [
     data: ['order', 'duration/ioi'],
     skills: ['sub-division', 'tempo-keeping'],
     patterns: ['duration/ioi as symbol', 'time is linear', 'time encoded non-linearly', 'update after note'],
+    timeScale: ['a few notes'],
+    difficulty: ['intermediate', 'advanced'],
     component: RhythmSheetMusic
   },
   {
@@ -283,6 +324,8 @@ export const APPS = [
     data: ['onset/time', 'exercise'],
     skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: SpeedUp
   },
   {
@@ -295,6 +338,8 @@ export const APPS = [
     data: ['onset/time', 'exercise', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['phrase repetition', 'facets', 'increasing difficulty', 'comparison between takes', 'time is linear', 'time encoded linearly', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: SpeedUpTab
   },
   {
@@ -306,6 +351,8 @@ export const APPS = [
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'target areas', 'update on note'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: SubDivision
   },
   {
@@ -317,6 +364,8 @@ export const APPS = [
     data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'synchronized-body-parts', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'update on note'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: SubDivisionDrums
   },
   {
@@ -328,6 +377,8 @@ export const APPS = [
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'update on note'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: SubDivisionLinear
   },
   {
@@ -339,6 +390,8 @@ export const APPS = [
     data: ['onset/time'],
     skills: ['sub-division', 'timing-consistency', 'swing-feel'],
     patterns: ['time is cyclic', 'time encoded circular', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'comparison between takes', 'update on note'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: SubDivisionHistory
   },
   {
@@ -350,6 +403,8 @@ export const APPS = [
     data: ['onset/time', 'instrument'],
     skills: ['strumming-direction', 'strumming-strings'],
     patterns: ['direction as arrow', 'direction as color', 'chord detection', 'time is linear', 'time encoded linearly', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: StrummingPattern
   },
   {
@@ -361,6 +416,8 @@ export const APPS = [
     data: ['order', 'duration/ioi'],
     skills: ['tempo-keeping'],
     patterns: ['duration/ioi as bar', 'baselines as grid', 'time is linear', 'time encoded non-linearly', 'update on note'],
+    timeScale: ['a full song'],
+    difficulty: ['beginner', 'intermediate', 'advanced'],
     component: TempoDrift
   },
   {
@@ -372,6 +429,8 @@ export const APPS = [
     data: ['onset/time'],
     skills: ['tempo-changing', 'tempo-keeping'],
     patterns: ['baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['intermediate', 'advanced'],
     component: TempoChange
   },
   {
@@ -384,6 +443,8 @@ export const APPS = [
     data: ['onset/time', 'instrument'],
     skills: ['sub-division', 'timing-consistency', 'syncopation', 'synchronized-timing', 'synchronized-body-parts'],
     patterns: ['time is cyclic', 'time encoded linearly', 'baselines as grid', 'distribution as histogram', 'distribution as density', 'facets', 'update on note'],
+    timeScale: ['a few bars'],
+    difficulty: ['advanced'],
     component: TwoHandedTiming
   }
 ]

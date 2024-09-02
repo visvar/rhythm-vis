@@ -37,7 +37,7 @@
         const binTime = d3
             .bin()
             .domain([0, onsets.at(-1)])
-            .thresholds(d3.range(0, onsets.at(-1), timeBinSize));
+            .thresholds(d3.range(0, onsets.at(-1) + timeBinSize, timeBinSize));
         const binnedByTime = binTime(onsets);
         // handle each time bin separately
         for (const timeBin of binnedByTime) {
@@ -46,7 +46,7 @@
                 i === 0 ? 0 : d - timeBin[i - 1],
             );
             // filter IOIs
-            const filtered = iois.filter((d) => d > 0.05 && d < 1);
+            const filtered = iois.filter((d) => d > 0.025 && d < 1.5);
             const bpms = filtered.map((d) => {
                 // convert to bpm
                 d = secondsPerBeatToBpm(d);
@@ -66,13 +66,14 @@
                 .thresholds(d3.range(60, 185, tempoBinSize));
             const binnedByBpm = binBpms(bpms);
             for (const bpm of binnedByBpm) {
-                if (bpm.length > 1)
+                if (bpm.length > 0)
                     bpmValues.push({
                         time0: timeBin.x0,
                         time1: timeBin.x1,
                         tempo0: bpm.x0,
                         tempo1: bpm.x1,
                         count: bpm.length,
+                        confidence: bpm.length / filtered.length,
                     });
             }
         }
@@ -106,13 +107,9 @@
             marginBottom: 50,
             padding: 0,
             x: {
-                // type: 'band',
-                // domain: d3.range(Math.floor(minTime / 5) * 5, now + 5, 5),
                 label: 'time in seconds',
             },
             y: {
-                // type: 'band',
-                // domain: d3.range(60, 185, 5),
                 label: 'tempo in BPM',
                 grid: true,
             },
@@ -120,19 +117,21 @@
                 label: 'confidence',
                 scheme: 'Blues',
                 legend: true,
-                marginLeft: 150,
-                width: 400,
-                domain: [0, 10],
-                // domain: d3.range(0, 10, 1),
+                marginLeft: width * 0.3,
+                width: width * 0.6,
+                type: 'quantize',
+                domain: [0, 1],
             },
             marks: [
                 Plot.ruleY([60, 90, 120, 150, 180]),
+                // workaround to have smoother time
+                Plot.ruleX([notes.at(-1)], { opacity: 0 }),
                 Plot.rect(bpmValues, {
                     x1: 'time0',
                     x2: 'time1',
                     y1: 'tempo0',
                     y2: 'tempo1',
-                    fill: 'count',
+                    fill: 'confidence',
                     clip: true,
                     tip: true,
                 }),
@@ -199,6 +198,30 @@
             />
         </label>
     </div> -->
+    <div class="control">
+        <label title="Size of the time bins in seconds">
+            time step
+            <input
+                type="number"
+                bind:value="{timeBinSize}"
+                on:change="{draw}"
+                min="1"
+                max="10"
+                step="1"
+            />
+        </label>
+        <label title="Size of the tempo bins in BPM">
+            tempo step
+            <input
+                type="number"
+                bind:value="{tempoBinSize}"
+                on:change="{draw}"
+                min="2"
+                max="20"
+                step="1"
+            />
+        </label>
+    </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <MetronomeButton

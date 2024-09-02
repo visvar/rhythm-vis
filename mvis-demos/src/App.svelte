@@ -90,11 +90,13 @@
   const allInstruments = new Set(APPS.flatMap((d) => d.instruments).sort());
   const allData = new Set(APPS.flatMap((d) => d.data));
   const allSkills = new Set(APPS.flatMap((d) => d.skills).sort());
+  const allDifficulties = new Set(APPS.flatMap((d) => d.difficulty).sort());
   const allPatterns = new Set(APPS.flatMap((d) => d.patterns).sort());
   // filter
   let currentInstruments = new Set(allInstruments);
   let currentInputs = new Set(allInputs);
   let currentSkills = new Set(allSkills);
+  let currentDifficulties = new Set(allDifficulties);
   // search
   let currentSearch = '';
   // apply filter
@@ -103,6 +105,7 @@
       d.title.toLowerCase().includes(currentSearch) &&
       setHasAny(currentInstruments, d.instruments) &&
       setHasAny(currentSkills, d.skills) &&
+      setHasAny(currentDifficulties, d.difficulty) &&
       currentInputs.has(d.input),
   );
   // apply sorting
@@ -129,13 +132,6 @@
 
   // allow to reset current tool with tools button
   let currentTool = null;
-
-  // check if skills are missing/extra
-  const skillTreeSkills = new Set(SKILL_TREE_LEAFS.map((d) => d.id));
-  console.log({
-    extraSkills: [...d3.difference(allSkills, skillTreeSkills)],
-    missingSkills: [...d3.difference(skillTreeSkills, allSkills)],
-  });
 
   // row layout?
   let rows = localStorage.getItem('display-app-rows') === 'true' ?? true;
@@ -236,6 +232,21 @@
             </button>
           {/each}
         </div>
+        <!-- instrument filters -->
+        <div>
+          <h2>difficulty</h2>
+          {#each ['beginner', 'intermediate', 'advanced'] as d}
+            <button
+              on:click="{() =>
+                (currentDifficulties = updSet(currentDifficulties, d))}"
+              on:dblclick="{() => (currentDifficulties = new Set([d]))}"
+              class="{currentDifficulties.has(d) ? 'active' : 'hidden'}"
+              title="click to toggle, double-click to only show this"
+            >
+              {d}
+            </button>
+          {/each}
+        </div>
         <!-- input type filter -->
         <div>
           <h2>input</h2>
@@ -255,7 +266,7 @@
       <!-- app overview grid -->
       <div class="grid {rows ? 'rows' : ''}">
         <!-- current filters -->
-        {#if currentSearch !== '' || currentSkills.size === 1 || currentInstruments.size < allInstruments.size || currentInputs.size < allInputs.size}
+        {#if currentSearch !== '' || currentSkills.size === 1 || currentInstruments.size < allInstruments.size || currentDifficulties.size < allDifficulties.size || currentInputs.size < allInputs.size}
           <div class="current-filters">
             current filters:
             {#if currentSearch !== ''}
@@ -286,6 +297,16 @@
                 }}"
               >
                 {currentInstruments.size} instruments &times;
+              </button>
+            {/if}
+            {#if currentDifficulties.size < allDifficulties.size}
+              <button
+                title="click to remove this filter"
+                on:click="{() => {
+                  currentDifficulties = new Set(allDifficulties);
+                }}"
+              >
+                difficulty: {[...currentDifficulties]} &times;
               </button>
             {/if}
             {#if currentInputs.size < allInputs.size}

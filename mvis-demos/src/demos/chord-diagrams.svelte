@@ -67,9 +67,16 @@
         // clustering to chords
         let chords = detectChords(notes, maxNoteDistance);
 
-        // remove notes that are too far
-        chords = chords.map((notes) => {
-            const nonOpen = notes.filter((n) => n.fret > 0);
+        chords = chords.map((cNotes) => {
+            // if two notes are on the same string, take the louder one
+            cNotes = d3
+                .groups(cNotes, (d) => d.string)
+                .map(([string, sameString]) => {
+                    const loudest = d3.maxIndex(sameString, (d) => d.velocity);
+                    return sameString[loudest];
+                });
+            // remove notes that are too far
+            const nonOpen = cNotes.filter((n) => n.fret > 0);
             let minFret;
             if (nonOpen.length === 0) {
                 // if all notes are open strings, wehave to take 0
@@ -79,7 +86,7 @@
                 minFret = d3.min(nonOpen, (d) => d.fret);
             }
             const maxFret = minFret + maxFretSpan;
-            return notes.filter((d) => d.fret <= maxFret);
+            return cNotes.filter((d) => d.fret <= maxFret);
         });
 
         // TODO: if multiple notes are one the same string, only keep the loudest
@@ -98,8 +105,8 @@
             }
         }
 
-        const chordNames = chords.map((notes) => {
-            let chordNotes = notes
+        const chordNames = chords.map((cNotes) => {
+            let chordNotes = cNotes
                 //  sort from C to B
                 .sort((a, b) => a.number - b.number)
                 // get name

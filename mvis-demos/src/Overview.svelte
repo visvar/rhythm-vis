@@ -10,6 +10,13 @@
     export let allData = new Set();
     export let allPatterns = new Set();
 
+    let allTimeScales = [
+        'a single note',
+        'a few notes',
+        'a few bars',
+        'a full song',
+    ];
+
     let skillTreeContainer;
     let matrixContainer;
     let matrixRow = 'skills';
@@ -166,6 +173,13 @@
             >
                 data
             </th>
+            <th class="spacer"></th>
+            <th
+                colspan="{allTimeScales.length}"
+                style="border-bottom: 4px solid {d3.schemeObservable10[3]};"
+            >
+                time scale
+            </th>
         </thead>
         <thead>
             <th></th>
@@ -182,6 +196,11 @@
             {#each [...allData] as d}
                 <th class="small">{d}</th>
             {/each}
+            <!-- time scale -->
+            <th class="spacer"></th>
+            {#each allTimeScales as d}
+                <th class="small">{d}</th>
+            {/each}
         </thead>
         <thead>
             <th></th>
@@ -189,6 +208,10 @@
             <th colspan="2"></th>
             <!-- instrument -->
             <th colspan="{allInstruments.size}"></th>
+            <!-- instrument -->
+            <th colspan="{allInstruments.size}"></th>
+            <!-- time scale -->
+            <th colspan="{allTimeScales.length}"></th>
         </thead>
         <tbody>
             {#each apps as d}
@@ -207,6 +230,11 @@
                     {#each [...allData] as i}
                         <td>{d.data.includes(i) ? '⬤' : ''}</td>
                     {/each}
+                    <!-- time scale -->
+                    <td class="spacer"></td>
+                    {#each allTimeScales as i}
+                        <td>{d.timeScale.includes(i) ? '⬤' : ''}</td>
+                    {/each}
                 </tr>
             {/each}
             <!-- counts -->
@@ -223,10 +251,16 @@
                             .length}</td
                     >
                 {/each}
-                <td class="spacer"></td>
                 <!-- data -->
+                <td class="spacer"></td>
                 {#each [...allData] as i}
                     <td>{apps.filter((d) => d.data.includes(i)).length}</td>
+                {/each}
+                <!-- time scale -->
+                <td class="spacer"></td>
+                {#each allTimeScales as i}
+                    <td>{apps.filter((d) => d.timeScale.includes(i)).length}</td
+                    >
                 {/each}
             </tr>
         </tbody>
@@ -322,6 +356,38 @@
         </tbody>
     </table>
 
+    <h2>difficulty</h2>
+    <table>
+        <thead>
+            <th style="min-width: 270px">app</th>
+            <!-- patterns -->
+            {#each ['beginner', 'intermediate', 'advanced'] as d}
+                <th class="small">{d}</th>
+            {/each}
+        </thead>
+        <tbody>
+            {#each apps as d}
+                <tr>
+                    <td style="text-align: right;">{d.title}</td>
+                    <!-- skill -->
+                    {#each ['beginner', 'intermediate', 'advanced'] as i}
+                        <td>{d.difficulty.includes(i) ? '⬤' : ''}</td>
+                    {/each}
+                </tr>
+            {/each}
+            <!-- counts -->
+            <tr>
+                <td>{apps.length}</td>
+                {#each ['beginner', 'intermediate', 'advanced'] as i}
+                    <td
+                        >{apps.filter((d) => d.difficulty.includes(i))
+                            .length}</td
+                    >
+                {/each}
+            </tr>
+        </tbody>
+    </table>
+
     <!-- skill tree -->
     <h2>skill tree</h2>
     <div class="visualization" bind:this="{skillTreeContainer}"></div>
@@ -384,6 +450,10 @@
 </main>
 
 <style>
+    table {
+        margin: 10px auto;
+    }
+
     td:not(.spacer) {
         min-width: 60px;
     }

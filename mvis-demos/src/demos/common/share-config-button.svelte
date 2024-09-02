@@ -22,6 +22,7 @@
         button.innerText = 'copied';
         setTimeout(() => {
             button.style = '';
+            // button.innerText = '🔗 share';
             button.innerText = 'share';
         }, 500);
     };
@@ -57,6 +58,6 @@
 
 <style>
     button {
-        width: 75px;
+        width: 95px;
     }
 </style>
