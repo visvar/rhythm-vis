@@ -19,6 +19,7 @@
     import { COLORS } from '../lib/colors';
     import RatingButton from './common/rating-button.svelte';
     import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
+    import { computeSubdivisionOkScore } from '../lib/lib';
 
     /**
      * contains the demo meta information defined in App.js
@@ -70,6 +71,7 @@
         const r2 = r * 0.8;
         const r3 = r * 0.9;
         const r5 = r * 0.95;
+        const r6 = r * 0.68;
         // offset in radians for 0 on top
         const topOffs = Math.PI / 2;
         const ctx = canvas.getContext('2d');
@@ -167,11 +169,17 @@
         // draw grid ticks
         ctx.beginPath();
         ctx.lineWidth = 2;
-        for (const g of coarseGridAngles) {
+        ctx.fillStyle = '#ccc';
+        ctx.font = `${size * 0.05}px sans-serif`;
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        for (const [index, g] of coarseGridAngles.entries()) {
             const dx = Math.cos(g);
             const dy = Math.sin(g);
             ctx.moveTo(cx + dx * r2, cy + dy * r2);
             ctx.lineTo(cx + dx * r5, cy + dy * r5);
+            // grid labels (beat numbers)
+            ctx.fillText(index + 1, cx + dx * r6, cy + dy * r6);
         }
         ctx.stroke();
         ctx.lineWidth = 1;
@@ -183,6 +191,18 @@
             ctx.lineTo(cx + dx * r5, cy + dy * r5);
         }
         ctx.stroke();
+
+        // score of how many notes are in the OK area
+        if (notes.length > 0) {
+            const ok = computeSubdivisionOkScore(
+                notes,
+                grid,
+                tempo,
+                binNote,
+                adjustTime,
+            );
+            ctx.fillText(((ok / notes.length) * 100).toFixed() + '%', cx, cy);
+        }
     };
 
     const draw = () => {

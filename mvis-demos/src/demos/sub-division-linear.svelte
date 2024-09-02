@@ -7,7 +7,7 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
     import ResetNotesButton from './common/reset-notes-button.svelte';
-    import { clamp } from '../lib/lib';
+    import { clamp, computeSubdivisionOkScore } from '../lib/lib';
     import { BIN_NOTES, GRIDS } from '../lib/music';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
@@ -22,6 +22,7 @@
     import RatingButton from './common/rating-button.svelte';
     import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import UndoRedoButton from './common/undo-redo-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -40,6 +41,7 @@
     // data
     let firstTimeStamp = 0;
     let notes = [];
+    let okScore = '';
 
     const noteOn = (e) => {
         if (notes.length === 0) {
@@ -121,7 +123,7 @@
             width,
             height: 90,
             marginTop: 0,
-            marginLeft: 60,
+            marginLeft: 40,
             marginBottom: 10,
             padding: 0,
             x: {
@@ -220,6 +222,19 @@
         container.appendChild(kdePlot);
         container.appendChild(tickPlotSum);
         container.appendChild(tickPlotRows);
+
+        // show how many notes are within the OK areas
+        if (notes.length > 0) {
+            const score = computeSubdivisionOkScore(
+                notes,
+                grid,
+                tempo,
+                binNote,
+                adjustTime,
+            );
+            const percent = ((score / notes.length) * 100).toFixed();
+            okScore = `${percent}% of notes are within the gray areas`;
+        }
     };
 
     onMount(draw);
@@ -328,8 +343,10 @@
         </label>
     </div>
     <div class="visualization" bind:this="{container}"></div>
+    <div>{okScore}</div>
     <div class="control">
         <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
+        <UndoRedoButton bind:data="{notes}" callback="{draw}" />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />

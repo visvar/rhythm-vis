@@ -1,4 +1,5 @@
 import * as d3 from 'd3'
+import { Utils } from 'musicvis-lib'
 
 /**
  * Converts seconds per beat to beats per minute (BPM)
@@ -114,4 +115,47 @@ export function getNumberOfDaysPassed(someDate) {
     return 'yesterday'
   }
   return diffInDays + ' days ago'
+}
+
+/**
+ * Computes the number of notes that are within binNote of the grid.
+ * @param {number[]} notes note onset times
+ * @param {string} grid e.g. '3:4' will lead to 12 divisions of the bar
+ * @param {number} tempo in bpm
+ * @param {number} binNote e.g., 16 for a sixteenth
+ * @param {number} adjustTime time in seconds to add to each note
+ */
+export function computeSubdivisionOkScore(
+  notes,
+  grid,
+  tempo,
+  binNote,
+  adjustTime
+) {
+  if (!notes || notes.length === 0) {
+    return null
+  }
+  let okCount = 0
+  // get times of grid
+  const [grid1, grid2] = grid.split(':').map((d) => +d)
+  const circleSeconds = Utils.bpmToSecondsPerBeat(tempo) * grid1
+  const step = circleSeconds / (grid1 * grid2)
+  const gridTimes = d3.range(0, circleSeconds + step, step)
+  // get allowed error
+  const allowed = circleSeconds / binNote
+  // calculate directed error
+  for (const note of notes) {
+    const time = (note + adjustTime) % circleSeconds
+    let minError = Infinity
+    for (const gridTime of gridTimes) {
+      const error = Math.abs(gridTime - time)
+      if (error < minError) {
+        minError = error
+      }
+    }
+    if (minError <= allowed) {
+      okCount++
+    }
+  }
+  return okCount
 }

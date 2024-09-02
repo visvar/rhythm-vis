@@ -29,7 +29,7 @@
     // when mounted, check if URL contains settings and load them
     onMount(() => {
         const param = getUrlParam(window, 'json');
-        if (param !== '') {
+        if (param && param !== '') {
             try {
                 const decoded = decodeURI(param);
                 const json = JSON.parse(decoded);

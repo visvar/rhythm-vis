@@ -327,7 +327,7 @@
     <div class="visualization" bind:this="{skillTreeContainer}"></div>
 
     <!-- list by skill -->
-    <h2>listed by skill</h2>
+    <h2>apps listed by skill</h2>
     <ul class="list">
         {#each SKILL_TREE as s}
             <li>
@@ -384,10 +384,6 @@
 </main>
 
 <style>
-    /* table th.small {
-        transform: rotate(-90deg);
-    } */
-
     td:not(.spacer) {
         min-width: 60px;
     }
