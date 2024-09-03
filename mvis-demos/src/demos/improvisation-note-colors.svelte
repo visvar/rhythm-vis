@@ -16,6 +16,7 @@
     import RatingButton from './common/rating-button.svelte';
     import ToggleButton from './common/toggle-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import { NOTE_TO_CHROMA_MAP } from '../lib/music';
 
     /**
      * contains the demo meta information defined in App.js
@@ -25,11 +26,19 @@
     let width = 900;
     let height = 300;
     let container;
+    const noteNames = Midi.NOTE_NAMES_FLAT;
+    const rootColor = '#1B5E20';
+    const scale1Color = '#D4E157';
+    const scale2Color = '#689F38';
+    const restColor = 'lightgray';
     // settings
     // let root = 'A';
     let root = 'C';
+    let scaleType1 = 'major';
+    let scaleType2 = 'major pentatonic';
     let pastNoteCount = 50;
     let showDuration = false;
+    let showLoudness = false;
     // data
     let notes = [];
     let firstTimeStamp;
@@ -43,7 +52,7 @@
         const note = {
             name: e.note.name + (e.note.accidental ?? ''),
             number: e.note.number,
-            velocity: e.rawVelocity,
+            velocity: e.velocity,
             time: noteInSeconds,
             channel: e.message.channel,
             duration: 0,
@@ -77,34 +86,36 @@
     };
 
     const draw = () => {
-        // const scale1 = new Set(Scale.get(`${root} minor`).notes);
-        // const scale2 = new Set(Scale.get(`${root} minor blues`).notes);
-        // const scale3 = new Set(Scale.get(`${root} minor pentatonic`).notes);
-        const scale1 = new Set(Scale.get(`${root} major`).notes);
-        const scale3 = new Set(Scale.get(`${root} major pentatonic`).notes);
-        const colorMap = Midi.NOTE_NAMES_FLAT.map((note) => {
+        const scale1 = new Set(
+            Scale.get(`${root} ${scaleType1}`).notes.map(
+                (d) => noteNames[NOTE_TO_CHROMA_MAP.get(d)],
+            ),
+        );
+        const scale2 = new Set(
+            Scale.get(`${root} ${scaleType2}`).notes.map(
+                (d) => noteNames[NOTE_TO_CHROMA_MAP.get(d)],
+            ),
+        );
+        const colorMap = noteNames.map((note) => {
             if (note === root) {
-                return '#1B5E20';
-            } else if (scale3.has(note)) {
-                return '#689F38';
-                // } else if (scale2.has(note)) {
-                //     return 'cornflowerblue';
+                return rootColor;
+            } else if (scale2.has(note)) {
+                return scale2Color;
             } else if (scale1.has(note)) {
-                return '#D4E157';
+                return scale1Color;
             } else {
-                return 'lightgray';
+                return restColor;
             }
         });
         const limited = notes.slice(-pastNoteCount);
         const plot = Plot.plot({
             width,
-            height,
+            height: showDuration ? height : height * 0.6,
             marginLeft: 80,
             marginBottom: 50,
             padding: 0,
             x: {
                 axis: false,
-                // domain: [0, pastNoteCount],
             },
             y: {
                 axis: showDuration,
@@ -120,7 +131,7 @@
             },
             opacity: {
                 domain: [0, 127],
-                range: [0.2, 1],
+                range: [0.3, 1],
             },
             marks: [
                 Plot.ruleY([0], {
@@ -131,7 +142,7 @@
                     x: (d, i) => i,
                     y: showDuration ? 'duration' : 1,
                     fill: (d) => d.number % 12,
-                    // opacity: (d) => d.velocity,
+                    opacity: showLoudness ? (d) => d.velocity : 1,
                     inset: 0.5,
                     rx: 4,
                     tip: true,
@@ -177,8 +188,8 @@
 
     const saveToStorage = () => {
         if (
-            notes.length > 0 &&
-            JSON.stringify(notes) !== JSON.stringify(example.notes)
+            notes.length > 0
+            // && JSON.stringify(notes) !== JSON.stringify(example.notes)
         ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
@@ -206,17 +217,53 @@
     <div class="control">
         <label>
             root note
-            <select bind:value="{root}" on:change="{draw}">
+            <select
+                bind:value="{root}"
+                on:change="{draw}"
+                style="background-color: {rootColor};"
+            >
                 {#each Midi.NOTE_NAMES as n}
                     <option value="{n}">{n}</option>
                 {/each}
             </select>
         </label>
+        <label>
+            scale type 1
+            <select
+                bind:value="{scaleType1}"
+                on:change="{draw}"
+                style="background-color: {scale1Color};"
+            >
+                {#each ['major', 'minor'] as s}
+                    <option value="{s}">{s}</option>
+                {/each}
+            </select>
+        </label>
+        <label>
+            scale type 2
+            <select
+                bind:value="{scaleType2}"
+                on:change="{draw}"
+                style="background-color: {scale2Color};"
+            >
+                {#each ['pentatonic', 'blues'].map((d) => `${scaleType1} ${d}`) as s}
+                    <option value="{s}">{s}</option>
+                {/each}
+            </select>
+        </label>
+    </div>
+    <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />
         <ToggleButton
             bind:checked="{showDuration}"
-            label="duration"
+            label="show duration"
             title="Show duration in the bar's height?"
+            callback="{draw}"
+        />
+        <ToggleButton
+            bind:checked="{showLoudness}"
+            label="show loudness"
+            title="Show loudness in the bar's opacity?"
             callback="{draw}"
         />
     </div>

@@ -15,6 +15,7 @@
 
     let recordings = [];
     let modalShown = false;
+    let askForDelete = '';
 
     const loadRecordings = () => {
         recordings = localSorageGetRecordings(demoId).reverse();
@@ -36,21 +37,19 @@
     history
 </button>
 {#if modalShown}
-    <!-- svelte-ignore a11y-click-events-have-key-events -->
-    <!-- svelte-ignore a11y-no-static-element-interactions -->
     <div class="modal">
         <div class="modal-content">
             <div class="heading">
                 <h2>Load from History</h2>
                 <button
-                    title="close (escape)"
+                    title="close (shortcut: Escape)"
                     class="close"
                     on:click="{toggleModal}"
                 >
                     &times;
                 </button>
             </div>
-            {#each recordings as r, i}
+            {#each recordings as r, i (r.date)}
                 <div class="recording">
                     <div>
                         {r.date.substring(0, 16).replace('T', ' ')}
@@ -58,13 +57,16 @@
                     <button on:click="{(e) => loadData(r.data)}"> load </button>
                     <button
                         on:click="{(e) => {
-                            if (confirm('delete?')) {
+                            if (askForDelete) {
+                                askForDelete = '';
                                 localStorageDeleteRecording(demoId, r.date);
                                 loadRecordings();
+                            } else {
+                                askForDelete = r.date;
                             }
                         }}"
                     >
-                        delete
+                        {askForDelete === r.date ? 'confirm' : 'delete'}
                     </button>
                 </div>
             {/each}

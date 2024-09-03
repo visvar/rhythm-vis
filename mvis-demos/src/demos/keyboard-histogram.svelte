@@ -151,7 +151,7 @@
                     fill: (d) => (Midi.isSharp(d) ? '#333' : 'white'),
                     stroke: '#bbb',
                     inset: 1,
-                    rx: 4,
+                    rx: 2.5,
                     clip: false,
                 }),
             ],

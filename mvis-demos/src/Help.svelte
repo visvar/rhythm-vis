@@ -91,6 +91,9 @@
                 <code>r</code> resets the played data
             </li>
             <li>
+                (history modal) <code>Escape</code> closes the modal
+            </li>
+            <li>
                 (some apps) <code>CTRL</code>+<code>Z</code> un-does the last note
             </li>
             <li>

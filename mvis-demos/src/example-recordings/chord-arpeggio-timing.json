@@ -1,6 +1,8 @@
 {
   "pastSeconds": 10,
-  "maxNoteDistance": 0.2,
+  "maxNoteDistance": 0.4,
+  "pastBeats": 20,
+  "tempo": 100,
   "notes": [
     {
       "number": 48,
