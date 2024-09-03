@@ -10,7 +10,8 @@
     import * as AFRAME from 'aframe';
 
     /**
-     * TODO:#
+     * TODO:
+     * - opacity for velocity to hide noise
      * - improve text (anchor, baseline, side, wrappixels)
      *  - https://aframe.io/docs/1.5.0/components/text.html
      * - allow interaction to reset notes and scale time

@@ -1,4 +1,10 @@
 /**
+ * Maps a note with any (up to two) accidentals to its chroma from 0 to 11
+ *
+ * Example:
+ * A## -> 11
+ * Cbb -> 10
+ *
  * TODO: move to mvlib
  * @type {Map<string,number>}
  */
@@ -17,6 +23,7 @@ export const NOTE_TO_CHROMA_MAP = new Map([
   ['C#', 1],
   ['C##', 2],
   ['Cb', 11],
+  ['Cbb', 10],
   ['D', 2],
   ['D#', 3],
   ['D##', 4],
@@ -36,26 +43,34 @@ export const NOTE_TO_CHROMA_MAP = new Map([
   ['G#', 8],
   ['G##', 9],
   ['Gb', 6],
-  ['Gbb', 5],
+  ['Gbb', 5]
 ])
 
 /**
  * Musical grids for sub-division
  * TODO: move to mvlib
  *
- * @type {string[]}
+ * @type {object[]}
  */
 export const GRIDS = [
-  '4:2',
-  '4:3',
-  '4:4',
-  '4:5',
-  '4:6',
-  '3:2',
-  '3:3',
-  '3:4',
-  '3:5',
-  '3:6'
+  { divisions: '4:1', label: '⁴⁄₄ quarters' },
+  { divisions: '4:2', label: '⁴⁄₄ eighths' },
+  { divisions: '4:3', label: '⁴⁄₄ triplets' },
+  { divisions: '4:4', label: '⁴⁄₄ sixteenths' },
+  { divisions: '4:5', label: '⁴⁄₄ quintuplets' },
+  { divisions: '4:6', label: '⁴⁄₄ sixtuplets' },
+  { divisions: '3:1', label: '³⁄₄ quarters' },
+  { divisions: '3:2', label: '³⁄₄ eighths' },
+  { divisions: '3:3', label: '³⁄₄ triplets' },
+  { divisions: '3:4', label: '³⁄₄ sixteenths' },
+  { divisions: '3:5', label: '³⁄₄ quintuplets' },
+  { divisions: '3:6', label: '³⁄₄ sixtuplets' },
+  { divisions: '2:1', label: '²⁄₄ quarters' },
+  { divisions: '2:2', label: '²⁄₄ eighths' },
+  { divisions: '2:3', label: '²⁄₄ triplets' },
+  { divisions: '2:4', label: '²⁄₄ sixteenths' },
+  { divisions: '2:5', label: '²⁄₄ quintuplets' },
+  { divisions: '2:6', label: '²⁄₄ sixtuplets' }
 ]
 
 /**

@@ -21,6 +21,7 @@
     import RatingButton from './common/rating-button.svelte';
     import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import UndoRedoButton from './common/undo-redo-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -31,7 +32,7 @@
     let container;
     // settings
     let tempo = 60;
-    let grid = GRIDS[0];
+    let grid = GRIDS[0].divisions;
     let binNote = 64;
     let adjustTime = 0;
     let showKde = true;
@@ -45,13 +46,14 @@
             firstTimeStamp = e.timestamp;
         }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
-        notes.push({
+        const note = {
             time: noteInSeconds,
             number: e.note.number,
             drum:
                 drumPitchReplacementMapMD90.get(e.note.number)?.label ??
                 e.note.number,
-        });
+        };
+        notes = [...notes, note];
         draw();
     };
 
@@ -244,12 +246,12 @@
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label
-            title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+            title="The whole width is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
             grid
             <select bind:value="{grid}" on:change="{draw}">
                 {#each GRIDS as g}
-                    <option value="{g}">{g}</option>
+                    <option value="{g.divisions}">{g.label}</option>
                 {/each}
             </select>
         </label>
@@ -263,6 +265,8 @@
                 {/each}
             </select>
         </label>
+    </div>
+    <div class="control">
         <label title="Shift all notes by an amount in seconds">
             adjust
             <input
@@ -310,6 +314,7 @@
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
+        <UndoRedoButton bind:data="{notes}" callback="{draw}" />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />

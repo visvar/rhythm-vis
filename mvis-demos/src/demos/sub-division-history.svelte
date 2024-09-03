@@ -34,7 +34,7 @@
     let height = 900;
     // settings
     let tempo = 120;
-    let grid = GRIDS[0];
+    let grid = GRIDS[0].divisions;
     let binNote = 64;
     let adjustTime = 0;
     let showKde = false;
@@ -356,7 +356,7 @@
             grid
             <select bind:value="{grid}" on:change="{draw}">
                 {#each GRIDS as g}
-                    <option value="{g}">{g}</option>
+                    <option value="{g.divisions}">{g.label}</option>
                 {/each}
             </select>
         </label>

@@ -32,8 +32,8 @@
     let containerRight;
     // settings
     let tempo = 60;
-    let gridLeft = GRIDS[0];
-    let gridRight = GRIDS[1];
+    let gridLeft = GRIDS[0].divisions;
+    let gridRight = GRIDS[1].divisions;
     let binNote = 96;
     let adjustTime = 0;
     let drumMode = false;
@@ -257,9 +257,10 @@
         top one is for your right hand and the bottom one for your left hand.
     </p>
     <p class="explanation">
-        Keyboard: Left hand plays keys left of the middle A, right hand others.
-        Drums: Left hand plays snare, right hand any other drum (turn on drum
-        mode). PC keyboard: <code>f</code>
+        <b>Keyboard mode:</b> Left hand plays keys left of the middle A, right
+        hand others.
+        <b>Drum mode:</b> Left hand plays snare, right hand any other drum.
+        <b>PC keyboard:</b> <code>f</code>
         for left and <code>j</code> for right.
     </p>
     <ExerciseDrawer>
@@ -281,22 +282,22 @@
             title="Toggle between piano keyboard and drum mode"
         />
         <label
-            title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+            title="The whole width is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
             grid left
             <select bind:value="{gridLeft}" on:change="{draw}">
                 {#each GRIDS as g}
-                    <option value="{g}">{g}</option>
+                    <option value="{g.divisions}">{g.label}</option>
                 {/each}
             </select>
         </label>
         <label
-            title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+            title="The whole width is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
             right
             <select bind:value="{gridRight}" on:change="{draw}">
                 {#each GRIDS as g}
-                    <option value="{g}">{g}</option>
+                    <option value="{g.divisions}">{g.label}</option>
                 {/each}
             </select>
         </label>

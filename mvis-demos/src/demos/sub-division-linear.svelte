@@ -33,7 +33,7 @@
     let container;
     // settings
     let tempo = 120;
-    let grid = GRIDS[0];
+    let grid = GRIDS[0].divisions;
     let binNote = 64;
     let adjustTime = 0;
     let noteTickLimit = 500;
@@ -304,12 +304,12 @@
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
         <label
-            title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+            title="The whole width is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
         >
             grid
             <select bind:value="{grid}" on:change="{draw}">
                 {#each GRIDS as g}
-                    <option value="{g}">{g}</option>
+                    <option value="{g.divisions}">{g.label}</option>
                 {/each}
             </select>
         </label>
