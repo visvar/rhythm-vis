@@ -113,9 +113,7 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (notes.length > 0) {
-            saveToStorage();
-        }
+        saveToStorage();
         isBinning = json.isBinning;
         barLimit = json.barLimit;
         // data
@@ -124,7 +122,10 @@
     };
 
     const saveToStorage = () => {
-        if (notes.length > 0) {
+        if (
+            notes.length > 0 &&
+            JSON.stringify(notes) !== JSON.stringify(example.notes)
+        ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
     };

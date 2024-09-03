@@ -148,21 +148,16 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (
-            bendValues.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            // pause first
-            paused = true;
-            cancelAnimationFrame(timeout);
-            // load
-            pastTime = json.pastTime;
-            firstTimeStamp = json.firstTimeStamp;
-            minVolumeDecibels = json.minVolumeDecibels;
-            colorArea = json.colorArea ?? false;
-            bendValues = json.bendValues;
-            draw();
-        }
+        // pause first
+        paused = true;
+        cancelAnimationFrame(timeout);
+        // load
+        pastTime = json.pastTime;
+        firstTimeStamp = json.firstTimeStamp;
+        minVolumeDecibels = json.minVolumeDecibels;
+        colorArea = json.colorArea ?? false;
+        bendValues = json.bendValues;
+        draw();
     };
 
     onDestroy(() => {

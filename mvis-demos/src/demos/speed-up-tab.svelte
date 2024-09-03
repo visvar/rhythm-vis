@@ -16,6 +16,7 @@
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import { replacer } from '../lib/json.js';
 
     /**
      * contains the demo meta information defined in App.js
@@ -353,9 +354,7 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (exerciseNotes.length > 0) {
-            saveToStorage();
-        }
+        saveToStorage();
         // settings
         initialTempo = json.initialTempo;
         targetTempo = json.targetTempo;
@@ -375,7 +374,10 @@
     };
 
     const saveToStorage = () => {
-        if (exerciseNotes.length > 0) {
+        if (
+            exerciseNotes.length > 0
+            // && JSON.stringify(practiceRecordings, replacer) !== JSON.stringify(example.practiceRecordings, replacer)
+        ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
     };

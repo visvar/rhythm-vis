@@ -313,7 +313,10 @@
     };
 
     const saveToStorage = () => {
-        if (notes.length > 0) {
+        if (
+            notes.length > 0
+            // && JSON.stringify(notes) !== JSON.stringify(example.notes)
+        ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
     };

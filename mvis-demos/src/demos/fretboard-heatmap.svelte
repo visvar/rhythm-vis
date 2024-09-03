@@ -192,9 +192,7 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (notes.length > 0) {
-            saveToStorage();
-        }
+        saveToStorage();
         pastNoteCount = json.pastNoteCount;
         showScale = json.showScale;
         scaleRoot = json.scaleRoot;
@@ -204,7 +202,10 @@
     };
 
     const saveToStorage = () => {
-        if (notes.length > 0) {
+        if (
+            notes.length > 0
+            // &&            JSON.stringify(notes) !== JSON.stringify(example.notes)
+        ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
     };
@@ -226,6 +227,10 @@
             string by string. Check if you played wrong notes.
         </p>
         <p>3) Improvise in A minor pentatonic over the whole fretboard.</p>
+        <p>
+            4) Improvise in a scale you do not know yet over the whole
+            fretboard.
+        </p>
     </ExerciseDrawer>
     <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />

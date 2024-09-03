@@ -222,9 +222,7 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (notes.length > 0) {
-            saveToStorage();
-        }
+        saveToStorage();
         pastSeconds = json.pastSeconds;
         maxNoteDistance = json.maxNoteDistance;
         // data
@@ -233,7 +231,10 @@
     };
 
     const saveToStorage = () => {
-        if (notes.length > 0) {
+        if (
+            notes.length > 0 &&
+            JSON.stringify(notes) !== JSON.stringify(example.notes)
+        ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
     };

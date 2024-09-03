@@ -185,9 +185,7 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (notes.length > 0) {
-            saveToStorage();
-        }
+        saveToStorage();
         pastNoteCount = json.pastNoteCount;
         // data
         notes = json.notes;
@@ -195,7 +193,10 @@
     };
 
     const saveToStorage = () => {
-        if (notes.length > 0) {
+        if (
+            notes.length > 0
+            //  &&            JSON.stringify(notes) !== JSON.stringify(example.notes)
+        ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
     };
@@ -206,9 +207,9 @@
 <main class="demo">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
-        Connect a MIDI guitar and start improvising. The fretboard scatterplot
-        below shows you where you played the notes, color-coded by how recently
-        you played them.
+        Connect a MIDI guitar and start improvising. The fretboard below shows
+        you where you played the notes, color-coded by how recently you played
+        them. The notes are shifted a little at random to overlap less.
     </p>
     <ExerciseDrawer>
         <p>1) Play the note A over the whole fretboard.</p>
@@ -217,6 +218,10 @@
             string by string. Check if you played wrong notes.
         </p>
         <p>3) Improvise in A minor pentatonic over the whole fretboard.</p>
+        <p>
+            4) Improvise in a scale you do not know yet over the whole
+            fretboard.
+        </p>
     </ExerciseDrawer>
     <div class="control">
         <NoteCountInput bind:value="{pastNoteCount}" callback="{draw}" />

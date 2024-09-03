@@ -96,22 +96,18 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (
-            bendValues.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            if (bendValues.length > 0) {
-                saveToStorage();
-            }
-            pastTime = json.pastTime;
-            firstTimeStamp = json.firstTimeStamp;
-            bendValues = json.bendValues;
-            draw();
-        }
+        saveToStorage();
+        pastTime = json.pastTime;
+        firstTimeStamp = json.firstTimeStamp;
+        bendValues = json.bendValues;
+        draw();
     };
 
     const saveToStorage = () => {
-        if (bendValues.length > 0) {
+        if (
+            bendValues.length > 0
+            // && JSON.stringify(bendValues) !== JSON.stringify(example.bendValues)
+        ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
     };

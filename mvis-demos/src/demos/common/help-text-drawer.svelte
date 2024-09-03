@@ -5,16 +5,23 @@
 </script>
 
 <main>
-    <h3 on:click="{() => (shown = !shown)}">
-        {heading}
-    </h3>
+    <button on:click="{() => (shown = !shown)}">
+        <h3>
+            {heading}
+        </h3>
+    </button>
     {#if shown}
         <slot></slot>
     {/if}
 </main>
 
 <style>
+    button {
+        margin-top: 20px;
+    }
+
     h3 {
-        cursor: pointer;
+        margin: 0;
+        padding: 0;
     }
 </style>

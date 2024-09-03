@@ -132,9 +132,7 @@
     };
 
     const loadData = (json) => {
-        if (notes.length > 0) {
-            saveToStorage();
-        }
+        saveToStorage();
         tempo = json.tempo;
         binNote = json.binNote ?? 'off';
         filterNote = json.filterNote ?? 'off';
@@ -144,7 +142,10 @@
     };
 
     const saveToStorage = () => {
-        if (notes.length > 0) {
+        if (
+            notes.length > 0 &&
+            JSON.stringify(notes) !== JSON.stringify(example.notes)
+        ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
     };

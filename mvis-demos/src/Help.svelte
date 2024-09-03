@@ -90,6 +90,13 @@
             <li>
                 <code>r</code> resets the played data
             </li>
+            <li>
+                (some apps) <code>CTRL</code>+<code>Z</code> un-does the last note
+            </li>
+            <li>
+                (some apps) <code>CTRL</code>+<code>Y</code> re-does the last undone
+                note
+            </li>
         </ul>
     </HelpTextDrawer>
 </main>

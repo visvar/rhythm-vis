@@ -8,8 +8,6 @@
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExportButton2 from './common/export-button2.svelte';
     import ImportButton2 from './common/import-button2.svelte';
-    import { localStorageAddRecording } from '../lib/localstorage';
-    import HistoryButton from './common/history-button.svelte';
     import example from '../example-recordings/pitch-bend-audio.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
@@ -175,21 +173,16 @@
      * Import data from file or example
      */
     const loadData = (json) => {
-        if (
-            bendValues.length === 0 ||
-            confirm('Import data and overwrite currently unsaved data?')
-        ) {
-            // pause first
-            paused = true;
-            cancelAnimationFrame(timeout);
-            // load
-            pastTime = json.pastTime;
-            firstTimeStamp = json.firstTimeStamp;
-            minVolumeDecibels = json.minVolumeDecibels;
-            ignoreOctave = json.ignoreOctave ?? false;
-            bendValues = json.bendValues;
-            draw();
-        }
+        // pause first
+        paused = true;
+        cancelAnimationFrame(timeout);
+        // load
+        pastTime = json.pastTime;
+        firstTimeStamp = json.firstTimeStamp;
+        minVolumeDecibels = json.minVolumeDecibels;
+        ignoreOctave = json.ignoreOctave ?? false;
+        bendValues = json.bendValues;
+        draw();
     };
 
     onDestroy(() => {
