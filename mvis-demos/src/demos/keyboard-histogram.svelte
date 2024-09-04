@@ -18,6 +18,7 @@
     import ScaleSelect from './common/scale-select.svelte';
     import ToggleButton from './common/toggle-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import example from '../example-recordings/keyboard-histogram.json';
 
     /**
      * contains the demo meta information defined in App.js
@@ -35,6 +36,8 @@
     );
     // settings
     let pastNoteCount = 500;
+    let scaleRoot = 'C';
+    let scaleType = 'major';
     let showScale;
     // data
     let notes = [];
@@ -167,6 +170,9 @@
     const getExportData = () => {
         return {
             pastNoteCount,
+            scaleRoot,
+            scaleType,
+            // data
             notes,
         };
     };
@@ -177,6 +183,9 @@
     const loadData = (json) => {
         saveToStorage();
         pastNoteCount = json.pastNoteCount;
+        scaleRoot = json.scaleRoot;
+        scaleType = json.scaleType;
+        // data
         notes = json.notes;
         draw();
     };
@@ -217,13 +226,20 @@
             title="If active, the color hue will show whether notes are in the selected scale or not"
             callback="{draw}"
         />
-        <ScaleSelect bind:scaleInfo disabled="{!showScale}" callback="{draw}" />
+        <ScaleSelect
+            bind:scaleInfo
+            bind:scaleRoot
+            bind:scaleType
+            disabled="{!showScale}"
+            callback="{draw}"
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} />
     </div>

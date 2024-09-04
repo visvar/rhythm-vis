@@ -16,6 +16,7 @@
   import { APPS } from './apps';
   import Help from './Help.svelte';
   import PcKeyboardInput from './demos/common/pc-keyboard-input.svelte';
+  import Welcome from './Welcome.svelte';
 
   let currentApp = null;
 
@@ -43,7 +44,7 @@
   window.onbeforeunload = function () {
     if (
       currentApp &&
-      !['tools', 'settings', 'overview', 'help'].includes(currentApp)
+      !['tools', 'settings', 'overview', 'help', 'welcome'].includes(currentApp)
     ) {
       // alert('Please go back to the main page first to prevent data loss');
       return true;
@@ -178,6 +179,15 @@
       >
         ❓help
       </button>
+      <!-- Welcome page button -->
+      <!-- <button
+        on:click="{() => {
+          currentApp = 'welcome';
+          setUrlParam(window, 'd', 'welcome');
+        }}"
+      >
+        👋 welcome
+      </button> -->
     </nav>
   </header>
 
@@ -371,6 +381,21 @@
     <Overview apps="{APPS}" {allInstruments} {allData} {allPatterns} />
   {:else if currentApp === 'help'}
     <Help />
+  {:else if currentApp === 'welcome'}
+    <Welcome
+      {allInstruments}
+      finishWelcome="{(data) => {
+        if (data) {
+          const { instruments, skills, difficulties } = data;
+          // apply settings
+          currentInstruments = new Set([instruments]);
+          currentSkills = new Set([skills]);
+          currentDifficulties = new Set([difficulties]);
+        }
+        // close welcome screen
+        currentApp = null;
+      }}"
+    />
   {:else}
     <!-- show demo by importing dynamically -->
     <svelte:component this="{currentApp.component}" demoInfo="{currentApp}" />
@@ -448,7 +473,7 @@
   }
 
   .version-number {
-    margin-top: 50px;
+    margin-top: 100px;
     color: #aaa;
     user-select: none;
   }

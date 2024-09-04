@@ -17,6 +17,7 @@
     import ToggleButton from './common/toggle-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
     import { NOTE_TO_CHROMA_MAP } from '../lib/music';
+    import example from '../example-recordings/improvisation-note-colors.json';
 
     /**
      * contains the demo meta information defined in App.js
@@ -188,8 +189,8 @@
 
     const saveToStorage = () => {
         if (
-            notes.length > 0
-            // && JSON.stringify(notes) !== JSON.stringify(example.notes)
+            notes.length > 0 &&
+            JSON.stringify(notes) !== JSON.stringify(example.notes)
         ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
@@ -279,6 +280,7 @@
         />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} />
     </div>

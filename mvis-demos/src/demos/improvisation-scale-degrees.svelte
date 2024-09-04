@@ -16,6 +16,7 @@
     import ScaleSelect from './common/scale-select.svelte';
     import { NOTE_TO_CHROMA_MAP } from '../lib/music';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import example from '../example-recordings/improvisation-scale-degrees.json';
 
     /**
      * contains the demo meta information defined in App.js
@@ -158,8 +159,8 @@
 
     const saveToStorage = () => {
         if (
-            notes.length > 0
-            // && JSON.stringify(notes) !== JSON.stringify(example.notes)
+            notes.length > 0 &&
+            JSON.stringify(notes) !== JSON.stringify(example.notes)
         ) {
             localStorageAddRecording(demoInfo.id, getExportData());
         }
@@ -210,6 +211,7 @@
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} />
     </div>
