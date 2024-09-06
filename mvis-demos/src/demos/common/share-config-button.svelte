@@ -2,11 +2,14 @@
     /**
      * This component allows to copy a link to the clipboard that contains the current settings of the app. It also detects whether such a link has been opened and loads the settings
      */
+    import { version } from '../../../package.json';
+
     import * as fflate from 'fflate';
     import { onDestroy, onMount } from 'svelte';
     import { replacer } from '../../lib/json';
     import { getUrlParam, setUrlParam } from '../../lib/url';
 
+    export let appId;
     export let getExportData;
     export let loadData;
 
@@ -31,6 +34,10 @@
 
     const exportData = () => {
         const data = getExportData();
+        // add meta data
+        data._appId = appId;
+        data._softwareVersion = version;
+        data._date = new Date().toISOString();
         let link = getLink(data);
         if (link.length > lengthLimit) {
             // if link is too long, try to remove recorded notes/bendValues and notify user

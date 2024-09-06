@@ -495,7 +495,7 @@
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
-        <ShareConfigButton {getExportData} {loadData} />
+        <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />
     </div>
     <RatingButton appId="{demoInfo.id}" />
     <MidiInput {noteOn} />

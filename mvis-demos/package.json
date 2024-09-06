@@ -30,6 +30,7 @@
     "fflate": "^0.8.2",
     "file-saver": "^2.0.5",
     "gh-pages": "^6.1.1",
+    "html2canvas": "^1.4.1",
     "musicvis-lib": "^0.57.1",
     "npm": "^10.8.2",
     "npm-check-updates": "^17.0.3",

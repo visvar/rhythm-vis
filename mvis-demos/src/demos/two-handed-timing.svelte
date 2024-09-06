@@ -361,7 +361,7 @@
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
-        <ShareConfigButton {getExportData} {loadData} />
+        <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />
     </div>
     <RatingButton appId="{demoInfo.id}" />
     <PcKeyboardInput

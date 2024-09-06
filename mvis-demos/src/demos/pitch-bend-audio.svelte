@@ -284,7 +284,7 @@
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
-        <ShareConfigButton {getExportData} {loadData} />
+        <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />
     </div>
     <RatingButton appId="{demoInfo.id}" />
     <PcKeyboardInput key=" " keyDown="{pause}" />

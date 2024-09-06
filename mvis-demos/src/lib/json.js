@@ -48,13 +48,13 @@ export async function parseJsonFile(fileInputEvent) {
 }
 
 /**
- * Triggers the download of a JSON file named demoId.json and containing the data object stringified to JSON
- * @param {string} demoId identifier of the demo
- * @param {object} data may not contain _date and _demoId
+ * Triggers the download of a JSON file named <appId>.json and containing the data object stringified to JSON
+ * @param {string} appId identifier of the app
+ * @param {object} data may not contain _date and _appId
  */
-export function downloadJsonFile(demoId, data) {
+export function downloadJsonFile(appId, data) {
   // add meta data
-  data._demoId = demoId
+  data._appId = appId
   data._softwareVersion = version
   data._date = (new Date()).toISOString()
   // export
@@ -62,5 +62,5 @@ export function downloadJsonFile(demoId, data) {
   const blob = new Blob([json], {
     type: 'text/plain;charset=utf-8'
   })
-  saveAs(blob, `${demoId}.json`)
+  saveAs(blob, `${appId}.json`)
 }
