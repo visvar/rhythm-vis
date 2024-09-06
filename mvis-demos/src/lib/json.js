@@ -1,3 +1,4 @@
+import { version } from '../../package.json'
 import saveAs from 'file-saver'
 
 /**
@@ -52,8 +53,11 @@ export async function parseJsonFile(fileInputEvent) {
  * @param {object} data may not contain _date and _demoId
  */
 export function downloadJsonFile(demoId, data) {
+  // add meta data
   data._demoId = demoId
+  data._softwareVersion = version
   data._date = (new Date()).toISOString()
+  // export
   const json = JSON.stringify(data, replacer, 2)
   const blob = new Blob([json], {
     type: 'text/plain;charset=utf-8'
