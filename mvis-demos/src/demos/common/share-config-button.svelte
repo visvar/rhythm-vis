@@ -1,8 +1,6 @@
 <script>
     /**
      * This component allows to copy a link to the clipboard that contains the current settings of the app. It also detects whether such a link has been opened and loads the settings
-     *
-     * TODO: only zip if necessary and note it in the url
      */
     import * as fflate from 'fflate';
     import { onDestroy, onMount } from 'svelte';
@@ -22,7 +20,7 @@
         console.log('json length', json.length);
         // zip
         const buf = fflate.strToU8(json);
-        const compressed = fflate.compressSync(buf, { level: 8, mem: 6 });
+        const compressed = fflate.compressSync(buf, { level: 9, mem: 6 });
         const serialized = compressed.toString();
         console.log('zip length', serialized.length);
         // URL encoding

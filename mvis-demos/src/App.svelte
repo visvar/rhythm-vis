@@ -17,6 +17,7 @@
   import Help from './Help.svelte';
   import PcKeyboardInput from './demos/common/pc-keyboard-input.svelte';
   import Welcome from './Welcome.svelte';
+  import ScreenshotButton from './demos/common/screenshot-button.svelte';
 
   let currentApp = null;
 
@@ -412,6 +413,7 @@
     >
       version {version} | overview
     </button>
+    <!-- <ScreenshotButton {currentApp} /> -->
   </div>
 </main>
 <!-- shortcut for app menu -->

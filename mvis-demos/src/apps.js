@@ -248,19 +248,20 @@ export const APPS = [
     difficulty: ['intermediate', 'advanced'],
     component: KeyboardHistogram
   },
-  {
-    id: 'pitch-bend',
-    title: 'Pitch Bend',
-    description: 'Practice different kinds of pitch bends.',
-    input: 'MIDI',
-    instruments: ['guitar/bass', 'keyboard'],
-    data: ['onset/time', 'pitch'],
-    skills: ['pitch-keeping', 'bending', 'vibrato'],
-    patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note'],
-    timeScale: ['a few notes'],
-    difficulty: ['intermediate', 'advanced'],
-    component: PitchBend
-  },
+  // TODO: re add
+  // {
+  //   id: 'pitch-bend',
+  //   title: 'Pitch Bend',
+  //   description: 'Practice different kinds of pitch bends.',
+  //   input: 'MIDI',
+  //   instruments: ['guitar/bass', 'keyboard'],
+  //   data: ['onset/time', 'pitch'],
+  //   skills: ['pitch-keeping', 'bending', 'vibrato'],
+  //   patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note'],
+  //   timeScale: ['a few notes'],
+  //   difficulty: ['intermediate', 'advanced'],
+  //   component: PitchBend
+  // },
   {
     id: 'pitch-bend-audio',
     title: 'Pitch Bend (Audio)',
@@ -420,19 +421,20 @@ export const APPS = [
     difficulty: ['beginner', 'intermediate', 'advanced'],
     component: TempoDrift
   },
-  {
-    id: 'tempo-change',
-    title: 'Tempo Change',
-    description: 'See if you can change the tempo as intended.',
-    input: 'MIDI',
-    instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
-    data: ['onset/time'],
-    skills: ['tempo-changing', 'tempo-keeping'],
-    patterns: ['baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
-    timeScale: ['a few bars', 'a full song'],
-    difficulty: ['intermediate', 'advanced'],
-    component: TempoChange
-  },
+  // TODO: re-add
+  // {
+  //   id: 'tempo-change',
+  //   title: 'Tempo Change',
+  //   description: 'See if you can change the tempo as intended.',
+  //   input: 'MIDI',
+  //   instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
+  //   data: ['onset/time'],
+  //   skills: ['tempo-changing', 'tempo-keeping'],
+  //   patterns: ['baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
+  //   timeScale: ['a few bars', 'a full song'],
+  //   difficulty: ['intermediate', 'advanced'],
+  //   component: TempoChange
+  // },
   {
     id: 'two-handed-timing',
     title: 'Two-Handed Timing',

@@ -392,6 +392,30 @@
     <h2>skill tree</h2>
     <div class="visualization" bind:this="{skillTreeContainer}"></div>
 
+    <h2>skill description</h2>
+    <table style="text-align: left;">
+        <thead>
+            <th style="width: fit-content">category</th>
+            <th style="width: fit-content">skill</th>
+            <th>explanation</th>
+        </thead>
+        <tbody>
+            {#each SKILL_TREE as node}
+                {#each node.children as skill, index}
+                    <tr>
+                        <td>{index === 0 ? node.title : ''}</td>
+                        <td>{skill.title}</td>
+                        <td style="width: 500px; padding: 5px 0"
+                            >{skill.description}</td
+                        >
+                    </tr>
+                {/each}
+                <tr style="height: 20px"></tr>
+                <tr></tr>
+            {/each}
+        </tbody>
+    </table>
+
     <!-- list by skill -->
     <h2>apps listed by skill</h2>
     <ul class="list">
