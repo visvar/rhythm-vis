@@ -22,6 +22,7 @@
     import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
     import UndoRedoButton from './common/undo-redo-button.svelte';
+    import example from '../example-recordings/sub-division-drums_old.json';
 
     /**
      * contains the demo meta information defined in App.js
@@ -167,7 +168,6 @@
 
         const title = document.createElement('span');
         title.innerText = label;
-        title.style = 'padding-right: 42px';
         container.appendChild(title);
         container.appendChild(plot);
     };
@@ -319,6 +319,7 @@
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />
     </div>

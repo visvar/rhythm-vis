@@ -251,7 +251,7 @@ div.grid.rows div.current-filters {
 
 div.control,
 div.visualization {
-  width: 940px;
+  width: 900px;
   margin: 10px auto;
   user-select: none;
 }

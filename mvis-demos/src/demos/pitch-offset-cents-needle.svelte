@@ -13,7 +13,7 @@
     export let demoInfo;
 
     let width = 900;
-    let height = 600;
+    let height = 500;
     let container;
     let canvas;
     let audioContext;
