@@ -115,7 +115,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI device and play pitch bends or vibratos. The line chart

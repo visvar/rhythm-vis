@@ -268,7 +268,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Play chords on a guitar and see the chord names and diagrams.

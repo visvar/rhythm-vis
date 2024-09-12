@@ -111,8 +111,8 @@
         const limited = notes.slice(-pastNoteCount);
         const plot = Plot.plot({
             width,
-            height: showDuration ? height : height * 0.6,
-            marginLeft: 80,
+            height: showDuration ? height : height * 0.7,
+            marginLeft: 50,
             marginBottom: 50,
             padding: 0,
             x: {
@@ -122,6 +122,7 @@
                 axis: showDuration,
                 domain: [0, 1],
                 label: 'duration in seconds',
+                labelAnchor: 'center',
             },
             color: {
                 legend: true,
@@ -199,35 +200,33 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Notes that you play are shown as bars. The color shows which scale
-        subset a note belongs to. The bars' height encodes the notes' durations.
+        subset a note belongs to. For example, when improvising in C major
+        pentatonic, the note C would be the darkest, followed by the notes of
+        the pentatonic in a brighter color, the rest of the major scale even
+        brighter, and all remaining notes of the chromatic scale in gray. The
+        bars' height encodes the notes' durations.
     </p>
     <ExerciseDrawer>
         <p>
-            1) Improvise something in the scale of A minor pentatonic. Check if
+            1) Improvise something in the scale of C major pentatonic. Check if
             you only used this scale's notes using the colors.
         </p>
         <p>
-            2) Improvise in A minor blues, see how often and when you used the
+            2) Improvise something in A minor pentatonic. Check if you only used
+            this scale's notes using the colors and how often and when you used
+            the tonic A.
+        </p>
+        <p>
+            3) Improvise in A minor blues, see how often and when you used the
             blue note (D#).
         </p>
+        <p>4) Improvise in a scale you do not know yet.</p>
     </ExerciseDrawer>
     <div class="control">
-        <label>
-            root note
-            <select
-                bind:value="{root}"
-                on:change="{draw}"
-                style="background-color: {rootColor};"
-            >
-                {#each Midi.NOTE_NAMES as n}
-                    <option value="{n}">{n}</option>
-                {/each}
-            </select>
-        </label>
         <label>
             scale type 1
             <select
@@ -249,6 +248,18 @@
             >
                 {#each ['pentatonic', 'blues'].map((d) => `${scaleType1} ${d}`) as s}
                     <option value="{s}">{s}</option>
+                {/each}
+            </select>
+        </label>
+        <label>
+            root note
+            <select
+                bind:value="{root}"
+                on:change="{draw}"
+                style="background-color: {rootColor};"
+            >
+                {#each Midi.NOTE_NAMES as n}
+                    <option value="{n}">{n}</option>
                 {/each}
             </select>
         </label>

@@ -200,7 +200,7 @@
     };
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Allow microphone access and play pitch bends or vibratos. The line chart

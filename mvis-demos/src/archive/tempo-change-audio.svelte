@@ -160,7 +160,7 @@
     });
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Allow microphone access and play first at one tempo then change to

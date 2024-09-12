@@ -96,7 +96,7 @@
     });
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{toolInfo.title}</h2>
     <p class="explanation">
         Allow microphone access and make a sound, the detected pitch will be

@@ -115,7 +115,7 @@
 
         const plot = Plot.plot({
             width,
-            height: xLabel ? 110 : 100,
+            height: xLabel ? 120 : 110,
             marginLeft: 20,
             marginBottom: xLabel ? 30 : 20,
             padding: 0,
@@ -167,6 +167,7 @@
 
         const title = document.createElement('span');
         title.innerText = label;
+        title.style = 'padding-right: 42px';
         container.appendChild(title);
         container.appendChild(plot);
     };
@@ -224,7 +225,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI drum kit and start playing to the metronome. The chart

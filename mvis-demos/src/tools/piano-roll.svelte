@@ -157,7 +157,7 @@
     });
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{toolInfo.title}</h2>
     <p class="explanation">
         The piano roll below shows incoming MIDI notes as rectangles with their

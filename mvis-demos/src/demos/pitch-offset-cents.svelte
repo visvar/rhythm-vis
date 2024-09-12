@@ -57,7 +57,6 @@
             clarity,
         };
         bendValues.push(bend);
-        closestNote = d3.mode(bendValues.slice(-30), (d) => d.note);
         draw();
         timeout = requestAnimationFrame(() => updatePitch(input, sampleRate));
     }
@@ -66,6 +65,7 @@
         if (!container) {
             return;
         }
+        closestNote = d3.mode(bendValues.slice(-30), (d) => d.note);
         container.textContent = '';
         let now;
         if (bendValues.length > 0) {
@@ -107,8 +107,8 @@
                           y2: 0,
                           clip: true,
                           curve: 'basis',
-                          positiveFill: 'steelblue',
-                          negativeFill: 'crimson',
+                          positiveFill: 'var(--accent)',
+                          negativeFill: '#eeccbb',
                           // tip: true,
                       })
                     : null,
@@ -175,7 +175,7 @@
     };
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Allow microphone access and play pitch bends or vibratos. The line chart

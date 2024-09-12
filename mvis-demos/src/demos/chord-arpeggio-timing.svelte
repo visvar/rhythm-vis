@@ -222,7 +222,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Play chords or short arpeggios with pauses inbetween. In the

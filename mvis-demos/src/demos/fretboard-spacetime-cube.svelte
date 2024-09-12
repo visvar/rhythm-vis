@@ -150,7 +150,7 @@
     });
 </script>
 
-<main class="demo">
+<main class="app">
     <!-- x is right, y is up, z is toward camera -->
     <a-scene>
         <!-- controllers -->

@@ -119,7 +119,7 @@
     onMount(draw);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{toolInfo.title}</h2>
     <p class="explanation">
         Select a root note and see all scales with this root and their notes.

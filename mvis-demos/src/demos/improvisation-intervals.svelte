@@ -166,7 +166,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI instrument and start playing. The bar chart below shows

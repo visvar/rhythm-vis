@@ -392,6 +392,7 @@
     <h2>skill tree</h2>
     <div class="visualization" bind:this="{skillTreeContainer}"></div>
 
+    <!-- skill descriptions -->
     <h2>skill description</h2>
     <table style="text-align: left;">
         <thead>
@@ -405,7 +406,7 @@
                     <tr>
                         <td>{index === 0 ? node.title : ''}</td>
                         <td>{skill.title}</td>
-                        <td style="width: 500px; padding: 5px 0"
+                        <td style="width: 820px; padding: 5px 0"
                             >{skill.description}</td
                         >
                     </tr>
@@ -480,6 +481,7 @@
 
     td:not(.spacer) {
         min-width: 60px;
+        padding: 1px 4px;
     }
 
     table th.spacer,

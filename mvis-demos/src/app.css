@@ -115,6 +115,46 @@ svg text {
 
 /* main page */
 
+
+/* filter */
+
+.grid-filter-demo {
+  margin-left: 20px;
+  display: grid;
+  grid-template-columns: 210px auto;
+}
+
+.filter {
+  padding-top: 20px;
+  text-align: left;
+}
+
+.filter input,
+.filter select,
+.filter .row-button {
+  width: 180px;
+}
+
+.filter .row-button {
+  height: 40px;
+}
+
+.filter select {
+  text-align: center;
+}
+
+.filter button {
+  display: block;
+}
+
+.filter button.active {
+  background-color: rgb(218, 236, 251);
+}
+
+
+/* app grid */
+
+
 div.grid {
   width: fit-content;
   margin: 20px auto;
@@ -166,6 +206,12 @@ div.card .usage {
   height: 18px;
 }
 
+div.card .tags {
+  font-size: 18px;
+}
+
+
+
 
 /* alternative row layout */
 div.grid.rows {
@@ -187,14 +233,26 @@ div.grid.rows div.current-filters {
   grid-column: span 1;
 }
 
+/* footer */
 
-/* app */
+.version-number {
+  margin-top: 100px;
+  color: #aaa;
+  user-select: none;
+}
+
+
+/* apps */
+
+.app {
+  width: 940px;
+  margin: 10px auto;
+}
 
 div.control,
 div.visualization {
+  width: 940px;
   margin: 10px auto;
-  padding: 0 10px;
-  width: max-content;
   user-select: none;
 }
 
@@ -202,7 +260,6 @@ p.explanation {
   width: fit-content;
   max-width: 850px;
   margin: auto;
-  padding: 0 10px;
   text-align: justify;
   user-select: none;
 }

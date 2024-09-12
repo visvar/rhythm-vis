@@ -25,7 +25,7 @@
     export let demoInfo;
 
     let width = 900;
-    let height = 750;
+    let height = 600;
     let container;
     // settings
     let tempo = 120;
@@ -155,7 +155,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI instrument, choose your tempo, and start playing. The

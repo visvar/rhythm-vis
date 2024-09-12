@@ -389,7 +389,7 @@
     });
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Adjust the initial and target tempo, record an exercise at the inital

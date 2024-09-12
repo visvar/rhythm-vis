@@ -204,7 +204,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI guitar and start improvising. The fretboard below shows

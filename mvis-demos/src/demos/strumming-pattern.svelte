@@ -242,7 +242,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         This demo shows you how you strummed (up or down? which strings?), so

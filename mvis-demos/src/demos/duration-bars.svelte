@@ -12,7 +12,7 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import TempoInput from './common/tempo-input.svelte';
     import { noteDurations } from '../lib/note-durations';
-    import example from '../example-recordings/duration-pies.json';
+    import example from '../example-recordings/duration-bars.json';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import TouchInput from './common/touch-input.svelte';
     import { noteEighth, noteHalf, noteQuarter, noteWhole } from '../lib/icons';
@@ -22,6 +22,7 @@
     import { COLORS } from '../lib/colors';
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import UndoRedoButton from './common/undo-redo-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -241,7 +242,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Set a tempo and try to play different note durations (whole, half,
@@ -280,6 +281,7 @@
     </div>
     <div class="control">
         <MetronomeButton {tempo} accent="{4}" />
+        <UndoRedoButton bind:data="{notes}" callback="{draw}" />
         <ResetNotesButton
             {saveToStorage}
             bind:notes

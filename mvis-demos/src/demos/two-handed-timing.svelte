@@ -249,7 +249,7 @@
     };
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI keyboard or drum kit and start playing to the metronome.

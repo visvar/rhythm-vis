@@ -22,7 +22,7 @@
     $: chords = Scale.scaleChords(`${root} ${scale}`);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{toolInfo.title}</h2>
     <p class="explanation">
         Select a root note and scale and see how this scale relates to others.

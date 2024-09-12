@@ -19,21 +19,12 @@ export const SKILL_TREE = [
         title: 'tempo keeping',
         description: 'The tempo should be kept same over a longer stretch of time without the help of a metronome'
       },
-      {
-        id: 'tempo-changing',
-        title: 'tempo changing',
-        description: 'The tempo should be changed as intended'
-      },
-      {
-        id: 'chord-timing',
-        title: 'chord timing',
-        description: 'Notes in a chord should start at the same time and the time between chords should be consistent'
-      },
-      {
-        id: 'arpeggio-timing',
-        title: 'arpeggio timing',
-        description: 'Notes in an arpeggio should be spaced out evenly and the time between arpeggios should be consistent'
-      },
+      // TODO: not supported for now
+      // {
+      //   id: 'tempo-changing',
+      //   title: 'tempo changing',
+      //   description: 'The tempo should be changed as intended'
+      // },
       {
         id: 'swing-feel',
         title: 'swing feel',
@@ -54,6 +45,11 @@ export const SKILL_TREE = [
         id: 'syncopation',
         title: 'syncopation',
         description: 'When playing different rhythms together, the timing should be on grid'
+      },
+      {
+        id: 'synchronized-body-parts',
+        title: 'synchronized body parts',
+        description: 'Notes played with different body parts (e.g., hands) should be played synchronized'
       }
     ]
   },
@@ -80,11 +76,6 @@ export const SKILL_TREE = [
         id: 'scale-degrees',
         title: 'scale degrees',
         description: 'In improvisation, scale degrees should be used to appropriate amounts'
-      },
-      {
-        id: 'chord-notes',
-        title: 'chord notes',
-        description: 'The notes in a chord should be played as planned or chosen to match the intended harmony or dissonance'
       },
       {
         id: 'pitch-keeping',
@@ -125,6 +116,28 @@ export const SKILL_TREE = [
     ]
   },
   {
+    title: 'chords',
+    description: 'Playing chord or arpeggios',
+    children: [
+      {
+        id: 'chord-timing',
+        title: 'chord timing',
+        description: 'Notes in a chord should start at the same time and the time between chords should be consistent'
+      },
+      {
+        id: 'arpeggio-timing',
+        title: 'arpeggio timing',
+        description: 'Notes in an arpeggio should be spaced out evenly and the time between arpeggios should be consistent'
+      },
+      {
+        id: 'chord-notes',
+        title: 'chord notes',
+        description: 'The notes in a chord should be played as planned or chosen to match the intended harmony or dissonance'
+      },
+
+    ]
+  },
+  {
     title: 'instrument',
     description: 'Knowing and correctly using the instrument and all its part',
     children: [
@@ -132,11 +145,6 @@ export const SKILL_TREE = [
         id: 'instrument-layout',
         title: 'instrument layout',
         description: 'The musician should know where notes are played on the instrument and use different parts of it appropriately'
-      },
-      {
-        id: 'synchronized-body-parts',
-        title: 'synchronized body parts',
-        description: 'Different parts of the instrument should be played with synchronized timing when played with mutliple body parts: hands, feet, mouth, ...'
       },
       {
         id: 'strumming-direction',

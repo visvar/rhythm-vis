@@ -189,7 +189,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Improvise in the major scale. Notes that you play are shown as bars. The

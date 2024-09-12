@@ -45,7 +45,7 @@
     onMount(draw);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{toolInfo.title}</h2>
     <p class="explanation">
         Play a chord on a MIDI instrument. The notes you played and the detected

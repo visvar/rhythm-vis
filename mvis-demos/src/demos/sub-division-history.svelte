@@ -324,7 +324,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Choose your tempo and subdivision, and start playing. The bar or area

@@ -206,7 +206,7 @@
     onMount(draw);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{toolInfo.title}</h2>
     <p class="explanation">
         Here, you can see how often and when you used each app. This data is

@@ -32,7 +32,7 @@
 
     let canvas;
     let width = 900;
-    let height = 900;
+    let height = 800;
     // settings
     let tempo = 120;
     let grid = GRIDS[0].divisions;
@@ -81,7 +81,7 @@
     const draw = () => {
         const cx = width / 2;
         const cy = height / 2;
-        const r = width * 0.2;
+        const r = width * 0.18;
         const r2 = r * 0.8;
         const r3 = r * 0.9;
         const r5 = r * 0.95;
@@ -119,13 +119,13 @@
         // for 3/4 bars there are less bins
         const binCount = (binNote * grid1) / 4;
 
-        // draw wegdes for 'good enough'
+        // draw wegdes for 'good enough' (OK area)
         ctx.fillStyle = '#f8f8f8';
         const wedgeSize = TWO_PI / binCount;
         const wedges = d3
             .range(grid1 * grid2)
             .map((d) => (TWO_PI / (grid1 * grid2)) * d - topOffs);
-        const rWedge = width / 2 - 10;
+        const rWedge = height / 2;
         for (const g of wedges) {
             const dx1 = Math.cos(g - wedgeSize);
             const dy1 = Math.sin(g - wedgeSize);
@@ -209,7 +209,7 @@
             const lastNotes = adjustedNotes;
             const layerCount =
                 Math.floor(adjustedNotes.at(-1) / circleSeconds) + 1;
-            const layerSize = (width / 2 - r - maxBinHeight - 10) / layerCount;
+            const layerSize = (height / 2 - r - maxBinHeight - 10) / layerCount;
             for (const [i, n] of lastNotes.entries()) {
                 const angle = (n / circleSeconds) * TWO_PI - topOffs;
                 const dx = Math.cos(angle);
@@ -331,7 +331,7 @@
     onDestroy(saveToStorage);
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{demoInfo.title}</h2>
     <p class="explanation">
         Choose your tempo and subdivision, and start playing. The bar or area
@@ -340,11 +340,12 @@
         but you can adjust all notes to make them earlier or later in case you
         messed up the first. Each bar you play will be shown its own layer
         around the circle. The lightgray areas show where a note would have to
-        be to be timed well (depending on the binning setting).
-    </p>
-    <p>
-        <i> Try playing without looking, focus on the metronome. </i>
-        <i> Try to play all notes such that they are within a gray area! </i>
+        be to be timed well (depending on the binning setting), the score in the
+        center shows the percentage of notes that are inside these areas.<br />
+        <i>
+            Try playing without looking and focus on the metronome. Try to play
+            all notes such that they are within a gray area!
+        </i>
     </p>
     <ExerciseDrawer>
         <p>1) Play triplets.</p>

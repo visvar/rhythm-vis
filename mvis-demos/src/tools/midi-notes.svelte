@@ -5,7 +5,7 @@
     export let toolInfo;
 </script>
 
-<main class="demo">
+<main class="app">
     <h2>{toolInfo.title}</h2>
     <p class="explanation">Information on MIDI and MIDI drum notes.</p>
     <div class="grid">

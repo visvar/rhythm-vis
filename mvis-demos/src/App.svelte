@@ -413,7 +413,7 @@
     >
       version {version} | overview
     </button>
-    <!-- <ScreenshotButton {currentApp} /> -->
+    <ScreenshotButton bind:currentApp />
   </div>
 </main>
 <!-- shortcut for app menu -->
@@ -435,48 +435,3 @@
     }
   }}"
 />
-
-<style>
-  .grid-filter-demo {
-    margin-left: 20px;
-    display: grid;
-    grid-template-columns: 210px auto;
-  }
-
-  .filter {
-    padding-top: 20px;
-    text-align: left;
-  }
-
-  .filter input,
-  .filter select,
-  .filter .row-button {
-    width: 180px;
-  }
-
-  .filter .row-button {
-    height: 40px;
-  }
-
-  .filter select {
-    text-align: center;
-  }
-
-  .filter button {
-    display: block;
-  }
-
-  .filter button.active {
-    background-color: rgb(218, 236, 251);
-  }
-
-  .card .tags {
-    font-size: 18px;
-  }
-
-  .version-number {
-    margin-top: 100px;
-    color: #aaa;
-    user-select: none;
-  }
-</style>

@@ -38,6 +38,7 @@
         data._appId = appId;
         data._softwareVersion = version;
         data._date = new Date().toISOString();
+        // get link
         let link = getLink(data);
         if (link.length > lengthLimit) {
             // if link is too long, try to remove recorded notes/bendValues and notify user
