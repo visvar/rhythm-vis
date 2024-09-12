@@ -106,12 +106,12 @@ export const SKILL_TREE = [
       {
         id: 'accents',
         title: 'accents',
-        description: 'Important notes should be louder than others, for example to higlight the first of a group of 3 or 4 notes'
+        description: 'Important notes should be louder than others, for example to highlight the first of a group of 3 or 4 notes'
       },
       {
         id: '(de)crescendo',
-        title: '(de-) crescendo',
-        description: 'When getting louder/quiter, the loudness should in- or decrease smoothly'
+        title: '(de)crescendo',
+        description: 'When getting louder/quieter, the loudness should in- or decrease smoothly'
       }
     ]
   },

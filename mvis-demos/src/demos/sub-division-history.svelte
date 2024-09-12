@@ -20,6 +20,7 @@
     import RatingButton from './common/rating-button.svelte';
     import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
     import { computeSubdivisionOkScore } from '../lib/lib';
+    import HistoryButton from './common/history-button.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -229,15 +230,16 @@
             binNote,
             adjustTime,
             showKde,
-            width,
+            width / 2,
             0,
             0,
         );
     };
 
     const drawLoaded = () => {
+        const count = 8;
         const recordings = localSorageGetRecordings(demoInfo.id)
-            .slice(-16)
+            .slice(-8)
             .reverse();
 
         //  reset canvas
@@ -332,10 +334,8 @@
         integrated metronome. All notes will be timed relative to the first one,
         but you can adjust all notes to make them earlier or later in case you
         messed up the first. Your most recent earlier takes will be shown
-        smaller below (new to old, left to right and top to bottom).
-    </p>
-    <p>
-        <i> Try playing without looking, focus on the metronome. </i>
+        smaller below (new to old, left to right and top to bottom).<br />
+        <i> Try playing without looking and focus on the metronome. </i>
     </p>
     <ExerciseDrawer>
         <p>1) Play triplets.</p>
@@ -397,7 +397,7 @@
     <div class="visualization">
         <canvas
             bind:this="{canvas}"
-            style="width: {width}px; height: {height}px"
+            style="width: {width / 2}px; height: {width / 2}px"
         ></canvas>
     </div>
     <div class="control">
@@ -411,12 +411,13 @@
             }}"
         />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <HistoryButton demoId="{demoInfo.id}" loadData="{() => {}}" />
     </div>
     <div class="visualization">
         <h3>History</h3>
         <canvas
             bind:this="{canvas2}"
-            style="width: {width}px; height: {height}px"
+            style="width: {width}px; height: {height / 2}px"
         ></canvas>
     </div>
     <RatingButton appId="{demoInfo.id}" />

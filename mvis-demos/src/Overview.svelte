@@ -22,6 +22,21 @@
     let matrixRow = 'skills';
     let matrixColumn = 'patterns';
 
+    // print latex table
+    // TODO: remove
+    const latex = () => {
+        let string = 'category & skill & explanation \\\\';
+        for (const node of SKILL_TREE) {
+            for (const [index, skill] of node.children.entries()) {
+                let cat = index === 0 ? node.title : '';
+                let line = `${cat.padEnd(20)} & ${skill.title.padEnd(50)} & ${skill.description}`;
+                string = `${string}\n${line}`;
+            }
+        }
+        console.log(string);
+    };
+    latex();
+
     /**
      * draws the tree of skills
      */

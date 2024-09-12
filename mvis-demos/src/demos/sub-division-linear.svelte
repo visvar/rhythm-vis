@@ -121,7 +121,7 @@
 
         const plotOptions = {
             width,
-            height: 90,
+            height: 100,
             marginTop: 0,
             marginLeft: 40,
             marginBottom: 10,
@@ -170,7 +170,7 @@
 
         const tickPlotSum = Plot.plot({
             ...plotOptions,
-            height: 60,
+            height: 50,
             marginBottom: 30,
             x: {
                 ticks: [...fineGrid, grid1],
@@ -285,10 +285,11 @@
         integrated metronome. All notes will be timed relative to the first one,
         but you can adjust all notes to make them earlier or later in case you
         messed up the first. The last few bars you play will be shown in a row
-        below.
-    </p>
-    <p>
-        <i> Try playing without looking, focus on the metronome. </i>
+        below.<br />
+        <i>
+            Try playing without looking and focus on the metronome. Try to play
+            all notes such that they are within a gray area!
+        </i>
     </p>
     <ExerciseDrawer>
         <p>1) Play triplets.</p>
@@ -323,6 +324,8 @@
                 {/each}
             </select>
         </label>
+    </div>
+    <div class="control">
         <SubDivisionAdjustButton
             bind:adjustTime
             {tempo}
@@ -339,6 +342,20 @@
                 step="1"
                 min="0"
                 max="100"
+                style="width: 55px"
+            />
+        </label>
+        <label
+            title="The number of most recent bars that are shown in the rows at the bottom."
+        >
+            past bars
+            <input
+                type="number"
+                bind:value="{pastBars}"
+                on:change="{draw}"
+                step="1"
+                min="8"
+                max="32"
                 style="width: 55px"
             />
         </label>

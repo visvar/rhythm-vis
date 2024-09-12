@@ -85,7 +85,7 @@
     };
 </script>
 
-<main>
+<main class="rating-button">
     <button
         on:click="{() => {
             shown = !shown;
