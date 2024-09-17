@@ -242,7 +242,7 @@ export const APPS = [
     input: 'MIDI',
     instruments: ['keyboard'],
     data: ['pitch', 'instrument'],
-    skills: ['instrument-layout'],
+    skills: ['instrument-layout', 'scale-notes'],
     patterns: ['distribution as histogram', 'instrument layout', 'time is collapsed', 'update on note', 'instrument as color'],
     timeScale: ['a few bars', 'a full song'],
     difficulty: ['intermediate', 'advanced'],

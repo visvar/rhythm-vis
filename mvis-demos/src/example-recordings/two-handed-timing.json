@@ -2,8 +2,8 @@
   "tempo": 60,
   "gridLeft": "4:3",
   "gridRight": "4:2",
-  "binNote": 64,
-  "adjustTime": 0,
+  "binNote": 48,
+  "adjustTime": 0.01,
   "pastBars": 6,
   "notes": [
     {
@@ -839,6 +839,7 @@
       "number": 74
     }
   ],
-  "_demoId": "two-handed-timing",
-  "_date": "2024-07-03T17:29:11.248Z"
+  "_appId": "two-handed-timing",
+  "_softwareVersion": "0.13.3",
+  "_date": "2024-09-12T14:48:10.466Z"
 }

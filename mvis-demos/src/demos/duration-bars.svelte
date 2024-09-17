@@ -23,6 +23,7 @@
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
     import UndoRedoButton from './common/undo-redo-button.svelte';
+    import PageResizeHandler from './common/page-resize-handler.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -335,4 +336,5 @@
             });
         }}"
     />
+    <PageResizeHandler callback="{draw}" />
 </main>

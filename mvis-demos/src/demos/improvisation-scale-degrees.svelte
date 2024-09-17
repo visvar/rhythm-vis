@@ -24,7 +24,8 @@
     export let demoInfo;
 
     let width = 900;
-    let height = 500;
+    // let height = 500;
+    let height = 300;
     let container;
     // settings
     let root = 'A';
@@ -90,7 +91,7 @@
             color: {
                 legend: useColors,
                 domain: ['root', 'scale', 'outside scale'],
-                range: ['#666', '#aaa', '#ddd'],
+                range: ['#444', '#888', '#bbb'],
                 marginLeft: 100,
             },
             y: {
@@ -102,7 +103,8 @@
                 label: 'notes, increasing from tonic 🡺',
             },
             marks: [
-                Plot.barX(grouped, {
+                // Plot.barX(grouped, {
+                Plot.waffleX(grouped, {
                     x: 'count',
                     y: 'value',
                     fill: (d) => {

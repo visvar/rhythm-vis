@@ -130,7 +130,8 @@
             marks: [
                 // bar line
                 Plot.ruleX([0], { strokeWidth: 2, stroke: 'darkgray' }),
-                Plot.barX(data, {
+                // Plot.barX(data, {
+                Plot.waffleX(data, {
                     x: 'count',
                     y: 'value',
                     fx: 'barId',

@@ -79,6 +79,7 @@
             title: 'Usage Count',
             width,
             marginLeft: 200,
+            marginRight: 60,
             x: {
                 label: 'times used',
             },

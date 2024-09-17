@@ -6,14 +6,17 @@
     import { Canvas } from 'musicvis-lib';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
+    import PageResizeHandler from './common/page-resize-handler.svelte';
 
     /**
      * contains the demo meta information defined in App.js
      */
     export let demoInfo;
 
-    let width = 900;
-    let height = 500;
+    // let width = 900;
+    let width = 700;
+    // let height = 500;
+    let height = 360;
     let container;
     let canvas;
     let audioContext;
@@ -60,7 +63,7 @@
         const r = width * 0.45;
         const r2 = width * 0.35;
         const r3 = width * 0.4;
-        const r4 = width * 0.48;
+        const r4 = width * 0.3;
         const r5 = width * 0.1;
         const ctx = canvas.getContext('2d');
         // scale to DPR
@@ -86,7 +89,7 @@
 
         // draw needle
         const offsetMean = d3.mean(bendValues, (d) => d.centsOffset);
-        ctx.lineWidth = 5;
+        ctx.lineWidth = 10;
         ctx.lineCap = 'round';
         ctx.strokeStyle = '#aaa';
         if (offsetMean > -100) {
@@ -128,14 +131,19 @@
             ctx.moveTo(cx + dx * r3, cy + dy * r3);
             ctx.lineTo(cx + dx * r, cy + dy * r);
         }
+        ctx.stroke();
         // labels
         ctx.fillStyle = '#888';
         ctx.font = '30px Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('too low', width * 0.25, height * 0.7);
-        ctx.fillText('too high', width * 0.75, height * 0.7);
-        ctx.stroke();
+        // ctx.save();
+        // ctx.translate(100, 100);
+        // ctx.rotate(r);
+        // ctx.fillText(word1, -word1Width / 2, 4);
+        // ctx.restore();
+        ctx.fillText('too low', cx - width * 0.35, height * 0.15);
+        ctx.fillText('too high', cx + width * 0.35, height * 0.15);
         // ticks
         for (const tick of [-50, -25, 0, 25, 50]) {
             const g = scaleRad(tick);
@@ -222,4 +230,5 @@
         ></canvas>
     </div>
     <RatingButton appId="{demoInfo.id}" />
+    <PageResizeHandler callback="{draw}" />
 </main>

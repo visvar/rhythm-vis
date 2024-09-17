@@ -22,6 +22,7 @@
     import SubDivisionAdjustButton from './common/sub-division-adjust-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
     import UndoRedoButton from './common/undo-redo-button.svelte';
+    import PageResizeHandler from './common/page-resize-handler.svelte';
 
     /**
      * contains the demo meta information defined in App.js
@@ -419,6 +420,7 @@
         key=" "
         keyDown="{() => noteOn({ timestamp: performance.now() })}"
     />
+    <PageResizeHandler callback="{draw}" />
     <TouchInput
         element="{canvas}"
         touchStart="{() => noteOn({ timestamp: performance.now() })}"

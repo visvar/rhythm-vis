@@ -129,7 +129,7 @@
                 domain: d3.range(12),
                 range: colorMap,
                 tickFormat: (d) => Midi.NOTE_NAMES[d],
-                marginLeft: 290,
+                marginLeft: 190,
             },
             opacity: {
                 domain: [0, 127],

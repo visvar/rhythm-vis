@@ -3,6 +3,7 @@
     import Metronome from '../../lib/Metronome.js';
     import PcKeyboardInput from './pc-keyboard-input.svelte';
     import { metronomeIcon } from '../../lib/icons.js';
+    import { toggleOffIcon } from './../../lib/icons.js';
 
     export let tempo = 120;
     export let accent = 4;
@@ -11,13 +12,21 @@
 
     const metro = new Metronome();
     let button;
+    let indicator;
 
     const toggle = () => {
         metro.toggle(tempo, accent, beepCount > 0 ? beepCount : Infinity);
         // animate button to show toggle
-        button.style = 'background: lightblue';
+        button.style = 'background: var(--accent)';
         setTimeout(() => (button.style = ''), 500);
     };
+
+    // const visualFeedback = () => {
+    //     // animate button to show toggle
+    //     indicator.style = 'visibility: visible';
+    //     setTimeout(() => (indicator.style = 'visibility: hidden'), 500);
+    // };
+    // metro.onClick(visualFeedback);
 
     onDestroy(() => {
         // turn off metronome
@@ -32,6 +41,7 @@
     style="{showBeepCountInput ? 'border-radius: 8px 0 0 8px;' : ''}"
 >
     {metronomeIcon} metronome
+    <!-- <span bind:this="{indicator}">{toggleOffIcon}</span> -->
 </button>
 {#if showBeepCountInput}
     <input

@@ -20,7 +20,8 @@
     export let demoInfo;
 
     let width = 900;
-    let height = 650;
+    // let height = 650;
+    let height = 500;
     let container;
     // settings
     let filterUnison = true;
@@ -121,6 +122,7 @@
                         : '#ddd',
                     dx: 0.5,
                     rx: 4,
+                    inset: 1,
                 }),
             ],
         });

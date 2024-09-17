@@ -437,11 +437,21 @@
     <ul class="list">
         {#each SKILL_TREE as s}
             <li>
-                <b>{s.title}</b>
+                <b
+                    >{s.title} ({new Set(
+                        s.children.flatMap((skill) =>
+                            APPS.filter((d) => d.skills.includes(skill.id)),
+                        ),
+                    ).size})</b
+                >
                 <ul>
                     {#each s.children as skill}
                         <li>
-                            <b>{skill.title}</b>
+                            <b>
+                                {skill.title} ({APPS.filter((d) =>
+                                    d.skills.includes(skill.id),
+                                ).length})
+                            </b>
                             <ul>
                                 {#each APPS.filter( (d) => d.skills.includes(skill.id), ) as app}
                                     <li style="font-size: 12px;">

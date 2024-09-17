@@ -21,7 +21,8 @@
     export let demoInfo;
 
     let width = 900;
-    let height = 600;
+    // let height = 600;
+    let height = 300;
     let container;
     const velocities = VELOCITIES_LOGIC;
     // settings

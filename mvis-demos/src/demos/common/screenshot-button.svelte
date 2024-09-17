@@ -45,13 +45,6 @@
             // select app
             currentApp = app;
             await delay(0.2);
-            // hide title, description, exercise, rating
-            [
-                document.querySelector('.app > h2'),
-                ...document.querySelectorAll('.explanation'),
-                ...document.querySelectorAll('.rating-button'),
-                ...document.querySelectorAll('.exercise-grid'),
-            ].forEach((d) => (d.style = 'display:none'));
             // load example
             const exampleBtn = [...document.querySelectorAll('button')].filter(
                 (d) => d.innerText === 'example',
@@ -59,6 +52,16 @@
             if (exampleBtn.length > 0) {
                 exampleBtn[0].click();
             }
+            // hide title, description, exercise, rating
+            [
+                document.querySelector('.app > h2'),
+                ...document.querySelectorAll('.explanation'),
+                ...document.querySelectorAll('.rating-button'),
+                ...document.querySelectorAll('.exercise-grid'),
+                // TODO: hide lower controls?
+                [...document.querySelectorAll('.control')].at(-1),
+            ].forEach((d) => (d.style = 'display:none'));
+
             await delay(0.1);
             // either take the app or the whole document
             const appMain = document.querySelectorAll('.app')[0];

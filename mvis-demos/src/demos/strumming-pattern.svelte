@@ -128,8 +128,8 @@
                 tickFormat: (d) => tuningNotes[d],
             },
             color: {
+                label: 'string',
                 type: 'categorical',
-                label: 'MIDI channel',
                 scheme: 'observable10',
                 reverse: true,
                 legend: true,
@@ -168,6 +168,7 @@
                 padding: 0.7,
             },
             color: {
+                label: 'strumming',
                 type: 'categorical',
                 scheme: 'observable10',
                 legend: true,
@@ -193,7 +194,7 @@
                         d.direction === 'down' ? d.minString : d.maxString,
                     fill: 'direction',
                     symbol: 'diamond',
-                    r: 10,
+                    r: 8,
                 }),
             ],
         });

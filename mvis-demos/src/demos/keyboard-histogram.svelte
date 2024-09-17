@@ -26,7 +26,8 @@
     export let demoInfo;
 
     let width = 900;
-    let height = 500;
+    // let height = 500;
+    let height = 300;
     const minPitch = 21;
     const maxPitch = 108;
     let container;

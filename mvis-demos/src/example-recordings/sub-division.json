@@ -2,7 +2,7 @@
   "tempo": 60,
   "grid": "4:3",
   "binNote": 96,
-  "adjustTime": 0,
+  "adjustTime": -0.03,
   "noteTickLimit": 0,
   "showKde": false,
   "notes": [

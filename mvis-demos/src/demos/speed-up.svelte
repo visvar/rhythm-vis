@@ -164,7 +164,7 @@
         const plot = Plot.plot({
             width,
             height: 60,
-            marginTop: 0,
+            marginTop: 10,
             marginLeft: 40,
             marginBottom: 35,
             x: {

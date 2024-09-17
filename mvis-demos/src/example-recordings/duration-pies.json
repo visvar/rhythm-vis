@@ -1,19 +1,13 @@
 {
   "tempo": 60,
   "pastNoteCount": 5,
-  "showClosestDuration": true,
+  "showClosestDuration": false,
   "notes": [
     {
       "number": 59,
       "time": 0,
-      "duration": 1.692,
-      "end": 1.692
-    },
-    {
-      "number": 59,
-      "time": 2.778,
-      "duration": 1.6720000000000002,
-      "end": 4.45
+      "duration": 1.213523544,
+      "end": 1.213523544
     },
     {
       "number": 59,

@@ -85,11 +85,15 @@
         } else {
             now = (performance.now() - firstTimeStamp) / 1000;
         }
+        // filter TODO: move this to "remove spikes" above
+        const filtered = bendValues.filter((d, i) => {
+            return i === 0 || Math.abs(bendValues[i - 1].pitch - d.pitch) < 3;
+        });
         const minTime = now - pastTime;
         // plot pitch as MIDI number
         const lastSecond = 1000 / waitTime;
         let medianOfLast = Math.round(
-            d3.median(bendValues.slice(-lastSecond), (d) => d.actualMidi),
+            d3.median(filtered.slice(-lastSecond), (d) => d.actualMidi),
         );
         // make sure we keep a valid number
         if (isNaN(medianOfLast)) {
@@ -122,12 +126,14 @@
                 grid: true,
             },
             marks: [
-                Plot.line(bendValues, {
+                Plot.line(filtered, {
                     x: 'time',
                     y: ignoreOctave ? 'actualMidiChroma' : 'actualMidi',
                     clip: true,
                     // smooth a bit
                     curve: 'basis',
+                    stroke: '#666',
+                    strokeWidth: 2,
                 }),
                 Plot.axisY({
                     anchor: 'left',
