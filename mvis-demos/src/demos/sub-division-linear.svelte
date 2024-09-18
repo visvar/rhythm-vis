@@ -198,6 +198,7 @@
             },
             y: {
                 domain: d3.range(maxBar - pastBars, maxBar),
+                tickFormat: (d) => d + 1,
             },
             marks: [
                 // OK areas

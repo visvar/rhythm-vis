@@ -191,14 +191,14 @@
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
             ctx.textBaseline = 'middle';
-            if (index === 0) {
+            if (index === 0 && pastNoteCount <= 8) {
                 ctx.fillText(noteWhole, cx, cy - r4);
                 ctx.fillText(noteQuarter, cx + r4, cy);
                 ctx.fillText(noteHalf, cx, cy + r4);
                 ctx.fillText(noteHalf + '.', cx - r4, cy);
             }
             // text
-            ctx.font = '18px sans-serif';
+            ctx.font = '16px sans-serif';
             if (note.duration > 0) {
                 ctx.fillText(
                     `closest: ${bestFitDuration.symbol}`,

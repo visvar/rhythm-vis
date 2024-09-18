@@ -28,6 +28,7 @@
   }
 
   // access protection (not secure of course)
+  const usePw = true;
   let corrP = 'rhyvis';
   let password = localStorage.getItem('pwd') ?? '';
   $: {
@@ -192,7 +193,7 @@
     </nav>
   </header>
 
-  {#if password !== corrP}
+  {#if usePw && password !== corrP}
     <input type="password" placeholder="password" bind:value="{password}" />
   {:else if !currentApp}
     <div class="grid-filter-demo">

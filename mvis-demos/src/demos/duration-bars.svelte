@@ -68,7 +68,6 @@
             }
         }
         notes = [...notes, note];
-        console.log(note);
         openNoteMap.set(e.note.number, note);
         draw();
     };
@@ -111,6 +110,7 @@
         canvas.style.height = `${rect.height}px`;
         // fade-out old data
         ctx.clearRect(0, 0, width, height);
+        ctx.textBaseline = 'middle';
 
         for (const [index, note] of notes.slice(-pastNoteCount).entries()) {
             // one pie chart per note
@@ -193,7 +193,6 @@
             }
             // labels
             ctx.font = '20px sans-serif';
-            ctx.textBaseline = 'middle';
             if (index === 0) {
                 ctx.textAlign = 'right';
                 ctx.fillText(noteWhole, x - 5, top);

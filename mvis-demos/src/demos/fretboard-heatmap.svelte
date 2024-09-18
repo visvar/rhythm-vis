@@ -15,6 +15,7 @@
     import ScaleSelect from './common/scale-select.svelte';
     import ToggleButton from './common/toggle-button.svelte';
     import { NOTE_TO_CHROMA_MAP } from '../lib/music';
+    import example from '../example-recordings/fretboard-heatmap.json';
     import ShareConfigButton from './common/share-config-button.svelte';
 
     /**
@@ -253,6 +254,7 @@
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />
     </div>

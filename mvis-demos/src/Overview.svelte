@@ -6,7 +6,15 @@
     import { APPS } from './apps';
 
     export let apps = [];
-    export let allInstruments = new Set();
+    // export let allInstruments = new Set();
+    let allInstruments = new Set([
+        'drum',
+        'guitar/bass',
+        'keyboard',
+        'singing',
+        'pc-key',
+        'touch',
+    ]);
     export let allData = new Set();
     export let allPatterns = new Set();
 
@@ -29,7 +37,7 @@
         for (const node of SKILL_TREE) {
             for (const [index, skill] of node.children.entries()) {
                 let cat = index === 0 ? node.title : '';
-                let line = `${cat.padEnd(20)} & ${skill.title.padEnd(50)} & ${skill.description}`;
+                let line = `${cat.padEnd(20)} & ${skill.title.padEnd(50)} & ${skill.description} \\\\`;
                 string = `${string}\n${line}`;
             }
         }
@@ -437,13 +445,13 @@
     <ul class="list">
         {#each SKILL_TREE as s}
             <li>
-                <b
-                    >{s.title} ({new Set(
+                <b>
+                    {s.title} ({new Set(
                         s.children.flatMap((skill) =>
                             APPS.filter((d) => d.skills.includes(skill.id)),
                         ),
-                    ).size})</b
-                >
+                    ).size})
+                </b>
                 <ul>
                     {#each s.children as skill}
                         <li>

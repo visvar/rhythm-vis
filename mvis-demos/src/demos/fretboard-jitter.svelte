@@ -14,6 +14,8 @@
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import example from '../example-recordings/fretboard-jitter.json';
+    import { VELOCITIES_LOGIC } from '../lib/music';
 
     /**
      * contains the demo meta information defined in App.js
@@ -91,8 +93,8 @@
             },
             color: {
                 legend: true,
-                marginLeft: 100,
-                width: 400,
+                marginLeft: 300,
+                width: 550,
                 scheme: 'viridis',
                 reverse: true,
                 domain: [0, pastNoteCount],
@@ -138,25 +140,33 @@
                     strokeWidth: 0.5,
                     r: 'velocity',
                     opacity: 0.5,
+                    tip: true,
+                    title: (d) =>
+                        `string: ${tuningNotes[d.string]}\nfret: ${d.fret}\nloudness: ${(d.velocity / 127).toFixed(2)}\ntime:${d.time.toFixed(1)} s`,
                 }),
             ],
         });
 
         // area legend
-        const plot2 = Plot.plot({
-            subtitle: 'loudness',
-            width,
-            height: 50,
-            marginLeft: width / 3,
-            marginRight: width / 3,
-            padding: 0,
-            r: {
-                domain: [0, 127],
-                range: [0, 5],
+        const legendTicks = [...VELOCITIES_LOGIC.keys()].map((d) => d / 127);
+        const legend = Plot.plot({
+            // subtitle: 'loudness',
+            width: width,
+            height: 47,
+            marginTop: 0,
+            marginLeft: width * 0.35,
+            marginRight: width * 0.35,
+            marginBottom: 30,
+            x: {
+                label: 'loudness',
+                labelAnchor: 'center',
+                ticks: legendTicks,
+                tickSize: 0,
+                tickPadding: 3,
+                tickFormat: (d, i) => [...VELOCITIES_LOGIC.values()][i],
             },
-            x: { domain: d3.range(16, 129, 16), tickSize: 0 },
             marks: [
-                Plot.dotX(d3.range(16, 129, 16), {
+                Plot.dotX(legendTicks, {
                     x: (d, i) => d,
                     fill: '#888',
                     r: (d) => d,
@@ -166,7 +176,7 @@
 
         container.textContent = '';
         container.appendChild(plot);
-        container.appendChild(plot2);
+        container.appendChild(legend);
     };
 
     onMount(draw);
@@ -231,6 +241,7 @@
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
         <ImportButton2 {loadData} />
+        <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />
     </div>
