@@ -305,7 +305,7 @@ export const APPS = [
     id: 'rhythm-sheet-music',
     title: 'Rhythm Sheet Music',
     description:
-      'This demo displays the notes you play as staff notation (𝅝, 𝅗𝅥, 𝅘𝅥, 𝅘𝅥𝅮, 𝅘𝅥𝅯) and offset in percent.',
+      'This demo displays the notes you play as staff notation and offset in percent.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
     data: ['order', 'duration/ioi'],

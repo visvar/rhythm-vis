@@ -1,5 +1,5 @@
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: Inter, system-ui, Avenir, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -51,6 +51,7 @@ header {
 header nav {
   display: flex;
   justify-content: center;
+  font-family: Inter, system-ui, Avenir, Arial, sans-serif;
 }
 
 h1,
@@ -112,6 +113,13 @@ svg text {
   user-select: none;
   pointer-events: none;
 }
+
+
+/* special symbols such as notes */
+.icon {
+  font-family: Inter, system-ui, Arial, Avenir, "Noto Sans", "Noto Sans Symbols", "Noto Sans Symbols 2", "Noto Music", sans-serif;
+}
+
 
 /* main page */
 

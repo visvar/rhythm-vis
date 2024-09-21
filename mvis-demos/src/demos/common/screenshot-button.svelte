@@ -12,14 +12,16 @@
      */
     export let currentApp;
 
-    const shoot = async () => {
+    const shoot = async (loadExample = false) => {
         try {
             // load example
-            const exampleBtn = [...document.querySelectorAll('button')].filter(
-                (d) => d.innerText === 'example',
-            );
-            if (exampleBtn.length > 0) {
-                exampleBtn[0].click();
+            if (loadExample) {
+                const exampleBtn = [
+                    ...document.querySelectorAll('button'),
+                ].filter((d) => d.innerText === 'example');
+                if (exampleBtn.length > 0) {
+                    exampleBtn[0].click();
+                }
             }
             // either take the app or the whole document
             const appMain = document.querySelectorAll('.app')[0];
@@ -36,6 +38,9 @@
     };
 
     const shootAll = async () => {
+        if (!confirm('Are you sure you want to screenshot all apps?')) {
+            return;
+        }
         for (const app of APPS) {
             console.log(app.id);
             if (app.id === 'fretboard-spacetime-cube') {
@@ -76,5 +81,9 @@
     };
 </script>
 
-<button on:click="{shoot}"> shoot </button>
-<button on:click="{shootAll}"> shoot all </button>
+<div>
+    screenshot
+    <button on:click="{() => shoot(false)}"> app </button>
+    <button on:click="{() => shoot(true)}"> app with example </button>
+    <button on:click="{shootAll}"> all apps </button>
+</div>

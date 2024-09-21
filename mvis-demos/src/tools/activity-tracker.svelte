@@ -2,7 +2,6 @@
     import * as Plot from '@observablehq/plot';
     import * as d3 from 'd3';
     import { localStorageGetUsageData } from '../lib/localstorage';
-    import { APP_MAP } from '../apps';
     import { onMount } from 'svelte';
     import { star } from '../lib/icons';
     import { COLORS } from '../lib/colors';
@@ -18,17 +17,22 @@
     const usage = localStorageGetUsageData();
 
     let appUsage = [];
+    let daysUsed = new Set();
     for (const key in usage.demoClicks) {
         if (Object.hasOwnProperty.call(usage.demoClicks, key)) {
             if (key !== 'undefined') {
-                const element = usage.demoClicks[key];
+                const dates = usage.demoClicks[key];
                 appUsage.push({
                     id: key,
-                    dates: element.map((d) => new Date(d)),
-                    useCount: element.length,
+                    dates: dates.map((d) => new Date(d)),
+                    useCount: dates.length,
                     // only use day
                     // dates: element.map((d) => new Date(d.slice(0, 10))),
                 });
+                // keep track of days any app was used
+                for (const date of dates) {
+                    daysUsed.add(date.substring(0, 10));
+                }
             }
         }
     }
@@ -75,7 +79,7 @@
     const draw = () => {
         container.textContent = '';
         // usage count plot
-        const plot1 = Plot.plot({
+        const usageCountPlot = Plot.plot({
             title: 'Usage Count',
             width,
             marginLeft: 200,
@@ -109,7 +113,33 @@
                 }),
             ],
         });
-        container.appendChild(plot1);
+        container.appendChild(usageCountPlot);
+        // calendar
+        //   let daysUsed2 = new Set([...daysUsed].map((d) => new Date(d)));
+        // console.log(daysUsed2);
+        // const [minDay, maxDay] = d3.extent(daysUsed)
+        // const allDays = []
+
+        // const calendarPlot = Plot.plot({
+        //     padding: 0,
+        //     x: { axis: null },
+        //     y: { tickFormat: Plot.formatWeekday('en', 'narrow'), tickSize: 0 },
+        //     fy: {
+        //         // data: daysUsed,
+        //         tickFormat: '',
+        //     },
+        //     marks: [
+        //         Plot.cell(daysUsed2, {
+        //             x: (d) => d3.utcWeek.count(d3.utcYear(d), d),
+        //             y: (d) => d.getUTCDay(),
+        //             fy: (d) => d.getUTCFullYear(),
+        //             fill: '#ccc',
+        //             title: (d, i) => d,
+        //             inset: 0.5,
+        //         }),
+        //     ],
+        // });
+        // container.appendChild(calendarPlot);
         // usage dates plot
         const plot2 = Plot.plot({
             title: 'Usage Dates',

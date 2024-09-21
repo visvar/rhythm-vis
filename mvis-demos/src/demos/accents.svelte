@@ -98,6 +98,8 @@
             width,
             height: 100,
             marginLeft: 80,
+            // make sure note symbols etc work
+            style: 'font-family: Inter, "Noto Symbols", "Noto Symbols 2", "Noto Music", sans-serif',
             x: {
                 label: '',
                 domain: d3.range(1, pastNoteCount),
@@ -126,6 +128,8 @@
             marginLeft: width * 0.35,
             marginRight: width * 0.35,
             marginBottom: 35,
+            // make sure note symbols etc work
+            style: 'font-family: Inter, "Noto Symbols", "Noto Symbols 2", "Noto Music", sans-serif',
             x: {
                 label: 'loudness',
                 labelAnchor: 'center',
@@ -215,12 +219,14 @@
         <p>
             5) Try different accent patterns such as:<br />
             <b>1</b> e + <b>a</b> 2 e + a 3 <b>e</b> + a <b>4</b> e + a<br />
-            <span class="acc">𝅘𝅥</span> 𝅘𝅥 𝅘𝅥 <span class="acc">𝅘𝅥</span> | 𝅘𝅥 𝅘𝅥 𝅘𝅥 𝅘𝅥
-            | 𝅘𝅥
-            <span class="acc">𝅘𝅥</span>
-            𝅘𝅥 𝅘𝅥 |
-            <span class="acc">𝅘𝅥</span>
-            𝅘𝅥 𝅘𝅥 𝅘𝅥
+            <span class="icon">
+                <span class="acc">𝅘𝅥</span> 𝅘𝅥 𝅘𝅥 <span class="acc">𝅘𝅥</span> | 𝅘𝅥 𝅘𝅥
+                𝅘𝅥 𝅘𝅥 | 𝅘𝅥
+                <span class="acc">𝅘𝅥</span>
+                𝅘𝅥 𝅘𝅥 |
+                <span class="acc">𝅘𝅥</span>
+                𝅘𝅥 𝅘𝅥 𝅘𝅥
+            </span>
         </p>
     </ExerciseDrawer>
     <div class="control">

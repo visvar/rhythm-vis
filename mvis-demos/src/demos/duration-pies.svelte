@@ -187,7 +187,7 @@
             ctx.stroke();
             // labels
             ctx.fillStyle = '#666';
-            ctx.font = '20px sans-serif';
+            ctx.font = '20px "Noto Music", sans-serif';
             ctx.textAlign = 'center';
             ctx.textBaseline = 'bottom';
             ctx.textBaseline = 'middle';
@@ -198,7 +198,7 @@
                 ctx.fillText(noteHalf + '.', cx - r4, cy);
             }
             // text
-            ctx.font = '16px sans-serif';
+            ctx.font = '16px "Noto Music", sans-serif';
             if (note.duration > 0) {
                 ctx.fillText(
                     `closest: ${bestFitDuration.symbol}`,
@@ -274,8 +274,11 @@
     </p>
     <ExerciseDrawer>
         <p>
-            1) Play a quarter note 𝅘𝅥 ◔, a half note 𝅗𝅥 ◑, a dotted half note 𝅗𝅥.
-            ◕, and a whole note 𝅝 ⬤.
+            1) Play a quarter note <span class="icon">𝅘𝅥 ◔</span>, a half note
+            <span class="icon">𝅗𝅥 ◑</span>, a dotted half note
+            <span class="icon">𝅗𝅥. ◕</span>
+            , and a whole note <span class="icon">𝅝</span>
+            <span class="icon" style="font-size: 14px">⬤</span>.
         </p>
     </ExerciseDrawer>
     <div class="control">

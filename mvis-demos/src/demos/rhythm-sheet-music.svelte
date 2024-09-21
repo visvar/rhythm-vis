@@ -110,6 +110,8 @@
             height: 100,
             marginTop: 30,
             marginLeft: 100,
+            // make sure note symbols etc work
+            style: 'font-family: Inter, "Noto Symbols", "Noto Symbols 2", "Noto Music", sans-serif',
             x: {
                 label: '',
                 domain: d3.range(1, pastNoteCount),
@@ -142,6 +144,8 @@
             width,
             height: 250,
             marginLeft: 100,
+            // make sure note symbols etc work
+            style: 'font-family: Inter, "Noto Symbols", "Noto Symbols 2", "Noto Music", sans-serif',
             x: {
                 label: 'note',
                 domain: d3.range(1, pastNoteCount),

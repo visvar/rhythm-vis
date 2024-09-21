@@ -161,7 +161,7 @@
                 ctx.fillRect(x, g, w * 0.1, 1);
             }
             // text
-            ctx.font = '16px sans-serif';
+            ctx.font = '16px "Noto Music", sans-serif';
             ctx.fillStyle = '#666';
             if (note.duration > 0) {
                 const bestFit = d3.minIndex(durations, (d) =>
@@ -192,7 +192,7 @@
                 ctx.fillText(`${rating}`, cx, height - 10);
             }
             // labels
-            ctx.font = '20px sans-serif';
+            ctx.font = '20px "Noto Music", sans-serif';
             if (index === 0) {
                 ctx.textAlign = 'right';
                 ctx.fillText(noteWhole, x - 5, top);
@@ -254,8 +254,10 @@
     </p>
     <ExerciseDrawer>
         <p>
-            1) Play a quarter note 𝅘𝅥, a half note 𝅗𝅥, a dotted half note 𝅗𝅥., and
-            a whole note 𝅝.
+            1) Play a quarter note <span class="icon">𝅘𝅥</span>, a half note
+            <span class="icon">𝅗𝅥</span>, a dotted half note
+            <span class="icon">𝅗𝅥</span>., and a whole note
+            <span class="icon">𝅝</span>.
         </p>
     </ExerciseDrawer>
     <div class="control">

@@ -91,6 +91,8 @@
             height,
             marginLeft: 120,
             marginRight: 10,
+            // make sure note symbols etc work
+            style: 'font-family: Inter, "Noto Symbols", "Noto Symbols 2", "Noto Music", sans-serif',
             color: {
                 legend: useColors,
                 domain: ['minor', 'major', 'perfect', 'tritone'],

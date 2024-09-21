@@ -30,7 +30,7 @@
     // settings
     let tempo = 120;
     let binNote = 'off';
-    let filterNote = 0;
+    let filterNote = 64;
     let barLimit = 50;
     // data
     let firstTimeStamp = 0;
@@ -75,11 +75,18 @@
             const binSize = whole / binNote;
             binnedIois = iois.map((d) => Math.round(d / binSize) * binSize);
         }
+
+        // TODO: color by distance to closest baseline
+        const colorByError = (ioi) => {
+            return d3.min(rules, (r) => Math.abs((ioi - r) / r));
+        };
         const plot = Plot.plot({
             width,
             height,
             marginLeft: 45,
             marginRight: 1,
+            // make sure note symbols etc work
+            style: 'font-family: Inter, "Noto Symbols", "Noto Symbols 2", "Noto Music", sans-serif',
             x: {
                 axis: false,
             },
@@ -92,14 +99,23 @@
                 domain: [0, half * 1.1],
                 tickSize: 0,
             },
+            // color: {
+            //     scheme: 'Greys',
+            //     legend: true,
+            //     range: [0.2, 1],
+            // },
             marks: [
+                // bars
                 Plot.barY(binnedIois.slice(-barLimit), {
                     x: (d, i) => i,
                     y: (d) => d,
                     fill: '#ddd',
+                    // color by distance to closest baseline
+                    // fill: colorByError,
                     inset: 0,
                     dx: 0.5,
                 }),
+                // reference duration lines
                 Plot.ruleY(rules, {
                     stroke: '#aaa',
                 }),
