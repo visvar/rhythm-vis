@@ -42,7 +42,6 @@
             return;
         }
         for (const app of APPS) {
-            console.log(app.id);
             if (app.id === 'fretboard-spacetime-cube') {
                 continue;
             }

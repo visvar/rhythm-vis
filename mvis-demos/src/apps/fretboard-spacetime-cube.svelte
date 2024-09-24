@@ -122,7 +122,7 @@
 
     onMount(() => {
         // https://github.com/aframevr/aframe/blob/master/docs/components/oculus-touch-controls.md#events
-        console.log(AFRAME);
+        // console.log(AFRAME);
         AFRAME.registerComponent('thumbstick-logging', {
             init: function () {
                 this.el.addEventListener('thumbstickmoved', this.logThumbstick);

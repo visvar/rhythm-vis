@@ -10,7 +10,7 @@
     const resizeObserver = new ResizeObserver(callback);
 
     onMount(() => {
-        console.log('mount');
+        // console.log('mount');
         document.addEventListener('resize', callback);
         resizeObserver.observe(element);
     });

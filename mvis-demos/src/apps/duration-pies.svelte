@@ -78,7 +78,6 @@
             const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
             note.end = noteInSeconds;
             note.duration = note.end - note.time;
-            console.log(note);
         }
         draw();
     };

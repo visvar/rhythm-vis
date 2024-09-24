@@ -195,19 +195,6 @@
             same two BPM values.
         </p>
     </ExerciseDrawer>
-    <!-- <div class="control">
-        <label>
-            past seconds
-            <input
-                type="number"
-                bind:value="{pastTime}"
-                on:change="{draw}"
-                min="5"
-                max="60"
-                step="5"
-            />
-        </label>
-    </div> -->
     <div class="control">
         <label title="Size of the time bins in seconds">
             time step

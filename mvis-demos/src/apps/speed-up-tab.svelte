@@ -418,7 +418,7 @@
             callback="{draw}"
         />
         <label title="Set the tempo increase between practice runs (in BPM)">
-            tempo increase
+            step
             <input
                 type="number"
                 bind:value="{tempoIncrease}"

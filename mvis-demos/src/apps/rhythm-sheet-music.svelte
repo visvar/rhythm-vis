@@ -92,7 +92,6 @@
             const targetObj = noteDurations.filter(
                 (d) => d.name === targetDuration,
             )[0];
-            console.log(targetObj);
             bestFit = inBeats.map((delta) => {
                 return {
                     ...targetObj,
@@ -101,7 +100,6 @@
                 };
             });
         }
-        console.log(bestFit);
 
         // plot
         const plot = Plot.plot({

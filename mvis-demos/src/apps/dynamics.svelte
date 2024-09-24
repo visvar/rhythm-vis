@@ -8,11 +8,18 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import { VELOCITIES_LOGIC, VELOCITIES_MEANING } from '../lib/music';
     import HistoryButton from '../common/history-button.svelte';
-    import example from '../example-recordings/dynamics.json';
+    import example1 from '../example-recordings/dynamics-e1.json';
+    import example2 from '../example-recordings/dynamics-e2.json';
+    import example3 from '../example-recordings/dynamics-e3.json';
+    import example4 from '../example-recordings/dynamics-e4.json';
     import * as d3 from 'd3';
     import ExerciseDrawer from '../common/exercise-drawer.svelte';
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
+    import { drumPitchReplacementMapMD90 } from '../lib/drums';
+    import { Midi } from 'musicvis-lib';
+    import { NOTE_COLORS } from '../lib/colors';
+    import InsideTextButton from '../common/inside-text-button.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -27,20 +34,25 @@
     // settings
     let isBinning = false;
     let barLimit = 50;
+    let coloring = 'none';
     // data
+    let firstTimeStamp;
     let notes = [];
 
     const noteOn = (e) => {
-        notes.push(e.rawVelocity);
-        // TODO: more data so we can color bars by, eg, channel or drum part
-        // const note = {
-        // velocity: e.rawVelocity,
-        //     number: e.note.number,
-        //     note: e.note.name + (e.note.accidental ?? ''),
-        //     isSharp: e.note.accidental?true:false,
-        //     channel: e.message.channel,
-        // };
-        // notes.push(note);
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
+        const note = {
+            time: noteInSeconds,
+            velocity: e.rawVelocity,
+            number: e.note.number,
+            note: e.note.name + (e.note.accidental ?? ''),
+            isSharp: e.note.accidental ? true : false,
+            channel: e.message.channel,
+        };
+        notes.push(note);
         draw();
     };
 
@@ -49,14 +61,32 @@
         let binnedVelocities = notes;
         if (isBinning) {
             const veloBinValues = [...velocities.keys()];
-            binnedVelocities = notes.map((d) => {
+            binnedVelocities = notes.map((note) => {
                 const minIndex = d3.minIndex(veloBinValues, (v) =>
-                    Math.abs(d - v),
+                    Math.abs(note.velocity - v),
                 );
-                return veloBinValues[minIndex];
+                return { ...note, velocity: veloBinValues[minIndex] };
             });
         }
         const rules = [...velocities.keys()];
+        let colorRange;
+        let colorDomain;
+        if (coloring === 'sharps') {
+            colorDomain = ['natural', 'sharp'];
+            colorRange = ['#ddd', '#888'];
+        } else if (coloring === 'channel') {
+            colorRange = d3.schemeObservable10;
+            colorDomain = d3.range(colorRange.length);
+        } else if (coloring === 'note') {
+            colorDomain = Midi.NOTE_NAMES;
+            colorRange = NOTE_COLORS.noteColormapAccessible2;
+        } else if (coloring === 'drum') {
+            const drumLabels = [...drumPitchReplacementMapMD90.values()].map(
+                (d) => d.label,
+            );
+            colorDomain = [...new Set(drumLabels), 'other'];
+            colorRange = d3.schemeObservable10;
+        }
         const plot = Plot.plot({
             width,
             height,
@@ -68,11 +98,35 @@
             y: {
                 domain: [0, 128],
             },
+            color: {
+                legend: coloring !== 'none',
+                type: 'categorical',
+                domain: colorDomain,
+                range: colorRange,
+            },
             marks: [
                 Plot.barY(binnedVelocities.slice(-barLimit), {
                     x: (d, i) => i,
-                    y: (d) => d,
-                    fill: '#ddd',
+                    y: (d) => d.velocity,
+                    fill: (d) => {
+                        if (coloring === 'none') {
+                            return '#ddd';
+                        } else if (coloring === 'channel') {
+                            return d.channel % colorDomain.length;
+                        } else if (coloring === 'sharps') {
+                            return d.isSharp ? 'sharp' : 'natural';
+                        } else if (coloring === 'drum') {
+                            return (
+                                drumPitchReplacementMapMD90.get(d.number)
+                                    ?.label ?? 'other'
+                            );
+                        } else if (coloring === 'note') {
+                            return d.note;
+                        }
+                    },
+                    // round upper corners
+                    rx1y1: 4,
+                    rx2y1: 4,
                     inset: 0,
                     dx: 0.5,
                 }),
@@ -122,9 +176,13 @@
     };
 
     const saveToStorage = () => {
+        const noteString = JSON.stringify(notes);
         if (
             notes.length > 0 &&
-            JSON.stringify(notes) !== JSON.stringify(example.notes)
+            noteString !== JSON.stringify(example1.notes) &&
+            noteString !== JSON.stringify(example2.notes) &&
+            noteString !== JSON.stringify(example3.notes) &&
+            noteString !== JSON.stringify(example4.notes)
         ) {
             localStorageAddRecording(appInfo.id, getExportData());
         }
@@ -148,15 +206,31 @@
         >.
     </p>
     <ExerciseDrawer>
-        <p>1) Play all notes between a mezzo-piano (mp) and a forte (f).</p>
+        <p>
+            1) Play all notes between a mezzo-piano (mp) and a forte (f).
+            <InsideTextButton onclick="{() => loadData(example1)}">
+                example
+            </InsideTextButton>
+        </p>
         <p>
             2) Play a crescendo, starting at below pp and rising until above ff
             smoothly.
+            <InsideTextButton onclick="{() => loadData(example2)}">
+                example
+            </InsideTextButton>
         </p>
-        <p>3) Play a descrescendo from above ff to below pp.</p>
+        <p>
+            3) Play a descrescendo from above ff to below pp.
+            <InsideTextButton onclick="{() => loadData(example3)}">
+                example
+            </InsideTextButton>
+        </p>
         <p>
             4) Play accents, for example on each 4th note. They should be loud
             enough to be easily distinguishable from the non-accented notes.
+            <InsideTextButton onclick="{() => loadData(example4)}">
+                example
+            </InsideTextButton>
         </p>
     </ExerciseDrawer>
     <div class="control">
@@ -181,12 +255,20 @@
                 style="width: 55px"
             />
         </label>
+        <label>
+            color
+            <select bind:value="{coloring}" on:change="{draw}">
+                {#each ['none', 'channel', 'sharps', 'note', 'drum'] as opt}
+                    <option value="{opt}">{opt}</option>
+                {/each}
+            </select>
+        </label>
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ImportExportButton {loadData} {getExportData} appId="{appInfo.id}" />
-        <button on:click="{() => loadData(example)}"> example </button>
+        <button on:click="{() => loadData(example4)}"> example </button>
         <HistoryButton appId="{appInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{appInfo.id}" />
     </div>

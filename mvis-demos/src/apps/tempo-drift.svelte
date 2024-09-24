@@ -17,6 +17,7 @@
     import ExerciseDrawer from '../common/exercise-drawer.svelte';
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
+    import TempoInput from '../common/tempo-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -192,18 +193,7 @@
         </p>
     </ExerciseDrawer>
     <div class="control">
-        <label title="The tempo in beats per minute (bpm)">
-            tempo
-            <input
-                type="number"
-                bind:value="{tempo}"
-                on:change="{draw}"
-                step="1"
-                min="10"
-                max="400"
-                style="width: 55px"
-            />
-        </label>
+        <TempoInput bind:value="{tempo}" on:change="{draw}" />
         <button
             title="randomize tempo"
             on:click="{() => {

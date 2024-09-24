@@ -158,7 +158,7 @@
             quarter,
         );
         let maxBeat = Math.ceil((d3.max(quantized) / 4) * 4) + 1;
-        console.log(quantized, maxBeat);
+        // console.log(quantized, maxBeat);
         // plot
         const plot = Plot.plot({
             width,
@@ -395,7 +395,7 @@
             callback="{draw}"
         />
         <label title="Set the tempo increase between practice runs (in BPM)">
-            tempo increase
+            step
             <input
                 type="number"
                 bind:value="{tempoIncrease}"

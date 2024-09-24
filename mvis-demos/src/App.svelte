@@ -84,7 +84,7 @@
   }
   // log data usage
   // console.log('localStorage space', localStorageReport());
-  console.log('usage data', localStorageGetUsageData());
+  // console.log('usage data', localStorageGetUsageData());
 
   // tags
   const allInputs = new Set(APPS.flatMap((d) => d.input).sort());
@@ -110,7 +110,7 @@
       currentInputs.has(d.input),
   );
   // apply sorting
-  let sortAppsBy = 'title';
+  let sortAppsBy = localStorage.getItem('display-app-sorting') ?? 'title';
   $: sortedApps = filteredApps.sort((a, b) => {
     if (sortAppsBy === 'title') {
       return a.title < b.title ? -1 : 1;
@@ -209,7 +209,12 @@
         <!-- sort -->
         <div>
           <h2>sorting and layout</h2>
-          <select bind:value="{sortAppsBy}">
+          <select
+            bind:value="{sortAppsBy}"
+            on:change="{(e) => {
+              localStorage.setItem('display-app-sorting', e.target.value);
+            }}"
+          >
             <option value="title">title (A-Z)</option>
             <option value="used">most used</option>
             <option value="recent">recently used</option>

@@ -30,7 +30,6 @@
 
     // domain knowledge
     // see https://muted.io/intervals-chart/
-    // TODO: go up to 24?
     const intervalNames = [
         { semitones: 0, name: 'Unison', short: 'P1', type: 'perfect' },
         { semitones: 1, name: 'Minor 2nd', short: 'm2', type: 'minor' },
@@ -53,7 +52,6 @@
             number: e.note.number,
             velocity: e.rawVelocity,
             time: e.timestamp,
-            // channel: e.message.channel,
         };
         notes.push(note);
         draw();

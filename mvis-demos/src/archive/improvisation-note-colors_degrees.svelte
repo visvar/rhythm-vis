@@ -92,7 +92,6 @@
             'lightgreen',
         ];
         const scale1 = Scale.get(`${root} major`).notes;
-        console.log(scale1);
         const colorMap = Midi.NOTE_NAMES_FLAT.map((note) => {
             const indexInScale = scale1.indexOf(note);
             if (indexInScale === -1) {

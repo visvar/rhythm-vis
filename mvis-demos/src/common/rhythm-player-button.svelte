@@ -32,8 +32,7 @@
 <button
     title="Play the current rhythm grid"
     on:click="{() => {
-        console.log(noteObjs);
-
+        // console.log(noteObjs);
         player.toggle(noteObjs, startAt, endAt, speed, loop);
     }}"
 >
