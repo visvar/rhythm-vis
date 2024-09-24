@@ -6,8 +6,7 @@
     import MidiInput from './common/midi-input.svelte';
     import { detectChords } from '../lib/chords';
     import ResetNotesButton from './common/reset-notes-button.svelte';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ImportExportButton from './common/import-export-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import HistoryButton from './common/history-button.svelte';
     import example from '../example-recordings/chord-arpeggio-timing.json';
@@ -271,8 +270,7 @@
     <div class="control">
         <MetronomeButton {tempo} accent="{4}" />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} {getExportData} demoId="{demoInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />

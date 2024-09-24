@@ -11,8 +11,7 @@
     import MetronomeButton from './common/metronome-button.svelte';
     import example from '../example-recordings/tempo-drift.json';
     import { localStorageAddRecording } from '../lib/localstorage';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ImportExportButton from './common/import-export-button.svelte';
     import HistoryButton from './common/history-button.svelte';
     import TouchInput from './common/touch-input.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
@@ -266,8 +265,7 @@
             showBeepCountInput
         />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} {getExportData} demoId="{demoInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />

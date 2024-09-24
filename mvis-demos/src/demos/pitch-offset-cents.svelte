@@ -5,8 +5,7 @@
     import { PitchDetector } from 'pitchy';
     import { Midi, Note } from '@tonaljs/tonal';
     import ResetNotesButton from './common/reset-notes-button.svelte';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ImportExportButton from './common/import-export-button.svelte';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
     import example from '../example-recordings/pitch-offset-cents.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
@@ -252,9 +251,8 @@
                 firstTimeStamp = performance.now();
                 draw();
             }}"
-        />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        />>
+        <ImportExportButton {loadData} {getExportData} demoId="{demoInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <!-- <HistoryButton demoId="{demoInfo.id}" {loadData} /> -->
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />

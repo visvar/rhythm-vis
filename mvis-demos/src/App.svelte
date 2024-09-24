@@ -4,8 +4,6 @@
   import { getNumberOfDaysPassed, setHasAny, updSet } from './lib/lib';
   import { localStorageGetUsageData } from './lib/localstorage';
   import { audioIcon, midiIcon } from './lib/icons';
-  import * as d3 from 'd3';
-  import { SKILL_TREE_LEAFS } from './lib/skills';
   // side bar for skill filtering
   import SkillTree from './SkillTree.svelte';
   // tools etc
@@ -380,7 +378,7 @@
   {:else if currentApp === 'settings'}
     <Settings />
   {:else if currentApp === 'overview'}
-    <Overview apps="{APPS}" {allInstruments} {allData} {allPatterns} />
+    <Overview apps="{APPS}" {allData} {allPatterns} />
   {:else if currentApp === 'help'}
     <Help />
   {:else if currentApp === 'welcome'}
@@ -414,7 +412,7 @@
     >
       version {version} | overview
     </button>
-    <ScreenshotButton bind:currentApp />
+    <!-- <ScreenshotButton bind:currentApp /> -->
   </div>
 </main>
 <!-- shortcut for app menu -->

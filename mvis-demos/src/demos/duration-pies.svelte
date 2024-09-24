@@ -5,8 +5,7 @@
     import { Canvas, Utils } from 'musicvis-lib';
     import NoteCountInput from './common/note-count-input.svelte';
     import MidiInput from './common/midi-input.svelte';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ImportExportButton from './common/import-export-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import HistoryButton from './common/history-button.svelte';
     import MetronomeButton from './common/metronome-button.svelte';
@@ -15,13 +14,14 @@
     import example from '../example-recordings/duration-pies.json';
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import TouchInput from './common/touch-input.svelte';
-    import { noteHalf, noteQuarter, noteWhole } from '../lib/icons';
+    import { noteHalf, noteQuarter, noteEighth, noteWhole } from '../lib/icons';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import ToggleButton from './common/toggle-button.svelte';
     import { COLORS } from '../lib/colors';
     import RatingButton from './common/rating-button.svelte';
     import ShareConfigButton from './common/share-config-button.svelte';
+    import UndoRedoButton from './common/undo-redo-button.svelte';
     import PageResizeHandler from './common/page-resize-handler.svelte';
 
     /**
@@ -36,6 +36,7 @@
     // settings
     let tempo = 60;
     let pastNoteCount = 4;
+    let usePies = true;
     let showClosestDuration = false;
     // data
     let isKeyDown = false;
@@ -67,7 +68,6 @@
             }
         }
         notes = [...notes, note];
-        console.log(note);
         openNoteMap.set(e.note.number, note);
         draw();
     };
@@ -89,7 +89,10 @@
         draw();
     };
 
-    const draw = () => {
+    /**
+     * Pie-chart-like encoding
+     */
+    const drawPies = () => {
         const cy = (height - 50) / 2;
         const xStep = (width - 30) / pastNoteCount;
         const r = Math.min(xStep * 0.4, height * 0.3);
@@ -225,12 +228,135 @@
     };
 
     /**
+     * Bar-chart-like encoding
+     */
+    const drawBars = () => {
+        const xStep = (width - 10) / pastNoteCount;
+        const w = xStep * 0.8;
+        const h = height * 0.7;
+        const top = 10;
+        const bottom = top + h;
+        const ctx = canvas.getContext('2d');
+        // scale to DPR
+        // Get the DPR and size of the canvas
+        const dpr = window.devicePixelRatio;
+        const rect = canvas.getBoundingClientRect();
+        // Set the "actual" size of the canvas
+        canvas.width = rect.width * dpr;
+        canvas.height = rect.height * dpr;
+        // Scale the context to ensure correct drawing operations
+        ctx.scale(dpr, dpr);
+        // Set the "drawn" size of the canvas
+        canvas.style.width = `${rect.width}px`;
+        canvas.style.height = `${rect.height}px`;
+        // fade-out old data
+        ctx.clearRect(0, 0, width, height);
+        ctx.textBaseline = 'middle';
+
+        for (const [index, note] of notes.slice(-pastNoteCount).entries()) {
+            // one pie chart per note
+            const x = xStep * (index + 0.1) + 10;
+            // data part
+            ctx.fillStyle = COLORS.accent;
+            const ratio = Math.min(note.duration / wholeDuration, 1);
+            const filled = h * ratio;
+            ctx.fillRect(x, bottom - filled, w, filled);
+            // get closest duration
+            let bestFitDuration = null;
+            if (note.duration > 0) {
+                const bestFit = d3.minIndex(durations, (d) =>
+                    Math.abs(note.duration - d.seconds),
+                );
+                bestFitDuration = durations[bestFit];
+                if (showClosestDuration) {
+                    ctx.fillStyle = COLORS.accentDark;
+                    const ratio = Math.min(
+                        bestFitDuration.seconds / wholeDuration,
+                        1,
+                    );
+                    const filled = h * ratio;
+                    ctx.fillRect(x, bottom - filled, w / 2, filled);
+                }
+            }
+            //  if longer than a whole, show in red how much too long
+            if (note.duration > wholeDuration) {
+                ctx.fillStyle = COLORS.wrong;
+                const ratio2 = Math.min(
+                    (note.duration - wholeDuration) / wholeDuration,
+                    1,
+                );
+                const filled2 = h * ratio2;
+                ctx.fillRect(x, bottom - filled2, w, filled2);
+            }
+            // frame
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#aaa';
+            ctx.fillStyle = '#aaa';
+            ctx.strokeRect(x, top, w, h);
+            // grid
+            ctx.fillRect(x, top + h / 2, w * 0.4, 1);
+            for (const g of d3.range(top, top + h, h / 4)) {
+                ctx.fillRect(x, g, w * 0.2, 1);
+            }
+            for (const g of d3.range(top, top + h, h / 8)) {
+                ctx.fillRect(x, g, w * 0.1, 1);
+            }
+            // text
+            ctx.font = '16px "Noto Music", sans-serif';
+            ctx.fillStyle = '#666';
+            if (note.duration > 0) {
+                const bestFit = d3.minIndex(durations, (d) =>
+                    Math.abs(note.duration - d.seconds),
+                );
+                const bestFitDuration = durations[bestFit];
+                ctx.textAlign = 'center';
+                const cx = x + w / 2;
+                ctx.fillText(
+                    `closest: ${bestFitDuration.symbol}`,
+                    cx,
+                    height - 50,
+                );
+                const percent = (note.duration / bestFitDuration.seconds) * 100;
+                ctx.fillText(`${percent.toFixed()}%`, cx, height - 30);
+                let rating = '';
+                if (percent < 80) {
+                    rating = 'too short';
+                } else if (percent < 90) {
+                    rating = 'short';
+                } else if (percent < 110) {
+                    rating = 'good!';
+                } else if (percent < 120) {
+                    rating = 'long';
+                } else {
+                    rating = 'too long';
+                }
+                ctx.fillText(`${rating}`, cx, height - 10);
+            }
+            // labels
+            ctx.font = '20px "Noto Music", sans-serif';
+            if (index === 0) {
+                ctx.textAlign = 'right';
+                ctx.fillText(noteWhole, x - 5, top);
+                ctx.fillText(noteHalf + '.', x - 5, top + h * 0.25);
+                ctx.fillText(noteHalf, x - 5, top + h * 0.5);
+                ctx.fillText(noteQuarter, x - 5, top + h * 0.75);
+                ctx.fillText(noteEighth, x - 5, top + h * 0.875);
+            }
+        }
+    };
+
+    const draw = () => {
+        usePies ? drawPies() : drawBars();
+    };
+
+    /**
      * Used for exporting and for automatics saving
      */
     const getExportData = () => {
         return {
             tempo,
             pastNoteCount,
+            usePies,
             showClosestDuration,
             // data
             notes,
@@ -244,6 +370,7 @@
         saveToStorage();
         tempo = json.tempo;
         pastNoteCount = json.pastNoteCount;
+        usePies = json.usePies ?? true;
         showClosestDuration = json.showClosestDuration;
         // data
         notes = json.notes;
@@ -270,7 +397,7 @@
         as a pie chart, that shows how much of a whole note you played. For
         example, if you tried to play a half note, the pie chart should be half
         full. If you play longer than a whole note, the addtional time will be
-        shown in red.
+        shown in red. You can also switch to a bar ('test tube') encoding.
     </p>
     <ExerciseDrawer>
         <p>
@@ -291,6 +418,12 @@
             max="{12}"
         />
         <ToggleButton
+            bind:checked="{usePies}"
+            callback="{draw}"
+            label="pies"
+            title="Toggles between pie and bar chart encoding"
+        />
+        <ToggleButton
             bind:checked="{showClosestDuration}"
             callback="{draw}"
             label="show closest duration"
@@ -305,6 +438,7 @@
     </div>
     <div class="control">
         <MetronomeButton {tempo} accent="{4}" />
+        <UndoRedoButton bind:data="{notes}" callback="{draw}" />
         <ResetNotesButton
             {saveToStorage}
             bind:notes
@@ -313,8 +447,7 @@
                 draw();
             }}"
         />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} {getExportData} demoId="{demoInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />

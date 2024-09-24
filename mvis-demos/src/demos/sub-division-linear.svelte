@@ -12,8 +12,7 @@
     import PcKeyboardInput from './common/pc-keyboard-input.svelte';
     import MidiInput from './common/midi-input.svelte';
     import example from '../example-recordings/sub-division-linear.json';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ImportExportButton from './common/import-export-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import HistoryButton from './common/history-button.svelte';
     import TouchInput from './common/touch-input.svelte';
@@ -367,8 +366,7 @@
         <MetronomeButton {tempo} accent="{+grid.split(':')[0]}" />
         <UndoRedoButton bind:data="{notes}" callback="{draw}" />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} {getExportData} demoId="{demoInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />

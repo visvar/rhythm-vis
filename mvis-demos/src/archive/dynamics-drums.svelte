@@ -5,7 +5,7 @@
     import ResetNotesButton from '../demos/common/reset-notes-button.svelte';
     import MidiInput from '../demos/common/midi-input.svelte';
     import ExportButton2 from '../demos/common/export-button2.svelte';
-    import ImportButton2 from '../demos/common/import-button2.svelte';
+    import ImportExportButton from '../demos/common/import-export-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import { VELOCITIES_LOGIC, VELOCITIES_MEANING } from '../lib/music';
     import HistoryButton from '../demos/common/history-button.svelte';
@@ -187,7 +187,7 @@
     <div class="control">
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
     </div>

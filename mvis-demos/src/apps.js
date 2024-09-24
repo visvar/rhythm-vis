@@ -11,7 +11,6 @@ import ImprovisationNoteColors from './demos/improvisation-note-colors.svelte'
 import ImprovisationScaleDegrees from './demos/improvisation-scale-degrees.svelte'
 import ImprovisationScaleDegreesBar from './demos/improvisation-scale-degrees-bar.svelte'
 import KeyboardHistogram from './demos/keyboard-histogram.svelte'
-import PitchBend from './demos/pitch-bend.svelte'
 import PitchBendAudio from './demos/pitch-bend-audio.svelte'
 import PitchOffsetCents from './demos/pitch-offset-cents.svelte'
 import RhythmSheetMusic from './demos/rhythm-sheet-music.svelte'
@@ -26,7 +25,6 @@ import SubDivisionDrums from './demos/sub-division-drums.svelte'
 import SubDivisionHistory from './demos/sub-division-history.svelte'
 import PitchOffsetCentsNeedle from './demos/pitch-offset-cents-needle.svelte'
 import DurationPies from './demos/duration-pies.svelte'
-import DurationBars from './demos/duration-bars.svelte'
 import TempoChange from './demos/tempo-change.svelte'
 
 /**
@@ -101,19 +99,6 @@ export const APPS = [
   //   component: DynamicsDrums
   // },
   {
-    id: 'duration-bars',
-    title: 'Duration Bars',
-    description: 'Check how well you control the duration of notes.',
-    input: 'MIDI',
-    instruments: ['guitar/bass', 'keyboard', 'pc-key', 'touch'],
-    data: ['order', 'duration/ioi'],
-    skills: ['duration'],
-    patterns: ['duration as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units'],
-    timeScale: ['a single note', 'a few notes'],
-    difficulty: ['beginner'],
-    component: DurationBars
-  },
-  {
     id: 'duration-pies',
     title: 'Duration Pies',
     description: 'Check how well you control the duration of notes.',
@@ -121,7 +106,7 @@ export const APPS = [
     instruments: ['guitar/bass', 'keyboard', 'pc-key', 'touch'],
     data: ['order', 'duration/ioi'],
     skills: ['duration'],
-    patterns: ['duration as pie', 'baselines as angle', 'time is circular', 'time encoded ciruclar', 'update on note', 'musical units'],
+    patterns: ['duration as bar', 'duration as pie', 'baselines as angle', 'time is circular', 'time encoded circular', 'time encoded linearly', 'update on note', 'musical units'],
     timeScale: ['a single note', 'a few notes'],
     difficulty: ['beginner'],
     component: DurationPies
@@ -421,20 +406,19 @@ export const APPS = [
     difficulty: ['beginner', 'intermediate', 'advanced'],
     component: TempoDrift
   },
-  // TODO: re-add
-  // {
-  //   id: 'tempo-change',
-  //   title: 'Tempo Change',
-  //   description: 'See if you can change the tempo as intended.',
-  //   input: 'MIDI',
-  //   instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
-  //   data: ['onset/time'],
-  //   skills: ['tempo-changing', 'tempo-keeping'],
-  //   patterns: ['baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
-  //   timeScale: ['a few bars', 'a full song'],
-  //   difficulty: ['intermediate', 'advanced'],
-  //   component: TempoChange
-  // },
+  {
+    id: 'tempo-change',
+    title: 'Tempo Change',
+    description: 'See if you can change the tempo as intended.',
+    input: 'MIDI',
+    instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
+    data: ['onset/time'],
+    skills: ['tempo-changing', 'tempo-keeping'],
+    patterns: ['baselines as grid', 'time is linear', 'time encoded linearly', 'update real-time'],
+    timeScale: ['a few bars', 'a full song'],
+    difficulty: ['intermediate', 'advanced'],
+    component: TempoChange
+  },
   {
     id: 'two-handed-timing',
     title: 'Two-Handed Timing',

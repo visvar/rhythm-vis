@@ -8,8 +8,7 @@
     import MidiInput from './common/midi-input.svelte';
     import { detectChords } from '../lib/chords';
     import ResetNotesButton from './common/reset-notes-button.svelte';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ImportExportButton from './common/import-export-button.svelte';
     import {
         localStorageAddRecording,
         localStorageGetSetting,
@@ -321,8 +320,7 @@
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} {getExportData} demoId="{demoInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />

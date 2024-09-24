@@ -8,7 +8,7 @@
     import NoteCountInput from '../demos/common/note-count-input.svelte';
     import MidiInput from '../demos/common/midi-input.svelte';
     import ExportButton2 from '../demos/common/export-button2.svelte';
-    import ImportButton2 from '../demos/common/import-button2.svelte';
+    import ImportExportButton from '../demos/common/import-export-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import HistoryButton from '../demos/common/history-button.svelte';
 
@@ -223,7 +223,7 @@
             reset
         </button>
         <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} />
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} {noteOff} {controlChange} />

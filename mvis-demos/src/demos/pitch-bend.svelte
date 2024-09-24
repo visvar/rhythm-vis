@@ -4,8 +4,7 @@
     import { throttle } from 'underscore';
     import ResetNotesButton from './common/reset-notes-button.svelte';
     import MidiInput from './common/midi-input.svelte';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ImportExportButton from './common/import-export-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import HistoryButton from './common/history-button.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
@@ -152,8 +151,7 @@
             {saveToStorage}
             callback="{draw}"
         />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} {getExportData} demoId="{demoInfo.id}" />
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />
     </div>

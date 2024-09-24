@@ -13,8 +13,7 @@
     import { clamp } from '../lib/lib';
     import RhythmPlayerButton from './common/rhythm-player-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
-    import ExportButton2 from './common/export-button2.svelte';
-    import ImportButton2 from './common/import-button2.svelte';
+    import ImportExportButton from './common/import-export-button.svelte';
     import HistoryButton from './common/history-button.svelte';
     import example from '../example-recordings/two-handed-timing.json';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
@@ -357,8 +356,7 @@
             notes="{getRhythmNotes(gridLeft, gridRight, tempo)}"
         />
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
-        <ImportButton2 {loadData} />
+        <ImportExportButton {loadData} {getExportData} demoId="{demoInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton demoId="{demoInfo.id}" {loadData} />
         <ShareConfigButton {getExportData} {loadData} appId="{demoInfo.id}" />

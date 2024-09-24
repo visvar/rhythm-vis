@@ -24,7 +24,7 @@
                 const dates = usage.demoClicks[key];
                 appUsage.push({
                     id: key,
-                    dates: dates.map((d) => new Date(d)),
+                    dates: dates.map((d) => new Date(d.substring(0, 10))),
                     useCount: dates.length,
                     // only use day
                     // dates: element.map((d) => new Date(d.slice(0, 10))),

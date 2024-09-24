@@ -13,7 +13,6 @@
         localSorageGetRecordings,
         localStorageAddRecording,
     } from '../lib/localstorage';
-    import ExportButton2 from './common/export-button2.svelte';
     import TouchInput from './common/touch-input.svelte';
     import ExerciseDrawer from './common/exercise-drawer.svelte';
     import { COLORS } from '../lib/colors';
@@ -410,7 +409,7 @@
                 drawLoaded();
             }}"
         />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <!-- <ExportButton2 {getExportData} demoId="{demoInfo.id}" /> -->
         <HistoryButton demoId="{demoInfo.id}" loadData="{() => {}}" />
     </div>
     <div class="visualization">
