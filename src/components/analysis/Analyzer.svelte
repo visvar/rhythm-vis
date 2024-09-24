@@ -8,16 +8,16 @@
   import AggregatedPlot from './AggregatedPlot.svelte';
   import NoteDurationHistogramPlot from './NoteDurationHistogramPlot.svelte';
   import { group, max, range, some } from 'd3';
-  import SheetMusic from '../common/SheetMusic.svelte';
-  import PianoRoll from '../common/PianoRoll.svelte';
+  import SheetMusic from '.../common/SheetMusic.svelte';
+  import PianoRoll from '.../common/PianoRoll.svelte';
   import { readJsonFile } from '../../lib/files';
   import Filter from './Filter.svelte';
-  import MultiSelect from '../common/MultiSelect.svelte';
+  import MultiSelect from '.../common/MultiSelect.svelte';
   import GroundTruthPlot from './GroundTruthPlot.svelte';
   import AudioPlayer2 from './AudioPlayer2.svelte';
   import DensityPlot from './DensityPlot.svelte';
   import DensityPlotSeparate from './DensityPlotSeparate.svelte';
-  import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
+  import ExerciseNotepad from '.../common/ExerciseNotepad.svelte';
   import TempoEstimation from './TempoEstimation.svelte';
   import ScatterPlot from './ScatterPlot.svelte';
   import NoteDistanceBars from './NoteDistanceBars.svelte';
@@ -210,7 +210,7 @@
   const deleteCurrentRecording = async () => {
     if (
       confirm(
-        `Are you sure you want to delete this recording?:\n\n${currentRecName}\n\nThis cannot be undone!`
+        `Are you sure you want to delete this recording?:\n\n${currentRecName}\n\nThis cannot be undone!`,
       )
     ) {
       const files = recordings.get(currentRecName);
@@ -254,7 +254,7 @@
         a.substring(a.lastIndexOf('_'), a.lastIndexOf('-') + 2) <
         b.substring(b.lastIndexOf('_'), b.lastIndexOf('-') + 2)
           ? 1
-          : -1
+          : -1,
       );
     }
     return [...recordingNames];
@@ -307,20 +307,13 @@
   <MultiSelect options="{views}" bind:values="{currentViews}" label="Views:" />
 
   {#if currentViews.has('Exercise')}
-    <SheetMusic
-      exercise="{exercise}"
-      exerciseXml="{exerciseXml}"
-      showDownloadButton="{false}"
-    />
+    <SheetMusic {exercise} {exerciseXml} showDownloadButton="{false}" />
   {/if}
   {#if currentViews.has('Notepad')}
-    <ExerciseNotepad
-      dataDirectoryHandle="{dataDirectoryHandle}"
-      fileName="{currentRecName}"
-    />
+    <ExerciseNotepad {dataDirectoryHandle} fileName="{currentRecName}" />
   {/if}
   {#if currentViews.has('Filter')}
-    <Filter unfilteredNotes="{unfilteredNotes}" bind:notes="{notes}" />
+    <Filter {unfilteredNotes} bind:notes />
   {/if}
 
   <label>
@@ -401,7 +394,7 @@
     thickness
     <select bind:value="{noteThicknessMode}">
       {#each ['none', 'velocity', 'duration'] as value}
-        <option value="{value}">{value}</option>
+        <option {value}>{value}</option>
       {/each}
     </select>
   </label>
@@ -422,145 +415,145 @@
   </label>
 
   <AudioPlayer2
-    width="{width}"
-    audio="{audio}"
-    bind:currentTimeInBeats="{currentTimeInBeats}"
-    timeAlignment="{timeAlignment}"
-    selectionEndTime="{selectionEndTime}"
-    spb="{spb}"
+    {width}
+    {audio}
+    bind:currentTimeInBeats
+    {timeAlignment}
+    {selectionEndTime}
+    {spb}
   />
 
   {#if currentRecName}
     {#if currentViews.has('Histogram')}
       <HistogramPlot
-        width="{width}"
+        {width}
         values="{onsetsInBeats}"
-        beats="{beats}"
-        contextBeats="{contextBeats}"
+        {beats}
+        {contextBeats}
         xLabel="beats"
       />
     {/if}
     {#if currentViews.has('Ticks')}
       <TickPlot
-        width="{width}"
+        {width}
         values="{onsetsInBeats}"
-        beats="{beats}"
-        contextBeats="{contextBeats}"
+        {beats}
+        {contextBeats}
         xLabel="beats"
       />
     {/if}
     {#if currentViews.has('Density')}
       <DensityPlot
-        width="{width}"
+        {width}
         values="{onsetsInBeats}"
-        beats="{beats}"
-        contextBeats="{contextBeats}"
+        {beats}
+        {contextBeats}
         xLabel="beats"
       />
     {/if}
     {#if currentViews.has('Ground truth')}
       <GroundTruthPlot
-        width="{width}"
+        {width}
         notes="{exerciseNotes}"
         onsetsInBeats="{exerciseNoteOnsetsInBeats}"
-        beats="{beats}"
-        contextBeats="{contextBeats}"
-        noteColorMode="{noteColorMode}"
-        xTicks="{xTicks}"
+        {beats}
+        {contextBeats}
+        {noteColorMode}
+        {xTicks}
         currentTimeInBeats="{currentTimeInBeats % beats}"
       />
     {/if}
     {#if currentViews.has('Main')}
       <MainPlot
-        width="{width}"
-        notes="{notes}"
-        onsetsInBeats="{onsetsInBeats}"
-        exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
-        beats="{beats}"
-        contextBeats="{contextBeats}"
-        noteColorMode="{noteColorMode}"
+        {width}
+        {notes}
+        {onsetsInBeats}
+        {exerciseNoteOnsetsInBeats}
+        {beats}
+        {contextBeats}
+        {noteColorMode}
         thicknessMode="{noteThicknessMode}"
-        xTicks="{xTicks}"
-        bind:currentTimeInBeats="{currentTimeInBeats}"
-        bind:selectionStartTime="{selectionStartTime}"
-        bind:selectionEndTime="{selectionEndTime}"
+        {xTicks}
+        bind:currentTimeInBeats
+        bind:selectionStartTime
+        bind:selectionEndTime
       />
     {/if}
 
     {#if currentViews.has('Note Distance')}
       <NoteDistanceBars
-        width="{width}"
+        {width}
         height="{300}"
-        notes="{notes}"
-        onsetsInBeats="{onsetsInBeats}"
-        noteColorMode="{noteColorMode}"
-        bind:currentTimeInBeats="{currentTimeInBeats}"
-        bind:selectionStartTime="{selectionStartTime}"
-        bind:selectionEndTime="{selectionEndTime}"
+        {notes}
+        {onsetsInBeats}
+        {noteColorMode}
+        bind:currentTimeInBeats
+        bind:selectionStartTime
+        bind:selectionEndTime
       />
     {/if}
 
     {#if currentViews.has('Scatterplot')}
       <ScatterPlot
-        width="{width}"
-        notes="{notes}"
-        onsetsInBeats="{onsetsInBeats}"
-        exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
-        beats="{beats}"
-        noteColorMode="{noteColorMode}"
+        {width}
+        {notes}
+        {onsetsInBeats}
+        {exerciseNoteOnsetsInBeats}
+        {beats}
+        {noteColorMode}
         thicknessMode="{noteThicknessMode}"
-        xTicks="{xTicks}"
-        bind:currentTimeInBeats="{currentTimeInBeats}"
-        bind:selectionStartTime="{selectionStartTime}"
-        bind:selectionEndTime="{selectionEndTime}"
+        {xTicks}
+        bind:currentTimeInBeats
+        bind:selectionStartTime
+        bind:selectionEndTime
       />
     {/if}
 
     {#if currentViews.has('Aggregated')}
       <AggregatedPlot
-        onsetsInBeats="{onsetsInBeats}"
-        beats="{beats}"
-        width="{width}"
-        xTicks="{xTicks}"
-        exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
+        {onsetsInBeats}
+        {beats}
+        {width}
+        {xTicks}
+        {exerciseNoteOnsetsInBeats}
       />
     {/if}
 
     {#if currentViews.has('Density Separate')}
       <DensityPlotSeparate
-        width="{width}"
-        notes="{notes}"
-        onsetsInBeats="{onsetsInBeats}"
-        beats="{beats}"
-        xTicks="{xTicks}"
-        exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
+        {width}
+        {notes}
+        {onsetsInBeats}
+        {beats}
+        {xTicks}
+        {exerciseNoteOnsetsInBeats}
       />
     {/if}
 
     {#if currentViews.has('Time diff.')}
-      <DeltaTimeHistogramPlot width="{width}" onsetsInBeats="{onsetsInBeats}" />
+      <DeltaTimeHistogramPlot {width} {onsetsInBeats} />
     {/if}
 
     {#if currentViews.has('Durations')}
-      <NoteDurationHistogramPlot width="{width}" notes="{notes}" />
+      <NoteDurationHistogramPlot {width} {notes} />
     {/if}
 
     {#if currentViews.has('Piano Roll')}
       <PianoRoll
-        notes="{notes}"
+        {notes}
         metronomeClicks="{metroClicks}"
         metronomeAccents="{metroAccents}"
-        width="{width}"
+        {width}
       />
     {/if}
 
     {#if currentViews.has('Tempo Estimation')}
       <TempoEstimation
-        notes="{notes}"
-        bpm="{bpm}"
+        {notes}
+        {bpm}
         xLabel="estimated BPM"
         bandwidth="{0.5}"
-        width="{width}"
+        {width}
         height="{80}"
       />
     {/if}

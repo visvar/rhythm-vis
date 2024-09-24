@@ -10,12 +10,12 @@
   import Tools from './tools/_tools.svelte';
   import Settings from './Settings.svelte';
   import Overview from './Overview.svelte';
+  import Help from './Help.svelte';
+  import Welcome from './Welcome.svelte';
   // APPS
   import { APPS } from './apps';
-  import Help from './Help.svelte';
-  import PcKeyboardInput from './demos/common/pc-keyboard-input.svelte';
-  import Welcome from './Welcome.svelte';
-  import ScreenshotButton from './demos/common/screenshot-button.svelte';
+  import PcKeyboardInput from './common/pc-keyboard-input.svelte';
+  import ScreenshotButton from './common/screenshot-button.svelte';
 
   let currentApp = null;
 
@@ -40,7 +40,7 @@
     }
   };
 
-  // warn user to not quit window before leaving demo
+  // warn user to not quit window before leaving app
   window.onbeforeunload = function () {
     if (
       currentApp &&
@@ -51,7 +51,7 @@
     }
   };
 
-  // track how often and when each demo is used
+  // track how often and when each app is used
   let appUsageCount = new Map();
   let appUsageRecent = new Map();
   $: {
@@ -61,10 +61,10 @@
       usage = JSON.parse(usage);
     } else {
       usage = {
-        demoClicks: {},
+        appClicks: {},
       };
     }
-    const appClicks = usage.demoClicks;
+    const appClicks = usage.appClicks;
     if (currentApp) {
       const thisAppUsage = appClicks[currentApp.id] ?? [];
       thisAppUsage.push(new Date().toISOString());
@@ -194,7 +194,7 @@
   {#if usePw && password !== corrP}
     <input type="password" placeholder="password" bind:value="{password}" />
   {:else if !currentApp}
-    <div class="grid-filter-demo">
+    <div class="grid-filter-app">
       <!-- filter -->
       <div class="filter">
         <!-- search -->
@@ -397,12 +397,12 @@
       }}"
     />
   {:else}
-    <!-- show demo by importing dynamically -->
-    <svelte:component this="{currentApp.component}" demoInfo="{currentApp}" />
+    <!-- show app by importing dynamically -->
+    <svelte:component this="{currentApp.component}" appInfo="{currentApp}" />
   {/if}
   <div class="version-number">
     <span> </span>
-    <!-- DemoOverview page button -->
+    <!-- appOverview page button -->
     <button
       on:click="{() => {
         currentApp = 'overview';

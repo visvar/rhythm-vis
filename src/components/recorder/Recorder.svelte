@@ -4,14 +4,14 @@
   import { onMount, onDestroy } from 'svelte';
   import Metronome from '../../lib/Metronome.js';
   import AudioPlayer from './AudioPlayer.svelte';
-  import SheetMusic from '../common/SheetMusic.svelte';
-  import PianoRoll from '../common/PianoRoll.svelte';
+  import SheetMusic from '.../common/SheetMusic.svelte';
+  import PianoRoll from '.../common/PianoRoll.svelte';
   import { WebMidi } from 'webmidi';
   import * as d3 from 'd3';
   import { group, some } from 'd3';
   import { fileExists } from '../../lib/files';
   import ExerciseAudio from './ExerciseAudio.svelte';
-  import ExerciseNotepad from '../common/ExerciseNotepad.svelte';
+  import ExerciseNotepad from '.../common/ExerciseNotepad.svelte';
 
   export let dataDirectoryHandle = null;
   export let exercises;
@@ -98,7 +98,7 @@
     metro.start(
       bpm / beep,
       accent,
-      beepLimit === 'infinite' ? Infinity : +beepLimit
+      beepLimit === 'infinite' ? Infinity : +beepLimit,
     );
     console.log('start', recordingStartTime);
   };
@@ -112,14 +112,14 @@
       noteOffs,
       (d) => d.port.id,
       (d) => d.message.channel,
-      (d) => d.note.number
+      (d) => d.note.number,
     );
     // metronome clicks
     metronomeClicks = metronomeClicks.map(
-      (d) => (d - recordingStartTime) / 1000
+      (d) => (d - recordingStartTime) / 1000,
     );
     metronomeAccents = metronomeAccents.map(
-      (d) => (d - recordingStartTime) / 1000
+      (d) => (d - recordingStartTime) / 1000,
     );
     // notes
     notes = noteOns.map((noteOn) => {
@@ -130,7 +130,7 @@
           ?.get(noteOn.message.channel)
           ?.get(noteOn.note.number) ?? [];
       let noteOff = noteOffCandidates.filter(
-        (d) => d.timestamp >= noteOn.timestamp
+        (d) => d.timestamp >= noteOn.timestamp,
       );
       const end =
         noteOff.length === 0 ? recordingStopTime : noteOff[0].timestamp;
@@ -244,8 +244,8 @@
     </label>
   </div>
 
-  <SheetMusic exercise="{exercise}" />
-  <ExerciseAudio exercise="{exercise}" bpm="{bpm}" />
+  <SheetMusic {exercise} />
+  <ExerciseAudio {exercise} {bpm} />
 
   <div bind:this="{metroDiv}" class="metronome">
     Metronome:
@@ -299,27 +299,19 @@
   {#if lastRecFileName}
     <div>
       Keep a text note for the last saved recording?
-      <ExerciseNotepad
-        dataDirectoryHandle="{dataDirectoryHandle}"
-        fileName="{lastRecFileName}"
-      />
+      <ExerciseNotepad {dataDirectoryHandle} fileName="{lastRecFileName}" />
     </div>
   {/if}
 
   <div>
-    <AudioPlayer
-      blob="{audio}"
-      width="{width}"
-      height="{30}"
-      bind:pcm="{pcm}"
-    />
+    <AudioPlayer blob="{audio}" {width} height="{30}" bind:pcm />
     {#if notes?.length > 0 || audio}
       <PianoRoll
-        notes="{notes}"
-        metronomeClicks="{metronomeClicks}"
-        metronomeAccents="{metronomeAccents}"
-        width="{width}"
-        pcm="{pcm}"
+        {notes}
+        {metronomeClicks}
+        {metronomeAccents}
+        {width}
+        {pcm}
         audioDuration="{(recordingStopTime - recordingStartTime) / 1000}"
       />
     {/if}

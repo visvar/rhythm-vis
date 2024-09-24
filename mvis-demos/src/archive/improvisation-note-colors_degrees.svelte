@@ -5,12 +5,12 @@
     import { Scale } from '@tonaljs/tonal';
     import { clamp } from '../lib/lib';
     import { Midi } from 'musicvis-lib';
-    import NoteCountInput from '../demos/common/note-count-input.svelte';
-    import MidiInput from '../demos/common/midi-input.svelte';
-    import ExportButton2 from '../demos/common/export-button2.svelte';
-    import ImportExportButton from '../demos/common/import-export-button.svelte';
+    import NoteCountInput from '../common/note-count-input.svelte';
+    import MidiInput from '../common/midi-input.svelte';
+    import ExportButton2 from '../common/export-button2.svelte';
+    import ImportExportButton from '../common/import-export-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
-    import HistoryButton from '../demos/common/history-button.svelte';
+    import HistoryButton from '../common/history-button.svelte';
 
     /**
      * TODO: support minor, see https://en.wikipedia.org/wiki/Degree_(music)
@@ -18,9 +18,9 @@
      */
 
     /**
-     * contains the demo meta information defined in App.js
+     * contains the app meta information defined in App.js
      */
-    export let demoInfo;
+    export let appInfo;
 
     let width = 1200;
     let height = 400;
@@ -182,7 +182,7 @@
 
     const saveToStorage = () => {
         if (notes.length > 0) {
-            localStorageAddRecording(demoInfo.id, getExportData());
+            localStorageAddRecording(appInfo.id, getExportData());
         }
     };
 
@@ -190,7 +190,7 @@
 </script>
 
 <main class="app">
-    <h2>{demoInfo.title}</h2>
+    <h2>{appInfo.title}</h2>
     <p class="explanation">
         Improvise in the major scale. Notes that you play are shown as bars. The
         color shows which scale degree a note belongs to. The bars' height
@@ -222,9 +222,9 @@
         >
             reset
         </button>
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ExportButton2 {getExportData} appId="{appInfo.id}" />
         <ImportExportButton {loadData} />
-        <HistoryButton demoId="{demoInfo.id}" {loadData} />
+        <HistoryButton appId="{appInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} {noteOff} {controlChange} />
 </main>

@@ -2,22 +2,22 @@
     import { onDestroy, onMount } from 'svelte';
     import * as Plot from '@observablehq/plot';
     import { toggleOffIcon, toggleOnIcon } from '../lib/icons';
-    import ResetNotesButton from '../demos/common/reset-notes-button.svelte';
-    import MidiInput from '../demos/common/midi-input.svelte';
-    import ExportButton2 from '../demos/common/export-button2.svelte';
-    import ImportExportButton from '../demos/common/import-export-button.svelte';
+    import ResetNotesButton from '../common/reset-notes-button.svelte';
+    import MidiInput from '../common/midi-input.svelte';
+    import ExportButton2 from '../common/export-button2.svelte';
+    import ImportExportButton from '../common/import-export-button.svelte';
     import { localStorageAddRecording } from '../lib/localstorage';
     import { VELOCITIES_LOGIC, VELOCITIES_MEANING } from '../lib/music';
-    import HistoryButton from '../demos/common/history-button.svelte';
+    import HistoryButton from '../common/history-button.svelte';
     import example from '../example-recordings/dynamics.json';
     import * as d3 from 'd3';
-    import ExerciseDrawer from '../demos/common/exercise-drawer.svelte';
+    import ExerciseDrawer from '../common/exercise-drawer.svelte';
     import { drumPitchReplacementMapMD90 } from '../lib/drums';
 
     /**
-     * contains the demo meta information defined in App.js
+     * contains the app meta information defined in App.js
      */
-    export let demoInfo;
+    export let appInfo;
 
     let width = 1000;
     let height = 600;
@@ -127,7 +127,7 @@
 
     const saveToStorage = () => {
         if (notes.length > 0) {
-            localStorageAddRecording(demoInfo.id, getExportData());
+            localStorageAddRecording(appInfo.id, getExportData());
         }
     };
 
@@ -135,7 +135,7 @@
 </script>
 
 <main class="app">
-    <h2>{demoInfo.title}</h2>
+    <h2>{appInfo.title}</h2>
     <p class="explanation">
         Connect a MIDI instrument and start playing. The loudness of each note
         will be shown as a bar. Bar heights are either exact or rounded to the
@@ -186,10 +186,10 @@
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
         <ResetNotesButton bind:notes {saveToStorage} callback="{draw}" />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ExportButton2 {getExportData} appId="{appInfo.id}" />
         <ImportExportButton {loadData} />
         <button on:click="{() => loadData(example)}"> example </button>
-        <HistoryButton demoId="{demoInfo.id}" {loadData} />
+        <HistoryButton appId="{appInfo.id}" {loadData} />
     </div>
     <MidiInput {noteOn} />
 </main>

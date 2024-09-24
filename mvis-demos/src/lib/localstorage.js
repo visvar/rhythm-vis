@@ -1,6 +1,6 @@
 import { version } from '../../package.json'
 
-export const SETTINGS_KEY = 'demo-settings'
+export const SETTINGS_KEY = 'app-settings'
 export const USAGE_KEY = 'usage'
 
 const localSt = window.localStorage
@@ -90,8 +90,8 @@ export function localStorageGetUsageData() {
     usage = JSON.parse(usage)
   } else {
     usage = {
-      demoClicks: {},
-      demoRecordedData: {},
+      appClicks: {},
+      appRecordedData: {},
       ratings: {}
     }
   }
@@ -117,20 +117,20 @@ export function localStorageGetSetting(key) {
 }
 
 /**
- * Stores the recorded data of the demo in the usage localSorage
- * @param {string} demoId demo ID
+ * Stores the recorded data of the app in the usage localSorage
+ * @param {string} appId app ID
  * @param {object} data data to save
  */
-export function localStorageAddRecording(demoId, data) {
-  console.log(`saving recording for ${demoId}`, data)
+export function localStorageAddRecording(appId, data) {
+  console.log(`saving recording for ${appId}`, data)
   const usage = localStorageGetUsageData()
-  if (!usage.demoRecordedData) {
-    usage.demoRecordedData = {}
+  if (!usage.appRecordedData) {
+    usage.appRecordedData = {}
   }
-  if (!usage.demoRecordedData[demoId]) {
-    usage.demoRecordedData[demoId] = []
+  if (!usage.appRecordedData[appId]) {
+    usage.appRecordedData[appId] = []
   }
-  const recordings = usage.demoRecordedData[demoId]
+  const recordings = usage.appRecordedData[appId]
   // check if the same recording already exists
   const string = JSON.stringify(data)
   for (const recording of recordings) {
@@ -150,34 +150,34 @@ export function localStorageAddRecording(demoId, data) {
 
 /**
  * Deletes a recording from the usage data
- * @param {string} demoId demo ID
+ * @param {string} appId app ID
  * @param {string} date the date for which the recording should be deleted
  */
-export function localStorageDeleteRecording(demoId, date) {
-  console.log(`deleting recording for ${demoId}`, date)
+export function localStorageDeleteRecording(appId, date) {
+  console.log(`deleting recording for ${appId}`, date)
   const usage = localStorageGetUsageData()
-  if (!usage.demoRecordedData) {
+  if (!usage.appRecordedData) {
     return
   }
-  if (!usage.demoRecordedData[demoId]) {
+  if (!usage.appRecordedData[appId]) {
     return
   }
-  usage.demoRecordedData[demoId] = usage.demoRecordedData[demoId].filter(d => d.date !== date)
+  usage.appRecordedData[appId] = usage.appRecordedData[appId].filter(d => d.date !== date)
   localStorageSetUsageData(usage)
 }
 
 /**
- * Returns all locally stored recordings for the given demo
- * @param {string} demoId demo ID
+ * Returns all locally stored recordings for the given app
+ * @param {string} appId app ID
  * @returns {object[]} recording objects
  */
-export function localSorageGetRecordings(demoId) {
+export function localSorageGetRecordings(appId) {
   const usage = localStorageGetUsageData()
-  if (!usage.demoRecordedData) {
+  if (!usage.appRecordedData) {
     return []
   }
-  if (!usage.demoRecordedData[demoId]) {
+  if (!usage.appRecordedData[appId]) {
     return []
   }
-  return usage.demoRecordedData[demoId]
+  return usage.appRecordedData[appId]
 }

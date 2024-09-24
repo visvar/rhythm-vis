@@ -8,7 +8,7 @@
   import RecordingDates from './RecordingDates.svelte';
   import DensityPlot from '../analysis/DensityPlot.svelte';
   import TempoEstimation from '../analysis/TempoEstimation.svelte';
-  import PianoRoll from '../common/PianoRoll.svelte';
+  import PianoRoll from '.../common/PianoRoll.svelte';
   import DeltaTimeHistogramPlot from '../analysis/DeltaTimeHistogramPlot.svelte';
 
   export let dataDirectoryHandle = null;
@@ -29,7 +29,7 @@
     filterBy,
     selectedExercises,
     selectedPersons,
-    selectedClicks
+    selectedClicks,
   );
   let selectedRecordings = new Set();
 
@@ -140,7 +140,7 @@
     persons = Utils.removeDuplicates(recordings.map((d) => d.person)).sort();
     selectedPersons = persons;
     exercises = Utils.removeDuplicates(
-      recordings.map((d) => d.exercise)
+      recordings.map((d) => d.exercise),
     ).sort();
     selectedExercises = exercises;
     selectedClicks = ['3', '4', '6', '8', 'infinite'];
@@ -187,14 +187,14 @@
     by,
     selectedExercises,
     selectedPersons,
-    selectedClicks
+    selectedClicks,
   ) => {
     const p = new Set(selectedPersons);
     const e = new Set(selectedExercises);
     const c = new Set(selectedClicks);
     // const search = by.split(/\s+/);
     return recordings.filter(
-      (d) => p.has(d.person) && e.has(d.exercise) && c.has(d.metroLimit)
+      (d) => p.has(d.person) && e.has(d.exercise) && c.has(d.metroLimit),
       // &&
       // every(search, (s) => d.name.includes(s))
     );
@@ -203,7 +203,7 @@
   const deleteRecording = async (recName) => {
     if (
       confirm(
-        `Are you sure you want to delete this recording?:\n\n${recName}\n\nThis cannot be undone!`
+        `Are you sure you want to delete this recording?:\n\n${recName}\n\nThis cannot be undone!`,
       )
     ) {
       const files = recFiles.get(recName);
@@ -368,10 +368,7 @@
     </label>
   </div>
 
-  <RecordingDates
-    width="{width}"
-    dates="{filteredRecordings.map((d) => d.dateObj)}"
-  />
+  <RecordingDates {width} dates="{filteredRecordings.map((d) => d.dateObj)}" />
 
   <div>
     {#each [...selectedRecordings] as rec}
@@ -379,17 +376,17 @@
         {rec.name}
         {#if currentView === 'Note Distance'}
           <NoteDistanceBars
-            width="{width}"
+            {width}
             height="{100}"
             notes="{rec.notesRec}"
             onsetsInBeats="{rec.onsetsInBeats}"
-            noteColorMode="{noteColorMode}"
+            {noteColorMode}
             showControls="{false}"
           />
         {/if}
         {#if currentView === 'Density'}
           <DensityPlot
-            width="{width}"
+            {width}
             values="{rec.onsetsInBeats}"
             beats="{4}"
             contextBeats="{1}"
@@ -398,7 +395,7 @@
         {/if}
         {#if currentView === 'Density Separate'}
           <DensityPlotSeparate
-            width="{width}"
+            {width}
             notes="{rec.notesRec}"
             onsetsInBeats="{rec.onsetsInBeats}"
             beats="{4}"
@@ -411,7 +408,7 @@
             bpm="{rec.bpm}"
             xLabel="estimated BPM"
             bandwidth="{0.5}"
-            width="{width}"
+            {width}
             height="{80}"
           />
         {/if}
@@ -420,14 +417,11 @@
             notes="{rec.notesRec}"
             metronomeClicks="{rec.metroClicks}"
             metronomeAccents="{rec.metroAccents}"
-            width="{width}"
+            {width}
           />
         {/if}
         {#if currentView === 'Time diff.'}
-          <DeltaTimeHistogramPlot
-            width="{width}"
-            onsetsInBeats="{rec.onsetsInBeats}"
-          />
+          <DeltaTimeHistogramPlot {width} onsetsInBeats="{rec.onsetsInBeats}" />
         {/if}
         <!-- {#if currentView === 'Scatterplot'}
           <ScatterPlot

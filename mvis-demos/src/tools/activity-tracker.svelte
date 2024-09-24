@@ -18,10 +18,10 @@
 
     let appUsage = [];
     let daysUsed = new Set();
-    for (const key in usage.demoClicks) {
-        if (Object.hasOwnProperty.call(usage.demoClicks, key)) {
+    for (const key in usage.appClicks) {
+        if (Object.hasOwnProperty.call(usage.appClicks, key)) {
             if (key !== 'undefined') {
-                const dates = usage.demoClicks[key];
+                const dates = usage.appClicks[key];
                 appUsage.push({
                     id: key,
                     dates: dates.map((d) => new Date(d.substring(0, 10))),

@@ -1,7 +1,7 @@
 <script>
   import { onMount, onDestroy } from 'svelte';
   import Metronome from '../../lib/Metronome.js';
-  import SheetMusic from '../common/SheetMusic.svelte';
+  import SheetMusic from '.../common/SheetMusic.svelte';
   import { WebMidi } from 'webmidi';
   import ExerciseAudio from '../recorder/ExerciseAudio.svelte';
   import { max, some } from 'd3';
@@ -145,7 +145,7 @@
     metro.start(
       bpm / beep,
       accent,
-      beepLimit === 'infinite' ? Infinity : +beepLimit
+      beepLimit === 'infinite' ? Infinity : +beepLimit,
     );
     console.log('start', recordingStartTime);
   };
@@ -195,8 +195,8 @@
     </label>
   </div>
 
-  <SheetMusic exercise="{exercise}" />
-  <ExerciseAudio exercise="{exercise}" bpm="{bpm}" />
+  <SheetMusic {exercise} />
+  <ExerciseAudio {exercise} {bpm} />
 
   <div bind:this="{metroDiv}" class="metronome">
     Metronome:
@@ -275,7 +275,7 @@
     color
     <select bind:value="{noteColorMode}">
       {#each ['none', 'chroma', 'pitch', 'drums', 'drumsType', 'channel', 'velocity', 'duration', 'device', 'error'] as value}
-        <option value="{value}">{value}</option>
+        <option {value}>{value}</option>
       {/each}
     </select>
   </label>
@@ -284,7 +284,7 @@
     thickness
     <select bind:value="{noteThicknessMode}">
       {#each ['none', 'velocity', 'duration'] as value}
-        <option value="{value}">{value}</option>
+        <option {value}>{value}</option>
       {/each}
     </select>
   </label>
@@ -317,35 +317,35 @@
   </label>
 
   <DensityPlot
-    width="{width}"
+    {width}
     values="{onsetsInBeats}"
-    beats="{beats}"
-    contextBeats="{contextBeats}"
+    {beats}
+    {contextBeats}
     xLabel="beats"
   />
 
   <DensityPlotSeparate
-    width="{width}"
-    notes="{notes}"
-    onsetsInBeats="{onsetsInBeats}"
-    beats="{beats}"
-    xTicks="{xTicks}"
-    exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
+    {width}
+    {notes}
+    {onsetsInBeats}
+    {beats}
+    {xTicks}
+    {exerciseNoteOnsetsInBeats}
   />
 
   <MainPlot
-    width="{width}"
-    notes="{notes}"
-    onsetsInBeats="{onsetsInBeats}"
-    exerciseNoteOnsetsInBeats="{exerciseNoteOnsetsInBeats}"
-    beats="{beats}"
-    contextBeats="{contextBeats}"
-    noteColorMode="{noteColorMode}"
+    {width}
+    {notes}
+    {onsetsInBeats}
+    {exerciseNoteOnsetsInBeats}
+    {beats}
+    {contextBeats}
+    {noteColorMode}
     thicknessMode="{noteThicknessMode}"
-    xTicks="{xTicks}"
-    bind:currentTimeInBeats="{currentTimeInBeats}"
-    bind:selectionEndTime="{selectionEndTime}"
-    rowLimit="{rowLimit}"
+    {xTicks}
+    bind:currentTimeInBeats
+    bind:selectionEndTime
+    {rowLimit}
   />
 </main>
 

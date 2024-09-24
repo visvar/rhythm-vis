@@ -1,5 +1,5 @@
 <script>
-    import HelpTextDrawer from './demos/common/help-text-drawer.svelte';
+    import HelpTextDrawer from './common/help-text-drawer.svelte';
 </script>
 
 <main>

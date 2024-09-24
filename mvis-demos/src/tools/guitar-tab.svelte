@@ -4,7 +4,7 @@
     import * as Plot from '@observablehq/plot';
     import { Midi } from 'musicvis-lib';
     import { Note } from '@tonaljs/tonal';
-    import MidiInput from '../demos/common/midi-input.svelte';
+    import MidiInput from '../common/midi-input.svelte';
 
     export let toolInfo;
     let width = 900;

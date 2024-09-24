@@ -5,21 +5,21 @@
         createRealTimeBpmProcessor,
         getBiquadFilter,
     } from 'realtime-bpm-analyzer';
-    import ResetNotesButton from '../demos/common/reset-notes-button.svelte';
-    import ExportButton2 from '../demos/common/export-button2.svelte';
-    import ImportExportButton from '../demos/common/import-export-button.svelte';
-    import MetronomeButton from '../demos/common/metronome-button.svelte';
-    import ExerciseDrawer from '../demos/common/exercise-drawer.svelte';
-    import RatingButton from '../demos/common/rating-button.svelte';
+    import ResetNotesButton from '../common/reset-notes-button.svelte';
+    import ExportButton2 from '../common/export-button2.svelte';
+    import ImportExportButton from '../common/import-export-button.svelte';
+    import MetronomeButton from '../common/metronome-button.svelte';
+    import ExerciseDrawer from '../common/exercise-drawer.svelte';
+    import RatingButton from '../common/rating-button.svelte';
 
     /**
      * TODO: try https://github.com/chrvadala/music-beat-detector
      */
 
     /**
-     * contains the demo meta information defined in App.js
+     * contains the app meta information defined in App.js
      */
-    export let demoInfo;
+    export let appInfo;
 
     let width = 1000;
     let height = 600;
@@ -161,7 +161,7 @@
 </script>
 
 <main class="app">
-    <h2>{demoInfo.title}</h2>
+    <h2>{appInfo.title}</h2>
     <p class="explanation">
         Allow microphone access and play first at one tempo then change to
         another one. The chart shows you the tempo over time, so can see whether
@@ -231,8 +231,8 @@
                 draw();
             }}"
         />
-        <ExportButton2 {getExportData} demoId="{demoInfo.id}" />
+        <ExportButton2 {getExportData} appId="{appInfo.id}" />
         <ImportExportButton {loadData} />
     </div>
-    <RatingButton appId="{demoInfo.id}" />
+    <RatingButton appId="{appInfo.id}" />
 </main>

@@ -126,7 +126,7 @@ svg text {
 
 /* filter */
 
-.grid-filter-demo {
+.grid-filter-app {
   margin-left: 20px;
   display: grid;
   grid-template-columns: 210px auto;

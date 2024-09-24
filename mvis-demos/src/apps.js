@@ -1,31 +1,31 @@
-import Accents from './demos/accents.svelte'
-import ChordArpeggioTiming from './demos/chord-arpeggio-timing.svelte'
-import ChordDiagrams from './demos/chord-diagrams.svelte'
-import Dynamics from './demos/dynamics.svelte'
-import FretboardHeatmap from './demos/fretboard-heatmap.svelte'
-import FretboardImprovisationIntervals from './demos/fretboard-improvisation-intervals.svelte'
-import FretboardJitter from './demos/fretboard-jitter.svelte'
-import FretboardSpacetimeCube from './demos/fretboard-spacetime-cube.svelte'
-import ImprovisationIntervals from './demos/improvisation-intervals.svelte'
-import ImprovisationNoteColors from './demos/improvisation-note-colors.svelte'
-import ImprovisationScaleDegrees from './demos/improvisation-scale-degrees.svelte'
-import ImprovisationScaleDegreesBar from './demos/improvisation-scale-degrees-bar.svelte'
-import KeyboardHistogram from './demos/keyboard-histogram.svelte'
-import PitchBendAudio from './demos/pitch-bend-audio.svelte'
-import PitchOffsetCents from './demos/pitch-offset-cents.svelte'
-import RhythmSheetMusic from './demos/rhythm-sheet-music.svelte'
-import SpeedUp from './demos/speed-up.svelte'
-import SpeedUpTab from './demos/speed-up-tab.svelte'
-import StrummingPattern from './demos/strumming-pattern.svelte'
-import SubDivision from './demos/sub-division.svelte'
-import SubDivisionLinear from './demos/sub-division-linear.svelte'
-import TempoDrift from './demos/tempo-drift.svelte'
-import TwoHandedTiming from './demos/two-handed-timing.svelte'
-import SubDivisionDrums from './demos/sub-division-drums.svelte'
-import SubDivisionHistory from './demos/sub-division-history.svelte'
-import PitchOffsetCentsNeedle from './demos/pitch-offset-cents-needle.svelte'
-import DurationPies from './demos/duration-pies.svelte'
-import TempoChange from './demos/tempo-change.svelte'
+import Accents from './apps/accents.svelte'
+import ChordArpeggioTiming from './apps/chord-arpeggio-timing.svelte'
+import ChordDiagrams from './apps/chord-diagrams.svelte'
+import Dynamics from './apps/dynamics.svelte'
+import FretboardHeatmap from './apps/fretboard-heatmap.svelte'
+import FretboardImprovisationIntervals from './apps/fretboard-improvisation-intervals.svelte'
+import FretboardJitter from './apps/fretboard-jitter.svelte'
+import FretboardSpacetimeCube from './apps/fretboard-spacetime-cube.svelte'
+import ImprovisationIntervals from './apps/improvisation-intervals.svelte'
+import ImprovisationNoteColors from './apps/improvisation-note-colors.svelte'
+import ImprovisationScaleDegrees from './apps/improvisation-scale-degrees.svelte'
+import ImprovisationScaleDegreesBar from './apps/improvisation-scale-degrees-bar.svelte'
+import KeyboardHistogram from './apps/keyboard-histogram.svelte'
+import PitchBendAudio from './apps/pitch-bend-audio.svelte'
+import PitchOffsetCents from './apps/pitch-offset-cents.svelte'
+import RhythmSheetMusic from './apps/rhythm-sheet-music.svelte'
+import SpeedUp from './apps/speed-up.svelte'
+import SpeedUpTab from './apps/speed-up-tab.svelte'
+import StrummingPattern from './apps/strumming-pattern.svelte'
+import SubDivision from './apps/sub-division.svelte'
+import SubDivisionLinear from './apps/sub-division-linear.svelte'
+import TempoDrift from './apps/tempo-drift.svelte'
+import TwoHandedTiming from './apps/two-handed-timing.svelte'
+import SubDivisionDrums from './apps/sub-division-drums.svelte'
+import SubDivisionHistory from './apps/sub-division-history.svelte'
+import PitchOffsetCentsNeedle from './apps/pitch-offset-cents-needle.svelte'
+import DurationPies from './apps/duration-pies.svelte'
+import TempoChange from './apps/tempo-change.svelte'
 
 /**
  * All apps defined here
@@ -290,7 +290,7 @@ export const APPS = [
     id: 'rhythm-sheet-music',
     title: 'Rhythm Sheet Music',
     description:
-      'This demo displays the notes you play as staff notation and offset in percent.',
+      'This app displays the notes you play as staff notation and offset in percent.',
     input: 'MIDI',
     instruments: ['drum', 'guitar/bass', 'keyboard', 'pc-key', 'touch'],
     data: ['order', 'duration/ioi'],
