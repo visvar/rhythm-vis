@@ -18,6 +18,7 @@
     import ExerciseDrawer from '../common/exercise-drawer.svelte';
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -281,41 +282,33 @@
         <p>3) Play an A minor chord in three different positions.</p>
     </ExerciseDrawer>
     <div class="control">
-        <label
+        <NumberInput
             title="maximum distance between notes such that they still count as beloning to the same chord/arpeggio"
-        >
-            max. note distance
-            <input
-                type="number"
-                bind:value="{maxNoteDistance}"
-                on:change="{draw}"
-                min="0.05"
-                max="5"
-                step="0.05"
-            />
-        </label>
-        <label title="maximum distance between the lowest and highest fret">
-            max. fret span
-            <input
-                type="number"
-                bind:value="{maxFretSpan}"
-                on:change="{draw}"
-                min="5"
-                max="25"
-                step="1"
-            />
-        </label>
-        <label title="The number of played chords that is displayed">
-            chord count
-            <input
-                type="number"
-                bind:value="{pastChords}"
-                on:change="{draw}"
-                min="10"
-                max="300"
-                step="10"
-            />
-        </label>
+            label="max. note distance"
+            bind:value="{maxNoteDistance}"
+            callback="{draw}"
+            min="{0.05}"
+            max="{5}"
+            step="{0.05}"
+        />
+        <NumberInput
+            title="maximum distance between the lowest and highest fret"
+            label="max. fret span"
+            bind:value="{maxFretSpan}"
+            callback="{draw}"
+            min="{5}"
+            max="{25}"
+            step="{1}"
+        />
+        <NumberInput
+            title="The number of played chords that is displayed"
+            label="chord count"
+            bind:value="{pastChords}"
+            callback="{draw}"
+            min="{10}"
+            max="{300}"
+            step="{10}"
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

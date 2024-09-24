@@ -8,6 +8,10 @@
     export let tempo;
     export let draw;
 
+    const min = -2;
+    const max = 2;
+    const step = 0.01;
+
     const autoAdjust = () => {
         if (!notes || notes.length === 0) {
             adjustTime = 0;
@@ -52,9 +56,17 @@
         type="number"
         bind:value="{adjustTime}"
         on:change="{draw}"
-        step="0.01"
-        min="-2"
-        max="2"
+        on:mousewheel="{(evt) => {
+            evt.preventDefault();
+            const add = evt.deltaY < 0 ? step : -step;
+            const clamped = Math.min(max, Math.max(min, adjustTime + add));
+            // round to step
+            adjustTime = +clamped.toFixed(12);
+            draw();
+        }}"
+        step="{0.01}"
+        min="{-2}"
+        max="{2}"
         style="width: 55px"
     />
 </label>

@@ -20,6 +20,7 @@
     import ToggleButton from '../common/toggle-button.svelte';
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -324,19 +325,14 @@
                 style="width: 55px"
             />
         </label>
-        <label
+        <NumberInput
             title="The number of past bars to be shown. Allows to 'forget' mistakes in the beginning."
-        >
-            bars
-            <input
-                type="number"
-                bind:value="{pastBars}"
-                on:change="{draw}"
-                min="1"
-                max="100"
-                style="width: 55px"
-            />
-        </label>
+            label="bars"
+            bind:value="{pastBars}"
+            callback="{draw}"
+            min="{1}"
+            max="{100}"
+        />
         <button
             title="Toggle between an area chart and a histogram of the note density"
             on:click="{() => {

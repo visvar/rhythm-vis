@@ -7,6 +7,7 @@
     import ExerciseDrawer from '../common/exercise-drawer.svelte';
     import RatingButton from '../common/rating-button.svelte';
     import PageResizeHandler from '../common/page-resize-handler.svelte';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -192,30 +193,23 @@
         <p>2) Bend/sing a note 25 cents higher (for example as a vibrato).</p>
     </ExerciseDrawer>
     <div class="control">
-        <label>
-            past seconds
-            <input
-                type="number"
-                bind:value="{pastTime}"
-                min="0.05"
-                max="1"
-                step="0.05"
-            />
-        </label>
-        <label
+        <NumberInput
+            label="past seconds"
+            bind:value="{pastTime}"
+            callback="{draw}"
+            min="{0.05}"
+            max="{1}"
+            step="{0.05}"
+        />
+        <NumberInput
             title="The minimum loudness in decibels for a sound to be registered as input. Lower means fainter notes will be registered but there will be more noise such as octave errors."
-        >
-            min. decibels
-            <input
-                type="number"
-                bind:value="{minVolumeDecibels}"
-                on:change="{() =>
-                    (detector.minVolumeDecibels = minVolumeDecibels)}"
-                min="-40"
-                max="-5"
-                step="5"
-            />
-        </label>
+            label="min. decibels"
+            bind:value="{minVolumeDecibels}"
+            callback="{() => (detector.minVolumeDecibels = minVolumeDecibels)}"
+            min="{-40}"
+            max="{-5}"
+            step="{5}"
+        />
         <button
             title="Press this button if your browser prevents audio access because there needs to be a user interaction first"
             on:click="{() => audioContext.resume()}"

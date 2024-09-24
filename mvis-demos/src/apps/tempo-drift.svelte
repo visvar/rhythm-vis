@@ -18,6 +18,7 @@
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
     import TempoInput from '../common/tempo-input.svelte';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -228,18 +229,15 @@
                 {/each}
             </select>
         </label>
-        <label title="The number of most recent notes that are shown as bars.">
-            bars
-            <input
-                type="number"
-                bind:value="{barLimit}"
-                on:change="{draw}"
-                step="25"
-                min="25"
-                max="1000"
-                style="width: 55px"
-            />
-        </label>
+        <NumberInput
+            title="The number of most recent notes that are shown as bars."
+            label="bars"
+            bind:value="{barLimit}"
+            callback="{draw}"
+            step="{25}"
+            min="{25}"
+            max="{1000}"
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     {#if estimatedTempo}

@@ -16,6 +16,7 @@
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
     import { replacer } from '../lib/json.js';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -417,16 +418,14 @@
             bind:value="{targetTempo}"
             callback="{draw}"
         />
-        <label title="Set the tempo increase between practice runs (in BPM)">
-            step
-            <input
-                type="number"
-                bind:value="{tempoIncrease}"
-                min="1"
-                max="20"
-                step="1"
-            />
-        </label>
+        <NumberInput
+            title="Set the tempo increase between practice runs (in BPM)"
+            label="step"
+            bind:value="{tempoIncrease}"
+            min="{1}"
+            max="{20}"
+            step="{1}"
+        />
         <label>
             quantize exercise
             <select bind:value="{quantize}" on:change="{draw}">

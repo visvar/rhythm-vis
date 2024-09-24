@@ -12,6 +12,7 @@
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
     import PcKeyboardInput from '../common/pc-keyboard-input.svelte';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -197,31 +198,23 @@
         >
             {paused ? 'play' : 'pause'}
         </button>
-        <label>
-            past seconds
-            <input
-                type="number"
-                bind:value="{pastTime}"
-                on:change="{draw}"
-                min="5"
-                max="60"
-                step="5"
-            />
-        </label>
-        <label
+        <NumberInput
+            label="past seconds"
+            bind:value="{pastTime}"
+            callback="{draw}"
+            min="{5}"
+            max="{60}"
+            step="{5}"
+        />
+        <NumberInput
             title="The minimum loudness in decibels for a sound to be registered as input. Lower means fainter notes will be registered but there will be more noise such as octave errors."
-        >
-            min. decibels
-            <input
-                type="number"
-                bind:value="{minVolumeDecibels}"
-                on:change="{() =>
-                    (detector.minVolumeDecibels = minVolumeDecibels)}"
-                min="-40"
-                max="-5"
-                step="5"
-            />
-        </label>
+            label="min. decibels"
+            bind:value="{minVolumeDecibels}"
+            callback="{() => (detector.minVolumeDecibels = minVolumeDecibels)}"
+            min="{-40}"
+            max="{-5}"
+            step="{5}"
+        />
         <button
             title="Use blue for low and red for high"
             on:click="{() => {

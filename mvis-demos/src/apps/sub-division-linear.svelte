@@ -22,6 +22,7 @@
     import SubDivisionAdjustButton from '../common/sub-division-adjust-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
     import UndoRedoButton from '../common/undo-redo-button.svelte';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -35,7 +36,6 @@
     let grid = GRIDS[0].divisions;
     let binNote = 64;
     let adjustTime = 0;
-    let noteTickLimit = 500;
     let pastBars = 8;
     // data
     let firstTimeStamp = 0;
@@ -73,9 +73,6 @@
         } else if (c === 17) {
             // adjust
             adjustTime = (clamp(e.rawValue, 0, 100) - 50) / 100;
-        } else if (c === 18) {
-            // note ticks
-            noteTickLimit = Math.round(clamp(e.rawValue * 2, 0, 200));
         }
         draw();
     };
@@ -99,11 +96,6 @@
                 bins,
             });
             kdePoints = density1d.bandwidth(bandwidth);
-        }
-
-        let lastNotes = [];
-        if (noteTickLimit > 0) {
-            lastNotes = clamped.slice(-noteTickLimit);
         }
 
         const coarseGrid = d3.range(0, grid1 + 1, 1);
@@ -178,7 +170,7 @@
             },
             marks: [
                 // ticks
-                Plot.tickX(notesInBeats.slice(-noteTickLimit), {
+                Plot.tickX(notesInBeats, {
                     x: (d) => d % grid1,
                     stroke: '#0002',
                     clip: true,
@@ -198,6 +190,7 @@
             y: {
                 domain: d3.range(maxBar - pastBars, maxBar),
                 tickFormat: (d) => d + 1,
+                label: 'recent bars',
             },
             marks: [
                 // OK areas
@@ -208,7 +201,7 @@
                     strokeWidth: (width / binNote) * 2,
                 }),
                 // ticks
-                Plot.tickX(notesInBeats.slice(-noteTickLimit), {
+                Plot.tickX(notesInBeats, {
                     x: (d) => d % grid1,
                     y: (d, i) => Math.floor(d / grid1),
                     // stroke: '#0002',
@@ -248,7 +241,6 @@
             grid,
             binNote,
             adjustTime,
-            noteTickLimit,
             notes,
         };
     };
@@ -259,7 +251,6 @@
         grid = json.grid;
         binNote = json.binNote;
         adjustTime = json.adjustTime;
-        noteTickLimit = json.noteTickLimit ?? 0;
         // data
         notes = json.notes;
         draw();
@@ -333,32 +324,15 @@
             {notes}
             {draw}
         />
-        <label title="The number of most recent notes that are shown as ticks.">
-            note ticks
-            <input
-                type="number"
-                bind:value="{noteTickLimit}"
-                on:change="{draw}"
-                step="1"
-                min="0"
-                max="100"
-                style="width: 55px"
-            />
-        </label>
-        <label
+        <NumberInput
             title="The number of most recent bars that are shown in the rows at the bottom."
-        >
-            past bars
-            <input
-                type="number"
-                bind:value="{pastBars}"
-                on:change="{draw}"
-                step="1"
-                min="8"
-                max="32"
-                style="width: 55px"
-            />
-        </label>
+            label="past bars"
+            bind:value="{pastBars}"
+            callback="{draw}"
+            step="{1}"
+            min="{8}"
+            max="{32}"
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div>{okScore}</div>

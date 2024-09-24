@@ -18,6 +18,7 @@
             evt.preventDefault();
             const add = evt.deltaY < 0 ? step : -step;
             value = Math.min(max, Math.max(min, value + add));
+            callback();
         }}"
         {min}
         {max}

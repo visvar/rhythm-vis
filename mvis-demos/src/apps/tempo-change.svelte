@@ -15,6 +15,7 @@
     import { localStorageAddRecording } from '../lib/localstorage';
     import HistoryButton from '../common/history-button.svelte';
     import example from '../example-recordings/tempo-change.json';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -196,28 +197,24 @@
         </p>
     </ExerciseDrawer>
     <div class="control">
-        <label title="Size of the time bins in seconds">
-            time step
-            <input
-                type="number"
-                bind:value="{timeBinSize}"
-                on:change="{draw}"
-                min="1"
-                max="10"
-                step="1"
-            />
-        </label>
-        <label title="Size of the tempo bins in BPM">
-            tempo step
-            <input
-                type="number"
-                bind:value="{tempoBinSize}"
-                on:change="{draw}"
-                min="2"
-                max="20"
-                step="1"
-            />
-        </label>
+        <NumberInput
+            title="Size of the time bins in seconds"
+            label="time step"
+            bind:value="{timeBinSize}"
+            callback="{draw}"
+            min="{1}"
+            max="{10}"
+            step="{1}"
+        />
+        <NumberInput
+            title="Size of the tempo bins in BPM"
+            label="tempo step"
+            bind:value="{tempoBinSize}"
+            callback="{draw}"
+            min="{2}"
+            max="{20}"
+            step="{1}"
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

@@ -22,6 +22,7 @@
     import ShareConfigButton from '../common/share-config-button.svelte';
     import UndoRedoButton from '../common/undo-redo-button.svelte';
     import example from '../example-recordings/sub-division-drums_old.json';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -267,18 +268,15 @@
         </label>
     </div>
     <div class="control">
-        <label title="Shift all notes by an amount in seconds">
-            adjust
-            <input
-                type="number"
-                bind:value="{adjustTime}"
-                on:change="{draw}"
-                step="0.01"
-                min="-2"
-                max="2"
-                style="width: 55px"
-            />
-        </label>
+        <NumberInput
+            title="Shift all notes by an amount in seconds"
+            label="adjust"
+            bind:value="{adjustTime}"
+            callback="{draw}"
+            step="{0.01}"
+            min="{-2}"
+            max="{2}"
+        />
         <!-- TODO: currently broken for drums -->
         <!-- <SubDivisionAdjustButton
             bind:adjustTime
@@ -287,19 +285,14 @@
             notes="{notes.map((d) => d.time)}"
             {draw}
         /> -->
-        <label
+        <NumberInput
             title="The number of past bars to be shown. Allows to 'forget' mistakes in the beginning."
-        >
-            last bars
-            <input
-                type="number"
-                bind:value="{pastBars}"
-                on:change="{draw}"
-                min="1"
-                max="100"
-                style="width: 55px"
-            />
-        </label>
+            label="last bars"
+            bind:value="{pastBars}"
+            callback="{draw}"
+            min="{1}"
+            max="{100}"
+        />
         <button
             title="Toggle between an area chart and a histogram of the note density"
             on:click="{() => {

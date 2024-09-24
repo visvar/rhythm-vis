@@ -20,6 +20,7 @@
     import { Midi } from 'musicvis-lib';
     import { NOTE_COLORS } from '../lib/colors';
     import InsideTextButton from '../common/inside-text-button.svelte';
+    import NumberInput from '../common/number-input.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -243,18 +244,15 @@
         >
             rounding {isBinning ? toggleOnIcon : toggleOffIcon}
         </button>
-        <label title="The number of most recent notes that are shown as bars.">
-            bars
-            <input
-                type="number"
-                bind:value="{barLimit}"
-                on:change="{draw}"
-                step="25"
-                min="25"
-                max="1000"
-                style="width: 55px"
-            />
-        </label>
+        <NumberInput
+            title="The number of most recent notes that are shown as bars."
+            label="bars"
+            bind:value="{barLimit}"
+            callback="{draw}"
+            step="{25}"
+            min="{25}"
+            max="{1000}"
+        />
         <label>
             color
             <select bind:value="{coloring}" on:change="{draw}">

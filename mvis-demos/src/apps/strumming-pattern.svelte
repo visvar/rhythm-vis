@@ -16,6 +16,7 @@
     import ExerciseDrawer from '../common/exercise-drawer.svelte';
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
+    import NumberInput from '../common/number-input.svelte';
 
     export let appInfo;
     let width = 900;
@@ -271,30 +272,24 @@
         </p>
     </ExerciseDrawer>
     <div class="control">
-        <label title="time in seconds for past notes to be shown">
-            time
-            <input
-                type="number"
-                bind:value="{pastSeconds}"
-                on:change="{draw}"
-                min="10"
-                max="300"
-                step="10"
-            />
-        </label>
-        <label
+        <NumberInput
+            title="time in seconds for past notes to be shown"
+            label="time"
+            bind:value="{pastSeconds}"
+            callback="{draw}"
+            min="{10}"
+            max="{300}"
+            step="{10}"
+        />
+        <NumberInput
             title="maximum distance between notes such that they still count as beloning to the same chord"
-        >
-            max. note distance
-            <input
-                type="number"
-                bind:value="{maxNoteDistance}"
-                on:change="{draw}"
-                min="0.01"
-                max="5"
-                step="0.01"
-            />
-        </label>
+            label="max. note distance"
+            bind:value="{maxNoteDistance}"
+            callback="{draw}"
+            min="{0.01}"
+            max="{5}"
+            step="{0.01}"
+        />
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">
