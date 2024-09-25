@@ -54,17 +54,23 @@
         circleRaf = requestAnimationFrame(update);
     };
 
-    /**
-     * stops replay and shows full data
-     */
-    const stop = () => {
+    const reset = () => {
         isPlaying = false;
+        // reset notes
+        notes = oldNotes;
+        // clear all timeouts
         for (const to of timeouts) {
             clearTimeout(to);
         }
         cancelAnimationFrame(circleRaf);
         timeouts = [];
-        notes = oldNotes;
+    };
+
+    /**
+     * stops replay and shows full data
+     */
+    const stop = () => {
+        reset();
         callback();
     };
 
@@ -72,12 +78,7 @@
         !isPlaying ? replay() : stop();
     };
 
-    onDestroy(() => {
-        for (const to of timeouts) {
-            clearTimeout(to);
-        }
-        cancelAnimationFrame(circleRaf);
-    });
+    onDestroy(reset);
 
     /**
      * updates the circle that indicates replay progress
@@ -86,7 +87,6 @@
     const showProgress = (progress) => {
         // see https://codepen.io/mjurczyk/pen/wvBKOvP
         const circumference = 2 * Math.PI * circleRadius;
-        const strokeOffset = (1 / 4) * circumference;
         const strokeDasharray = progress * circumference;
         // First has the length of visible portion. Second, the remaining part.
         circle.setAttribute('stroke-dasharray', [
@@ -94,7 +94,7 @@
             circumference - strokeDasharray,
         ]);
         // Rotate circle to start from the top.
-        circle.setAttribute('stroke-dashoffset', strokeOffset);
+        circle.setAttribute('stroke-dashoffset', (1 / 4) * circumference);
     };
 </script>
 
