@@ -87,17 +87,6 @@ export const APPS = [
     difficulty: ['beginner', 'intermediate', 'advanced'],
     component: Dynamics
   },
-  // {
-  //   id: 'dynamics-drums',
-  //   title: 'Dynamics (Drums)',
-  //   description: 'Check how well you control the loudness of notes.',
-  //   input: 'MIDI',
-  //   instruments: ['drum'],
-  //   data: ['order', 'dynamics', 'instrument'],
-  //   skills: ['constant-dynamics', '(de)crescendo', 'accents'],
-  //   patterns: ['dynamics as bar', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note', 'musical units', 'instrument as color'],
-  //   component: DynamicsDrums
-  // },
   {
     id: 'duration-pies',
     title: 'Duration Pies',
@@ -233,20 +222,6 @@ export const APPS = [
     difficulty: ['intermediate', 'advanced'],
     component: KeyboardHistogram
   },
-  // TODO: re add
-  // {
-  //   id: 'pitch-bend',
-  //   title: 'Pitch Bend',
-  //   description: 'Practice different kinds of pitch bends.',
-  //   input: 'MIDI',
-  //   instruments: ['guitar/bass', 'keyboard'],
-  //   data: ['onset/time', 'pitch'],
-  //   skills: ['pitch-keeping', 'bending', 'vibrato'],
-  //   patterns: ['pitch as line', 'baselines as grid', 'time is linear', 'time encoded linearly', 'update on note'],
-  //   timeScale: ['a few notes'],
-  //   difficulty: ['intermediate', 'advanced'],
-  //   component: PitchBend
-  // },
   {
     id: 'pitch-bend-audio',
     title: 'Pitch Bend (Audio)',

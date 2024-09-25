@@ -16,6 +16,40 @@
     };
 
     $: update(scaleRoot, scaleType);
+
+    const scrollRoot = (evt) => {
+        evt.preventDefault();
+        let currentIndex = noteNames.indexOf(scaleRoot);
+        if (currentIndex === -1) {
+            return;
+        }
+        // scroll up or down?
+        let index;
+        if (evt.deltaY < 0) {
+            index = currentIndex > 0 ? currentIndex - 1 : noteNames.length - 1;
+        } else {
+            index = currentIndex < noteNames.length - 1 ? currentIndex + 1 : 0;
+        }
+        scaleRoot = noteNames[index];
+        callback();
+    };
+
+    const scrollScale = (evt) => {
+        evt.preventDefault();
+        let currentIndex = scales.indexOf(scaleType);
+        if (currentIndex === -1) {
+            return;
+        }
+        // scroll up or down?
+        let index;
+        if (evt.deltaY < 0) {
+            index = currentIndex > 0 ? currentIndex - 1 : scales.length - 1;
+        } else {
+            index = currentIndex < scales.length - 1 ? currentIndex + 1 : 0;
+        }
+        scaleType = scales[index];
+        callback();
+    };
 </script>
 
 <label>
@@ -23,6 +57,7 @@
     <select
         bind:value="{scaleRoot}"
         on:change="{callback}"
+        on:mousewheel="{scrollRoot}"
         class="select1"
         {disabled}
     >
@@ -33,6 +68,7 @@
     <select
         bind:value="{scaleType}"
         on:change="{callback}"
+        on:mousewheel="{scrollScale}"
         class="select2"
         {disabled}
     >

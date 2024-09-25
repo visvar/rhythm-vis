@@ -20,6 +20,7 @@
     import ExerciseDrawer from '../common/exercise-drawer.svelte';
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
+    import SelectScollable from '../common/select-scollable.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -238,27 +239,27 @@
         >
             dotted notes {useDotted ? toggleOnIcon : toggleOffIcon}
         </button>
-        <label
+        <SelectScollable
+            label="filtering"
             title="You can filter out notes that are shorter than a given note duration."
+            bind:value="{filterNote}"
+            callback="{draw}"
         >
-            filtering
-            <select bind:value="{filterNote}" on:change="{draw}">
-                {#each FILTER_NOTES as g}
-                    <option value="{g}">1/{g} note</option>
-                {/each}
-            </select>
-        </label>
-        <label
+            {#each FILTER_NOTES as g}
+                <option value="{g}">1/{g} note</option>
+            {/each}
+        </SelectScollable>
+        <SelectScollable
+            label="target"
             title="You can choose a single duration you want to practice and turn of automaticly guessing the closest one."
+            bind:value="{targetDuration}"
+            callback="{draw}"
         >
-            target
-            <select bind:value="{targetDuration}" on:change="{draw}">
-                <option value="auto">auto</option>
-                {#each noteDurations as d}
-                    <option value="{d.name}">{d.symbol} {d.name}</option>
-                {/each}
-            </select>
-        </label>
+            <option value="auto">auto</option>
+            {#each noteDurations as d}
+                <option value="{d.name}">{d.symbol} {d.name}</option>
+            {/each}
+        </SelectScollable>
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

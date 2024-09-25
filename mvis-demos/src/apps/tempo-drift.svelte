@@ -19,6 +19,7 @@
     import ShareConfigButton from '../common/share-config-button.svelte';
     import TempoInput from '../common/tempo-input.svelte';
     import NumberInput from '../common/number-input.svelte';
+    import SelectScollable from '../common/select-scollable.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -30,7 +31,7 @@
     let container;
     // settings
     let tempo = 120;
-    let binNote = 'off';
+    let binNote = 0;
     let filterNote = 64;
     let barLimit = 50;
     // data
@@ -72,7 +73,7 @@
         }
         // round bars' height to make view clearer
         let binnedIois = iois;
-        if (binNote !== 'off') {
+        if (binNote !== 0) {
             const binSize = whole / binNote;
             binnedIois = iois.map((d) => Math.round(d / binSize) * binSize);
         }
@@ -207,28 +208,28 @@
         >
             ⚂
         </button>
-        <label
+        <SelectScollable
+            label="rounding"
             title="You can change between seeing exact bar heights and binned (rounded) heights."
+            bind:value="{binNote}"
+            callback="{draw}"
         >
-            rounding
-            <select bind:value="{binNote}" on:change="{draw}">
-                <option value="off">off</option>
-                {#each BIN_NOTES as g}
-                    <option value="{g}">1/{g} note</option>
-                {/each}
-            </select>
-        </label>
-        <label
+            <option value="{0}">off</option>
+            {#each BIN_NOTES as g}
+                <option value="{g}">1/{g} note</option>
+            {/each}
+        </SelectScollable>
+        <SelectScollable
+            label="filtering"
             title="You can filter out notes that are shorter than a given note duration."
+            bind:value="{filterNote}"
+            callback="{draw}"
         >
-            filtering
-            <select bind:value="{filterNote}" on:change="{draw}">
-                <option value="{0}">off</option>
-                {#each BIN_NOTES as g}
-                    <option value="{g}">1/{g} note</option>
-                {/each}
-            </select>
-        </label>
+            <option value="{0}">off</option>
+            {#each BIN_NOTES as g}
+                <option value="{g}">1/{g} note</option>
+            {/each}
+        </SelectScollable>
         <NumberInput
             title="The number of most recent notes that are shown as bars."
             label="bars"

@@ -21,6 +21,7 @@
     import { NOTE_COLORS } from '../lib/colors';
     import InsideTextButton from '../common/inside-text-button.svelte';
     import NumberInput from '../common/number-input.svelte';
+    import SelectScollable from '../common/select-scollable.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -253,14 +254,15 @@
             min="{25}"
             max="{1000}"
         />
-        <label>
-            color
-            <select bind:value="{coloring}" on:change="{draw}">
-                {#each ['none', 'channel', 'sharps', 'note', 'drum'] as opt}
-                    <option value="{opt}">{opt}</option>
-                {/each}
-            </select>
-        </label>
+        <SelectScollable
+            label="color"
+            bind:value="{coloring}"
+            callback="{draw}"
+        >
+            {#each ['none', 'channel', 'sharps', 'note', 'drum'] as opt}
+                <option value="{opt}">{opt}</option>
+            {/each}
+        </SelectScollable>
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

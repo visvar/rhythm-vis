@@ -21,6 +21,7 @@
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
     import NumberInput from '../common/number-input.svelte';
+    import SelectScollable from '../common/select-scollable.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -281,38 +282,38 @@
             label="drum mode"
             title="Toggle between piano keyboard and drum mode"
         />
-        <label
+        <SelectScollable
+            label="grid left"
             title="The whole width is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+            bind:value="{gridLeft}"
+            callback="{draw}"
         >
-            grid left
-            <select bind:value="{gridLeft}" on:change="{draw}">
-                {#each GRIDS as g}
-                    <option value="{g.divisions}">{g.label}</option>
-                {/each}
-            </select>
-        </label>
-        <label
+            {#each GRIDS as g}
+                <option value="{g.divisions}">{g.label}</option>
+            {/each}
+        </SelectScollable>
+        <SelectScollable
+            label="right"
             title="The whole width is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+            bind:value="{gridRight}"
+            callback="{draw}"
         >
-            right
-            <select bind:value="{gridRight}" on:change="{draw}">
-                {#each GRIDS as g}
-                    <option value="{g.divisions}">{g.label}</option>
-                {/each}
-            </select>
-        </label>
+            {#each GRIDS as g}
+                <option value="{g.divisions}">{g.label}</option>
+            {/each}
+        </SelectScollable>
     </div>
     <div class="control">
-        <label
+        <SelectScollable
+            label="binning"
             title="The width of each bar in rhythmic units. For example, each bin could be a 32nd note wide."
+            bind:value="{binNote}"
+            callback="{draw}"
         >
-            binning
-            <select bind:value="{binNote}" on:change="{draw}">
-                {#each BIN_NOTES as g}
-                    <option value="{g}">1/{g} note</option>
-                {/each}
-            </select>
-        </label>
+            {#each BIN_NOTES as g}
+                <option value="{g}">1/{g} note</option>
+            {/each}
+        </SelectScollable>
         <label title="Shift all notes by an amount in seconds">
             adjust
             <input

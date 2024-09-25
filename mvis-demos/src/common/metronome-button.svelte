@@ -6,7 +6,7 @@
 
     export let tempo = 120;
     export let accent = 4;
-    export let beepCount = Infinity;
+    export let beepCount = 0;
     export let showBeepCountInput = false;
 
     const metro = new Metronome();
@@ -35,11 +35,18 @@
 </button>
 {#if showBeepCountInput}
     <input
+        title="The number of beeps for count-in, set to 0 for infinite beeps"
         type="number"
         step="1"
         min="0"
         bind:value="{beepCount}"
-        title="The number of beeps for count-in, set to 0 for infinite beeps"
+        on:mousewheel="{(evt) => {
+            evt.preventDefault();
+            const add = evt.deltaY < 0 ? 1 : -1;
+            const clamped = Math.max(0, beepCount + add);
+            // round to step
+            beepCount = +clamped.toFixed();
+        }}"
     />
 {/if}
 <PcKeyboardInput key="m" keyDown="{toggle}" />
@@ -49,7 +56,7 @@
         transition: all 250ms;
     }
     input {
-        width: 30px;
+        width: 34px;
         margin-left: -10px;
         border-radius: 0 8px 8px 0;
     }

@@ -64,9 +64,9 @@
             adjustTime = +clamped.toFixed(12);
             draw();
         }}"
-        step="{0.01}"
-        min="{-2}"
-        max="{2}"
+        {step}
+        {min}
+        {max}
         style="width: 55px"
     />
 </label>

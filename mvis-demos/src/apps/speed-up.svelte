@@ -19,6 +19,7 @@
     import ShareConfigButton from '../common/share-config-button.svelte';
     import { replacer } from '../lib/json.js';
     import NumberInput from '../common/number-input.svelte';
+    import SelectScollable from '../common/select-scollable.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -403,14 +404,15 @@
             max="{20}"
             step="{1}"
         />
-        <label>
-            quantize exercise
-            <select bind:value="{quantize}" on:change="{draw}">
-                {#each ['off', '32nd', '16th', '8th', 'triplet', 'quintuplet'] as d}
-                    <option value="{d}">{d}</option>
-                {/each}
-            </select>
-        </label>
+        <SelectScollable
+            label="quantize exercise"
+            bind:value="{quantize}"
+            callback="{draw}"
+        >
+            {#each ['off', '32nd', '16th', '8th', 'triplet', 'quintuplet'] as d}
+                <option value="{d}">{d}</option>
+            {/each}
+        </SelectScollable>
     </div>
     <div class="control">
         <label>

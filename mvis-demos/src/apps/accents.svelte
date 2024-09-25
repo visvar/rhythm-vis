@@ -19,6 +19,7 @@
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
     import ToggleButton from '../common/toggle-button.svelte';
+    import SelectScollable from '../common/select-scollable.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -249,29 +250,29 @@
         />
     </div>
     <div class="control">
-        <label
+        <SelectScollable
             title="You can filter out notes that are shorter than a given note duration."
+            label="filtering"
+            bind:value="{filterNote}"
+            callback="{draw}"
         >
-            filtering
-            <select bind:value="{filterNote}" on:change="{draw}">
-                {#each FILTER_NOTES as g}
-                    <option value="{g}">1/{g} note</option>
-                {/each}
-            </select>
-        </label>
-        <label
+            {#each FILTER_NOTES as g}
+                <option value="{g}">1/{g} note</option>
+            {/each}
+        </SelectScollable>
+        <SelectScollable
             title="You can choose a value for loudness to only show loud and quiet notes in two different sizes instead of exactly sizing notes by loudness. Set to 0 to use smooth sizing."
+            label="loudness threshold"
+            bind:value="{velocityThreshold}"
+            callback="{draw}"
         >
-            loudness threshold
-            <select bind:value="{velocityThreshold}" on:change="{draw}">
-                {#each VELOCITIES_LOGIC.entries() as [velocity, label]}
-                    <option value="{velocity / 127}">
-                        {(velocity / 127).toFixed(1)}
-                        {label}
-                    </option>
-                {/each}
-            </select>
-        </label>
+            {#each VELOCITIES_LOGIC.entries() as [velocity, label]}
+                <option value="{velocity / 127}">
+                    {(velocity / 127).toFixed(1)}
+                    {label}
+                </option>
+            {/each}
+        </SelectScollable>
     </div>
     <div class="visualization" bind:this="{container}"></div>
     <div class="control">

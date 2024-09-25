@@ -20,6 +20,7 @@
     import SubDivisionAdjustButton from '../common/sub-division-adjust-button.svelte';
     import { computeSubdivisionOkScore } from '../lib/lib';
     import HistoryButton from '../common/history-button.svelte';
+    import SelectScollable from '../common/select-scollable.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -349,32 +350,29 @@
     </ExerciseDrawer>
     <div class="control">
         <TempoInput bind:value="{tempo}" callback="{draw}" />
-        <label
+        <SelectScollable
+            label="grid"
             title="The whole circle is one bar, you can choose to divide it by 3 or 4 quarter notes and then further sub-divide it into, for example, triplets"
+            bind:value="{grid}"
+            callback="{draw}"
         >
-            grid
-            <select bind:value="{grid}" on:change="{draw}">
-                {#each GRIDS as g}
-                    <option value="{g.divisions}">{g.label}</option>
-                {/each}
-            </select>
-        </label>
-        <label
+            {#each GRIDS as g}
+                <option value="{g.divisions}">{g.label}</option>
+            {/each}
+        </SelectScollable>
+        <SelectScollable
+            label="binning"
             title="The width of each bar in rhythmic units. For example, each bin could be a 32nd note wide."
+            bind:value="{binNote}"
+            callback="{() => {
+                draw();
+                drawLoaded();
+            }}"
         >
-            binning
-            <select
-                bind:value="{binNote}"
-                on:change="{() => {
-                    draw();
-                    drawLoaded();
-                }}"
-            >
-                {#each BIN_NOTES as g}
-                    <option value="{g}">1/{g} note</option>
-                {/each}
-            </select>
-        </label>
+            {#each BIN_NOTES as g}
+                <option value="{g}">1/{g} note</option>
+            {/each}
+        </SelectScollable>
         <SubDivisionAdjustButton
             bind:adjustTime
             {tempo}

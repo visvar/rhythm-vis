@@ -1,6 +1,6 @@
 {
   "tempo": 185,
-  "binNote": "off",
+  "binNote": 0,
   "filterNote": 0,
   "barLimit": 35,
   "notes": [
