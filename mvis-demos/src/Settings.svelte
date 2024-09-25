@@ -30,14 +30,16 @@
 <main>
     <h2>Settings</h2>
 
+    <p class="explanation">This page contains global settings.</p>
+
     <h3>Usage Data</h3>
-    <p>
+    <p class="explanation">
         The website tracks usage data locally in your browser, but does not send
         it anywhere. You can export or reset it here.
     </p>
-    <p>
-        Currently {localStorageRep.currentKb.toFixed()} of {localStorageRep.limitKb}
-        KB used ({localStorageRep.percentFull.toFixed(1)}%).
+    <p class="explanation">
+        Currently used: {localStorageRep.currentKb.toFixed()} of {localStorageRep.limitKb}
+        KB ({localStorageRep.percentFull.toFixed(1)}%).
     </p>
     <button
         title="Export usage statistics"

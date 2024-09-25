@@ -5,54 +5,6 @@
   "scaleType": "minor",
   "notes": [
     {
-      "time": 0,
-      "number": 50,
-      "velocity": 10,
-      "string": 3,
-      "fret": 0,
-      "channel": 4
-    },
-    {
-      "time": 0.173,
-      "number": 57,
-      "velocity": 10,
-      "string": 4,
-      "fret": 12,
-      "channel": 5
-    },
-    {
-      "time": 0.199,
-      "number": 40,
-      "velocity": 10,
-      "string": 5,
-      "fret": 0,
-      "channel": 6
-    },
-    {
-      "time": 0.225,
-      "number": 50,
-      "velocity": 10,
-      "string": 3,
-      "fret": 0,
-      "channel": 4
-    },
-    {
-      "time": 0.227,
-      "number": 40,
-      "velocity": 10,
-      "string": 5,
-      "fret": 0,
-      "channel": 6
-    },
-    {
-      "time": 0.251,
-      "number": 45,
-      "velocity": 10,
-      "string": 4,
-      "fret": 0,
-      "channel": 5
-    },
-    {
       "time": 7.219,
       "number": 66,
       "velocity": 18,

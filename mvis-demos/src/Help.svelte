@@ -66,9 +66,6 @@
         <h4>General</h4>
         <ul>
             <li>
-                <code>CTRL</code>+<code>A</code> opens the app menu
-            </li>
-            <li>
                 <code>CTRL</code>+<code>F</code> focuses the search bar in the app
                 menu
             </li>

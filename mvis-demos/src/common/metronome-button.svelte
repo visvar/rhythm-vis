@@ -25,36 +25,43 @@
     });
 </script>
 
-<button
-    bind:this="{button}"
-    title="Toggle metronome (shortcut: m)"
-    on:click="{toggle}"
-    style="{showBeepCountInput ? 'border-radius: 8px 0 0 8px;' : ''}"
->
-    {metronomeIcon} metronome
-</button>
-{#if showBeepCountInput}
-    <input
-        title="The number of beeps for count-in, set to 0 for infinite beeps"
-        type="number"
-        step="1"
-        min="0"
-        bind:value="{beepCount}"
-        on:mousewheel="{(evt) => {
-            evt.preventDefault();
-            const add = evt.deltaY < 0 ? 1 : -1;
-            const clamped = Math.max(0, beepCount + add);
-            // round to step
-            beepCount = +clamped.toFixed();
-        }}"
-    />
-{/if}
+<main>
+    <button
+        bind:this="{button}"
+        title="Toggle metronome (shortcut: m)"
+        on:click="{toggle}"
+        style="{showBeepCountInput ? 'border-radius: 8px 0 0 8px;' : ''}"
+    >
+        {metronomeIcon} metronome
+    </button>
+    {#if showBeepCountInput}
+        <input
+            title="The number of beeps for count-in, set to 0 for infinite beeps"
+            type="number"
+            step="1"
+            min="0"
+            bind:value="{beepCount}"
+            on:mousewheel="{(evt) => {
+                evt.preventDefault();
+                const add = evt.deltaY < 0 ? 1 : -1;
+                const clamped = Math.max(0, beepCount + add);
+                // round to step
+                beepCount = +clamped.toFixed();
+            }}"
+        />
+    {/if}
+</main>
 <PcKeyboardInput key="m" keyDown="{toggle}" />
 
 <style>
+    main {
+        display: inline-block;
+    }
+
     button {
         transition: all 250ms;
     }
+
     input {
         width: 34px;
         margin-left: -10px;

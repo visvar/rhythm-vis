@@ -16,6 +16,7 @@
     import HistoryButton from '../common/history-button.svelte';
     import example from '../example-recordings/tempo-change.json';
     import NumberInput from '../common/number-input.svelte';
+    import MidiReplayButton from '../common/midi-replay-button.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -228,6 +229,7 @@
         <ImportExportButton {loadData} {getExportData} appId="{appInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton appId="{appInfo.id}" {loadData} />
+        <MidiReplayButton bind:notes callback="{draw}" />
         <ShareConfigButton {getExportData} {loadData} appId="{appInfo.id}" />
     </div>
     <RatingButton appId="{appInfo.id}" />

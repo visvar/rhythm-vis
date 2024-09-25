@@ -91,7 +91,7 @@
   const allInstruments = new Set(APPS.flatMap((d) => d.instruments).sort());
   const allData = new Set(APPS.flatMap((d) => d.data));
   const allSkills = new Set(APPS.flatMap((d) => d.skills).sort());
-  const allDifficulties = new Set(APPS.flatMap((d) => d.difficulty).sort());
+  const allDifficulties = new Set(['beginner', 'intermediate', 'advanced']);
   const allPatterns = new Set(APPS.flatMap((d) => d.patterns).sort());
   // filter
   let currentInstruments = new Set(allInstruments);
@@ -321,7 +321,7 @@
                   currentDifficulties = new Set(allDifficulties);
                 }}"
               >
-                difficulty: {[...currentDifficulties]} &times;
+                difficulty: {[...currentDifficulties].join(', ')} &times;
               </button>
             {/if}
             {#if currentInputs.size < allInputs.size}
@@ -334,6 +334,9 @@
                 input: {[...currentInputs]} &times;
               </button>
             {/if}
+            <div style="display: inline-block">
+              {sortedApps.length} of {APPS.length} apps shown
+            </div>
           </div>
         {/if}
         {#each sortedApps as app}
@@ -420,15 +423,6 @@
     <!-- <ScreenshotButton bind:currentApp /> -->
   </div>
 </main>
-<!-- shortcut for app menu -->
-<PcKeyboardInput
-  key="a"
-  ctrlKey
-  keyDown="{() => {
-    currentApp = null;
-    setUrlParam(window, 'd', '');
-  }}"
-/>
 <!-- shortcut for search -->
 <PcKeyboardInput
   key="f"

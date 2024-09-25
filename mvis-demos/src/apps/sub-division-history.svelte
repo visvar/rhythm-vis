@@ -31,8 +31,8 @@
 
     let canvas;
     let canvas2;
-    let width = 900;
-    let height = 900;
+    let width = 850;
+    let height = width;
     // settings
     let tempo = 120;
     let grid = GRIDS[0].divisions;
@@ -239,7 +239,7 @@
     const drawLoaded = () => {
         const count = 8;
         const recordings = localSorageGetRecordings(appInfo.id)
-            .slice(-8)
+            .slice(-count)
             .reverse();
 
         //  reset canvas

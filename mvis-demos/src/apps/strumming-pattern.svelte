@@ -17,6 +17,7 @@
     import RatingButton from '../common/rating-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
     import NumberInput from '../common/number-input.svelte';
+    import MidiReplayButton from '../common/midi-replay-button.svelte';
 
     export let appInfo;
     let width = 900;
@@ -114,12 +115,16 @@
                 meanVelocity: d3.mean(chord, (d) => d.velocity),
             };
         });
-        // plot
-        const plot = Plot.plot({
+        const config = {
             width,
             height,
-            marginLeft: 60,
-            marginBottom: 40,
+            marginTop: 0,
+            marginLeft: 45,
+            marginBottom: 35,
+        };
+        // plot
+        const plot = Plot.plot({
+            ...config,
             x: {
                 label: 'time in seconds',
                 domain: [minTime, maxTime],
@@ -155,10 +160,7 @@
             ],
         });
         const plot2 = Plot.plot({
-            width,
-            height,
-            marginLeft: 60,
-            marginBottom: 40,
+            ...config,
             x: {
                 label: 'time in seconds',
                 domain: [minTime, maxTime],
@@ -307,6 +309,7 @@
         <ImportExportButton {loadData} {getExportData} appId="{appInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton appId="{appInfo.id}" {loadData} />
+        <MidiReplayButton bind:notes callback="{draw}" />
         <ShareConfigButton {getExportData} {loadData} appId="{appInfo.id}" />
     </div>
     <RatingButton appId="{appInfo.id}" />

@@ -4,6 +4,7 @@
     import * as Plot from '@observablehq/plot';
     import { onMount } from 'svelte';
     import { APPS } from './apps';
+    import HelpTextDrawer from './common/help-text-drawer.svelte';
 
     export let apps = [];
     // export let allInstruments = new Set();
@@ -25,7 +26,6 @@
         'a full song',
     ];
 
-    let skillTreeContainer;
     let matrixContainer;
     let matrixRow = 'skills';
     let matrixColumn = 'patterns';
@@ -44,47 +44,6 @@
     //     console.log(string);
     // };
     // latex();
-
-    /**
-     * draws the tree of skills
-     */
-    const drawSkillTree = () => {
-        const getPaths = (tree) => {
-            if (tree.children) {
-                const childPaths = tree.children.flatMap((child) =>
-                    getPaths(child).map((d) => `${tree.title}/${d}`),
-                );
-
-                return [tree.title, ...childPaths];
-            } else {
-                return [`${tree.label} ${tree.title}`];
-            }
-        };
-        const treePaths = getPaths({
-            title: 'skills',
-            children: SKILL_TREE,
-        });
-        const plot = Plot.plot({
-            axis: null,
-            margin: 10,
-            marginLeft: 60,
-            marginRight: 300,
-            width: 600,
-            height: 600,
-            marks: [
-                Plot.cluster(treePaths, {
-                    treeSort: 'node:height',
-                    // delimiter: '/',
-                    fontSize: 16,
-                    // textLayout: 'normal',
-                    stroke: '#ddd',
-                    dot: false,
-                }),
-            ],
-        });
-        skillTreeContainer.textContent = '';
-        skillTreeContainer.appendChild(plot);
-    };
 
     /**
      * draws the tree of skills
@@ -164,347 +123,365 @@
         matrixContainer.textContent = '';
         matrixContainer.appendChild(plot);
     };
-
-    onMount(() => {
-        drawSkillTree();
-        drawSkillPatternMatrix();
-    });
 </script>
 
 <main>
-    <h2>input and instrument</h2>
-    <table>
-        <thead>
-            <th style="min-width: 270px">app</th>
-            <th
-                colspan="2"
-                style="border-bottom: 4px solid {d3.schemeObservable10[0]};"
-            >
-                input
-            </th>
-            <th class="spacer"></th>
-            <th
-                colspan="{allInstruments.size}"
-                style="border-bottom: 4px solid {d3.schemeObservable10[1]};"
-            >
-                instrument
-            </th>
-            <th class="spacer"></th>
-            <th
-                colspan="{allData.size}"
-                style="border-bottom: 4px solid {d3.schemeObservable10[2]};"
-            >
-                data
-            </th>
-            <th class="spacer"></th>
-            <th
-                colspan="{allTimeScales.length}"
-                style="border-bottom: 4px solid {d3.schemeObservable10[3]};"
-            >
-                time scale
-            </th>
-        </thead>
-        <thead>
-            <th></th>
-            <!-- input -->
-            <th class="small">MIDI</th>
-            <th class="small">audio</th>
-            <!-- instrument -->
-            <th class="spacer"></th>
-            {#each [...allInstruments] as i}
-                <th class="small">{i}</th>
-            {/each}
-            <!-- data -->
-            <th class="spacer"></th>
-            {#each [...allData] as d}
-                <th class="small">{d}</th>
-            {/each}
-            <!-- time scale -->
-            <th class="spacer"></th>
-            {#each allTimeScales as d}
-                <th class="small">{d}</th>
-            {/each}
-        </thead>
-        <thead>
-            <th></th>
-            <!-- input -->
-            <th colspan="2"></th>
-            <!-- instrument -->
-            <th colspan="{allInstruments.size}"></th>
-            <!-- instrument -->
-            <th colspan="{allInstruments.size}"></th>
-            <!-- time scale -->
-            <th colspan="{allTimeScales.length}"></th>
-        </thead>
-        <tbody>
-            {#each apps as d}
+    <p class="explanation">
+        This page contains overviews over apps and skills.
+    </p>
+
+    <HelpTextDrawer heading="Inputs and Instruments">
+        <table>
+            <thead>
+                <th style="min-width: 270px">app</th>
+                <th
+                    colspan="2"
+                    style="border-bottom: 4px solid {d3.schemeObservable10[0]};"
+                >
+                    input
+                </th>
+                <th class="spacer"></th>
+                <th
+                    colspan="{allInstruments.size}"
+                    style="border-bottom: 4px solid {d3.schemeObservable10[1]};"
+                >
+                    instrument
+                </th>
+                <th class="spacer"></th>
+                <th
+                    colspan="{allData.size}"
+                    style="border-bottom: 4px solid {d3.schemeObservable10[2]};"
+                >
+                    data
+                </th>
+                <th class="spacer"></th>
+                <th
+                    colspan="{allTimeScales.length}"
+                    style="border-bottom: 4px solid {d3.schemeObservable10[3]};"
+                >
+                    time scale
+                </th>
+            </thead>
+            <thead>
+                <th></th>
+                <!-- input -->
+                <th class="small">MIDI</th>
+                <th class="small">audio</th>
+                <!-- instrument -->
+                <th class="spacer"></th>
+                {#each [...allInstruments] as i}
+                    <th class="small">{i}</th>
+                {/each}
+                <!-- data -->
+                <th class="spacer"></th>
+                {#each [...allData] as d}
+                    <th class="small">{d}</th>
+                {/each}
+                <!-- time scale -->
+                <th class="spacer"></th>
+                {#each allTimeScales as d}
+                    <th class="small">{d}</th>
+                {/each}
+            </thead>
+            <thead>
+                <th></th>
+                <!-- input -->
+                <th colspan="2"></th>
+                <!-- instrument -->
+                <th colspan="{allInstruments.size}"></th>
+                <!-- instrument -->
+                <th colspan="{allInstruments.size}"></th>
+                <!-- time scale -->
+                <th colspan="{allTimeScales.length}"></th>
+            </thead>
+            <tbody>
+                {#each apps as d}
+                    <tr>
+                        <td style="text-align: right;">{d.title}</td>
+                        <!-- input -->
+                        <td>{d.input === 'MIDI' ? '⬤' : ''}</td>
+                        <td>{d.input === 'audio' ? '⬤' : ''}</td>
+                        <!-- instrument -->
+                        <td class="spacer"></td>
+                        {#each [...allInstruments] as i}
+                            <td>{d.instruments.includes(i) ? '⬤' : ''}</td>
+                        {/each}
+                        <!-- data -->
+                        <td class="spacer"></td>
+                        {#each [...allData] as i}
+                            <td>{d.data.includes(i) ? '⬤' : ''}</td>
+                        {/each}
+                        <!-- time scale -->
+                        <td class="spacer"></td>
+                        {#each allTimeScales as i}
+                            <td>{d.timeScale.includes(i) ? '⬤' : ''}</td>
+                        {/each}
+                    </tr>
+                {/each}
+                <!-- counts -->
                 <tr>
-                    <td style="text-align: right;">{d.title}</td>
+                    <td>{apps.length}</td>
                     <!-- input -->
-                    <td>{d.input === 'MIDI' ? '⬤' : ''}</td>
-                    <td>{d.input === 'audio' ? '⬤' : ''}</td>
+                    <td>{apps.filter((d) => d.input === 'MIDI').length}</td>
+                    <td>{apps.filter((d) => d.input === 'audio').length}</td>
                     <!-- instrument -->
                     <td class="spacer"></td>
                     {#each [...allInstruments] as i}
-                        <td>{d.instruments.includes(i) ? '⬤' : ''}</td>
+                        <td
+                            >{apps.filter((d) => d.instruments.includes(i))
+                                .length}</td
+                        >
                     {/each}
                     <!-- data -->
                     <td class="spacer"></td>
                     {#each [...allData] as i}
-                        <td>{d.data.includes(i) ? '⬤' : ''}</td>
+                        <td>{apps.filter((d) => d.data.includes(i)).length}</td>
                     {/each}
                     <!-- time scale -->
                     <td class="spacer"></td>
                     {#each allTimeScales as i}
-                        <td>{d.timeScale.includes(i) ? '⬤' : ''}</td>
+                        <td
+                            >{apps.filter((d) => d.timeScale.includes(i))
+                                .length}</td
+                        >
                     {/each}
                 </tr>
-            {/each}
-            <!-- counts -->
-            <tr>
-                <td>{apps.length}</td>
-                <!-- input -->
-                <td>{apps.filter((d) => d.input === 'MIDI').length}</td>
-                <td>{apps.filter((d) => d.input === 'audio').length}</td>
-                <!-- instrument -->
-                <td class="spacer"></td>
-                {#each [...allInstruments] as i}
-                    <td
-                        >{apps.filter((d) => d.instruments.includes(i))
-                            .length}</td
-                    >
-                {/each}
-                <!-- data -->
-                <td class="spacer"></td>
-                {#each [...allData] as i}
-                    <td>{apps.filter((d) => d.data.includes(i)).length}</td>
-                {/each}
-                <!-- time scale -->
-                <td class="spacer"></td>
-                {#each allTimeScales as i}
-                    <td>{apps.filter((d) => d.timeScale.includes(i)).length}</td
-                    >
-                {/each}
-            </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </HelpTextDrawer>
 
-    <h2>skills</h2>
-    <table>
-        <thead>
-            <th style="min-width: 270px">app</th>
-            <!-- skill -->
-            {#each SKILL_TREE as s, index}
-                <th
-                    colspan="{s.children.length}"
-                    style="border-bottom: 4px solid {d3.schemeObservable10[
-                        index
-                    ]}"
-                >
-                    {s.title}
-                </th>
-                <th class="spacer"></th>
-            {/each}
-        </thead>
-        <thead>
-            <th></th>
-            <!-- skill -->
-            {#each SKILL_TREE as s}
-                {#each s.children as skill}
-                    <th class="small">{skill.title}</th>
+    <HelpTextDrawer heading="Skills">
+        <table>
+            <thead>
+                <th style="min-width: 270px">app</th>
+                <!-- skill -->
+                {#each SKILL_TREE as s, index}
+                    <th
+                        colspan="{s.children.length}"
+                        style="border-bottom: 4px solid {d3.schemeObservable10[
+                            index
+                        ]}"
+                    >
+                        {s.title}
+                    </th>
+                    <th class="spacer"></th>
                 {/each}
-                <th class="spacer"></th>
-            {/each}
-        </thead>
-        <tbody>
-            {#each apps as d}
-                <tr>
-                    <td style="text-align: right;">{d.title}</td>
-                    <!-- skill -->
-                    {#each SKILL_TREE as s}
-                        {#each s.children as skill}
-                            <td>{d.skills.includes(skill.id) ? '⬤' : ''}</td>
-                        {/each}
-                        <th class="spacer"></th>
-                    {/each}
-                    <!-- count of skills for this app -->
-                    <td>{d.skills.length}</td>
-                </tr>
-            {/each}
-            <!-- counts -->
-            <tr>
-                <td>{apps.length}</td>
+            </thead>
+            <thead>
+                <th></th>
+                <!-- skill -->
                 {#each SKILL_TREE as s}
                     {#each s.children as skill}
-                        <td>
-                            {apps.filter((d) => d.skills.includes(skill.id))
-                                .length}
-                        </td>
+                        <th class="small">{skill.title}</th>
                     {/each}
-                    <td class="spacer"></td>
+                    <th class="spacer"></th>
                 {/each}
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>patterns</h2>
-    <table>
-        <thead>
-            <th style="min-width: 270px">app</th>
-            <!-- patterns -->
-            {#each [...allPatterns] as d}
-                <th class="small">{d}</th>
-            {/each}
-        </thead>
-        <tbody>
-            {#each apps as d}
-                <tr>
-                    <td style="text-align: right;">{d.title}</td>
-                    <!-- skill -->
-                    {#each [...allPatterns] as i}
-                        <td>{d.patterns.includes(i) ? '⬤' : ''}</td>
-                    {/each}
-                    <td>{d.patterns.length}</td>
-                </tr>
-            {/each}
-            <!-- counts -->
-            <tr>
-                <td>{apps.length}</td>
-                {#each [...allPatterns] as i}
-                    <td>{apps.filter((d) => d.patterns.includes(i)).length}</td>
-                {/each}
-                <td></td>
-            </tr>
-        </tbody>
-    </table>
-
-    <h2>difficulty</h2>
-    <table>
-        <thead>
-            <th style="min-width: 270px">app</th>
-            <!-- patterns -->
-            {#each ['beginner', 'intermediate', 'advanced'] as d}
-                <th class="small">{d}</th>
-            {/each}
-        </thead>
-        <tbody>
-            {#each apps as d}
-                <tr>
-                    <td style="text-align: right;">{d.title}</td>
-                    <!-- skill -->
-                    {#each ['beginner', 'intermediate', 'advanced'] as i}
-                        <td>{d.difficulty.includes(i) ? '⬤' : ''}</td>
-                    {/each}
-                </tr>
-            {/each}
-            <!-- counts -->
-            <tr>
-                <td>{apps.length}</td>
-                {#each ['beginner', 'intermediate', 'advanced'] as i}
-                    <td
-                        >{apps.filter((d) => d.difficulty.includes(i))
-                            .length}</td
-                    >
-                {/each}
-            </tr>
-        </tbody>
-    </table>
-
-    <!-- skill tree -->
-    <h2>skill tree</h2>
-    <div class="visualization" bind:this="{skillTreeContainer}"></div>
-
-    <!-- skill descriptions -->
-    <h2>skill description</h2>
-    <table style="text-align: left;">
-        <thead>
-            <th style="width: fit-content">category</th>
-            <th style="width: fit-content">skill</th>
-            <th>explanation</th>
-        </thead>
-        <tbody>
-            {#each SKILL_TREE as node}
-                {#each node.children as skill, index}
+            </thead>
+            <tbody>
+                {#each apps as d}
                     <tr>
-                        <td>{index === 0 ? node.title : ''}</td>
-                        <td>{skill.title}</td>
-                        <td style="width: 820px; padding: 5px 0"
-                            >{skill.description}</td
-                        >
+                        <td style="text-align: right;">{d.title}</td>
+                        <!-- skill -->
+                        {#each SKILL_TREE as s}
+                            {#each s.children as skill}
+                                <td>{d.skills.includes(skill.id) ? '⬤' : ''}</td
+                                >
+                            {/each}
+                            <th class="spacer"></th>
+                        {/each}
+                        <!-- count of skills for this app -->
+                        <td>{d.skills.length}</td>
                     </tr>
                 {/each}
-                <tr style="height: 20px"></tr>
-                <tr></tr>
-            {/each}
-        </tbody>
-    </table>
+                <!-- counts -->
+                <tr>
+                    <td>{apps.length}</td>
+                    {#each SKILL_TREE as s}
+                        {#each s.children as skill}
+                            <td>
+                                {apps.filter((d) => d.skills.includes(skill.id))
+                                    .length}
+                            </td>
+                        {/each}
+                        <td class="spacer"></td>
+                    {/each}
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </HelpTextDrawer>
+
+    <HelpTextDrawer heading="Design Patterns">
+        <table>
+            <thead>
+                <th style="min-width: 270px">app</th>
+                <!-- patterns -->
+                {#each [...allPatterns] as d}
+                    <th class="small">{d}</th>
+                {/each}
+            </thead>
+            <tbody>
+                {#each apps as d}
+                    <tr>
+                        <td style="text-align: right;">{d.title}</td>
+                        <!-- skill -->
+                        {#each [...allPatterns] as i}
+                            <td>{d.patterns.includes(i) ? '⬤' : ''}</td>
+                        {/each}
+                        <td>{d.patterns.length}</td>
+                    </tr>
+                {/each}
+                <!-- counts -->
+                <tr>
+                    <td>{apps.length}</td>
+                    {#each [...allPatterns] as i}
+                        <td
+                            >{apps.filter((d) => d.patterns.includes(i))
+                                .length}</td
+                        >
+                    {/each}
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </HelpTextDrawer>
+
+    <HelpTextDrawer heading="Difficulty">
+        <table>
+            <thead>
+                <th style="min-width: 270px">app</th>
+                <!-- patterns -->
+                {#each ['beginner', 'intermediate', 'advanced'] as d}
+                    <th class="small">{d}</th>
+                {/each}
+            </thead>
+            <tbody>
+                {#each apps as d}
+                    <tr>
+                        <td style="text-align: right;">{d.title}</td>
+                        <!-- skill -->
+                        {#each ['beginner', 'intermediate', 'advanced'] as i}
+                            <td>{d.difficulty.includes(i) ? '⬤' : ''}</td>
+                        {/each}
+                    </tr>
+                {/each}
+                <!-- counts -->
+                <tr>
+                    <td>{apps.length}</td>
+                    {#each ['beginner', 'intermediate', 'advanced'] as i}
+                        <td
+                            >{apps.filter((d) => d.difficulty.includes(i))
+                                .length}</td
+                        >
+                    {/each}
+                </tr>
+            </tbody>
+        </table>
+    </HelpTextDrawer>
+
+    <!-- skill descriptions -->
+    <HelpTextDrawer heading="Skill Descriptions">
+        <h2>skill description</h2>
+        <table style="text-align: left;">
+            <thead>
+                <th style="width: fit-content">category</th>
+                <th style="width: fit-content">skill</th>
+                <th>explanation</th>
+            </thead>
+            <tbody>
+                {#each SKILL_TREE as node}
+                    {#each node.children as skill, index}
+                        <tr>
+                            <td>{index === 0 ? node.title : ''}</td>
+                            <td>{skill.title}</td>
+                            <td style="width: 820px; padding: 5px 0"
+                                >{skill.description}</td
+                            >
+                        </tr>
+                    {/each}
+                    <tr style="height: 20px"></tr>
+                    <tr></tr>
+                {/each}
+            </tbody>
+        </table>
+    </HelpTextDrawer>
 
     <!-- list by skill -->
-    <h2>apps listed by skill</h2>
-    <ul class="list">
-        {#each SKILL_TREE as s}
-            <li>
-                <b>
-                    {s.title} ({new Set(
-                        s.children.flatMap((skill) =>
-                            APPS.filter((d) => d.skills.includes(skill.id)),
-                        ),
-                    ).size})
-                </b>
-                <ul>
-                    {#each s.children as skill}
-                        <li>
-                            <b>
-                                {skill.title} ({APPS.filter((d) =>
-                                    d.skills.includes(skill.id),
-                                ).length})
-                            </b>
-                            <ul>
-                                {#each APPS.filter( (d) => d.skills.includes(skill.id), ) as app}
-                                    <li style="font-size: 12px;">
-                                        {app.title}
-                                    </li>
-                                {/each}
-                            </ul>
-                        </li>
-                    {/each}
-                </ul>
-            </li>
-        {/each}
-    </ul>
+    <HelpTextDrawer heading="Apps by Skill">
+        <ul class="list">
+            {#each SKILL_TREE as s}
+                <li>
+                    <b>
+                        {s.title} ({new Set(
+                            s.children.flatMap((skill) =>
+                                APPS.filter((d) => d.skills.includes(skill.id)),
+                            ),
+                        ).size})
+                    </b>
+                    <ul>
+                        {#each s.children as skill}
+                            <li>
+                                <b>
+                                    {skill.title} ({APPS.filter((d) =>
+                                        d.skills.includes(skill.id),
+                                    ).length})
+                                </b>
+                                <ul>
+                                    {#each APPS.filter( (d) => d.skills.includes(skill.id), ) as app}
+                                        <li style="font-size: 12px;">
+                                            {app.title}
+                                        </li>
+                                    {/each}
+                                </ul>
+                            </li>
+                        {/each}
+                    </ul>
+                </li>
+            {/each}
+        </ul>
+    </HelpTextDrawer>
 
     <!-- matrix -->
-    <h2>app metadata co-occurrence</h2>
-    <label>
-        row
-        <select bind:value="{matrixRow}" on:change="{drawSkillPatternMatrix}">
-            {#each ['skills', 'patterns', 'data', 'instruments'] as d}
-                <option value="{d}">{d}</option>
-            {/each}
-        </select>
-    </label>
-    <label>
-        column
-        <select
-            bind:value="{matrixColumn}"
-            on:change="{drawSkillPatternMatrix}"
-        >
-            {#each ['skills', 'patterns', 'data', 'instruments'] as d}
-                <option value="{d}">{d}</option>
-            {/each}
-        </select>
-    </label>
-    <div class="visualization" bind:this="{matrixContainer}"></div>
+    <HelpTextDrawer heading="App Meta Data Relations">
+        <div>
+            <label>
+                row
+                <select
+                    bind:value="{matrixRow}"
+                    on:change="{drawSkillPatternMatrix}"
+                >
+                    {#each ['skills', 'patterns', 'data', 'instruments'] as d}
+                        <option value="{d}">{d}</option>
+                    {/each}
+                </select>
+            </label>
+            <label>
+                column
+                <select
+                    bind:value="{matrixColumn}"
+                    on:change="{drawSkillPatternMatrix}"
+                >
+                    {#each ['skills', 'patterns', 'data', 'instruments'] as d}
+                        <option value="{d}">{d}</option>
+                    {/each}
+                </select>
+            </label>
+            <div
+                class="visualization"
+                bind:this="{matrixContainer}"
+                on:load="{() => drawSkillPatternMatrix()}"
+            ></div>
+        </div>
+    </HelpTextDrawer>
 
-    <div>
+    <HelpTextDrawer heading="App List">
         <h3>App List</h3>
         <ul class="list">
             {#each apps as d}
                 <li>{d.title}</li>
             {/each}
         </ul>
-    </div>
+    </HelpTextDrawer>
 </main>
 
 <style>

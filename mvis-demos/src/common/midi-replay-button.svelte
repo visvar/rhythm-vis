@@ -15,24 +15,26 @@
     let circle;
     const circleSize = 20;
     const circleRadius = (circleSize - 4) / 2;
+    let circleRaf;
+    let startTime = 0;
 
     /**
      * plays notes
      */
     const replay = () => {
         isPlaying = true;
+        const timeFactor = 1000 / speed;
         oldNotes = [...notes];
         notes = [];
         timeouts = [];
-        const maxTime = d3.max(oldNotes, (d) => d.time ?? d);
-        const timeFactor = 1000 * (1 / speed);
+        let [minTime, maxTime] = d3.extent(oldNotes, (d) => d.time ?? d);
+        maxTime = maxTime - minTime;
+        // timeouts for notes
         for (const note of oldNotes) {
-            const time = note.time ?? note;
+            const time = (note.time ?? note) - minTime;
             timeouts.push(
                 setTimeout(() => {
                     notes = [...notes, note];
-                    // show progress
-                    showProgress(time / maxTime);
                     // stop when finished
                     if (notes.length === oldNotes.length) {
                         stop();
@@ -42,6 +44,14 @@
                 }, time * timeFactor),
             );
         }
+        // interval for progress
+        const update = () => {
+            const seconds = ((performance.now() - startTime) / 1000) * speed;
+            showProgress(seconds / maxTime);
+            circleRaf = requestAnimationFrame(update);
+        };
+        startTime = performance.now();
+        circleRaf = requestAnimationFrame(update);
     };
 
     /**
@@ -50,8 +60,9 @@
     const stop = () => {
         isPlaying = false;
         for (const to of timeouts) {
-            clearInterval(to);
+            clearTimeout(to);
         }
+        cancelAnimationFrame(circleRaf);
         timeouts = [];
         notes = oldNotes;
         callback();
@@ -63,8 +74,9 @@
 
     onDestroy(() => {
         for (const to of timeouts) {
-            clearInterval(to);
+            clearTimeout(to);
         }
+        cancelAnimationFrame(circleRaf);
     });
 
     /**
@@ -95,24 +107,28 @@
         <!-- show either progress or play button -->
         {#if isPlaying}
             {stopIcon}
-            <svg width="{circleSize}px" height="{circleSize}px">
-                <circle
-                    bind:this="{circle}"
-                    cx="{circleSize / 2}"
-                    cy="{circleSize / 2}"
-                    r="{circleRadius}"
-                ></circle>
-            </svg>
         {:else}
             {playIcon}
         {/if}
+        <svg
+            width="{circleSize}px"
+            height="{circleSize}px"
+            visibility="{isPlaying ? 'visible' : 'hidden'}"
+        >
+            <circle
+                bind:this="{circle}"
+                cx="{circleSize / 2}"
+                cy="{circleSize / 2}"
+                r="{circleRadius}"
+            ></circle>
+        </svg>
     </button>
     <NumberInput
         title="replay speed (2 means twice as fast, 0.5 half as fast)"
         bind:value="{speed}"
         min="{0.5}"
         max="{10}"
-        step="{0.1}"
+        step="{0.5}"
         width="40px"
         disabled="{notes.length === 0}"
         style="border-radius: 0 8px 8px 0;"
