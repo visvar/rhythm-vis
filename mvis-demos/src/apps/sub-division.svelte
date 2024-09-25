@@ -23,6 +23,7 @@
     import UndoRedoButton from '../common/undo-redo-button.svelte';
     import PageResizeHandler from '../common/page-resize-handler.svelte';
     import SelectScollable from '../common/select-scollable.svelte';
+    import MidiReplayButton from '../common/midi-replay-button.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -411,6 +412,7 @@
         <ImportExportButton {loadData} {getExportData} appId="{appInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton appId="{appInfo.id}" {loadData} />
+        <MidiReplayButton bind:notes callback="{draw}" />
         <ShareConfigButton {getExportData} {loadData} appId="{appInfo.id}" />
     </div>
     <RatingButton appId="{appInfo.id}" />

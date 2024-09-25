@@ -40,8 +40,8 @@
     let showDuration = false;
     let showLoudness = false;
     // data
-    let notes = [];
     let firstTimeStamp;
+    let notes = [];
     let openNoteMap = new Map();
 
     const noteOn = (e) => {

@@ -15,6 +15,7 @@
     import ShareConfigButton from '../common/share-config-button.svelte';
     import example from '../example-recordings/fretboard-jitter.json';
     import { VELOCITIES_LOGIC } from '../lib/music';
+    import MidiReplayButton from '../common/midi-replay-button.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -241,6 +242,7 @@
         <ImportExportButton {loadData} {getExportData} appId="{appInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton appId="{appInfo.id}" {loadData} />
+        <MidiReplayButton bind:notes callback="{draw}" />
         <ShareConfigButton {getExportData} {loadData} appId="{appInfo.id}" />
     </div>
     <RatingButton appId="{appInfo.id}" />

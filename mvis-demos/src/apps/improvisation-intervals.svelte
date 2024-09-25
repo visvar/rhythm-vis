@@ -26,6 +26,7 @@
     let filterUnison = true;
     let useColors = true;
     // data
+    let firstTimeStamp;
     let notes = [];
 
     // domain knowledge
@@ -47,11 +48,15 @@
     ];
 
     const noteOn = (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
             // ...e.note,
             number: e.note.number,
             velocity: e.rawVelocity,
-            time: e.timestamp,
+            time: noteInSeconds,
         };
         notes.push(note);
         draw();

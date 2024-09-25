@@ -34,7 +34,6 @@
     let targetTempo = 120;
     let tempoIncrease = 10;
     let quantize = 'off';
-
     // data
     let currentStep = '';
     let currentTempo = targetTempo;

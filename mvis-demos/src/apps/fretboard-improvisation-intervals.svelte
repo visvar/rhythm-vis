@@ -30,6 +30,7 @@
     let showNames = false;
     let limitFrets = false;
     // data
+    let firstTimeStamp;
     let notes = [];
     // domain knowledge
     let stringCount = 6;
@@ -39,11 +40,15 @@
     const tuningNotes = tuningPitches.map(Note.fromMidiSharps);
 
     const noteOn = (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const string = e.message.channel - 1;
         const note = {
             number: e.note.number,
             velocity: e.rawVelocity,
-            time: e.timestamp,
+            time: noteInSeconds,
             channel: e.message.channel,
             string,
             fret: e.note.number - tuningPitches[string],

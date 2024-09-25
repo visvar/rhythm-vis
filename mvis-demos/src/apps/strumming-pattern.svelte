@@ -34,11 +34,14 @@
     const minDur = localStorageGetSetting('guitarMidiMinDuration') ?? 0;
     console.log({ minVelo, minDur });
     // data
-    let firstTimeStamp = 0;
+    let firstTimeStamp;
     let notes = [];
     let openNoteMap = new Map();
 
     const noteOn = (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
         const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const string = e.message.channel - 1;
         const note = {
@@ -204,7 +207,6 @@
     };
 
     onMount(() => {
-        firstTimeStamp = performance.now();
         draw();
     });
 

@@ -32,15 +32,20 @@
     let useColors = true;
     let showOutsideScale = true;
     // data
+    let firstTimeStamp;
     let notes = [];
     // domain knowledge
     const noteNames = Midi.NOTE_NAMES_FLAT;
 
     const noteOn = (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
             number: e.note.number,
             velocity: e.rawVelocity,
-            time: e.timestamp,
+            time: noteInSeconds,
         };
         notes.push(note);
         draw();

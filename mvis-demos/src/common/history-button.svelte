@@ -49,10 +49,19 @@
                     &times;
                 </button>
             </div>
+            <div class="recording">
+                <div>date</div>
+                <div>notes</div>
+                <div>load</div>
+                <div>delete</div>
+            </div>
             {#each recordings as r, i (r.date)}
                 <div class="recording">
                     <div>
                         {r.date.substring(0, 16).replace('T', ' ')}
+                    </div>
+                    <div>
+                        {r.data.notes?.length}
                     </div>
                     <button on:click="{(e) => loadData(r.data)}"> load </button>
                     <button
@@ -116,8 +125,9 @@
     .recording {
         margin-bottom: 10px;
         display: grid;
-        grid-template-columns: auto 100px 100px;
+        grid-template-columns: auto 80px 90px 90px;
         align-items: center;
+        justify-items: center;
         text-align: left;
     }
 </style>

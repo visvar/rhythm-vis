@@ -28,6 +28,8 @@
      */
     export let step = 10;
     export let width = '55px';
+    export let disabled = false;
+    export let style = '';
 </script>
 
 <label {title}>
@@ -38,6 +40,9 @@
         on:change="{callback}"
         on:mousewheel="{(evt) => {
             evt.preventDefault();
+            if (disabled) {
+                return;
+            }
             const add = evt.deltaY < 0 ? step : -step;
             const clamped = Math.min(max, Math.max(min, value + add));
             // round to step
@@ -47,6 +52,7 @@
         {step}
         {min}
         {max}
-        style="width: {width}"
+        {disabled}
+        style="width: {width}; {style}"
     />
 </label>

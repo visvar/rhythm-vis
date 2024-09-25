@@ -21,6 +21,9 @@
 
     const scrollOptions = (evt) => {
         evt.preventDefault();
+        if (disabled) {
+            return;
+        }
         // get values from options
         const options = [...select.children];
         const values = options.map((d) => d.value);

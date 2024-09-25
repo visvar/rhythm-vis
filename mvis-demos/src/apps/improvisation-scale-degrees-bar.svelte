@@ -34,19 +34,20 @@
     let showOutsideScale = true;
     let tempo = 120;
     // data
+    let firstTimeStamp;
     let notes = [];
     // domain knowledge
     const noteNames = Midi.NOTE_NAMES_FLAT;
 
     const noteOn = (e) => {
-        let seconds = 0;
-        if (notes.length > 0) {
-            seconds = e.timestamp / 1000 - notes[0].time;
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
         }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
             number: e.note.number,
             velocity: e.rawVelocity,
-            time: seconds,
+            time: noteInSeconds,
         };
         notes.push(note);
         draw();

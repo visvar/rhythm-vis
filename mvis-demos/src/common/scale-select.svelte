@@ -19,6 +19,9 @@
 
     const scrollRoot = (evt) => {
         evt.preventDefault();
+        if (disabled) {
+            return;
+        }
         let currentIndex = noteNames.indexOf(scaleRoot);
         if (currentIndex === -1) {
             return;
@@ -36,6 +39,9 @@
 
     const scrollScale = (evt) => {
         evt.preventDefault();
+        if (disabled) {
+            return;
+        }
         let currentIndex = scales.indexOf(scaleType);
         if (currentIndex === -1) {
             return;

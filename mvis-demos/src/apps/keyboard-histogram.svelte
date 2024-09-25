@@ -18,6 +18,7 @@
     import ToggleButton from '../common/toggle-button.svelte';
     import ShareConfigButton from '../common/share-config-button.svelte';
     import example from '../example-recordings/keyboard-histogram.json';
+    import MidiReplayButton from '../common/midi-replay-button.svelte';
 
     /**
      * contains the app meta information defined in App.js
@@ -40,13 +41,18 @@
     let scaleType = 'major';
     let showScale;
     // data
+    let firstTimeStamp;
     let notes = [];
 
     const noteOn = (e) => {
+        if (notes.length === 0) {
+            firstTimeStamp = e.timestamp;
+        }
+        const noteInSeconds = (e.timestamp - firstTimeStamp) / 1000;
         const note = {
             number: e.note.number,
             velocity: e.rawVelocity,
-            time: e.timestamp,
+            time: noteInSeconds,
             channel: e.message.channel,
         };
         notes.push(note);
@@ -240,6 +246,7 @@
         <ImportExportButton {loadData} {getExportData} appId="{appInfo.id}" />
         <button on:click="{() => loadData(example)}"> example </button>
         <HistoryButton appId="{appInfo.id}" {loadData} />
+        <!-- <MidiReplayButton bind:notes callback="{draw}" /> -->
         <ShareConfigButton {getExportData} {loadData} appId="{appInfo.id}" />
     </div>
     <RatingButton appId="{appInfo.id}" />
